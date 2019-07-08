@@ -1,0 +1,28 @@
+.jumbotron{
+    border:groove;
+    position:relative;
+    left:3%;
+    margin:auto;
+    background:#E8E8E8;
+}
+
+
+.jumbotron_2{
+    border:groove;
+    width: 125%;
+    position: relative;
+    left: -28%;
+    background:#E8E8E8;
+}
+
+.workflow-desc {
+   font-size: 80%; 
+   display:inline-block;
+   width: 240px;
+   border-bottom: 3px outset red;
+}
+
+.collapse-css-transition {
+    transition: height 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
