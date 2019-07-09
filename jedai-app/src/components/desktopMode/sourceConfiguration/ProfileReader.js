@@ -23,6 +23,10 @@ class ProfileReader extends Component {
 
     onChange = (e) => {
         this.setState({[e.target.name]: e.target.value})
+        if(this.state.filetype === ""){
+            this.collapse_conf = false;
+            this.collapse_explore = false;
+        }
         this.forceUpdate()
     }
 
@@ -41,6 +45,38 @@ class ProfileReader extends Component {
 
 
     render() {
+        let control_options;
+        if (this.props.type === "entity"){
+            control_options = <Form.Control 
+                as="select" 
+                placeholder="Select Filetype" 
+                name="filetype" 
+                onChange={this.onChange}
+                disabled={this.props.disabled}
+            >
+                <option value="" ></option>
+                <option value="csv" >CSV</option>
+                <option value="rdb" >Database</option>
+                <option value="rdf" >RDF</option>
+                <option value="xml" >XML</option>
+                <option value="obj" >Serialized</option>
+            </Form.Control>;
+        }
+        else if (this.props.type === "ground-truth"){
+            control_options = <Form.Control 
+                as="select" 
+                placeholder="Select Filetype" 
+                name="filetype" 
+                onChange={this.onChange}
+                disabled={this.props.disabled}
+            >
+                <option value="" ></option>
+                <option value="csv" >CSV</option>
+                <option value="rdf" >RDF</option>
+                <option value="obj" >Serialized</option>
+            </Form.Control>;
+        }
+        
         return (
             <div>
                  <Form.Row>
@@ -49,20 +85,7 @@ class ProfileReader extends Component {
                         </Col>
                         <Col sm={3}>
                             <Form.Group>
-                                <Form.Control 
-                                    as="select" 
-                                    placeholder="Select Filetype" 
-                                    name="filetype" 
-                                    onChange={this.onChange}
-                                    disabled={this.props.mode === ""}
-                                >
-                                    <option value="" ></option>
-                                    <option value="csv" >CSV</option>
-                                    <option value="rdb" >Database</option>
-                                    <option value="rdf" >RDF</option>
-                                    <option value="xml" >XML</option>
-                                    <option value="obj" >Serialized</option>
-                                </Form.Control>
+                                {control_options}
                             </Form.Group>
                         </Col>
                         <Col sm={1}>
