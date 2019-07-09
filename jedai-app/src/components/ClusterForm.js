@@ -41,12 +41,10 @@ class ClusterForm extends Component {
             <div >
                 <Jumbotron className='jumbotron'>
                     <Form
-                     noValidate
-                    onSubmit={e => this.handleSubmit(e)}
-                    style={{
-                        margin: '10px 40px',
-                        float: 'rgiht'
-                    }}>
+                        noValidate
+                        onSubmit={e => this.handleSubmit(e)}
+                        style={{ margin: '10px 40px', float: 'rgiht' }}
+                    >
                     <Form.Row>
                         <Form.Group  as={Col} md="8" controlId="addressId">
                             <Form.Label>Address</Form.Label>

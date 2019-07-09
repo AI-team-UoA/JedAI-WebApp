@@ -8,12 +8,14 @@ class Modes extends Component {
     render() {
         return (
             <div>
-               <Jumbotron style={jumbotronStyle}>
+               <Jumbotron className="jumbotron" style={{width:'55%'}}>
                     <header >Execute JedAI   </header>
+                    <br/>
                     <div style={{textAlign:'center'}}>
                         <Link to="/desktopmode">
                             <Button variant="primary" style={btnStyle}>Desktop Mode</Button>
                         </Link>
+                        <br/>
                         <Link to="/clustermode">
                             <Button variant="primary" style={btnStyle}>Cluster Mode</Button>
                         </Link>
@@ -22,14 +24,6 @@ class Modes extends Component {
             </div>
         )
     }
-}
-
-const jumbotronStyle = {
-  background: '#b3d9ff',
-  border: 'solid #0039e6',
-  padding: '15px 8px',
-  width: '40%',
-  margin: 'auto'
 }
 
 const btnStyle = {
