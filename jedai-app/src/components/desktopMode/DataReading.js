@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import {Form, Row, Col, Button} from 'react-bootstrap/'
+import {Form, Col, Row} from 'react-bootstrap/'
 import 'react-dropdown/style.css'
-import Collapse from '@kunukn/react-collapse';
+import ProfileReader from './sourceConfiguration/ProfileReader';
 
 
 
@@ -10,33 +10,24 @@ import Collapse from '@kunukn/react-collapse';
 
     constructor(...args) {
         super(...args);
-        this.conf = false
-
-        this.validate_address = 0
-        this.validate_port = 0
-
+       
+        this.collapse_conf = false;
+        this.collapse_explore = false;
+        this.dataIsSet = false;
+        
         this.state = { 
-
+            mode : "",
             filetype : "",
             path : ""   
         }
-        console.log(this.conf )
         
     }
 
-   
-    
-    
-    
 
-
-    onChange = (e) => this.setState({[e.target.name]: e.target.value})
-
-    onClick(){ 
-        console.log(this.conf )
-        this.conf = !true ? true: false 
-       
-    }
+    onChange = (e) => {
+        this.setState({[e.target.name]: e.target.value})
+        this.forceUpdate()
+    }        
 
     render() {
         
@@ -44,63 +35,45 @@ import Collapse from '@kunukn/react-collapse';
 
             <div >
                 <br/>
-                <div > 
-                    <h1 style={{display:'inline'}}>Data Reading</h1> 
-                    {'  '}
+                <div style={{marginBottom:"5px"}}> 
+                    <h1 style={{display:'inline', marginRight:"20px"}}>Data Reading</h1> 
                     <span className="workflow-desc">  Data Reading transforms the input data into a list of entity profiles.</span>
                 </div>
-                <h5>Select files for the entity profiles and ground-truth</h5>
-                
                 <br/>
                 <Form>
+                    <Form.Row className="form-row">
+                        <h5 >Select files for the entity profiles and ground-truth</h5>  
+                    </Form.Row>
                     <fieldset>
-                        <Form.Group as={Row}>
-                            <Form.Label as="legend" column sm={5}>
-                            <h5><b>Select mode</b></h5>
-                            </Form.Label>
-                            <Col sm={10}>
+                        <Form.Group as={Row} className="form-row">
+                    
+                            <Form.Label as="legend" column sm={2}>
+                                <h5>Select Mode:</h5>
+                            </Form.Label>                    
+                            <Col sm={8}>
                                 <Form.Check
                                     type="radio"
                                     label="Dirty Entity Resolution"
-                                    name="dirtyRes"
-                                    id="dirtyRes"
+                                    name="mode"
+                                    value="dirty"
+                                    onChange={this.onChange}
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="Clean-Clean Entity Resolution"
-                                    name="cleanRes"
-                                    id="cleanRes"
+                                    name="mode"
+                                    value="clean"
+                                    onChange={this.onChange}
                                 />
                             </Col>
                         </Form.Group>
                     </fieldset>
-                    
-                    <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
-                    <br/>
-                    <Form.Row>
-                        <Form.Label ><h5><b>Choose Filetype:</b></h5></Form.Label> 
-                        {"   "}
-                        <Form.Group as={Col} md="3" controlId="formGridState">
-                            
-                            <Form.Control as="select" placeholder="Select Filetype" 
-                                name="filetype" onChange={this.onChange}>
-                                <option value="" ></option>
-                                <option value="csv" >CSV</option>
-                                <option value="rdb" >Database</option>
-                                <option value="rdf" >RDF</option>
-                                <option value="xml" >XML</option>
-                                <option value="obj" >Serialized</option>
-                            </Form.Control>
-                            
-                        </Form.Group>{" "}
-                        <Form.Group as={Col} md="3" controlId="formGridState"> 
-                            <Button  disabled={this.state.filetype === ""} onClick={this.onClick}>Configure</Button>  
-                            <Collapse isOpen={this.conf}>
-                                <div>Random content</div>
-                            </Collapse>
-                        </Form.Group>
-                    </Form.Row>    
 
+                    <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                    
+                    <br/>
+                    
+                   <ProfileReader title="Entity profiles D1:" mode={this.state.mode}/>   
                 </Form>
                 
             </div>   
