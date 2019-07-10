@@ -6,7 +6,7 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
 
 
 
- class DataReading extends Component {
+ class DataReader extends Component {
 
     constructor(...args) {
         super(...args);
@@ -24,7 +24,7 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
         }
     }
 
-
+    // Set mode and based on that it disables the second profileReader
     onChange = (e) => {
         this.setState({[e.target.name]: e.target.value})
         if (e.target.name === "mode")
@@ -34,6 +34,7 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
                 this.setState({entity2_set: false})
     }        
 
+    //Check which entities have been completed successfully
     setEntities = (entity_id, isSet) => {
         switch(entity_id) {
             case "1":
@@ -100,10 +101,9 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
                    <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth" setEntities={this.setEntities}/>   
                    
                 </Form>
-                
             </div>   
         )
     }
 }
 
-export default DataReading
+export default DataReader
