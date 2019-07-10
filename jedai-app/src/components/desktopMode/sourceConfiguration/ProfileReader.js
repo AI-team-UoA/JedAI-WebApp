@@ -4,8 +4,11 @@ import {Form, Col, Button, Collapse} from 'react-bootstrap/'
 import ConfigureCSV from './ConfigureCSV'
 
 
-class ProfileReader extends Component {
 
+/**
+ * The Form that sets  entity profiles and the ground truth
+ */
+class ProfileReader extends Component {
 
     constructor(...args) {
         super(...args);
@@ -13,9 +16,8 @@ class ProfileReader extends Component {
         this.setConfiguration = this.setConfiguration.bind(this)
         this.emptyConfiguration = this.emptyConfiguration.bind(this)
         
-
-        this.collapse_conf = false;
-        this.collapse_explore = false;
+        this.collapse_conf_flag = false;
+        this.collapse_explore_flag = false;
         this.dataIsSet = false;
         
         this.state = { 
@@ -26,41 +28,46 @@ class ProfileReader extends Component {
         
     }
 
+    // it is activated only by the filetype handler. 
+    // it also cleans the configurations
     onChange = (e) => {
         this.setState({[e.target.name]: e.target.value})
         this.emptyConfiguration()
     }
 
+    // Reveal the filetype configurations or explore panel
     onClick= (e) =>{ 
         var btn = e.target.name
         if (btn === "conf_btn"){
-            this.collapse_conf = !this.collapse_conf;
-            this.collapse_explore = false;
+            this.collapse_conf_flag = !this.collapse_conf_flag;
+            this.collapse_explore_flag = false;
         }
         else if(btn === "explore_btn"){
-            this.collapse_explore = !this.collapse_explore;
-            this.collapse_conf = false;
+            this.collapse_explore_flag = !this.collapse_explore_flag;
+            this.collapse_conf_flag = false;
         }
-        this.setState({state: this.state})
+        this.forceUpdate()
     }
 
+    // Set configuration (received by the child) and update the DataReader
     setConfiguration = (conf) => {
         
         let {configuration} = this.state;
         configuration = conf;
         this.setState({configuration});
-        this.collapse_conf = false;
+        this.collapse_conf_flag = false;
         
         this.props.setEntities(this.state.entity_id, true)
     }
 
+    // Empty configurations and hide collapses
     emptyConfiguration(){
        if (this.state.configuration !== null){
             this.setState({filetype: "", configuration: null});
             this.props.setEntities(this.state.entity_id, false)
         }
-        this.collapse_conf = false;
-        this.collapse_explore = false;        
+        this.collapse_conf_flag = false;
+        this.collapse_explore_flag = false;        
     }
 
 
@@ -69,7 +76,7 @@ class ProfileReader extends Component {
         if(this.props.disabled)
             this.emptyConfiguration()
 
-
+        //if it is a ground-truth component it contains fewer options
         let control_options;
         if (this.props.type === "entity"){
             control_options = <Form.Control 
@@ -102,7 +109,8 @@ class ProfileReader extends Component {
                 <option value="Serialized" >Serialized</option>
             </Form.Control>;
         }
-
+        
+        // the depicted message
         var text_area_msg = this.state.filetype === ""? "" : "Source: " + this.state.filetype
         text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
         
@@ -134,12 +142,12 @@ class ProfileReader extends Component {
                         </Col>
                     </Form.Row>
                     <Form.Row>
-                        <Collapse in={this.collapse_conf} >
+                        <Collapse in={this.collapse_conf_flag} >
                             <div style={{width:'80%', margin:'auto'}}>
                                 <ConfigureCSV  setConfiguration={this.setConfiguration}/>
                             </div>
                         </Collapse>
-                        <Collapse in={this.collapse_explore} >
+                        <Collapse in={this.collapse_explore_flag} >
                             <div >
                                 <h1>Explore</h1>
                             </div>

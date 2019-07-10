@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import StepZilla from "react-stepzilla"
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import DataReading from './DataReading'
+import DataReader from './DataReader'
 import SchemaClustering from './SchemaClustering'
 import BlockBuilding from './BlockBuilding'
 
@@ -15,10 +15,10 @@ class DesktopForms extends Component {
     render() {
         const steps =
         [
-            {name: 'Data Reading', component: <DataReading />},
+            {name: 'Data Reading', component: <DataReader />},
             {name: 'Schema Clustering', component: <SchemaClustering />},
             {name: 'Block Building', component: <BlockBuilding />},
-            {name: 'Data Reading', component: <DataReading />},
+            {name: 'Data Reading', component: <DataReader />},
             {name: 'Schema Clustering', component: <SchemaClustering />},
             {name: 'Schema Clustering', component: <SchemaClustering />},
             {name: 'Block Building', component: <BlockBuilding />} 
