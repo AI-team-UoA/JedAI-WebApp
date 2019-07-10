@@ -73,9 +73,9 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
                     
                     <br/>
                     
-                   <ProfileReader title="Entity profiles D1:" disabled={this.state.mode === ""} type="entity"/>   
-                   <ProfileReader title="Entity profiles D1:" disabled={this.state.mode !== "clean"} type="entity"/> 
-                   <ProfileReader title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth"/>   
+                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.mode === ""} type="entity"/>   
+                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.mode !== "clean"} type="entity"/> 
+                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth"/>   
                    
                 </Form>
                 
