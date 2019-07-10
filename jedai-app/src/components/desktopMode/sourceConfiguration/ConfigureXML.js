@@ -43,8 +43,8 @@ class ConfigureXML extends Component {
                         <Col sm={6}>
                             <InputGroup >
                                 <FormControl
-                                    placeholder=".csv"
-                                    aria-label=".csv"
+                                    placeholder=".xml"
+                                    aria-label=".xml"
                                     aria-describedby="basic-addon2"
                                     name="filepath"
                                     value={this.state.filepath}

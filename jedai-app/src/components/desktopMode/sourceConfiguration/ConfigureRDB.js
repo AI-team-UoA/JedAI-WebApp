@@ -34,92 +34,113 @@ class ConfigureRDB extends Component {
     handleConfiguration = (e) => this.props.setConfiguration(this.state)
         
     render() {
-        return (
 
+        var disabled_bool = this.state.url === "" || this.state.table === "" || this.state.username === "" || this.state.password === "" 
+
+        return (
             <Jumbotron style={{backgroundColor:"white", border:"groove" }}>
                 <div>
                     <div style ={{textAlign:'center'}}>
                         <h3>Database Reader</h3>
                         <p>Please configure the method's parameter below</p>
                     </div>
-                    
-                    <Form.Row className="form-row">
-                        <Col sm={3}>
-                            <Form.Label> URL </Form.Label> 
-                        </Col>
-                        <Col sm={6}>
-                            <FormControl 
+                    <Form>
+                        <Form.Row className="form-row">
+                            <Col sm={3}>
+                                <Form.Label> URL </Form.Label> 
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl 
+                                        type="text" 
+                                        name="url" 
+                                        value={this.state.url} 
+                                        onChange={this.onChange}
+                                        isValid={this.state.url !== ""}
+                                    />
+                            </Col>
+                        </Form.Row>
+
+                        <Form.Row className="form-row">
+                            <Col sm={3}>
+                                <Form.Label> Table </Form.Label> 
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl 
+                                        type="text" 
+                                        name="table" 
+                                        value={this.state.table} 
+                                        onChange={this.onChange}
+                                        isValid={this.state.table !== ""}
+                                    />
+                            </Col>
+                        </Form.Row>
+
+                        <Form.Row className="form-row">
+                            <Col sm={3}>
+                                <Form.Label> Username </Form.Label> 
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl 
+                                        type="text" 
+                                        name="username" 
+                                        value={this.state.username} 
+                                        onChange={this.onChange}
+                                        isValid={this.state.username !== ""}
+                                    />
+                            </Col>
+                        </Form.Row>
+
+                        <Form.Row className="form-row">
+                            <Col sm={3}>
+                                <Form.Label> Password </Form.Label> 
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl 
+                                        type="password" 
+                                        name="password" 
+                                        value={this.state.password} 
+                                        onChange={this.onChange}
+                                        isValid={this.state.password !== ""}
+                                    />
+                            </Col>
+                        </Form.Row>
+
+                        <Form.Row className="form-row">
+                            <Col sm={3} >
+                                <Form.Label >Attributes to Exclude</Form.Label> 
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl 
                                     type="text" 
-                                    name="ulr" 
-                                    value={this.state.url} 
+                                    name="excluded_attr" 
+                                    value={this.state.excluded_attr} 
                                     onChange={this.onChange}
+                                    
                                 />
-                        </Col>
-                    </Form.Row>
+                            </Col>
+                        </Form.Row>
 
-                    <Form.Row className="form-row">
-                        <Col sm={3}>
-                            <Form.Label> Table </Form.Label> 
-                        </Col>
-                        <Col sm={6}>
-                            <FormControl 
-                                    type="text" 
-                                    name="table" 
-                                    value={this.state.table} 
-                                    onChange={this.onChange}
-                                />
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Row className="form-row">
-                        <Col sm={3}>
-                            <Form.Label> Password </Form.Label> 
-                        </Col>
-                        <Col sm={6}>
-                            <FormControl 
-                                    type="password" 
-                                    name="password" 
-                                    value={this.state.password} 
-                                    onChange={this.onChange}
-                                />
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Row className="form-row">
-                        <Col sm={3} >
-                            <Form.Label >Attributes to Exclude</Form.Label> 
-                        </Col>
-                        <Col sm={6}>
-                            <FormControl 
-                                type="text" 
-                                name="excluded_attr" 
-                                value={this.state.excluded_attr} 
-                                onChange={this.onChange}
+                        <Form.Row className="form-row">
+                            <Col sm={3}>
+                                <Form.Label>SSL</Form.Label> 
+                            </Col>
+                            <Checkbox 
+                                as={Col}
+                                size="3"  
+                                color="#1a75ff"
+                                borderThickness="2" 
+                                name="ssl" 
+                                value={this.state.ssl} 
+                                checked={this.state.ssl} 
+                                onChange={this.handleCheckbox.bind(this)}
                             />
-                        </Col>
-                    </Form.Row>
+                            
+                        </Form.Row>
 
-                    <Form.Row className="form-row">
-                        <Col sm={3}>
-                            <Form.Label>SSL</Form.Label> 
-                        </Col>
-                        <Checkbox 
-                            as={Col}
-                            size="3"  
-                            color="#1a75ff"
-                            borderThickness="2" 
-                            name="ssl" 
-                            value={this.state.ssl} 
-                            checked={this.state.ssl} 
-                            onChange={this.handleCheckbox.bind(this)}
-                        />
-                        
-                    </Form.Row>
-
-                    <div style={{textAlign: 'center',  marginTop: '30px'}}>
-                        <Button onClick={this.handleConfiguration} disabled={this.state.filepath === ""}>Save Configuration</Button>
-                    </div>
-                
+                        <div style={{textAlign: 'center',  marginTop: '30px'}}>
+                            <Button onClick={this.handleConfiguration} disabled={disabled_bool}>Save Configuration</Button>
+                        </div>
+                    </Form>
                 </div>
                 
             </Jumbotron>

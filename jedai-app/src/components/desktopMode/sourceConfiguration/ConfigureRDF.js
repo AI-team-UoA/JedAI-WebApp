@@ -43,8 +43,8 @@ class ConfigureRDF extends Component {
                         <Col sm={6}>
                             <InputGroup >
                                 <FormControl
-                                    placeholder=".csv"
-                                    aria-label=".csv"
+                                    placeholder=".nt"
+                                    aria-label=".nt"
                                     aria-describedby="basic-addon2"
                                     name="filepath"
                                     value={this.state.filepath}
