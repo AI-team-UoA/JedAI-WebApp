@@ -24,8 +24,6 @@ import "../../../css/main.css"
     setPath = (e) => {
        console.log(e.target.value)
        this.setState({filepath: e.target.value})
-       
-       this.forceUpdate();
     }
 
     onChange = (e) =>  this.setState({[e.target.name]: e.target.value})
@@ -33,7 +31,6 @@ import "../../../css/main.css"
     handleCheckbox = () =>   this.setState({first_row: !this.state.first_row})
 
     handleConfiguration = (e) =>{
-        console.log("this is ConfigureCSV and this is my state " + this.state.filepath + " " +this.state.id_index )
         this.props.setConfiguration(this.state)
     }
     
@@ -133,7 +130,7 @@ import "../../../css/main.css"
                         </Form.Row>
 
                         <div style={{textAlign: 'center',  marginTop: '30px'}}>
-                            <Button onClick={this.handleConfiguration} disabled={this.state.filepath == ""}>Save Configuration</Button>
+                            <Button onClick={this.handleConfiguration} disabled={this.state.filepath === ""}>Save Configuration</Button>
                         </div>
                    
                 </div>

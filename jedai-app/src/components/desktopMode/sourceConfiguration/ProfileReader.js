@@ -11,6 +11,8 @@ class ProfileReader extends Component {
         super(...args);
         this.onClick = this.onClick.bind(this);
         this.setConfiguration = this.setConfiguration.bind(this)
+        this.emptyConfiguration = this.emptyConfiguration.bind(this)
+        
 
         this.collapse_conf = false;
         this.collapse_explore = false;
@@ -25,12 +27,8 @@ class ProfileReader extends Component {
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value, configuration: null})
-        if(this.state.filetype === ""){
-            this.collapse_conf = false;
-            this.collapse_explore = false;
-        }
-        this.forceUpdate()
+        this.setState({[e.target.name]: e.target.value})
+        this.emptyConfiguration()
     }
 
     onClick= (e) =>{ 
@@ -43,7 +41,7 @@ class ProfileReader extends Component {
             this.collapse_explore = !this.collapse_explore;
             this.collapse_conf = false;
         }
-        this.forceUpdate()
+        this.setState({state: this.state})
     }
 
     setConfiguration = (conf) => {
@@ -52,10 +50,26 @@ class ProfileReader extends Component {
         configuration = conf;
         this.setState({configuration});
         this.collapse_conf = false;
+        
+        this.props.setEntities(this.state.entity_id, true)
+    }
+
+    emptyConfiguration(){
+       if (this.state.configuration !== null){
+            this.setState({filetype: "", configuration: null});
+            this.props.setEntities(this.state.entity_id, false)
+        }
+        this.collapse_conf = false;
+        this.collapse_explore = false;        
     }
 
 
     render() {
+
+        if(this.props.disabled)
+            this.emptyConfiguration()
+
+
         let control_options;
         if (this.props.type === "entity"){
             control_options = <Form.Control 
@@ -92,7 +106,6 @@ class ProfileReader extends Component {
         var text_area_msg = this.state.filetype === ""? "" : "Source: " + this.state.filetype
         text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
         
-
         return (
             <div>
                  <Form.Row>
@@ -142,7 +155,8 @@ ProfileReader.propTypes = {
     entity_id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired,
-    type: PropTypes.string.isRequired
+    type: PropTypes.string.isRequired,
+    setEntities: PropTypes.func.isRequired
   }
 
 

@@ -14,20 +14,42 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
         this.collapse_conf = false;
         this.collapse_explore = false;
         this.dataIsSet = false;
+        this.setEntities = this.setEntities.bind(this)
         
         this.state = { 
             mode : "",
-            filetype : "",
-            path : ""   
+            entity1_set : false,
+            entity2_set : false,
+            groundTruth_set : false            
         }
-        
     }
 
 
     onChange = (e) => {
         this.setState({[e.target.name]: e.target.value})
-        this.forceUpdate()
+        if (e.target.name === "mode")
+            if(e.target.value === "dirty") 
+                this.setState({entity2_set: true})
+            else 
+                this.setState({entity2_set: false})
     }        
+
+    setEntities = (entity_id, isSet) => {
+        switch(entity_id) {
+            case "1":
+                this.setState({entity1_set: isSet})
+                break;
+            case "2":
+                this.setState({entity2_set: isSet})
+                break;
+            case "3":
+                this.setState({groundTruth_set: isSet})
+                break;
+            default:
+                console.log("ERROR")
+
+          }
+    }
 
     render() {
         
@@ -73,9 +95,9 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
                     
                     <br/>
                     
-                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.mode === ""} type="entity"/>   
-                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.mode !== "clean"} type="entity"/> 
-                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth"/>   
+                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.mode === ""} type="entity" setEntities={this.setEntities}/>   
+                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.mode !== "clean"} type="entity" setEntities={this.setEntities}/> 
+                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth" setEntities={this.setEntities}/>   
                    
                 </Form>
                 
