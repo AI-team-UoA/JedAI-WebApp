@@ -4,7 +4,7 @@ import {Form, Col, Button, Collapse} from 'react-bootstrap/'
 import ConfigureCSV from './ConfigureCSV'
 import ConfigureRDB from './ConfigureRDB'
 import ConfigureRDF from './ConfigureRDF'
-import ConfigureXML from './ConfigureRDF'
+import ConfigureXML from './ConfigureXML'
 import ConfigureSerialized from './ConfigureSerialized'
 
 /**
@@ -114,24 +114,28 @@ class ProfileReader extends Component {
         
         // the depicted message
         var text_area_msg = this.state.filetype === ""? "" : "Source: " + this.state.filetype
-        text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
-       
+                       
         var configureSource
         switch(this.state.filetype) {
             case "CSV":
                 configureSource =  <ConfigureCSV  setConfiguration={this.setConfiguration}/>
+                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
                 break;
             case "Database":
                 configureSource  = <ConfigureRDB  setConfiguration={this.setConfiguration}/>
+                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nURL: " +  this.state.configuration.url  +"\nTable: " + this.state.configuration.table + "\nUsername: " + this.state.configuration.username + "\nSSL: "+ this.state.configuration.ssl
                 break;
             case "RDF":
                 configureSource = <ConfigureRDF  setConfiguration={this.setConfiguration}/>
+                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  
                 break;
             case "XML":
                 configureSource = <ConfigureXML  setConfiguration={this.setConfiguration}/>
+                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  
                 break;
             case "Serialized":
                 configureSource = <ConfigureSerialized setConfiguration={this.setConfiguration}/>
+                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  
                 break;
             default:
                 configureSource = <div />
