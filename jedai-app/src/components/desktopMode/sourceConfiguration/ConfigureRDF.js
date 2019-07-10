@@ -1,7 +1,6 @@
 import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
 import {Jumbotron, Form, Col, Button, InputGroup, FormControl} from 'react-bootstrap/'
-import Checkbox from 'react-simple-checkbox';
 import "../../../css/main.css"
 
 
@@ -9,7 +8,7 @@ import "../../../css/main.css"
  * Configurations of CSV files
  */
  
-class ConfigureCSV extends Component {
+class ConfigureRDF extends Component {
 
     constructor(...args) {
         super(...args);
@@ -17,9 +16,6 @@ class ConfigureCSV extends Component {
 
         this.state={
             filepath : "",
-            first_row : true,
-            seperator : ",",
-            id_index : 0,
             excluded_attr : ""
         }
 
@@ -27,8 +23,6 @@ class ConfigureCSV extends Component {
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value})
     
-    handleCheckbox = () =>   this.setState({first_row: !this.state.first_row})
-
     // Send data back to profileReader (father component)
     handleConfiguration = (e) => this.props.setConfiguration(this.state)
         
@@ -38,7 +32,7 @@ class ConfigureCSV extends Component {
             <Jumbotron style={{backgroundColor:"white", border:"groove" }}>
                 <div>
                     <div style ={{textAlign:'center'}}>
-                        <h3>CSV Reader</h3>
+                        <h3>RDF Reader</h3>
                         <p>Please configure the method's parameter below</p>
                     </div>
                     
@@ -62,51 +56,6 @@ class ConfigureCSV extends Component {
                                     <input type="file" name="filepath" onChange={this.onChange}/>
                                 </div>
                             </InputGroup>
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Row className="form-row">
-                        <Col sm={3}>
-                            <Form.Label>Attributes names in first row</Form.Label> 
-                        </Col>
-                        <Checkbox 
-                            as={Col}
-                            size="3"  
-                            color="#1a75ff"
-                            borderThickness="2" 
-                            name="first_row" 
-                            value={this.state.first_row} 
-                            checked={this.state.first_row} 
-                            onChange={this.handleCheckbox.bind(this)}
-                        />
-                        
-                    </Form.Row>
-
-                    <Form.Row className="form-row">
-                        <Col sm={3} >
-                            <Form.Label  >Seperator</Form.Label> 
-                        </Col>
-                        <Col sm={2}>
-                            <FormControl 
-                                type="text" 
-                                name="seperator" 
-                                value={this.state.seperator} 
-                                onChange={this.onChange}
-                            />
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Row className="form-row">
-                        <Col sm={3} >
-                            <Form.Label >Id index</Form.Label> 
-                        </Col>
-                        <Col sm={2}>
-                            <FormControl 
-                                type="text" 
-                                name="id_index" 
-                                value={this.state.id_index} 
-                                onChange={this.onChange}
-                            />
                         </Col>
                     </Form.Row>
 
@@ -136,9 +85,9 @@ class ConfigureCSV extends Component {
 }
 
 
-ConfigureCSV.propTypes = {
+ConfigureRDF.propTypes = {
     setConfiguration: PropTypes.func.isRequired
   }
 
 
-export default ConfigureCSV
+export default ConfigureRDF

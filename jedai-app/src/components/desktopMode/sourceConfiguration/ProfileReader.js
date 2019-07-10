@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, Collapse} from 'react-bootstrap/'
 import ConfigureCSV from './ConfigureCSV'
-
-
+import ConfigureRDB from './ConfigureRDB'
+import ConfigureRDF from './ConfigureRDF'
+import ConfigureXML from './ConfigureRDF'
+import ConfigureSerialized from './ConfigureSerialized'
 
 /**
  * The Form that sets  entity profiles and the ground truth
@@ -113,7 +115,28 @@ class ProfileReader extends Component {
         // the depicted message
         var text_area_msg = this.state.filetype === ""? "" : "Source: " + this.state.filetype
         text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
-        
+       
+        var configureSource
+        switch(this.state.filetype) {
+            case "CSV":
+                configureSource =  <ConfigureCSV  setConfiguration={this.setConfiguration}/>
+                break;
+            case "Database":
+                configureSource  = <ConfigureRDB  setConfiguration={this.setConfiguration}/>
+                break;
+            case "RDF":
+                configureSource = <ConfigureRDF  setConfiguration={this.setConfiguration}/>
+                break;
+            case "XML":
+                configureSource = <ConfigureXML  setConfiguration={this.setConfiguration}/>
+                break;
+            case "Serialized":
+                configureSource = <ConfigureSerialized setConfiguration={this.setConfiguration}/>
+                break;
+            default:
+                configureSource = <div />
+        }
+
         return (
             <div>
                  <Form.Row>
@@ -136,15 +159,15 @@ class ProfileReader extends Component {
                             </Form.Group>
                         </Col>
                         <Col sm={4}>
-                            <Form.Group >
+                            <Form.Group>
                                 <Form.Control as="textarea" rows="3" readOnly={true} value={text_area_msg}/>
                             </Form.Group>
                         </Col>
                     </Form.Row>
                     <Form.Row>
                         <Collapse in={this.collapse_conf_flag} >
-                            <div style={{width:'80%', margin:'auto'}}>
-                                <ConfigureCSV  setConfiguration={this.setConfiguration}/>
+                            <div style={{width:'75%', margin:'auto'}}>
+                                {configureSource}
                             </div>
                         </Collapse>
                         <Collapse in={this.collapse_explore_flag} >

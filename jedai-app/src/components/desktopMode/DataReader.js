@@ -63,7 +63,7 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
                     <span className="workflow-desc">  Data Reading transforms the input data into a list of entity profiles.</span>
                 </div>
                 <br/>
-                <Form>
+                
                     <Form.Row className="form-row">
                         <h5 >Select files for the entity profiles and ground-truth</h5>  
                     </Form.Row>
@@ -100,7 +100,7 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
                    <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.mode !== "clean"} type="entity" setEntities={this.setEntities}/> 
                    <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth" setEntities={this.setEntities}/>   
                    
-                </Form>
+                
             </div>   
         )
     }
