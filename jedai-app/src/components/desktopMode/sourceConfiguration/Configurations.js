@@ -1,6 +1,7 @@
 import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
 import {Jumbotron, Form, Button } from 'react-bootstrap/'
+import axios from 'axios';
 import ConfigureCSV from './ConfigureCSV'
 import ConfigureRDB from './ConfigureRDB'
 import ConfigureRDF from './ConfigureRDF'
@@ -41,28 +42,47 @@ class Configurations extends Component {
         var text_area_msg
         switch(this.props.filetype) {
             case "CSV":
-                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filepath  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
+                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
                 break;
             case "Database":
                 text_area_msg = this.state.configuration === null? "" : "\nURL: " +  this.state.configuration.url  +"\nTable: " + this.state.configuration.table + "\nUsername: " + this.state.configuration.username + "\nSSL: "+ this.state.configuration.ssl
                 break;
             case "RDF":
-                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filepath  
+                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
                 break;
             case "XML":
-                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filepath  
+                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
                 break;
             case "Serialized":
-                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filepath  
+                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
                 break;
             default:
                 text_area_msg = ""
         }
-        
-        // Post to Server
-        this.props.submitted(true, text_area_msg)
 
-        this.setState({ configuration: null})
+
+        var file = this.props.filetype !== "Database" ? this.state.configuration.file: ""
+        let formData = new FormData()
+        formData.append('entity_id', this.props.entity_id)
+        formData.append('filetype', this.props.filetype)
+        formData.append('file', file)
+
+
+        axios({
+            url: '/desktopmode/dataread',
+            method: 'POST',
+            
+            data: {
+                'properties':{
+                    'entity_id':this.props.entity_id,
+                    'filetype': this.props.filetype,
+                    'configuration': this.state.configuration
+                },
+                'file': formData
+            }
+        })
+
+        this.props.submitted(true, text_area_msg)
         
     }
 
@@ -109,6 +129,7 @@ class Configurations extends Component {
 
 Configurations.propTypes = {
     filetype: PropTypes.string.isRequired,
+    entity_id: PropTypes.string.isRequired,
     submitted: PropTypes.func.isRequired
   }
 

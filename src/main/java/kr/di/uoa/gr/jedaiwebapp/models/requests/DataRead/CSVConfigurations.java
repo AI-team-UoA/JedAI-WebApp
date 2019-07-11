@@ -1,34 +1,22 @@
 package kr.di.uoa.gr.jedaiwebapp.models.requests.DataRead;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import org.springframework.util.MultiValueMap;
 
 public class CSVConfigurations extends Configurations {
-	private String filepath;
+	private String filename;
 	private boolean first_row;
 	private String seperator;
 	private int id_index;
-	private List<String> excluded_attr;
+	private String excluded_attr;
 	
 	
-	public CSVConfigurations(String path, boolean first_row_attr, String sep, int index) {
-		filepath = path;
-		first_row = first_row_attr;
-		seperator = sep;
-		id_index = index;
-		excluded_attr = new ArrayList<String>();
-	}
-	
-	
-	
-	
-	
-	public String getFilepath() {
-		return filepath;
+	public String getFilename() {
+		return filename;
 	}
 
-	public void setFile_path(String file_path) {
-		this.filepath = file_path;
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 	public boolean isFirst_row() {
@@ -55,12 +43,13 @@ public class CSVConfigurations extends Configurations {
 		this.id_index = id_index;
 	}
 
-	public List<String> getExcluded_attr() {
+	public String getExcluded_attr() {
 		return excluded_attr;
 	}
 
-	public void setExcluded_attr(List<String> excluded_items) {
+	public void setExcluded_attr(String excluded_items) {
 		this.excluded_attr = excluded_items;
 	}
+
 
 }
