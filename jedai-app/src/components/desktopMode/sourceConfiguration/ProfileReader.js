@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, Collapse} from 'react-bootstrap/'
-import ConfigureCSV from './ConfigureCSV'
-import ConfigureRDB from './ConfigureRDB'
-import ConfigureRDF from './ConfigureRDF'
-import ConfigureXML from './ConfigureXML'
-import ConfigureSerialized from './ConfigureSerialized'
+import Configurations from './Configurations'
 
 /**
  * The Form that sets  entity profiles and the ground truth
@@ -15,17 +11,18 @@ class ProfileReader extends Component {
     constructor(...args) {
         super(...args);
         this.onClick = this.onClick.bind(this);
-        this.setConfiguration = this.setConfiguration.bind(this)
+        this.submitted = this.submitted.bind(this)
         this.emptyConfiguration = this.emptyConfiguration.bind(this)
         
         this.collapse_conf_flag = false;
         this.collapse_explore_flag = false;
         this.dataIsSet = false;
+        this.text_area_msg = ""
         
         this.state = { 
             entity_id: this.props.entity_id,
             filetype : "",
-            configuration: null
+            configuration_submitted: false
         }
         
     }
@@ -33,8 +30,9 @@ class ProfileReader extends Component {
     // it is activated only by the filetype handler. 
     // it also cleans the configurations
     onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
         this.emptyConfiguration()
+        this.setState({[e.target.name]: e.target.value})
+        
     }
 
     // Reveal the filetype configurations or explore panel
@@ -52,25 +50,25 @@ class ProfileReader extends Component {
     }
 
     // Set configuration (received by the child) and update the DataReader
-    setConfiguration = (conf) => {
-        
-        let {configuration} = this.state;
-        configuration = conf;
-        this.setState({configuration});
+    submitted = (flag, msg) => {
+        this.text_area_msg = "Source: " + this.state.filetype + msg
         this.collapse_conf_flag = false;
+        this.setState({configuration_submitted: flag})
+        this.props.setEntity(this.state.entity_id, flag)
         
-        this.props.setEntities(this.state.entity_id, true)
     }
 
     // Empty configurations and hide collapses
     emptyConfiguration(){
-       if (this.state.configuration !== null){
-            this.setState({filetype: "", configuration: null});
-            this.props.setEntities(this.state.entity_id, false)
+       if (this.state.filetype !== ""){
+            this.setState({filetype: "", configuration_submitted: false});
+            this.props.setEntity(this.state.entity_id, false)
         }
         this.collapse_conf_flag = false;
         this.collapse_explore_flag = false;        
     }
+
+    
 
 
     render() {
@@ -104,6 +102,7 @@ class ProfileReader extends Component {
                 value={this.state.filetype}
                 onChange={this.onChange}
                 disabled={this.props.disabled}
+
             >
                 <option value="" ></option>
                 <option value="CSV" >CSV</option>
@@ -112,34 +111,7 @@ class ProfileReader extends Component {
             </Form.Control>;
         }
         
-        // the depicted message
-        var text_area_msg = this.state.filetype === ""? "" : "Source: " + this.state.filetype
-                       
-        var configureSource
-        switch(this.state.filetype) {
-            case "CSV":
-                configureSource =  <ConfigureCSV  setConfiguration={this.setConfiguration}/>
-                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
-                break;
-            case "Database":
-                configureSource  = <ConfigureRDB  setConfiguration={this.setConfiguration}/>
-                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nURL: " +  this.state.configuration.url  +"\nTable: " + this.state.configuration.table + "\nUsername: " + this.state.configuration.username + "\nSSL: "+ this.state.configuration.ssl
-                break;
-            case "RDF":
-                configureSource = <ConfigureRDF  setConfiguration={this.setConfiguration}/>
-                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  
-                break;
-            case "XML":
-                configureSource = <ConfigureXML  setConfiguration={this.setConfiguration}/>
-                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  
-                break;
-            case "Serialized":
-                configureSource = <ConfigureSerialized setConfiguration={this.setConfiguration}/>
-                text_area_msg = this.state.configuration === null? text_area_msg+"" : text_area_msg+"\nFile: " +  this.state.configuration.filepath  
-                break;
-            default:
-                configureSource = <div />
-        }
+              
 
         return (
             <div>
@@ -164,14 +136,14 @@ class ProfileReader extends Component {
                         </Col>
                         <Col sm={4}>
                             <Form.Group>
-                                <Form.Control as="textarea" rows="3" readOnly={true} value={text_area_msg}/>
+                                <Form.Control as="textarea" rows="3" readOnly={true} value={this.text_area_msg}/>
                             </Form.Group>
                         </Col>
                     </Form.Row>
                     <Form.Row>
                         <Collapse in={this.collapse_conf_flag} >
                             <div style={{width:'75%', margin:'auto'}}>
-                                {configureSource}
+                                <Configurations filetype={this.state.filetype} submitted={this.submitted}/>
                             </div>
                         </Collapse>
                         <Collapse in={this.collapse_explore_flag} >
@@ -187,12 +159,12 @@ class ProfileReader extends Component {
 
 
 ProfileReader.propTypes = {
-    entity_id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     disabled: PropTypes.bool.isRequired,
     type: PropTypes.string.isRequired,
-    setEntities: PropTypes.func.isRequired
+    setEntity: PropTypes.func.isRequired
   }
+
 
 
 export default ProfileReader

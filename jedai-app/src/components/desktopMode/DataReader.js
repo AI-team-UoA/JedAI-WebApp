@@ -14,7 +14,7 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
         this.collapse_conf = false;
         this.collapse_explore = false;
         this.dataIsSet = false;
-        this.setEntities = this.setEntities.bind(this)
+        this.setEntity = this.setEntity.bind(this)
         
         this.state = { 
             mode : "",
@@ -35,7 +35,7 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
     }        
 
     //Check which entities have been completed successfully
-    setEntities = (entity_id, isSet) => {
+    setEntity = (entity_id, isSet) => {
         switch(entity_id) {
             case "1":
                 this.setState({entity1_set: isSet})
@@ -96,9 +96,9 @@ import ProfileReader from './sourceConfiguration/ProfileReader';
                     
                     <br/>
                     
-                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.mode === ""} type="entity" setEntities={this.setEntities}/>   
-                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.mode !== "clean"} type="entity" setEntities={this.setEntities}/> 
-                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth" setEntities={this.setEntities}/>   
+                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.mode === ""} type="entity" setEntity={this.setEntity}/>   
+                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.mode !== "clean"} type="entity" setEntity={this.setEntity}/> 
+                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth" setEntity={this.setEntity}/>   
                    
                 
             </div>   
