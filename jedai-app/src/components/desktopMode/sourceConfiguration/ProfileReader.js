@@ -143,7 +143,7 @@ class ProfileReader extends Component {
                     <Form.Row>
                         <Collapse in={this.collapse_conf_flag} >
                             <div style={{width:'75%', margin:'auto'}}>
-                                <Configurations filetype={this.state.filetype} submitted={this.submitted}/>
+                                <Configurations entity_id={this.state.entity_id} filetype={this.state.filetype} submitted={this.submitted}/>
                             </div>
                         </Collapse>
                         <Collapse in={this.collapse_explore_flag} >

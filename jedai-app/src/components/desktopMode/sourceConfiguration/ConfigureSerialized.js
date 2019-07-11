@@ -14,17 +14,28 @@ class ConfigureSerialized extends Component {
         super(...args);
 
         this.state={
-            filepath : "",
+            file: null,
+            filename : "",
             excluded_attr : ""
         }
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value}, () =>{
-            var isDisabled = this.state.filepath === ""
-            this.props.onChange(this.state, isDisabled)
-        })   
-    }  
+        
+        if(e.target.name === "file"){
+            var file = e.target.files[0]
+            this.setState({file:file, filename: file.name}, () =>{
+                var isDisabled = this.state.filename === ""
+                this.props.onChange(this.state, isDisabled)})         
+        }
+        else{
+            this.setState({[e.target.name]: e.target.value}, () =>{
+                var isDisabled = this.state.filename === "" 
+                this.props.onChange(this.state, isDisabled)
+            })   
+        }
+    } 
+
     render() {
         return (
 
@@ -41,15 +52,17 @@ class ConfigureSerialized extends Component {
                     <Col sm={6}>
                         <InputGroup >
                             <FormControl
+                                
                                 aria-describedby="basic-addon2"
-                                name="filepath"
-                                value={this.state.filepath}
+                                name="filename"
+                                value={this.state.filename}
                                 onChange={this.onChange}
+                                readOnly
                             />
                         
                             <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
                                 <Button >Browse</Button>
-                                <input type="file" name="filepath" onChange={this.onChange}/>
+                                <FormControl type="file" name="file" onChange={this.onChange}/>
                             </div>
                         </InputGroup>
                     </Col>

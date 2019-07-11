@@ -15,7 +15,8 @@ class ConfigureCSV extends Component {
         super(...args);
     
         this.state={
-            filepath : "",
+            file: null,
+            filename : "",
             first_row : true,
             seperator : ",",
             id_index : 0,
@@ -26,16 +27,25 @@ class ConfigureCSV extends Component {
 
 
     onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value}, () =>{
-            var isDisabled = this.state.filepath === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
-            this.props.onChange(this.state, isDisabled)
-        })   
+        
+        if(e.target.name === "file"){
+            var file = e.target.files[0]
+            this.setState({file:file, filename: file.name}, () =>{
+                var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                this.props.onChange(this.state, isDisabled)})         
+        }
+        else{
+            this.setState({[e.target.name]: e.target.value}, () =>{
+                var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                this.props.onChange(this.state, isDisabled)
+            })   
+        }
     }
     
     handleCheckbox = () =>   this.setState({first_row: !this.state.first_row})
     
     render() {
-
+        
         return (
 
             <div>
@@ -54,15 +64,15 @@ class ConfigureCSV extends Component {
                                 placeholder=".csv"
                                 aria-label=".csv"
                                 aria-describedby="basic-addon2"
-                                name="filepath"
-                                value={this.state.filepath}
+                                name="filename"
+                                value={this.state.filename}
                                 onChange={this.onChange}
-                                
+                                readOnly
                             />
                         
                             <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
                                 <Button >Browse</Button>
-                                <input type="file" name="filepath" onChange={this.onChange}/>
+                                <FormControl type="file" name="file" onChange={this.onChange}/>
                             </div>
                         </InputGroup>
                     </Col>
