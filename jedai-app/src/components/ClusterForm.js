@@ -39,7 +39,7 @@ class ClusterForm extends Component {
     render() {
         return (
             <div >
-                <Jumbotron className='jumbotron'>
+                <Jumbotron style={{width:"80%", position:'relative', left:"-18%"}}>
                     <Form
                         noValidate
                         onSubmit={e => this.handleSubmit(e)}
