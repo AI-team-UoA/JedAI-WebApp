@@ -73,7 +73,7 @@ class Configurations extends Component {
             url: '/desktopmode/dataread',
             method: 'POST',
             data: formData
-        }).then(res => {});
+        }).then(res => {console.log(res)});
 
         
     
