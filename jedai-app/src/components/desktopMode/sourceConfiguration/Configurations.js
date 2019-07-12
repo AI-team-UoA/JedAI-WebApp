@@ -61,29 +61,22 @@ class Configurations extends Component {
         }
 
 
-        var file = this.props.filetype !== "Database" ? this.state.configuration.file: ""
+        // Form the data that will be sent to server
         let formData = new FormData()
+        var file = this.props.filetype !== "Database" ? formData.append('file', file) :   
+               
         formData.append('entity_id', this.props.entity_id)
         formData.append('filetype', this.props.filetype)
-        formData.append('file', file)
-
-
+        Object.keys(this.state.configuration).forEach((key) => { formData.append(key, this.state.configuration[key]);})
+       
         axios({
             url: '/desktopmode/dataread',
             method: 'POST',
-            
-            data: {
-                'properties':{
-                    'entity_id':this.props.entity_id,
-                    'filetype': this.props.filetype,
-                    'configuration': this.state.configuration
-                },
-                'file': formData
-            }
-        })
+            data: formData
+        }).then(res => {});
 
-        this.props.submitted(true, text_area_msg)
         
+    
     }
 
     render() {
