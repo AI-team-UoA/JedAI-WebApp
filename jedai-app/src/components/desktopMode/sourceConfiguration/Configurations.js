@@ -40,20 +40,25 @@ class Configurations extends Component {
         //calculate and return msg to profileReader
         e.preventDefault()
         var text_area_msg
+        let formData = new FormData()
         switch(this.props.filetype) {
             case "CSV":
+                formData.append('file', this.state.configuration.file )
                 text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.seperator + "\nID index: "+ this.state.configuration.id_index
                 break;
             case "Database":
                 text_area_msg = this.state.configuration === null? "" : "\nURL: " +  this.state.configuration.url  +"\nTable: " + this.state.configuration.table + "\nUsername: " + this.state.configuration.username + "\nSSL: "+ this.state.configuration.ssl
                 break;
             case "RDF":
+                formData.append('file', this.state.configuration.file )
                 text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
                 break;
             case "XML":
+                formData.append('file', this.state.configuration.file )
                 text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
                 break;
             case "Serialized":
+                formData.append('file', this.state.configuration.file )
                 text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
                 break;
             default:
@@ -62,9 +67,6 @@ class Configurations extends Component {
 
 
         // Form the data that will be sent to server
-        let formData = new FormData()
-        var file = this.props.filetype !== "Database" ? formData.append('file', file) :   
-               
         formData.append('entity_id', this.props.entity_id)
         formData.append('filetype', this.props.filetype)
         Object.keys(this.state.configuration).forEach((key) => { formData.append(key, this.state.configuration[key]);})
@@ -73,7 +75,7 @@ class Configurations extends Component {
             url: '/desktopmode/dataread',
             method: 'POST',
             data: formData
-        }).then(res => {console.log(res)});
+        }).then(res => {this.props.submitted(res.data, text_area_msg)});
 
         
     

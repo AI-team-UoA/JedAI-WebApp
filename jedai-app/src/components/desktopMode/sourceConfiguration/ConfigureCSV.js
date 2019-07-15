@@ -30,10 +30,16 @@ class ConfigureCSV extends Component {
         
         if(e.target.name === "file"){
             var file = e.target.files[0]
-            
-            this.setState({file:file, filename: file.name}, () =>{
-                var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
-                this.props.onChange(this.state, isDisabled)})         
+            if (file == null){
+                this.setState({file:null, filename: ""}, () =>{
+                    var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                    this.props.onChange(this.state, isDisabled)})         
+            }
+            else{
+                this.setState({file:file, filename: file.name}, () =>{
+                    var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                    this.props.onChange(this.state, isDisabled)})         
+            }
         }
         else{
             this.setState({[e.target.name]: e.target.value}, () =>{

@@ -18,19 +18,19 @@ public class DataReadModel {
 	private MultiValueMap<String, String> configurations;
 	
 	
-	public DataReadModel(String filetype, String filepath_url, MultiValueMap<String, String> configurations) {
+	public DataReadModel(String filetype, String source, MultiValueMap<String, String> configurations) {
 		this.filetype = filetype;
-		if (filetype == "Database") {
-			this.url = filepath_url;
+		if (filetype.equals("Database")) {
+			this.url = source;
 			this.filepath = null;
 		}
 		else {
-			this.filepath = filepath_url;
+			this.filepath = source;
 			this.url = null;
 		}
 		this.configurations = configurations;
 	}
-	
+		
 	
 	public List<EntityProfile> read() {
 		 IEntityReader eReader = null;

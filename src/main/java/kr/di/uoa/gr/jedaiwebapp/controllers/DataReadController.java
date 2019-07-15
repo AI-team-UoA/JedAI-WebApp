@@ -27,15 +27,19 @@ public class DataReadController {
     private HttpServletRequest request;
 	
 	@PostMapping	
-	public List<EntityProfile> DataRead(
+	public boolean DataRead(
 			@RequestParam(value="file", required=false) MultipartFile file,
 			@RequestParam MultiValueMap<String, String> configurations) {
 		
-		String filepath = UploadFile(file);
-		DataReadModel dataRead = new DataReadModel(configurations.getFirst("filetype"), filepath, configurations);
-		List<EntityProfile> profileEntities = dataRead.read();
-		
-		return profileEntities;
+		String filetype = configurations.getFirst("filetype");
+		String source = filetype.equals("Database") ? configurations.getFirst("url"): UploadFile(file);
+		if (source == null || source.equals("")){
+			return false;
+		}
+		else {
+			DataReadModel dataRead = new DataReadModel(filetype, source, configurations);
+			return true;
+		}
 	}
 	
 	
@@ -49,7 +53,7 @@ public class DataReadController {
             new File(realPathtoUploads).mkdir();
             
         }
-        
+               
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         String filepath = realPathtoUploads + fileName;
         File dest = new File(filepath);
