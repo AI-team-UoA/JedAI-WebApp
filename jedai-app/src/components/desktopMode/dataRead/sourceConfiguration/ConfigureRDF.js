@@ -1,14 +1,14 @@
 import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, InputGroup, FormControl} from 'react-bootstrap/'
-import "../../../css/main.css"
+import "../../../../css/main.css"
 
 
 /**
  * Configurations of CSV files
  */
  
-class ConfigureSerialized extends Component {
+class ConfigureRDF extends Component {
 
     constructor(...args) {
         super(...args);
@@ -18,6 +18,7 @@ class ConfigureSerialized extends Component {
             filename : "",
             excluded_attr : ""
         }
+
     }
 
     onChange = (e) => {
@@ -34,14 +35,14 @@ class ConfigureSerialized extends Component {
                 this.props.onChange(this.state, isDisabled)
             })   
         }
-    } 
-
+    }
+            
     render() {
         return (
 
             <div>
                 <div style ={{textAlign:'center'}}>
-                    <h3>Serialization Reader</h3>
+                    <h3>RDF Reader</h3>
                     <p>Please configure the method's parameter below</p>
                 </div>
                 
@@ -52,7 +53,8 @@ class ConfigureSerialized extends Component {
                     <Col sm={6}>
                         <InputGroup >
                             <FormControl
-                                
+                                placeholder=".nt"
+                                aria-label=".nt"
                                 aria-describedby="basic-addon2"
                                 name="filename"
                                 value={this.state.filename}
@@ -66,15 +68,28 @@ class ConfigureSerialized extends Component {
                             </div>
                         </InputGroup>
                     </Col>
+                </Form.Row>
+
+                <Form.Row className="form-row">
+                    <Col sm={3} >
+                        <Form.Label >Attributes to Exclude</Form.Label> 
+                    </Col>
+                    <Col sm={6}>
+                        <FormControl 
+                            type="text" 
+                            name="excluded_attr" 
+                            value={this.state.excluded_attr} 
+                            onChange={this.onChange}
+                        />
+                    </Col>
                 </Form.Row>            
             </div>
         )
     }
 }
 
-
-ConfigureSerialized.propTypes = {
+ConfigureRDF.propTypes = {
     onChange: PropTypes.func.isRequired
 }
 
-export default ConfigureSerialized
+export default ConfigureRDF

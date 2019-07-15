@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import StepZilla from "react-stepzilla"
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import DataReader from './DataReader'
+import DataReader from './dataRead/DataReader'
 import SchemaClustering from './SchemaClustering'
 import BlockBuilding from './BlockBuilding'
 

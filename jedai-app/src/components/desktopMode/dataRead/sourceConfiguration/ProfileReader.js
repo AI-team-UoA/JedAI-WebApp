@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, Collapse} from 'react-bootstrap/'
-import Configurations from './Configurations'
+import Configurations from '../Configurations'
 
 /**
  * The Form that sets  entity profiles and the ground truth
@@ -16,13 +16,13 @@ class ProfileReader extends Component {
         
         this.collapse_conf_flag = false;
         this.collapse_explore_flag = false;
-        this.dataIsSet = false;
         this.text_area_msg = ""
         
         this.state = { 
             entity_id: this.props.entity_id,
             filetype : "",
-            configuration_submitted: false
+            filepaht : "",
+            configurations_state: false
         }
         
     }
@@ -53,15 +53,16 @@ class ProfileReader extends Component {
     submitted = (flag, msg) => {
         this.text_area_msg = "Source: " + this.state.filetype + msg
         this.collapse_conf_flag = false;
-        this.setState({configuration_submitted: flag})
+        this.setState({configurations_state: flag})
         this.props.setEntity(this.state.entity_id, flag)
         
     }
 
     // Empty configurations and hide collapses
     emptyConfiguration(){
+        this.text_area_msg = "";
        if (this.state.filetype !== ""){
-            this.setState({filetype: "", configuration_submitted: false});
+            this.setState({filetype: "", configurations_state: false});
             this.props.setEntity(this.state.entity_id, false)
         }
         this.collapse_conf_flag = false;
@@ -131,7 +132,7 @@ class ProfileReader extends Component {
                         </Col>
                         <Col sm={1}>
                             <Form.Group> 
-                                <Button  name="explore_btn" disabled={!this.dataIsSet} onClick={this.onClick}>Explore</Button>
+                                <Button  name="explore_btn" disabled={!this.state.configurations_state} onClick={this.onClick}>Explore</Button>
                             </Form.Group>
                         </Col>
                         <Col sm={4}>

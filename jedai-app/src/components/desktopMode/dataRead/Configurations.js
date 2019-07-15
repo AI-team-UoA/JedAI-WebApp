@@ -2,11 +2,11 @@ import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
 import {Jumbotron, Form, Button } from 'react-bootstrap/'
 import axios from 'axios';
-import ConfigureCSV from './ConfigureCSV'
-import ConfigureRDB from './ConfigureRDB'
-import ConfigureRDF from './ConfigureRDF'
-import ConfigureXML from './ConfigureXML'
-import ConfigureSerialized from './ConfigureSerialized'
+import ConfigureCSV from './sourceConfiguration/ConfigureCSV'
+import ConfigureRDB from './sourceConfiguration/ConfigureRDB'
+import ConfigureRDF from './sourceConfiguration/ConfigureRDF'
+import ConfigureXML from './sourceConfiguration/ConfigureXML'
+import ConfigureSerialized from './sourceConfiguration/ConfigureSerialized'
 import "../../../css/main.css"
 
 
