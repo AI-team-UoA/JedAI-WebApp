@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, Collapse} from 'react-bootstrap/'
-import Configurations from '../Configurations'
-
+import Configurations from './sourceConfiguration/Configurations'
+import Explorer from  './Explorer'
 /**
  * The Form that sets  entity profiles and the ground truth
  */
@@ -17,12 +17,13 @@ class ProfileReader extends Component {
         this.collapse_conf_flag = false;
         this.collapse_explore_flag = false;
         this.text_area_msg = ""
+        this.explorer_get_entities = false
         
         this.state = { 
             entity_id: this.props.entity_id,
             filetype : "",
             filepaht : "",
-            configurations_state: false
+            configurations_status: false
         }
         
     }
@@ -45,6 +46,7 @@ class ProfileReader extends Component {
         else if(btn === "explore_btn"){
             this.collapse_explore_flag = !this.collapse_explore_flag;
             this.collapse_conf_flag = false;
+            this.explorer_get_entities = ! this.explorer_get_entities;
         }
         this.forceUpdate()
     }
@@ -53,7 +55,7 @@ class ProfileReader extends Component {
     submitted = (flag, msg) => {
         this.text_area_msg = "Source: " + this.state.filetype + msg
         this.collapse_conf_flag = false;
-        this.setState({configurations_state: flag})
+        this.setState({configurations_status: flag})
         this.props.setEntity(this.state.entity_id, flag)
         
     }
@@ -62,11 +64,12 @@ class ProfileReader extends Component {
     emptyConfiguration(){
         this.text_area_msg = "";
        if (this.state.filetype !== ""){
-            this.setState({filetype: "", configurations_state: false});
+            this.setState({filetype: "", configurations_status: false});
             this.props.setEntity(this.state.entity_id, false)
         }
         this.collapse_conf_flag = false;
-        this.collapse_explore_flag = false;        
+        this.collapse_explore_flag = false;     
+        this.explorer_get_entities = false;   
     }
 
     
@@ -132,7 +135,7 @@ class ProfileReader extends Component {
                         </Col>
                         <Col sm={1}>
                             <Form.Group> 
-                                <Button  name="explore_btn" disabled={!this.state.configurations_state} onClick={this.onClick}>Explore</Button>
+                                <Button  name="explore_btn" disabled={!this.state.configurations_status} onClick={this.onClick}>Explore</Button>
                             </Form.Group>
                         </Col>
                         <Col sm={4}>
@@ -148,8 +151,9 @@ class ProfileReader extends Component {
                             </div>
                         </Collapse>
                         <Collapse in={this.collapse_explore_flag} >
-                            <div >
+                            <div style={{width:'75%', margin:'auto'}}>
                                 <h1>Explore</h1>
+                                <Explorer get_entities={ this.explorer_get_entities}/>
                             </div>
                         </Collapse>
                     </Form.Row>
