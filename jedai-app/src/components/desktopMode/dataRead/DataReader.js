@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Form, Col, Row} from 'react-bootstrap/'
 import 'react-dropdown/style.css'
-import ProfileReader from './sourceConfiguration/ProfileReader';
+import ProfileReader from './ProfileReader';
 
 
 
