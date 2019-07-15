@@ -1,6 +1,8 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,27 +22,56 @@ import org.springframework.util.StringUtils;
 
 
 @RestController
-@RequestMapping("/desktopmode/dataread")
+@RequestMapping("/desktopmode/dataread/**")
 public class DataReadController {
 	
 	@Autowired
     private HttpServletRequest request;
+	private DataReadModel dataRead;
+	private int enities_per_page = 5;
 	
 	@PostMapping	
 	public boolean DataRead(
 			@RequestParam(value="file", required=false) MultipartFile file,
 			@RequestParam MultiValueMap<String, String> configurations) {
 		
+		dataRead = null;
 		String filetype = configurations.getFirst("filetype");
 		String source = filetype.equals("Database") ? configurations.getFirst("url"): UploadFile(file);
 		if (source == null || source.equals("")){
 			return false;
 		}
 		else {
-			DataReadModel dataRead = new DataReadModel(filetype, source, configurations);
+			dataRead = new DataReadModel(filetype, source, configurations);
 			return true;
 		}
 	}
+	
+	@GetMapping("/desktopmode/dataread/explore")
+	public int getPages() {
+		List<EntityProfile> profiles = null;
+		int pages = 0;
+		
+		if (dataRead != null) {	
+			profiles = dataRead.read();
+			pages = profiles.size()/enities_per_page;
+		}
+		return pages;
+	}
+	
+	
+	@GetMapping("/desktopmode/dataread/explore/{page}")
+	public List<EntityProfile> explored(@PathVariable(value = "page") String page) {
+		List<EntityProfile> profiles = null;
+		
+		if (dataRead != null) {
+			int int_page = Integer.parseInt(page);
+			profiles = dataRead.readSubset(int_page, int_page+enities_per_page);
+		}
+		return profiles;
+	}
+	
+
 	
 	
 	

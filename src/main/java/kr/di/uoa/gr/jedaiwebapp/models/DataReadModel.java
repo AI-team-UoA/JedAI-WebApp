@@ -56,9 +56,17 @@ public class DataReadModel {
 		 
 		 if (eReader != null) {
 	            profiles = eReader.getEntityProfiles();
-	            System.out.println(profiles.size());
 	        }
 	        return profiles;
+	}
+	
+	
+	// TODO: validate that start and last indexes don't exceed the size of list
+	public List<EntityProfile> readSubset(int start, int last){
+		
+		List<EntityProfile> profiles = this.read();
+		
+		return profiles.subList(start, last);
 	}
 
 	
