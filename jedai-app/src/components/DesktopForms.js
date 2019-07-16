@@ -4,7 +4,8 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import DataReader from './workflowViews/dataRead/DataReader'
 import SchemaClustering from './workflowViews/SchemaClustering'
 import BlockBuilding from './workflowViews/BlockBuilding'
-
+import BlockCleaning from './workflowViews/BlockCleaning'
+import ComparisonCleaning from './workflowViews/ComparisonCleaning'
 import '../css/progressSteps.css'
 import '../css/main.css'
 
@@ -17,8 +18,8 @@ class DesktopForms extends Component {
             {name: 'Data Reading', component: <DataReader />},
             {name: 'Schema Clustering', component: <SchemaClustering />},
             {name: 'Block Building', component: <BlockBuilding />},
-            {name: 'Data Reading', component: <DataReader />},
-            {name: 'Schema Clustering', component: <SchemaClustering />},
+            {name: 'Block Cleaning', component: <BlockCleaning />},
+            {name: 'Comparison Cleaning', component: <ComparisonCleaning />},
             {name: 'Schema Clustering', component: <SchemaClustering />},
             {name: 'Block Building', component: <BlockBuilding />} 
            
