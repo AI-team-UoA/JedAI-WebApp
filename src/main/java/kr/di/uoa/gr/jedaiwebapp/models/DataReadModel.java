@@ -16,7 +16,7 @@ public class DataReadModel {
 	private String filepath;
 	private String url;
 	private MultiValueMap<String, String> configurations;
-	
+	private List<EntityProfile> profiles;
 	
 	public DataReadModel(String filetype, String source, MultiValueMap<String, String> configurations) {
 		this.filetype = filetype;
@@ -29,6 +29,7 @@ public class DataReadModel {
 			this.url = null;
 		}
 		this.configurations = configurations;
+		this.profiles = this.read();
 	}
 		
 	
@@ -55,7 +56,7 @@ public class DataReadModel {
 		 }
 		 
 		 if (eReader != null) {
-	            profiles = eReader.getEntityProfiles();
+			 profiles = eReader.getEntityProfiles();
 	        }
 	        return profiles;
 	}
@@ -64,10 +65,10 @@ public class DataReadModel {
 	// TODO: validate that start and last indexes don't exceed the size of list
 	public List<EntityProfile> readSubset(int start, int last){
 		
-		List<EntityProfile> profiles = this.read();
-		
-		return profiles.subList(start, last);
+		return this.profiles.subList(start, last);
 	}
+	
+	public int getProfilesSize() { return this.profiles.size();}
 
 	
 	public IEntityReader CSVReader() {

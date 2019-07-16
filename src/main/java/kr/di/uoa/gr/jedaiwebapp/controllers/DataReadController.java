@@ -48,27 +48,30 @@ public class DataReadController {
 	}
 	
 	@GetMapping("/desktopmode/dataread/explore")
-	public int getPages() {
-		List<EntityProfile> profiles = null;
-		int pages = 0;
+	public int getMaxPages() {
 		
-		if (dataRead != null) {	
-			profiles = dataRead.read();
-			pages = profiles.size()/enities_per_page;
-		}
-		return pages;
+		if (dataRead != null) 	
+			return dataRead.getProfilesSize() /enities_per_page;
+		else	
+			return 0;
 	}
 	
 	
 	@GetMapping("/desktopmode/dataread/explore/{page}")
 	public List<EntityProfile> explored(@PathVariable(value = "page") String page) {
 		List<EntityProfile> profiles = null;
-		
-		if (dataRead != null) {
-			int int_page = Integer.parseInt(page);
-			profiles = dataRead.readSubset(int_page, int_page+enities_per_page);
+		System.out.println(page);
+		try {
+			if (dataRead != null) {
+				int int_page = Integer.parseInt(page);
+	
+				profiles = dataRead.readSubset(int_page, int_page+enities_per_page);
+			}
+			return profiles;
 		}
-		return profiles;
+		catch (java.lang.NumberFormatException e) {
+			return profiles;
+		}
 	}
 	
 
