@@ -16,7 +16,9 @@ import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
@@ -27,45 +29,53 @@ public class DataReadController {
 	
 	@Autowired
     private HttpServletRequest request;
-	private DataReadModel dataRead;
+	private Map<String, DataReadModel> dataRead_map;
 	private int enities_per_page = 5;
+	
+	DataReadController(){
+		dataRead_map = new HashMap<String, DataReadModel>();
+	}
 	
 	@PostMapping	
 	public boolean DataRead(
 			@RequestParam(value="file", required=false) MultipartFile file,
 			@RequestParam MultiValueMap<String, String> configurations) {
 		
-		dataRead = null;
+		
 		String filetype = configurations.getFirst("filetype");
 		String source = filetype.equals("Database") ? configurations.getFirst("url"): UploadFile(file);
 		if (source == null || source.equals("")){
 			return false;
 		}
 		else {
-			dataRead = new DataReadModel(filetype, source, configurations);
+			String entity_id = configurations.getFirst("entity_id");
+			if (dataRead_map.containsKey(entity_id))
+				dataRead_map.remove(entity_id);
+			dataRead_map.put(entity_id,new DataReadModel(filetype, source, configurations));
 			return true;
 		}
 	}
 	
-	@GetMapping("/desktopmode/dataread/explore")
-	public int getMaxPages() {
+	@GetMapping("/desktopmode/dataread/{entity_id}/explore")
+	public int getMaxPages(@PathVariable(value = "entity_id") String entity_id) {
 		
-		if (dataRead != null) 	
-			return dataRead.getProfilesSize() /enities_per_page;
+		if (dataRead_map.containsKey(entity_id) ) 	
+			return dataRead_map.get(entity_id).getProfilesSize() /enities_per_page;
 		else	
 			return 0;
 	}
 	
 	
-	@GetMapping("/desktopmode/dataread/explore/{page}")
-	public List<EntityProfile> explored(@PathVariable(value = "page") String page) {
+	@GetMapping("/desktopmode/dataread/{entity_id}/explore/{page}")
+	public List<EntityProfile> explored(@PathVariable(value = "page") String page,
+			@PathVariable(value = "entity_id") String entity_id) {
 		List<EntityProfile> profiles = null;
 		System.out.println(page);
 		try {
-			if (dataRead != null) {
+			if (dataRead_map.containsKey(entity_id)) {
 				int int_page = Integer.parseInt(page);
 	
-				profiles = dataRead.readSubset(int_page, int_page+enities_per_page);
+				profiles = dataRead_map.get(entity_id).readSubset(int_page, int_page+enities_per_page);
 			}
 			return profiles;
 		}

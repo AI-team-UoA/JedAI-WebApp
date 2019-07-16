@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 import {Jumbotron, Pagination } from 'react-bootstrap/'
 import axios from 'axios';
 import EntityProfileView from "./EntityProfileView"
@@ -100,7 +101,7 @@ class Explorer extends Component {
         if (!isNaN(tmp_page)){
             this.page = tmp_page
             this.pagination = this.setPagination(this.page)
-            axios.get("/desktopmode/dataread/explore/" + this.page)
+            axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/" + this.page)
                     .then(
                         res => {this.setState({
                             'entities': res.data,
@@ -117,13 +118,13 @@ class Explorer extends Component {
 
         // Get first data from the sercer
         if (this.props.get_entities && this.state.entities.length === 0) {
-            axios.get("/desktopmode/dataread/explore/")
+            axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/")
                 .then(res => {
                     this.maxPages = res.data
                     this.pagination = this.setPagination(1)
                 })
                 
-            axios.get("/desktopmode/dataread/explore/" + this.page)
+            axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/" + this.page)
                 .then(
                     res => {this.setState({
                             'entities': res.data,
@@ -150,7 +151,8 @@ class Explorer extends Component {
 }
 
 Explorer.propTypes = {
-    get_entities: PropTypes.bool.isRequired
+    get_entities: PropTypes.bool.isRequired,
+    entity_id: PropTypes.string.isRequired
 }
 
 
