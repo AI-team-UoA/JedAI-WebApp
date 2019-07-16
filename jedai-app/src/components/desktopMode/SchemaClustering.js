@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Form, Col, Row, FormControl} from 'react-bootstrap/'
+import {Form, Col, Row} from 'react-bootstrap/'
 
  class SchemaClustering extends Component {
      
