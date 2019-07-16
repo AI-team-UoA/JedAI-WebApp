@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Form, Col, Row} from 'react-bootstrap/'
+import {Form, Col, Row, Alert} from 'react-bootstrap/'
 
  class SchemaClustering extends Component {
      
@@ -20,7 +20,7 @@ import {Form, Col, Row} from 'react-bootstrap/'
 
     render() {
         return (
-            <div >
+            <div>
                 <br/>
                 <div style={{marginBottom:"5px"}}> 
                     <h1 style={{display:'inline', marginRight:"20px"}}>Schema Clustering</h1> 
@@ -32,8 +32,9 @@ import {Form, Col, Row} from 'react-bootstrap/'
                 <br/>
 
                     <fieldset>
-                        <Form.Group as={Row} className="form-row" style={{position:'relative', left:'20%'}}>           
-                            <Col sm={4}>
+                    <Alert  variant="primary" style={{width:"50%", margin:'auto'}}>
+                        <Form.Group as={Row} className="form-row">           
+                            <Col sm={8}>
                                 <Form.Label as="legend">
                                     <h5>Select a Schema clustering method</h5>  
                                 </Form.Label>
@@ -47,9 +48,9 @@ import {Form, Col, Row} from 'react-bootstrap/'
                                 />
                                 <Form.Check
                                     type="radio"
-                                    label="ATTRIBUTE_NAME_CLUSTERING"
+                                    label="Attribute Name Clustering"
                                     name="method"
-                                    value="name-clustering"
+                                    value="ATTRIBUTE_NAME_CLUSTERING"
                                     onChange={this.onChange}
                                 />
                                 <Form.Check
@@ -89,6 +90,7 @@ import {Form, Col, Row} from 'react-bootstrap/'
                                 
                             </Col>
                         </Form.Group>
+                        </Alert>
                     </fieldset>
 
                     <br/>
