@@ -59,14 +59,20 @@ class BlockBuilding extends Component {
 
     submitChange(child_state){
         
+        this.setState({
+            block_building: this.state.block_building.map(el => (el.name === child_state.name ? {...child_state} : el))
+            });
+    }
+
+    isValidated(){
+        var blockBuilding_isSet = false
         this.state.block_building.forEach((method_state) => {
-            if (method_state.name === child_state.name){
-                console.log(child_state.name + " " + child_state.selected+ " " + child_state.conf_type)
-            }
-            this.setState({
-                block_building: this.state.block_building.map(el => (el.name === child_state.name ? {...child_state} : el))
-              });
+          if (method_state.selected === true){
+                blockBuilding_isSet = true
+          }
         })
+        console.log(blockBuilding_isSet)
+        return blockBuilding_isSet
     }
 
     render() {

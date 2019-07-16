@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from './components/layout/Headers'
 import Modes from './components/Modes'
 import ClusterForm from './components/ClusterForm'
-import DesktopForms from './components/desktopMode/DesktopForms'
+import DesktopForms from './components/DesktopForms'
 
  
 class App extends Component {

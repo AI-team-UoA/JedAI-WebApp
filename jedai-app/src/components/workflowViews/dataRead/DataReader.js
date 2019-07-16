@@ -52,6 +52,12 @@ import ProfileReader from './ProfileReader';
           }
     }
 
+
+    isValidated(){
+       // return (this.state.entity1_set && this.state.entity2_set && this.state.groundTruth_set)
+       return true
+    }
+
     render() {
         
         return ( 

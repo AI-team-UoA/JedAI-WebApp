@@ -1,16 +1,15 @@
 import React, { Component } from 'react'
 import StepZilla from "react-stepzilla"
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import DataReader from './dataRead/DataReader'
-import SchemaClustering from './SchemaClustering'
-import BlockBuilding from './BlockBuilding'
+import DataReader from './workflowViews/dataRead/DataReader'
+import SchemaClustering from './workflowViews/SchemaClustering'
+import BlockBuilding from './workflowViews/BlockBuilding'
 
-import '../../css/progressSteps.css'
-import '../../css/main.css'
+import '../css/progressSteps.css'
+import '../css/main.css'
+
 
 class DesktopForms extends Component {
-
-
 
     render() {
         const steps =
