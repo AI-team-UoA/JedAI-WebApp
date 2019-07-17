@@ -15,13 +15,7 @@ class App extends Component {
         setInterval(this.hello, 250);
     }
  
-    /*hello = () => {
-        fetch('/api')
-            .then(response => response.text())
-            .then(message => {this.setState({message: message});
-            });
-            
-    };*/
+
  
     render() {
         return (
@@ -31,10 +25,6 @@ class App extends Component {
               <Header />
                 <Route exact path="/"  render={props=>(
                   <React.Fragment >
-                    <header  className="App-header">
-                      <h1>   Returned from REACT </h1>
-                    </header>
-                    <br/><br/>
                   <Modes />
                 </React.Fragment>
                 )}/>

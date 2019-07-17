@@ -20,8 +20,9 @@ class DesktopForms extends Component {
             {name: 'Block Building', component: <BlockBuilding />},
             {name: 'Block Cleaning', component: <BlockCleaning />},
             {name: 'Comparison Cleaning', component: <ComparisonCleaning />},
-            {name: 'Schema Clustering', component: <SchemaClustering />},
-            {name: 'Block Building', component: <BlockBuilding />} 
+            {name: 'Entity Matching', component: <SchemaClustering />},
+            {name: 'Entity Clustering', component: <BlockBuilding />}, 
+            {name: 'Confirm Configuration', component: <BlockBuilding />} 
            
         ]
         return (

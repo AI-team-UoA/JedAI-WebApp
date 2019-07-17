@@ -9,7 +9,7 @@ class Modes extends Component {
         return (
             <div>
                <Jumbotron className="jumbotron" style={{width:'55%'}}>
-                    <header >Execute JedAI   </header>
+                    <header><h3>Execute JedAI </h3></header>
                     <br/>
                     <div style={{textAlign:'center'}}>
                         <Link to="/desktopmode">

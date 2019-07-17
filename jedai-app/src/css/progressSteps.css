@@ -12,7 +12,7 @@ ol.progtrckr {
   }
   
   ol.progtrckr li span {
-    padding: 0 1.5rem;
+    padding: 0 1.2rem;
   }
   
   @media (max-width: 1000px) {
@@ -59,11 +59,11 @@ ol.progtrckr {
   }
   
   ol.progtrckr li.progtrckr-todo:before {
-    content: "\039F";
+    content: "\25CB";
     color: #909090	;  
     background-color: #E8E8E8;
     width: 1.0em;
-    line-height: 1.4em;
+    line-height: 1.2em;
   }
   
   ol.progtrckr li.progtrckr-todo:hover:before {
@@ -74,7 +74,7 @@ ol.progtrckr {
     content: "\2022";
     color: white;
     background-color: #909090;
-    width: 1.0em;
+    width: 1.1em;
     line-height: 1.2em;
     border-radius: 1.2em;
   }
@@ -87,7 +87,7 @@ ol.progtrckr {
     content: "\2713";
     color: white;
     background-color: #5cb85c;
-    width: 1.0em;
+    width: 1.1em;
     line-height: 1.2em;
     border-radius: 1.2em;
   }
