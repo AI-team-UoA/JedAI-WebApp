@@ -18,7 +18,7 @@ public class DataReadModel {
 	private MultiValueMap<String, String> configurations;
 	private List<EntityProfile> profiles;
 	
-	public DataReadModel(String filetype, String source, MultiValueMap<String, String> configurations) {
+	public DataReadModel(String filetype, String source, MultiValueMap<String, String> configurations) throws Exception{
 		this.filetype = filetype;
 		if (filetype.equals("Database")) {
 			this.url = source;
@@ -33,7 +33,7 @@ public class DataReadModel {
 	}
 		
 	
-	public List<EntityProfile> read() {
+	public List<EntityProfile> read() throws Exception {
 		 IEntityReader eReader = null;
 		 List<EntityProfile> profiles = null;
 		 

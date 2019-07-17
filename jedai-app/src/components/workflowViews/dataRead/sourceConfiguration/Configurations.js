@@ -1,6 +1,6 @@
 import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
-import {Jumbotron, Form, Button } from 'react-bootstrap/'
+import {Jumbotron, Form, Button, Alert, Collapse } from 'react-bootstrap/'
 import axios from 'axios';
 import ConfigureCSV from './ConfigureCSV'
 import ConfigureRDB from './ConfigureRDB'
@@ -20,7 +20,7 @@ class Configurations extends Component {
         super(...args);
         this.disabled = true
         this.onChange = this.onChange.bind(this)
-
+        this.collapse_flag = false
         this.state = { 
             configuration: null
         }
@@ -41,6 +41,7 @@ class Configurations extends Component {
         e.preventDefault()
         var text_area_msg
         let formData = new FormData()
+        this.collapse_flag =false
         switch(this.props.filetype) {
             case "CSV":
                 formData.append('file', this.state.configuration.file )
@@ -75,7 +76,18 @@ class Configurations extends Component {
             url: '/desktopmode/dataread',
             method: 'POST',
             data: formData
-        }).then(res => {this.props.submitted(res.data, text_area_msg)});
+        }).then(res => {
+            var result = res.data
+            
+            if (result)
+                this.props.submitted(result, text_area_msg)
+            else{
+                this.collapse_flag = true
+                this.forceUpdate()
+                }
+            });
+            
+        
 
         
     
@@ -109,6 +121,13 @@ class Configurations extends Component {
                 <div>
                     <Form>
                         {configureSource}
+                        <Collapse in={this.collapse_flag } >
+                            <div style={{width:'75%', margin:'auto'}}>
+                                <Alert variant="danger" >
+                                    The input files could not read successfully!
+                                </Alert>
+                            </div>
+                        </Collapse>
                         
                         <div style={{textAlign: 'center',  marginTop: '30px'}}>
                             <Button type="submit" onClick={this.onSubmit} disabled={this.disabled}>Save Configuration</Button>

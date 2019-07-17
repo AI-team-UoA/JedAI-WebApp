@@ -51,8 +51,13 @@ public class DataReadController {
 			String entity_id = configurations.getFirst("entity_id");
 			if (dataRead_map.containsKey(entity_id))
 				dataRead_map.remove(entity_id);
-			dataRead_map.put(entity_id,new DataReadModel(filetype, source, configurations));
-			return true;
+			try {
+				dataRead_map.put(entity_id,new DataReadModel(filetype, source, configurations));
+				return true;
+			}
+			catch(Exception e) {
+				return false;
+			}
 		}
 	}
 	
@@ -70,7 +75,6 @@ public class DataReadController {
 	public List<EntityProfile> explored(@PathVariable(value = "page") String page,
 			@PathVariable(value = "entity_id") String entity_id) {
 		List<EntityProfile> profiles = null;
-		System.out.println(page);
 		try {
 			if (dataRead_map.containsKey(entity_id)) {
 				int int_page = Integer.parseInt(page);
