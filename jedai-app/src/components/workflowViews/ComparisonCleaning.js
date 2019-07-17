@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 import SelectMethod from './utilities/SelectMethod'
 import {Form, Row } from 'react-bootstrap/'
 
@@ -63,6 +64,7 @@ class ComparisonCleaning extends Component {
     } 
 
     isValidated(){
+        this.props.submitState("comparison_cleaning", this.state)
         return true
     }
 
@@ -91,5 +93,10 @@ class ComparisonCleaning extends Component {
         )
     }
 }
+
+ComparisonCleaning.propTypes = {
+    submitState: PropTypes.func.isRequired
+}
+
 
 export default ComparisonCleaning 

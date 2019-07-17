@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {Form, Row } from 'react-bootstrap/'
 import SelectMultipleMethods from './utilities/SelectMultipleMethods'
 
@@ -33,11 +34,22 @@ class BlockCleaning extends Component {
     submitChange(child_state){
         
         this.setState({
-            block_cleaning: this.state.block_cleaning.map(el => (el.name === child_state.name ? {...child_state} : el))
+                block_cleaning: this.state.block_cleaning.map(el => (el.name === child_state.name ? {...child_state} : el))
             });
     }
 
+
+    // Put selected methods into an array and return them back to the father compoenent
+    //block cleaning is optional thus validation is always true
     isValidated(){
+        var selected_methods = []
+        this.state.block_cleaning.forEach((method) => {
+            if (method.selected){
+                selected_methods.push(method)
+            }
+        })
+        if(selected_methods.length > 0) this.props.submitState("block_cleaning", selected_methods)
+        else this.props.submitState("block_cleaning", null)
         return true
     }
 
@@ -67,5 +79,8 @@ class BlockCleaning extends Component {
     }
 }
 
+BlockCleaning.propTypes = {
+    submitState: PropTypes.func.isRequired
+}
 
 export default BlockCleaning

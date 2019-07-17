@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 import SelectMethod from './utilities/SelectMethod'
 import {Form, Row } from 'react-bootstrap/'
 
@@ -55,6 +56,7 @@ class EntityClustering extends Component {
     } 
 
     isValidated(){
+        this.props.submitState("entity_clustering", this.state)
         return this.state.method !== "" && this.state.conf_type !== ""
     }
 
@@ -92,4 +94,9 @@ class EntityClustering extends Component {
         )
     }
 }
+
+EntityClustering.propTypes = {
+    submitState: PropTypes.func.isRequired
+}
+
 export default  EntityClustering

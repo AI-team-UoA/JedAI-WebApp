@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 import SelectMethod from './utilities/SelectMethod'
 import {Form, Row } from 'react-bootstrap/'
 
@@ -40,6 +41,7 @@ import {Form, Row } from 'react-bootstrap/'
     } 
 
     isValidated(){
+        this.props.submitState("schema_clustering", this.state)
         return this.state.method !== "" && this.state.conf_type !== ""
     }
 
@@ -66,6 +68,9 @@ import {Form, Row } from 'react-bootstrap/'
             </div>
         )
     }
+}
+SchemaClustering.propTypes = {
+    submitState: PropTypes.func.isRequired
 }
 
 export default SchemaClustering

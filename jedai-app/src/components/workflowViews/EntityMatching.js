@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 import SelectMethod from './utilities/SelectMethod'
 import {Form, Row } from 'react-bootstrap/'
 
@@ -32,8 +33,11 @@ class EntityMatching extends Component {
     } 
 
     isValidated(){
+        this.props.submitState("entity_matching", this.state)
         return this.state.method !== "" && this.state.conf_type !== ""
     }
+
+
     render() {
         return (
             <div>
@@ -56,6 +60,10 @@ class EntityMatching extends Component {
             </div>
         )
     }
+}
+
+EntityMatching.propTypes = {
+    submitState: PropTypes.func.isRequired
 }
 
 export default  EntityMatching

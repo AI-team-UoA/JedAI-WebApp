@@ -45,13 +45,13 @@ import AlertModal from '../utilities/AlertModal'
     setEntity = (entity_id, conf_state) => {
         switch(entity_id) {
             case "1":
-                this.setState({entity1_set: conf_state }, () => (this.props.submit_DataReading(this.state)))
+                this.setState({entity1_set: conf_state }, () => (this.props.submitState("data_reading", this.state)))
                 break;
             case "2":
-                this.setState({entity2_set: conf_state}, () => (this.props.submit_DataReading(this.state)))
+                this.setState({entity2_set: conf_state}, () => (this.props.submitState("data_reading", this.state)))
                 break;
             case "3":
-                this.setState({groundTruth_set: conf_state}, () => (this.props.submit_DataReading(this.state)))
+                this.setState({groundTruth_set: conf_state}, () => (this.props.submitState("data_reading", this.state)))
                 break;
             default:
                 console.log("ERROR")
@@ -63,6 +63,7 @@ import AlertModal from '../utilities/AlertModal'
 
 
     isValidated(){
+        return true
         var isSet
         if(this.state.er_mode === "dirty") isSet = this.state.entity1_set !==null && this.state.groundTruth_set !==null
         else if(this.state.er_mode === "clean") isSet = this.state.entity1_set !==null && this.state.entity2_set !== null && this.state.groundTruth_set !==null
@@ -133,7 +134,7 @@ import AlertModal from '../utilities/AlertModal'
 }
 
 DataReader.propTypes = {
-    submit_DataReading: PropTypes.func.isRequired
+    submitState: PropTypes.func.isRequired
 }
 
 export default DataReader

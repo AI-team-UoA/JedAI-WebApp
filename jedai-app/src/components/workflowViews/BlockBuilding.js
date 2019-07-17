@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {Form, Row } from 'react-bootstrap/'
 import SelectMultipleMethods from './utilities/SelectMultipleMethods'
 import AlertModal from './utilities/AlertModal'
@@ -71,15 +72,25 @@ class BlockBuilding extends Component {
     handleAlertClose = () => this.setState({alertShow : false});
     handleAlerShow = () => this.setState({alertShow : true});
 
+
+    // Put selected methods into an array and return them back to the father compoenent
+    // User is required to select a method, otherwise she can not pass this step
     isValidated(){
-        var blockBuilding_isSet = false
-        this.state.block_building.forEach((method_state) => {
-          if (method_state.selected === true){
-                blockBuilding_isSet = true
-          }
+        var selected_methods = []
+        this.state.block_building.forEach((method) => {
+            if (method.selected){
+                selected_methods.push(method)
+            }
         })
-        if (!blockBuilding_isSet) this.handleAlerShow()
-        return blockBuilding_isSet
+        if (selected_methods.length === 0) {
+            this.handleAlerShow()
+            return false
+        }
+        else{
+            this.props.submitState("block_building", selected_methods)
+            return true
+        }
+            
     }
 
     render() {
@@ -114,5 +125,10 @@ class BlockBuilding extends Component {
         )
     }
 }
+
+BlockBuilding.propTypes = {
+    submitState: PropTypes.func.isRequired
+}
+
 export default BlockBuilding
 

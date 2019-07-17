@@ -26,9 +26,11 @@ class DesktopForms extends Component {
         entity_clustering: null
     }
 
-    submit_DataReading = (dataRead_state) =>{
+
+    // Get data from child components
+    submitState = (state_name, state_value) =>{
         this.setState({
-            data_reading: dataRead_state
+            [state_name]: state_value
         })
     }
 
@@ -36,13 +38,13 @@ class DesktopForms extends Component {
 
         const steps =
         [
-            {name: 'Data Reading', component: <DataReader submit_DataReading={this.submit_DataReading} />},
-            {name: 'Schema Clustering', component: <SchemaClustering />},
-            {name: 'Block Building', component: <BlockBuilding />},
-            {name: 'Block Cleaning', component: <BlockCleaning />},
-            {name: 'Comparison Cleaning', component: <ComparisonCleaning />},
-            {name: 'Entity Matching', component: <EntityMatching />},
-            {name: 'Entity Clustering', component: <EntityClustering />}, 
+            {name: 'Data Reading', component: <DataReader submitState={this.submitState} />},
+            {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState}/>},
+            {name: 'Block Building', component: <BlockBuilding submitState={this.submitState}/>},
+            {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState}/>},
+            {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState}/>},
+            {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState}/>},
+            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState}/>}, 
             {name: 'Confirm Configuration', component: <ConfirmConfiguration />} 
            
         ]
