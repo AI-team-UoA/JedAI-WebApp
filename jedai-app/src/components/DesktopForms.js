@@ -6,6 +6,8 @@ import SchemaClustering from './workflowViews/SchemaClustering'
 import BlockBuilding from './workflowViews/BlockBuilding'
 import BlockCleaning from './workflowViews/BlockCleaning'
 import ComparisonCleaning from './workflowViews/ComparisonCleaning'
+import EntityMatching from './workflowViews/EntityMatching' 
+import EntityClustering from './workflowViews/EntityClustering' 
 import '../css/progressSteps.css'
 import '../css/main.css'
 
@@ -20,8 +22,8 @@ class DesktopForms extends Component {
             {name: 'Block Building', component: <BlockBuilding />},
             {name: 'Block Cleaning', component: <BlockCleaning />},
             {name: 'Comparison Cleaning', component: <ComparisonCleaning />},
-            {name: 'Entity Matching', component: <SchemaClustering />},
-            {name: 'Entity Clustering', component: <BlockBuilding />}, 
+            {name: 'Entity Matching', component: <EntityMatching />},
+            {name: 'Entity Clustering', component: <EntityClustering />}, 
             {name: 'Confirm Configuration', component: <BlockBuilding />} 
            
         ]
@@ -36,9 +38,7 @@ class DesktopForms extends Component {
                             showSteps={true}
                             stepsNavigation={false}
                             preventEnterSubmission={true}
-                            nextTextOnFinalActionStep={"Save"}
-                            hocValidationAppliedTo={[7]}
-
+                            
                             backButtonCls={"btn btn-next btn-primary float-left"}
                             nextButtonCls={"btn btn-prev btn-primary float-right"}
                             
