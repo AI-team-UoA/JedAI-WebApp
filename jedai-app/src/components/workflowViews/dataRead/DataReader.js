@@ -34,11 +34,11 @@ import AlertModal from '../utilities/AlertModal'
         this.setState({[e.target.name]: e.target.value})
         if (e.target.name === "er_mode")
             if(e.target.value === "dirty") {
-                this.text = "Entity profile D1 and Ground-truth must be set!"
+                this.alertText = "Entity profile D1 and Ground-truth must be set!"
                 this.setState({entity2_set: true})
             }
             else {
-                this.text = "Entity profile D1, Entity profile D2 and Ground-truth must be set!"
+                this.alertText = "Entity profile D1, Entity profile D2 and Ground-truth must be set!"
                 this.setState({entity2_set: false})
             }
     }        

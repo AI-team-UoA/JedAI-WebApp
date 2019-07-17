@@ -20,20 +20,27 @@ class ClusterForm extends Component {
     }
 
     
-    onChange = (e) => this.setState({[e.target.name]: e.target.value})
+    onChange = (e) => {
+        var name = e.target.name
+        var value = e.target.value
+        if(name === "address"){
+            this.setState({address: value},
+                () => (this.validate_address = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(value)? 1 : 2)
+                ) 
+        }
+        else if(name === "port"){
+            this.setState({port: value},
+                () => (this.validate_port = /^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/.test(value)? 1 : 2)
+                ) 
+        }
+        else
+            this.setState({[e.target.name]: e.target.value})
+    }
 
 
     handleSubmit(event) {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            this.validate_address = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(this.state.address)? 1 : 2
-            this.validate_port = /^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/.test(this.state.port)? 1 : 2
-            console.log(this.validate_address)
-            this.forceUpdate();
-        }
+       event.preventDefault()
+       
     }
 
     render() {
@@ -51,7 +58,7 @@ class ClusterForm extends Component {
                             <Form.Control
                                 required
                                 type="text"
-                                placeholder="127.0.0.1."
+                                placeholder="127.0.0.1"
                                 onChange={this.onChange} 
                                 name="address" 
                                 value={this.state.address}
@@ -101,7 +108,9 @@ class ClusterForm extends Component {
                         </Form.Group>
                     </Form.Row>
 
-                    <Button type="submit" style={{float:'right'}}>Submit form</Button>
+                    <Button type="submit" style={{float:'right'}} 
+                        disabled={this.state.address !==1 || this.state.port !==1 ||this.state.username === "" ||this.state.pswd === ""
+                    }>Submit form</Button>
                     </Form>
                 </Jumbotron>
             </div>

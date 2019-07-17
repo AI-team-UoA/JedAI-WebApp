@@ -9,7 +9,7 @@ class Explorer extends Component {
     constructor(...args) {
         super(...args);
         this.headers = []
-        this.pagination = ""
+        this.pagination = <h1>Not Loaded</h1>
         this.maxPages = 0
         this.page = 1
 
@@ -127,10 +127,11 @@ class Explorer extends Component {
             axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/" + this.page)
                 .then(
                     res => {this.setState({
-                            'entities': res.data,
-                            'headers':  res.data[0].attributes
-                            })
+                            entities: res.data,
+                            headers:  res.data[0].attributes
+                        })
                     })
+                    
             
         }
        

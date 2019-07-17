@@ -47,7 +47,7 @@ class ProfileReader extends Component {
         else if(btn === "explore_btn"){
             this.collapse_explore_flag = !this.collapse_explore_flag;
             this.collapse_conf_flag = false;
-            this.explorer_get_entities = ! this.explorer_get_entities;
+           
         }
         this.forceUpdate()
     }
@@ -56,6 +56,7 @@ class ProfileReader extends Component {
     submitted = (flag, msg) => {
         this.text_area_msg = "Source: " + this.state.filetype + msg
         this.collapse_conf_flag = false;
+        this.explorer_get_entities = true
         this.setState({configurations_status: flag})
         this.props.setEntity(this.state.entity_id, flag)
         

@@ -8,6 +8,7 @@ import BlockCleaning from './workflowViews/BlockCleaning'
 import ComparisonCleaning from './workflowViews/ComparisonCleaning'
 import EntityMatching from './workflowViews/EntityMatching' 
 import EntityClustering from './workflowViews/EntityClustering' 
+import ConfirmConfiguration from './workflowViews/ConfirmConfiguration'
 import '../css/progressSteps.css'
 import '../css/main.css'
 
@@ -24,7 +25,7 @@ class DesktopForms extends Component {
             {name: 'Comparison Cleaning', component: <ComparisonCleaning />},
             {name: 'Entity Matching', component: <EntityMatching />},
             {name: 'Entity Clustering', component: <EntityClustering />}, 
-            {name: 'Confirm Configuration', component: <BlockBuilding />} 
+            {name: 'Confirm Configuration', component: <ConfirmConfiguration />} 
            
         ]
         return (
