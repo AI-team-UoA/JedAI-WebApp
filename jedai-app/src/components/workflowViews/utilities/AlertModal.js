@@ -2,7 +2,7 @@ import {Modal, Button} from 'react-bootstrap/';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react'
 
-
+// Open Alert window
 class AlertModal extends Component{
     render() {
         return (
