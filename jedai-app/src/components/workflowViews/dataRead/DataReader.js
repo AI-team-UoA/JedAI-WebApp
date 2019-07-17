@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Form, Col, Row} from 'react-bootstrap/'
 import 'react-dropdown/style.css'
 import ProfileReader from './ProfileReader';
-
+import AlertModal from '../utilities/AlertModal'
 
 
 
@@ -10,28 +10,37 @@ import ProfileReader from './ProfileReader';
 
     constructor(...args) {
         super(...args);
-       
+        
         this.collapse_conf = false;
         this.collapse_explore = false;
         this.dataIsSet = false;
         this.setEntity = this.setEntity.bind(this)
-        
+
+        this.alertText = "Select an ER Mode"
+
+
         this.state = { 
-            mode : "",
+            er_mode : "",
             entity1_set : false,
             entity2_set : false,
-            groundTruth_set : false            
+            groundTruth_set : false,
+            alertShow : false
+
         }
     }
 
-    // Set mode and based on that it disables the second profileReader
+    // Set er_mode and based on that it disables the second profileReader
     onChange = (e) => {
         this.setState({[e.target.name]: e.target.value})
-        if (e.target.name === "mode")
-            if(e.target.value === "dirty") 
+        if (e.target.name === "er_mode")
+            if(e.target.value === "dirty") {
+                this.text = "Entity profile D1 and Ground-truth must be set!"
                 this.setState({entity2_set: true})
-            else 
+            }
+            else {
+                this.text = "Entity profile D1, Entity profile D2 and Ground-truth must be set!"
                 this.setState({entity2_set: false})
+            }
     }        
 
     //Check which entities have been completed successfully
@@ -52,17 +61,28 @@ import ProfileReader from './ProfileReader';
           }
     }
 
+    handleAlertClose = () => this.setState({alertShow : false});
+    handleAlerShow = () => this.setState({alertShow : true});
+
 
     isValidated(){
-       // return (this.state.entity1_set && this.state.entity2_set && this.state.groundTruth_set)
-       return true
+        var isSet = this.state.entity1_set && this.state.entity2_set && this.state.groundTruth_set
+        if (isSet)
+            return true
+        else{
+            
+            this.handleAlerShow()
+            return false
+        }
+
     }
 
     render() {
         
         return ( 
-
+            
             <div >
+                <AlertModal text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 <br/>
                 <div style={{marginBottom:"5px"}}> 
                     <h1 style={{display:'inline', marginRight:"20px"}}>Data Reading</h1> 
@@ -77,20 +97,20 @@ import ProfileReader from './ProfileReader';
                         <Form.Group as={Row} className="form-row">
                     
                             <Form.Label as="legend" column sm={2}>
-                                <h5>Select Mode:</h5>
+                                <h5>Select ER Mode:</h5>
                             </Form.Label>                    
                             <Col sm={8}>
                                 <Form.Check
                                     type="radio"
                                     label="Dirty Entity Resolution"
-                                    name="mode"
+                                    name="er_mode"
                                     value="dirty"
                                     onChange={this.onChange}
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="Clean-Clean Entity Resolution"
-                                    name="mode"
+                                    name="er_mode"
                                     value="clean"
                                     onChange={this.onChange}
                                 />
@@ -102,9 +122,9 @@ import ProfileReader from './ProfileReader';
                     
                     <br/>
                     
-                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.mode === ""} type="entity" setEntity={this.setEntity}/>   
-                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.mode !== "clean"} type="entity" setEntity={this.setEntity}/> 
-                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.mode === ""} type="ground-truth" setEntity={this.setEntity}/>   
+                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.er_mode === ""} type="entity" setEntity={this.setEntity}/>   
+                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.er_mode !== "clean"} type="entity" setEntity={this.setEntity}/> 
+                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.er_mode === ""} type="ground-truth" setEntity={this.setEntity}/>   
                    
                 
             </div>   

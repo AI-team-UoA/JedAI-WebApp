@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import {Form, Row } from 'react-bootstrap/'
 import SelectMultipleMethods from './utilities/SelectMultipleMethods'
+import AlertModal from './utilities/AlertModal'
+
 class BlockBuilding extends Component {
 
     constructor(...args) {
         super(...args);
         this.submitChange = this.submitChange.bind(this)
+        this.alertText = "Select at least one Block Building method!"
         this.state = {
             block_building : [
                 {
@@ -53,7 +56,8 @@ class BlockBuilding extends Component {
                         selected: false,
                         conf_type: ""
                     } 
-            ]
+            ],
+            alertShow : false
         }
     }
 
@@ -64,6 +68,9 @@ class BlockBuilding extends Component {
             });
     }
 
+    handleAlertClose = () => this.setState({alertShow : false});
+    handleAlerShow = () => this.setState({alertShow : true});
+
     isValidated(){
         var blockBuilding_isSet = false
         this.state.block_building.forEach((method_state) => {
@@ -71,13 +78,14 @@ class BlockBuilding extends Component {
                 blockBuilding_isSet = true
           }
         })
-        console.log(blockBuilding_isSet)
+        if (!blockBuilding_isSet) this.handleAlerShow()
         return blockBuilding_isSet
     }
 
     render() {
         return (
             <div>
+                <AlertModal text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 <br/>
                 <div style={{marginBottom:"5px"}}> 
                     <h1 style={{display:'inline', marginRight:"20px"}}>Block Building</h1> 
