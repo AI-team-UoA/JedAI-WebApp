@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import {Jumbotron, Pagination } from 'react-bootstrap/'
+import {Jumbotron, Pagination, Form } from 'react-bootstrap/'
 import axios from 'axios';
 import EntityProfileView from "./EntityProfileView"
 
@@ -104,8 +104,8 @@ class Explorer extends Component {
             axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/" + this.page)
                     .then(
                         res => {this.setState({
-                            'entities': res.data,
-                            'headers':  res.data[0].attributes
+                            entities: res.data,
+                            headers:  res.data[0].attributes
                     })})
         }
         else{
@@ -138,13 +138,15 @@ class Explorer extends Component {
         return (
             <div>
                 <Jumbotron style={{backgroundColor:"white", border:"groove" }}>
-                <div>
-                    {this.state.entities.map((entity, index) => ( <EntityProfileView key={index} page={this.page} entity={entity} index={index}/>))}
-                    <br/>
-                    <div style={{margin:'auto' }}>
-                        {this.pagination}
+                <Form>
+                    <div>
+                        {this.state.entities.map((entity, index) => ( <EntityProfileView key={index} page={this.page} entity={entity} index={index}/>))}
+                        <br/>
+                        <div style={{margin:'auto' }}>
+                            {this.pagination}
+                        </div>
                     </div>
-                </div>
+                </Form>
             </Jumbotron>
             </div>
         )

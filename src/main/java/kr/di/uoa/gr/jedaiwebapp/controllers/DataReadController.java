@@ -37,7 +37,7 @@ public class DataReadController {
 	}
 	
 	@PostMapping	
-	public boolean DataRead(
+	public String DataRead(
 			@RequestParam(value="file", required=false) MultipartFile file,
 			@RequestParam MultiValueMap<String, String> configurations) {
 		
@@ -45,7 +45,7 @@ public class DataReadController {
 		String filetype = configurations.getFirst("filetype");
 		String source = filetype.equals("Database") ? configurations.getFirst("url"): UploadFile(file);
 		if (source == null || source.equals("")){
-			return false;
+			return "";
 		}
 		else {
 			String entity_id = configurations.getFirst("entity_id");
@@ -53,17 +53,16 @@ public class DataReadController {
 				dataRead_map.remove(entity_id);
 			try {
 				dataRead_map.put(entity_id,new DataReadModel(filetype, source, configurations));
-				return true;
+				return source;
 			}
 			catch(Exception e) {
-				return false;
+				return "";
 			}
 		}
 	}
 	
 	@GetMapping("/desktopmode/dataread/{entity_id}/explore")
 	public int getMaxPages(@PathVariable(value = "entity_id") String entity_id) {
-		
 		if (dataRead_map.containsKey(entity_id) ) 	
 			return dataRead_map.get(entity_id).getProfilesSize() /enities_per_page;
 		else	
@@ -78,7 +77,6 @@ public class DataReadController {
 		try {
 			if (dataRead_map.containsKey(entity_id)) {
 				int int_page = Integer.parseInt(page);
-	
 				profiles = dataRead_map.get(entity_id).readSubset(int_page, int_page+enities_per_page);
 			}
 			return profiles;
