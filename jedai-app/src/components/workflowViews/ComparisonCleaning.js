@@ -85,7 +85,7 @@ class ComparisonCleaning extends Component {
                     <Form.Label><h5>Select a Comparison Cleaning method (Optional)</h5>  </Form.Label>
                 </Form.Group> 
 
-                <SelectMethod methods={this.methods} default_method="NO_CLEANING" auto_disabled={false} onChange={this.onChange}/>
+                <SelectMethod methods={this.methods} default_method="NO_CLEANING" auto_disabled={false} onChange={this.onChange} title={"Comparison Cleaning method"}/>
 
             </div>
         )

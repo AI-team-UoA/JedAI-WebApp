@@ -40,6 +40,7 @@ class SelectMethod extends Component {
                             <Form>
                                 <Form.Group as={Row} className="form-row">           
                                     <Col sm={8}>
+                                        <Form.Label as="legend"><h5>{this.props.title}</h5> </Form.Label>
                                         {configurations}
                                     </Col>
                                     <Col sm={4}>
@@ -81,7 +82,7 @@ SelectMethod.propTypes = {
     methods: PropTypes.array.isRequired,
     default_method: PropTypes.string.isRequired,
     auto_disabled: PropTypes.bool.isRequired,
-
+    title: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired
 }
 

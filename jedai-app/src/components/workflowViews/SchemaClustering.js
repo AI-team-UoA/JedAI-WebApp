@@ -61,7 +61,7 @@ import {Form, Row } from 'react-bootstrap/'
                     <Form.Label><h5>Select a Schema Clustering method</h5></Form.Label>
                 </Form.Group> 
 
-                <SelectMethod methods={this.methods} default_method="NO_SCHEMA_CLUSTERING" auto_disabled={true} onChange={this.onChange}/>
+                <SelectMethod methods={this.methods} default_method="NO_SCHEMA_CLUSTERING" auto_disabled={true} onChange={this.onChange} title={"Schema Clustering methods"}/>
                     
             </div>
         )
