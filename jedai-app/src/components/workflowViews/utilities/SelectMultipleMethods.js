@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Form, Col, Row, Alert } from 'react-bootstrap/'
 
 
-class MethodsAndConf extends Component {
+class SelectMultipleMethods extends Component {
 
     constructor(...args) {
         super(...args);
@@ -79,9 +79,9 @@ class MethodsAndConf extends Component {
 }
 
 
-MethodsAndConf.propTypes = {
+SelectMultipleMethods.propTypes = {
     label: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     submitChange: PropTypes.func.isRequired
 }
-export default MethodsAndConf
+export default SelectMultipleMethods

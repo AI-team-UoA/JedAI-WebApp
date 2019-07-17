@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Form, Row } from 'react-bootstrap/'
-import MethodsAndConf from './utilities/MethodsAndConf'
+import SelectMultipleMethods from './utilities/SelectMultipleMethods'
 
 
 
@@ -58,9 +58,9 @@ class BlockCleaning extends Component {
                     <Form.Label><h5>Select methods for Block Cleaning (Optional)</h5></Form.Label>
                 </Form.Group> 
 
-                <MethodsAndConf submitChange={this.submitChange} name="SIZE_BASED_BLOCK_PURGING" label="Size-based Block Purging" />
-                <MethodsAndConf submitChange={this.submitChange} name="COMPARISON_BASED_BLOCK_PURGING" label="Comparison-based Block Purging" />
-                <MethodsAndConf submitChange={this.submitChange} name="BLOCK_FILTERING" label="Block Filering" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="SIZE_BASED_BLOCK_PURGING" label="Size-based Block Purging" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="COMPARISON_BASED_BLOCK_PURGING" label="Comparison-based Block Purging" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="BLOCK_FILTERING" label="Block Filering" />
 
             </div>
         )

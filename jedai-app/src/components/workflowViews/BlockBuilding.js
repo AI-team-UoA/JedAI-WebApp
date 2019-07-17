@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Form, Row } from 'react-bootstrap/'
-import MethodsAndConf from './utilities/MethodsAndConf'
+import SelectMultipleMethods from './utilities/SelectMultipleMethods'
 class BlockBuilding extends Component {
 
     constructor(...args) {
@@ -92,15 +92,15 @@ class BlockBuilding extends Component {
                     <Form.Label><h5>Select Block Building methods and Configurations</h5></Form.Label>
                 </Form.Group>
                  
-                <MethodsAndConf submitChange={this.submitChange} name="STANDARD_TOKEN_BUILDING" label="Standard/Token Blocking" />
-                <MethodsAndConf submitChange={this.submitChange} name="SORTED_NEIGHBORHOOD" label="Sorted Neighborhood" />
-                <MethodsAndConf submitChange={this.submitChange} name="SORTED_NEIGHBORHOOD_EXTENDED" label="Extended Sorted Neighborhood" />
-                <MethodsAndConf submitChange={this.submitChange} name="Q_GRAMS_BLOCKING" label="Q-Grams Blocking" />
-                <MethodsAndConf submitChange={this.submitChange} name="Q_GRAMS_BLOCKING_EXTENDED" label="Extended Q-Grams Blocking" />
-                <MethodsAndConf submitChange={this.submitChange} name="SUFFIX_ARRAYS_BLOCKING" label="Suffix Arrays Blocking" />
-                <MethodsAndConf submitChange={this.submitChange} name="SUFFIX_ARRAYS_BLOCKING_EXTENDED" label="Extended Suffix Arrays Blocking" />
-                <MethodsAndConf submitChange={this.submitChange} name="LSH_SUPERBIT_BLOCKING" label="LSH SuperBit Blocking" />
-                <MethodsAndConf submitChange={this.submitChange} name="LSH_MINHASH_BLOCKING" label="LSH MinHash Blocking" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="STANDARD_TOKEN_BUILDING" label="Standard/Token Blocking" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="SORTED_NEIGHBORHOOD" label="Sorted Neighborhood" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="SORTED_NEIGHBORHOOD_EXTENDED" label="Extended Sorted Neighborhood" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="Q_GRAMS_BLOCKING" label="Q-Grams Blocking" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="Q_GRAMS_BLOCKING_EXTENDED" label="Extended Q-Grams Blocking" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="SUFFIX_ARRAYS_BLOCKING" label="Suffix Arrays Blocking" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="SUFFIX_ARRAYS_BLOCKING_EXTENDED" label="Extended Suffix Arrays Blocking" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="LSH_SUPERBIT_BLOCKING" label="LSH SuperBit Blocking" />
+                <SelectMultipleMethods submitChange={this.submitChange} name="LSH_MINHASH_BLOCKING" label="LSH MinHash Blocking" />
                 
             </div>
         )
