@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import {Form, Col, Row, Alert} from 'react-bootstrap/'
+import SelectMethod from './utilities/SelectMethod'
+import {Form, Row } from 'react-bootstrap/'
 
  class SchemaClustering extends Component {
      
@@ -9,8 +10,33 @@ import {Form, Col, Row, Alert} from 'react-bootstrap/'
         conf_type: "default"
     }
 
+    methods = 
+        [
+            {
+                value: "NO_SCHEMA_CLUSTERING",
+                label: "No Schema Clustering"
+            },
+            {
+                value: "ATTRIBUTE_NAME_CLUSTERING",
+                label: "Attribute Name Clustering"
+            },
+            {
+                value: "ATTRIBUTE_VALUE_CLUSTERING",
+                label: "Attribute Value Clustering"
+            },
+            {
+                value: "HOLISTIC_ATTRIBUTE_CLUSTERING",
+                label: "Holistic Attribute Clustering"
+            }
+        ]
+
     onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
+        this.setState(
+            {
+                method: e.method,
+                conf_type: e.conf_type
+            }
+        )
     } 
 
     isValidated(){
@@ -31,70 +57,12 @@ import {Form, Col, Row, Alert} from 'react-bootstrap/'
                 <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
                 <br/>
 
-                    <fieldset>
-                    <Alert  variant="primary" style={{width:"50%", margin:'auto'}}>
-                        <Form.Group as={Row} className="form-row">           
-                            <Col sm={8}>
-                                <Form.Label as="legend">
-                                    <h5>Select a Schema clustering method</h5>  
-                                </Form.Label>
-                                <Form.Check
-                                    type="radio"
-                                    label="No Schema Clustering"
-                                    name="method"
-                                    value="NO_SCHEMA_CLUSTERING"
-                                    onChange={this.onChange}
-                                    checked={this.state.method ===  "NO_SCHEMA_CLUSTERING"}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Attribute Name Clustering"
-                                    name="method"
-                                    value="ATTRIBUTE_NAME_CLUSTERING"
-                                    onChange={this.onChange}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Attribute Value Clustering"
-                                    name="method"
-                                    value="ATTRIBUTE_VALUE_CLUSTERING"
-                                    onChange={this.onChange}
-                                />
-                                <Form.Check
-                                    type="radio"
-                                    label="Holistic Attribute Clustering"
-                                    name="method"
-                                    value="HOLISTIC_ATTRIBUTE_CLUSTERING"
-                                    onChange={this.onChange}
-                                />
-                            </Col>
-                            <Col sm={4}>
-                                <Form.Label as="legend"><h5>Configuration Type</h5> </Form.Label>
-                                <Form.Check
-                                    type="radio"
-                                    label="Default"
-                                    name="conf_type"
-                                    value="default"
-                                    onChange={this.onChange}
-                                    checked={this.state.conf_type ===  "default"}
-                                />
-                               <Form.Check
-                                    type="radio"
-                                    label="Manual"
-                                    name="conf_type"
-                                    value="manual"
-                                    onChange={this.onChange}
-                                />
+                <Form.Group as={Row} className="form-row" > 
+                    <Form.Label><h5>Select a Schema Clustering method</h5></Form.Label>
+                </Form.Group> 
 
-
-                                
-                            </Col>
-                        </Form.Group>
-                        </Alert>
-                    </fieldset>
-
-                    <br/>
-                    <br/>
+                <SelectMethod methods={this.methods} default_method="NO_SCHEMA_CLUSTERING" auto_disabled={true} onChange={this.onChange}/>
+                    
             </div>
         )
     }
