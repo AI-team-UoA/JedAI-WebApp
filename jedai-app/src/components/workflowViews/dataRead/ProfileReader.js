@@ -23,8 +23,8 @@ class ProfileReader extends Component {
         this.state = { 
             entity_id: this.props.entity_id,
             filetype : "",
-            filepaht : "",
-            configurations_status: false
+            source : "",
+            configurations: null
         }
         
     }
@@ -53,12 +53,12 @@ class ProfileReader extends Component {
     }
 
     // Set configuration (received by the child) and update the DataReader
-    submitted = (flag, msg) => {
+    submitted = (conf_state, msg) => {
         this.text_area_msg = "Source: " + this.state.filetype + msg
         this.collapse_conf_flag = false;
         this.explorer_get_entities = true
-        this.setState({configurations_status: flag})
-        this.props.setEntity(this.state.entity_id, flag)
+        this.setState({source: conf_state.source, configurations: conf_state.configuration})
+        this.props.setEntity(this.state.entity_id, this.state)
         
     }
 
@@ -66,8 +66,8 @@ class ProfileReader extends Component {
     emptyConfiguration(){
         this.text_area_msg = "";
        if (this.state.filetype !== ""){
-            this.setState({filetype: "", configurations_status: false});
-            this.props.setEntity(this.state.entity_id, false)
+            this.setState({filetype : "", source : "", configurations: null});
+            this.props.setEntity(this.state.entity_id, null)
         }
         this.collapse_conf_flag = false;
         this.collapse_explore_flag = false;     
@@ -137,7 +137,7 @@ class ProfileReader extends Component {
                         </Col>
                         <Col sm={1}>
                             <Form.Group> 
-                                <Button  name="explore_btn" disabled={!this.state.configurations_status} onClick={this.onClick}>Explore</Button>
+                                <Button  name="explore_btn" disabled={this.state.configurations === null} onClick={this.onClick}>Explore</Button>
                             </Form.Group>
                         </Col>
                         <Col sm={4}>

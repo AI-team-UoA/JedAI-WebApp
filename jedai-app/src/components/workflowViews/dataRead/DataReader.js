@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 import {Form, Col, Row} from 'react-bootstrap/'
 import 'react-dropdown/style.css'
 import ProfileReader from './ProfileReader';
@@ -21,11 +22,10 @@ import AlertModal from '../utilities/AlertModal'
 
         this.state = { 
             er_mode : "",
-            entity1_set : false,
-            entity2_set : false,
-            groundTruth_set : false,
+            entity1_set : null,
+            entity2_set : null,
+            groundTruth_set : null,
             alertShow : false
-
         }
     }
 
@@ -35,29 +35,26 @@ import AlertModal from '../utilities/AlertModal'
         if (e.target.name === "er_mode")
             if(e.target.value === "dirty") {
                 this.alertText = "Entity profile D1 and Ground-truth must be set!"
-                this.setState({entity2_set: true})
             }
             else {
                 this.alertText = "Entity profile D1, Entity profile D2 and Ground-truth must be set!"
-                this.setState({entity2_set: false})
             }
     }        
 
     //Check which entities have been completed successfully
-    setEntity = (entity_id, isSet) => {
+    setEntity = (entity_id, conf_state) => {
         switch(entity_id) {
             case "1":
-                this.setState({entity1_set: isSet})
+                this.setState({entity1_set: conf_state }, () => (this.props.submit_DataReading(this.state)))
                 break;
             case "2":
-                this.setState({entity2_set: isSet})
+                this.setState({entity2_set: conf_state}, () => (this.props.submit_DataReading(this.state)))
                 break;
             case "3":
-                this.setState({groundTruth_set: isSet})
+                this.setState({groundTruth_set: conf_state}, () => (this.props.submit_DataReading(this.state)))
                 break;
             default:
                 console.log("ERROR")
-
           }
     }
 
@@ -66,7 +63,10 @@ import AlertModal from '../utilities/AlertModal'
 
 
     isValidated(){
-        var isSet = this.state.entity1_set && this.state.entity2_set && this.state.groundTruth_set
+        var isSet
+        if(this.state.er_mode === "dirty") isSet = this.state.entity1_set !==null && this.state.groundTruth_set !==null
+        else if(this.state.er_mode === "clean") isSet = this.state.entity1_set !==null && this.state.entity2_set !== null && this.state.groundTruth_set !==null
+        else isSet = false
         if (isSet)
             return true
         else{
@@ -130,6 +130,10 @@ import AlertModal from '../utilities/AlertModal'
             </div>   
         )
     }
+}
+
+DataReader.propTypes = {
+    submit_DataReading: PropTypes.func.isRequired
 }
 
 export default DataReader

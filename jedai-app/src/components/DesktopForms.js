@@ -15,10 +15,28 @@ import '../css/main.css'
 
 class DesktopForms extends Component {
 
+
+    state = {
+        data_reading: null,
+        schema_clustering: null,
+        block_building: null,
+        block_cleaning: null,
+        comparison_cleaning: null,
+        entity_matching: null,
+        entity_clustering: null
+    }
+
+    submit_DataReading = (dataRead_state) =>{
+        this.setState({
+            data_reading: dataRead_state
+        })
+    }
+
     render() {
+
         const steps =
         [
-            {name: 'Data Reading', component: <DataReader />},
+            {name: 'Data Reading', component: <DataReader submit_DataReading={this.submit_DataReading} />},
             {name: 'Schema Clustering', component: <SchemaClustering />},
             {name: 'Block Building', component: <BlockBuilding />},
             {name: 'Block Cleaning', component: <BlockCleaning />},

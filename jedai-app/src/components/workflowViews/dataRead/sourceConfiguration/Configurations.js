@@ -22,7 +22,8 @@ class Configurations extends Component {
         this.onChange = this.onChange.bind(this)
         this.collapse_flag = false
         this.state = { 
-            configuration: null
+            configuration: null,
+            source: ""
         }
 
     }
@@ -79,18 +80,16 @@ class Configurations extends Component {
         }).then(res => {
             var result = res.data
             
-            if (result)
-                this.props.submitted(result, text_area_msg)
+            if (result !== ""){
+                this.setState({source: result})
+                this.props.submitted(this.state, text_area_msg)
+            }
             else{
                 this.collapse_flag = true
                 this.forceUpdate()
                 }
             });
-            
-        
 
-        
-    
     }
 
     render() {
