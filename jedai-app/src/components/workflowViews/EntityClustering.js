@@ -7,7 +7,7 @@ class EntityClustering extends Component {
 
     state = {
         method: "CONNECTED_COMPONENTS_CLUSTERING",
-        conf_type: "default",
+        conf_type: "Default",
         label: "Connected Component Clustering"
     }
 

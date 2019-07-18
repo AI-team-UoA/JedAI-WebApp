@@ -8,7 +8,7 @@ class EntityMatching extends Component {
 
     state = {
         method: "GROUP_LINKAGE",
-        conf_type: "default",
+        conf_type: "Default",
         label: "Group Linkage"
     }
 

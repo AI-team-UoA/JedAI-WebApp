@@ -8,7 +8,7 @@ import {Form, Row } from 'react-bootstrap/'
 
     state = {
         method: "NO_SCHEMA_CLUSTERING",
-        conf_type: "default",
+        conf_type: "Default",
         label: "No Schema Clustering"
     }
 

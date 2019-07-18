@@ -7,7 +7,7 @@ class ComparisonCleaning extends Component {
 
     state = {
         method: "NO_CLEANING",
-        conf_type: "default",
+        conf_type: "Default",
         label: "No Cleaning"
     }
 

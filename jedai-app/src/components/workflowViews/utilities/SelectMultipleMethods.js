@@ -11,7 +11,7 @@ class SelectMultipleMethods extends Component {
             name: this.props.name,
             label:this.props.label,
             selected: false,
-            conf_type: "default"
+            conf_type: "Default"
         }
     }
 
@@ -45,7 +45,7 @@ class SelectMultipleMethods extends Component {
                                     type="radio"
                                     label="Default"
                                     name="conf_type"
-                                    value="default"
+                                    value="Default"
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange}   
                                     disabled={this.state.selected === false}   
@@ -54,9 +54,9 @@ class SelectMultipleMethods extends Component {
                                 />
                                 <Form.Check
                                     type="radio"
-                                    label="Automated"
+                                    label="Automatic"
                                     name="conf_type"
-                                    value="automated"
+                                    value="Automatic"
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange} 
                                     disabled={this.state.selected === false}
@@ -65,7 +65,7 @@ class SelectMultipleMethods extends Component {
                                     type="radio"
                                     label="Manual"
                                     name="conf_type"
-                                    value="manual"
+                                    value="Manual"
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange} 
                                     disabled={this.state.selected === false}

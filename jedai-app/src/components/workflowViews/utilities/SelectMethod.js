@@ -9,7 +9,7 @@ class SelectMethod extends Component {
 
         this.state = {
             method: this.props.default_method,
-            conf_type: "default",
+            conf_type: "Default",
             label: this.props.default_method_label
         }
     }
@@ -55,15 +55,15 @@ class SelectMethod extends Component {
                                             type="radio"
                                             label="Default"
                                             name="conf_type"
-                                            value="default"
+                                            value="Default"
                                             onChange={(e) => this.onChange("", e)}
-                                            checked={this.state.conf_type ===  "default"}
+                                            checked={this.state.conf_type ===  "Default"}
                                         />
                                         <Form.Check
                                             type="radio"
                                             label="Automatic"
                                             name="conf_type"
-                                            value="automatic"
+                                            value="Automatic"
                                             onChange={(e) => this.onChange("", e)}
                                             disabled={this.props.auto_disabled}
                                         />
@@ -71,7 +71,7 @@ class SelectMethod extends Component {
                                             type="radio"
                                             label="Manual"
                                             name="conf_type"
-                                            value="manual"
+                                            value="Manual"
                                             onChange={(e) => this.onChange("", e)}
                                         />
                                     </Col>

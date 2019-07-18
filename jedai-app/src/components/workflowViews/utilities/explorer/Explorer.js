@@ -28,8 +28,6 @@ class Explorer extends Component {
         var start = (pageNumber-2) >= 1 ?  pageNumber-2 : 1        
         var end = (pageNumber+2) < this.maxPages? pageNumber+2 : this.maxPages
 
-        console.log("PAGE: " + pageNumber)
-
         for (let number = start; number <= end; number++) {
             displayed_pages.push(
               <Pagination.Item  onClick={this.handlePageChange} key={number} name={number} active={pageNumber === number}>
