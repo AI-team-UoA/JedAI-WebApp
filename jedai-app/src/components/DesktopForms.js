@@ -47,7 +47,7 @@ class DesktopForms extends Component {
             {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState}/>},
             {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState}/>},
             {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode}/>}, 
-            {name: 'Confirm Configuration', component: <ConfirmConfiguration />} 
+            {name: 'Confirm Configuration', component: <ConfirmConfiguration state={this.state}/>} 
            
         ]
         return (
