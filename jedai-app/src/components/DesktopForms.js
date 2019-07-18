@@ -15,17 +15,38 @@ import '../css/main.css'
 
 class DesktopForms extends Component {
 
-
+    // Default states of the workflow stages
     state = {
         data_reading: null,
-        schema_clustering: null,
+        schema_clustering:  {
+            method: "NO_SCHEMA_CLUSTERING",
+            conf_type: "Default",
+            label: "No Schema Clustering"
+        },
+        
         block_building: null,
+        
         block_cleaning: null,
-        comparison_cleaning: null,
-        entity_matching: null,
-        entity_clustering: null
-    }
 
+        comparison_cleaning: {
+            method: "NO_CLEANING",
+            conf_type: "Default",
+            label: "No Cleaning"
+        },
+        
+        entity_matching:  {
+            method: "GROUP_LINKAGE",
+            conf_type: "Default",
+            label: "Group Linkage"
+        },
+        
+        entity_clustering: {
+            method: "CONNECTED_COMPONENTS_CLUSTERING",
+            conf_type: "Default",
+            label: "Connected Component Clustering"
+        }
+    }
+    
 
     // Get data from child components
     submitState = (state_name, state_value) =>{
@@ -38,15 +59,24 @@ class DesktopForms extends Component {
         var er_mode = "dirty"
         if (this.state.data_reading !== null)
             er_mode = this.state.data_reading.er_mode
+            if (er_mode === "clean" && this.state.entity_clustering.method !=="UNIQUE_MAPPING_CLUSTERING"){
+                this.setState({ entity_clustering : {
+                        method: "UNIQUE_MAPPING_CLUSTERING",
+                        label: "Unique Mapping Clustering",
+                        conf_type: "Default"
+                    }
+                })
+            }
+
         const steps =
         [
             {name: 'Data Reading', component: <DataReader submitState={this.submitState} />},
-            {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState}/>},
-            {name: 'Block Building', component: <BlockBuilding submitState={this.submitState}/>},
-            {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState}/>},
-            {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState}/>},
-            {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState}/>},
-            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode}/>}, 
+            {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState} state={this.state.schema_clustering}/>},
+            {name: 'Block Building', component: <BlockBuilding submitState={this.submitState} state={this.state.block_building}/>},
+            {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState} state={this.state.block_cleaning}/>},
+            {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState} state={this.state.comparison_cleaning}/>},
+            {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState} state={this.state.entity_matching}/>},
+            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering}/>}, 
             {name: 'Confirm Configuration', component: <ConfirmConfiguration state={this.state}/>} 
            
         ]

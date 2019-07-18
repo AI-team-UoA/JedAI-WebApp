@@ -8,10 +8,10 @@ class SelectMultipleMethods extends Component {
     constructor(...args) {
         super(...args);
         this.state = {
-            name: this.props.name,
-            label:this.props.label,
-            selected: false,
-            conf_type: "Default"
+            name: this.props.state.name,
+            label:this.props.state.label,
+            selected: this.props.state.selected,
+            conf_type: this.props.state.conf_type
         }
     }
 
@@ -32,11 +32,11 @@ class SelectMultipleMethods extends Component {
                 <Alert  variant="primary" style={{height:'45px', width:"65%", margin:'auto', marginBottom:'10px' }}>
                     <Form.Group as={Row} className="form-row" > 
                         <Col sm={1}>
-                            <input type="checkbox" name={this.props.name} onChange={this.onChange}/>
+                            <input type="checkbox" name={this.state.name} onChange={this.onChange} checked={this.state.selected}/>
                         </Col>
 
                         <Col sm={4}>
-                            <Form.Label>{this.props.label}</Form.Label>
+                            <Form.Label>{this.state.label}</Form.Label>
                         </Col>
                         <Form>
                             <Col sm={3} style={{ display: 'flex', flexDirection: 'row', float:'right'}} >
@@ -49,8 +49,7 @@ class SelectMultipleMethods extends Component {
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange}   
                                     disabled={this.state.selected === false}   
-                                    defaultChecked
-                                                
+                                    checked={this.state.conf_type === "Default"}              
                                 />
                                 <Form.Check
                                     type="radio"
@@ -60,6 +59,7 @@ class SelectMultipleMethods extends Component {
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange} 
                                     disabled={this.state.selected === false}
+                                    checked={this.state.conf_type === "Automatic"}
                                 />
                                 <Form.Check
                                     type="radio"
@@ -69,6 +69,7 @@ class SelectMultipleMethods extends Component {
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange} 
                                     disabled={this.state.selected === false}
+                                    checked={this.state.conf_type === "Manual"}
                                 />
                             </Col>
                         </Form>
@@ -81,8 +82,7 @@ class SelectMultipleMethods extends Component {
 
 
 SelectMultipleMethods.propTypes = {
-    label: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    state: PropTypes.object.isRequired,
     submitChange: PropTypes.func.isRequired
 }
 export default SelectMultipleMethods

@@ -5,10 +5,14 @@ import {Form, Row } from 'react-bootstrap/'
 
 class ComparisonCleaning extends Component {
 
-    state = {
-        method: "NO_CLEANING",
-        conf_type: "Default",
-        label: "No Cleaning"
+    constructor(...args) {
+        super(...args);
+
+        this.state = {
+            method: this.props.state.method,
+            conf_type: this.props.state.conf_type,
+            label: this.props.state.label
+        }
     }
 
     methods = 
@@ -89,7 +93,7 @@ class ComparisonCleaning extends Component {
                     <Form.Label><h5>Select a Comparison Cleaning method (Optional)</h5>  </Form.Label>
                 </Form.Group> 
 
-                <SelectMethod methods={this.methods} default_method="NO_CLEANING" default_method_label="No Cleaning" auto_disabled={false} onChange={this.onChange} title={"Comparison Cleaning method"}/>
+                <SelectMethod methods={this.methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Comparison Cleaning method"}/>
 
             </div>
         )
@@ -97,6 +101,7 @@ class ComparisonCleaning extends Component {
 }
 
 ComparisonCleaning.propTypes = {
+    state: PropTypes.object.isRequired,
     submitState: PropTypes.func.isRequired
 }
 

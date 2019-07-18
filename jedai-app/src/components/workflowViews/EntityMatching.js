@@ -6,10 +6,14 @@ import {Form, Row } from 'react-bootstrap/'
 
 class EntityMatching extends Component {
 
-    state = {
-        method: "GROUP_LINKAGE",
-        conf_type: "Default",
-        label: "Group Linkage"
+    constructor(...args) {
+        super(...args);
+
+        this.state = {
+            method: this.props.state.method,
+            conf_type: this.props.state.conf_type,
+            label: this.props.state.label
+        }
     }
 
     methods = 
@@ -57,7 +61,7 @@ class EntityMatching extends Component {
                     <Form.Label><h5>Select parameters for Entity Matching</h5></Form.Label>
                 </Form.Group> 
 
-                <SelectMethod methods={this.methods} default_method="GROUP_LINKAGE" default_method_label="Group Linkage" auto_disabled={false} onChange={this.onChange} title={"Entity Matching Parameters"}/>
+                <SelectMethod methods={this.methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Entity Matching Parameters"}/>
                     
             </div>
         )
@@ -65,6 +69,7 @@ class EntityMatching extends Component {
 }
 
 EntityMatching.propTypes = {
+    state: PropTypes.object.isRequired,
     submitState: PropTypes.func.isRequired
 }
 

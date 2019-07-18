@@ -5,10 +5,14 @@ import {Form, Row } from 'react-bootstrap/'
 
 class EntityClustering extends Component {
 
-    state = {
-        method: "CONNECTED_COMPONENTS_CLUSTERING",
-        conf_type: "Default",
-        label: "Connected Component Clustering"
+    constructor(...args) {
+        super(...args);
+
+        this.state = {
+            method: this.props.state.method,
+            conf_type: this.props.state.conf_type,
+            label: this.props.state.label
+        }
     }
 
     dirtyER_methods = 
@@ -64,20 +68,14 @@ class EntityClustering extends Component {
 
 
     render() {
-        console.log(this.props.er_mode)
-        //need changes here 
+        
         var er_mode = this.props.er_mode
         var configurations 
         if (er_mode === "dirty"){
-            configurations = <SelectMethod methods={this.dirtyER_methods} default_method="CONNECTED_COMPONENTS_CLUSTERING" default_method_label="Connected Component Clustering"  auto_disabled={false} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
+            configurations = <SelectMethod methods={this.dirtyER_methods} state={this.state}  auto_disabled={false} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
         }
         else if (er_mode === "clean"){
-            configurations = <SelectMethod methods={this.cleanER_methods} default_method="UNIQUE_MAPPING_CLUSTERING" default_method_label="Unique Mapping Clustering" auto_disabled={false} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
-            if( this.state.method !== "UNIQUE_MAPPING_CLUSTERING")
-                this.setState({
-                    method: "UNIQUE_MAPPING_CLUSTERING",
-                    label: "Unique Mapping Clustering"
-                })
+            configurations = <SelectMethod methods={this.cleanER_methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
         }
         else configurations = <h2>ERROR</h2>
         return (
@@ -105,6 +103,7 @@ class EntityClustering extends Component {
 
 EntityClustering.propTypes = {
     submitState: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
     er_mode: PropTypes.string.isRequired
 }
 

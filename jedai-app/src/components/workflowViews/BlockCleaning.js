@@ -10,40 +10,77 @@ class BlockCleaning extends Component {
     constructor(...args) {
         super(...args);
         this.submitChange = this.submitChange.bind(this)
-        this.state = {
-            block_cleaning : [
-                {
-                    name: "SIZE_BASED_BLOCK_PURGING",
-                    selected: false,
-                    label: "Size-based Block Purging",
-                    conf_type: ""
-                },  
-                {
-                    name: "COMPARISON_BASED_BLOCK_PURGING",
-                    selected: false,
-                    label: "Comparison-based Block Purging",
-                    conf_type: ""
-                },  
-                {
-                    name: "BLOCK_FILTERING",
-                    selected: false,
-                    label: "Block Filrering",
-                    conf_type: ""
-                }
-            ]
+        
+        
+        if (this.props.state !== null){
+            var selected_methods = new Map()
+            this.props.state.forEach((selected_method) => {
+                selected_methods.set(selected_method.name, selected_method)
+            })
+
+            // in case user has already selected and returns back, initialize state based on father component's state
+            this.state = {
+                block_cleaning : [
+                    {
+                        name: "SIZE_BASED_BLOCK_PURGING",
+                        selected: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").selected : false,
+                        label: "Size-based Block Purging",
+                        conf_type: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").conf_type : "Default"
+                    },  
+                    {
+                        name: "COMPARISON_BASED_BLOCK_PURGING",
+                        selected: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").selected : false,
+                        label: "Comparison-based Block Purging",
+                        conf_type: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").conf_type : "Default"
+                    },  
+                    {
+                        name: "BLOCK_FILTERING",
+                        selected: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").selected : false,
+                        label: "Block Filrering",
+                        conf_type: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").conf_type : "Default"
+                    }
+                ]
+            }
         }
+        else{
+            // Block cleaning is not initialized
+            this.state = {
+                block_cleaning : [
+                    {
+                        name: "SIZE_BASED_BLOCK_PURGING",
+                        selected: false,
+                        label: "Size-based Block Purging",
+                        conf_type: "Default"
+                    },  
+                    {
+                        name: "COMPARISON_BASED_BLOCK_PURGING",
+                        selected: false,
+                        label: "Comparison-based Block Purging",
+                        conf_type: "Default"
+                    },  
+                    {
+                        name: "BLOCK_FILTERING",
+                        selected: false,
+                        label: "Block Filrering",
+                        conf_type: "Default"
+                    }
+                ]
+            }
+        }
+        
+        
     }
 
+    // update the selected element in the state
     submitChange(child_state){
-        
-        this.setState({
+            this.setState({
                 block_cleaning: this.state.block_cleaning.map(el => (el.name === child_state.name ? {...child_state} : el))
             });
     }
 
 
     // Put selected methods into an array and return them back to the father compoenent
-    //block cleaning is optional thus validation is always true
+    // block cleaning is optional thus validation is always true
     isValidated(){
         var selected_methods = []
         this.state.block_cleaning.forEach((method) => {
@@ -73,9 +110,9 @@ class BlockCleaning extends Component {
                     <Form.Label><h5>Select methods for Block Cleaning (Optional)</h5></Form.Label>
                 </Form.Group> 
 
-                <SelectMultipleMethods submitChange={this.submitChange} name="SIZE_BASED_BLOCK_PURGING" label="Size-based Block Purging" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="COMPARISON_BASED_BLOCK_PURGING" label="Comparison-based Block Purging" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="BLOCK_FILTERING" label="Block Filering" />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_cleaning[0]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_cleaning[1]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_cleaning[2]} />
 
             </div>
         )

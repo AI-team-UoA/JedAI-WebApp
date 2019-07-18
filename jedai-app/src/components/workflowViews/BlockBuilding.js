@@ -10,74 +10,145 @@ class BlockBuilding extends Component {
         super(...args);
         this.submitChange = this.submitChange.bind(this)
         this.alertText = "Select at least one Block Building method!"
-        this.state = {
-            block_building : [
-                {
+
+        if (this.props.state !== null){
+            var selected_methods = new Map()
+            this.props.state.forEach((selected_method) => {
+                selected_methods.set(selected_method.name, selected_method)
+            })
+
+            // in case user has already selected and returned back, initialize state based on father component's state
+            this.state = {
+                block_building : [
+                    {
                         name: "STANDARD_TOKEN_BUILDING",
-                        selected: false,
+                        selected: selected_methods.has("STANDARD_TOKEN_BUILDING") ? selected_methods.get("STANDARD_TOKEN_BUILDING").selected : false,
                         label: "Standard/Token Blocking",
-                        conf_type: ""
-                },  
-                {
+                        conf_type: selected_methods.has("STANDARD_TOKEN_BUILDING") ? selected_methods.get("STANDARD_TOKEN_BUILDING").conf_type : "Default"
+                    },  
+                    {
                         name: "SORTED_NEIGHBORHOOD",
-                        selected: false,
+                        selected: selected_methods.has("SORTED_NEIGHBORHOOD") ? selected_methods.get("SORTED_NEIGHBORHOOD").selected : false,
                         label: "Sorted Neighborhood",
-                        conf_type: ""
+                        conf_type: selected_methods.has("SORTED_NEIGHBORHOOD") ? selected_methods.get("SORTED_NEIGHBORHOOD").conf_type : "Default"
                     },  
                     {
                         name: "SORTED_NEIGHBORHOOD_EXTENDED",
-                        selected: false,
+                        selected: selected_methods.has("SORTED_NEIGHBORHOOD_EXTENDED") ? selected_methods.get("SORTED_NEIGHBORHOOD_EXTENDED").selected : false,
                         label: "Extended Sorted Neighborhood",
-                        conf_type: ""
+                        conf_type: selected_methods.has("SORTED_NEIGHBORHOOD_EXTENDED") ? selected_methods.get("SORTED_NEIGHBORHOOD_EXTENDED").conf_type : "Default"
                     },  
                     {
                         name: "Q_GRAMS_BLOCKING",
-                        selected: false,
+                        selected: selected_methods.has("Q_GRAMS_BLOCKING") ? selected_methods.get("Q_GRAMS_BLOCKING").selected : false,
                         label: "Q-Grams Blocking",
-                        conf_type: ""
+                        conf_type: selected_methods.has("Q_GRAMS_BLOCKING") ? selected_methods.get("Q_GRAMS_BLOCKING").conf_type : "Default"
                     },  
                     {
                         name: "Q_GRAMS_BLOCKING_EXTENDED",
-                        selected: false,
+                        selected: selected_methods.has("Q_GRAMS_BLOCKING_EXTENDED") ? selected_methods.get("Q_GRAMS_BLOCKING_EXTENDED").selected : false,
                         label: "Extended Q-Grams Blocking",
-                        conf_type: ""
+                        conf_type: selected_methods.has("Q_GRAMS_BLOCKING_EXTENDED") ? selected_methods.get("Q_GRAMS_BLOCKING_EXTENDED").conf_type : "Default"
                     },  
                     {
                         name: "SUFFIX_ARRAYS_BLOCKING",
-                        selected: false,
+                        selected: selected_methods.has("SUFFIX_ARRAYS_BLOCKING") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING").selected : false,
                         label: "Suffix Arrays Blocking",
-                        conf_type: ""
-                },  
-                {
+                        conf_type: selected_methods.has("SUFFIX_ARRAYS_BLOCKING") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING").conf_type : "Default"
+                    },  
+                    {
                         name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
-                        selected: false,
+                        selected: selected_methods.has("SUFFIX_ARRAYS_BLOCKING_EXTENDED") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING_EXTENDED").selected : false,
                         label: "Extended Suffix Arrays Blocking",
-                        conf_type: ""
+                        conf_type: selected_methods.has("SUFFIX_ARRAYS_BLOCKING_EXTENDED") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING_EXTENDED").conf_type : "Default"
                     },  
                     {
                         name: "LSH_SUPERBIT_BLOCKING",
-                        selected: false,
+                        selected: selected_methods.has("LSH_SUPERBIT_BLOCKING") ? selected_methods.get("LSH_SUPERBIT_BLOCKING").selected : false,
                         label: "LSH SuperBit Blocking",
-                        conf_type: ""
+                        conf_type: selected_methods.has("LSH_SUPERBIT_BLOCKING") ? selected_methods.get("LSH_SUPERBIT_BLOCKING").conf_type : "Default"
                     },  
                     {
                         name: "LSH_MINHASH_BLOCKING",
-                        selected: false,
+                        selected: selected_methods.has("LSH_MINHASH_BLOCKING") ? selected_methods.get("LSH_MINHASH_BLOCKING").selected : false,
                         label: "LSH MinHash Blocking",
-                        conf_type: ""
+                        conf_type: selected_methods.has("LSH_MINHASH_BLOCKING") ? selected_methods.get("LSH_MINHASH_BLOCKING").conf_type : "Default"
                     } 
             ],
             alertShow : false
         }
+
+        }
+        else{
+            this.state = {
+                block_building : [
+                    {
+                            name: "STANDARD_TOKEN_BUILDING",
+                            selected: false,
+                            label: "Standard/Token Blocking",
+                            conf_type: "Default"
+                    },  
+                    {
+                            name: "SORTED_NEIGHBORHOOD",
+                            selected: false,
+                            label: "Sorted Neighborhood",
+                            conf_type: "Default"
+                        },  
+                        {
+                            name: "SORTED_NEIGHBORHOOD_EXTENDED",
+                            selected: false,
+                            label: "Extended Sorted Neighborhood",
+                            conf_type: "Default"
+                        },  
+                        {
+                            name: "Q_GRAMS_BLOCKING",
+                            selected: false,
+                            label: "Q-Grams Blocking",
+                            conf_type: "Default"
+                        },  
+                        {
+                            name: "Q_GRAMS_BLOCKING_EXTENDED",
+                            selected: false,
+                            label: "Extended Q-Grams Blocking",
+                            conf_type: "Default"
+                        },  
+                        {
+                            name: "SUFFIX_ARRAYS_BLOCKING",
+                            selected: false,
+                            label: "Suffix Arrays Blocking",
+                            conf_type: "Default"
+                    },  
+                    {
+                            name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
+                            selected: false,
+                            label: "Extended Suffix Arrays Blocking",
+                            conf_type: "Default"
+                        },  
+                        {
+                            name: "LSH_SUPERBIT_BLOCKING",
+                            selected: false,
+                            label: "LSH SuperBit Blocking",
+                            conf_type: "Default"
+                        },  
+                        {
+                            name: "LSH_MINHASH_BLOCKING",
+                            selected: false,
+                            label: "LSH MinHash Blocking",
+                            conf_type: "Default"
+                        } 
+                ],
+                alertShow : false
+            }
+        }
     }
 
     submitChange(child_state){
-        
         this.setState({
             block_building: this.state.block_building.map(el => (el.name === child_state.name ? {...child_state} : el))
             });
     }
 
+    //handle alert modal
     handleAlertClose = () => this.setState({alertShow : false});
     handleAlerShow = () => this.setState({alertShow : true});
 
@@ -120,15 +191,15 @@ class BlockBuilding extends Component {
                     <Form.Label><h5>Select Block Building methods and Configurations</h5></Form.Label>
                 </Form.Group>
                  
-                <SelectMultipleMethods submitChange={this.submitChange} name="STANDARD_TOKEN_BUILDING" label="Standard/Token Blocking" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="SORTED_NEIGHBORHOOD" label="Sorted Neighborhood" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="SORTED_NEIGHBORHOOD_EXTENDED" label="Extended Sorted Neighborhood" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="Q_GRAMS_BLOCKING" label="Q-Grams Blocking" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="Q_GRAMS_BLOCKING_EXTENDED" label="Extended Q-Grams Blocking" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="SUFFIX_ARRAYS_BLOCKING" label="Suffix Arrays Blocking" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="SUFFIX_ARRAYS_BLOCKING_EXTENDED" label="Extended Suffix Arrays Blocking" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="LSH_SUPERBIT_BLOCKING" label="LSH SuperBit Blocking" />
-                <SelectMultipleMethods submitChange={this.submitChange} name="LSH_MINHASH_BLOCKING" label="LSH MinHash Blocking" />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[0]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[1]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[2]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[3]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[4]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[5]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[6]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[7]} />
+                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[8]} />
                 
             </div>
         )

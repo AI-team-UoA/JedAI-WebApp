@@ -8,9 +8,9 @@ class SelectMethod extends Component {
         super(...args);
 
         this.state = {
-            method: this.props.default_method,
-            conf_type: "Default",
-            label: this.props.default_method_label
+            method: this.props.state.method,
+            conf_type: this.props.state.conf_type,
+            label: this.props.state.label
         }
     }
 
@@ -66,6 +66,7 @@ class SelectMethod extends Component {
                                             value="Automatic"
                                             onChange={(e) => this.onChange("", e)}
                                             disabled={this.props.auto_disabled}
+                                            checked={this.state.conf_type ===  "Automatic"}
                                         />
                                         <Form.Check
                                             type="radio"
@@ -73,6 +74,7 @@ class SelectMethod extends Component {
                                             name="conf_type"
                                             value="Manual"
                                             onChange={(e) => this.onChange("", e)}
+                                            checked={this.state.conf_type ===  "Manual"}
                                         />
                                     </Col>
                                 </Form.Group>
@@ -86,8 +88,7 @@ class SelectMethod extends Component {
 
 SelectMethod.propTypes = {
     methods: PropTypes.array.isRequired,
-    default_method: PropTypes.string.isRequired,
-    default_method_label: PropTypes.string.isRequired,
+    state: PropTypes.object.isRequired,
     auto_disabled: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired

@@ -4,12 +4,15 @@ import SelectMethod from './utilities/SelectMethod'
 import {Form, Row } from 'react-bootstrap/'
 
  class SchemaClustering extends Component {
-     
+    
+    constructor(...args) {
+        super(...args);
 
-    state = {
-        method: "NO_SCHEMA_CLUSTERING",
-        conf_type: "Default",
-        label: "No Schema Clustering"
+        this.state = {
+            method: this.props.state.method,
+            conf_type: this.props.state.conf_type,
+            label: this.props.state.label
+        }
     }
 
     methods = 
@@ -66,14 +69,15 @@ import {Form, Row } from 'react-bootstrap/'
                     <Form.Label><h5>Select a Schema Clustering method</h5></Form.Label>
                 </Form.Group> 
 
-                <SelectMethod methods={this.methods} default_method="NO_SCHEMA_CLUSTERING" default_method_label="No Schema Clustering" auto_disabled={true} onChange={this.onChange} title={"Schema Clustering methods"}/>
+                <SelectMethod methods={this.methods} state={this.state}  auto_disabled={true} onChange={this.onChange} title={"Schema Clustering methods"}/>
                     
             </div>
         )
     }
 }
 SchemaClustering.propTypes = {
-    submitState: PropTypes.func.isRequired
+    state: PropTypes.object.isRequired,
+    submitState: PropTypes.func.isRequired   
 }
 
 export default SchemaClustering
