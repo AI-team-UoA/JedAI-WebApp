@@ -35,7 +35,9 @@ class DesktopForms extends Component {
     }
 
     render() {
-
+        var er_mode = "dirty"
+        if (this.state.data_reading !== null)
+            er_mode = this.state.data_reading.er_mode
         const steps =
         [
             {name: 'Data Reading', component: <DataReader submitState={this.submitState} />},
@@ -44,7 +46,7 @@ class DesktopForms extends Component {
             {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState}/>},
             {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState}/>},
             {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState}/>},
-            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState}/>}, 
+            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode}/>}, 
             {name: 'Confirm Configuration', component: <ConfirmConfiguration />} 
            
         ]

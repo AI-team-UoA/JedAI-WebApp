@@ -64,14 +64,20 @@ class EntityClustering extends Component {
 
 
     render() {
+        console.log(this.props.er_mode)
         //need changes here 
-        var er_mode = "dirty"
+        var er_mode = this.props.er_mode
         var configurations 
         if (er_mode === "dirty"){
             configurations = <SelectMethod methods={this.dirtyER_methods} default_method="CONNECTED_COMPONENTS_CLUSTERING" default_method_label="Connected Component Clustering"  auto_disabled={false} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
         }
         else if (er_mode === "clean"){
             configurations = <SelectMethod methods={this.cleanER_methods} default_method="UNIQUE_MAPPING_CLUSTERING" default_method_label="Unique Mapping Clustering" auto_disabled={false} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
+            if( this.state.method !== "UNIQUE_MAPPING_CLUSTERING")
+                this.setState({
+                    method: "UNIQUE_MAPPING_CLUSTERING",
+                    label: "Unique Mapping Clustering"
+                })
         }
         else configurations = <h2>ERROR</h2>
         return (
@@ -98,7 +104,8 @@ class EntityClustering extends Component {
 }
 
 EntityClustering.propTypes = {
-    submitState: PropTypes.func.isRequired
+    submitState: PropTypes.func.isRequired,
+    er_mode: PropTypes.string.isRequired
 }
 
 export default  EntityClustering
