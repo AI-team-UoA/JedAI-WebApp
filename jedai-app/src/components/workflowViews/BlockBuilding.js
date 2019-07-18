@@ -15,46 +15,55 @@ class BlockBuilding extends Component {
                 {
                         name: "STANDARD_TOKEN_BUILDING",
                         selected: false,
+                        label: "Standard/Token Blocking",
                         conf_type: ""
                 },  
                 {
                         name: "SORTED_NEIGHBORHOOD",
                         selected: false,
+                        label: "Sorted Neighborhood",
                         conf_type: ""
                     },  
                     {
                         name: "SORTED_NEIGHBORHOOD_EXTENDED",
                         selected: false,
+                        label: "Extended Sorted Neighborhood",
                         conf_type: ""
                     },  
                     {
                         name: "Q_GRAMS_BLOCKING",
                         selected: false,
+                        label: "Q-Grams Blocking",
                         conf_type: ""
                     },  
                     {
                         name: "Q_GRAMS_BLOCKING_EXTENDED",
                         selected: false,
+                        label: "Extended Q-Grams Blocking",
                         conf_type: ""
                     },  
                     {
                         name: "SUFFIX_ARRAYS_BLOCKING",
                         selected: false,
+                        label: "Suffix Arrays Blocking",
                         conf_type: ""
                 },  
                 {
                         name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
                         selected: false,
+                        label: "Extended Suffix Arrays Blocking",
                         conf_type: ""
                     },  
                     {
                         name: "LSH_SUPERBIT_BLOCKING",
                         selected: false,
+                        label: "LSH SuperBit Blocking",
                         conf_type: ""
                     },  
                     {
                         name: "LSH_MINHASH_BLOCKING",
                         selected: false,
+                        label: "LSH MinHash Blocking",
                         conf_type: ""
                     } 
             ],

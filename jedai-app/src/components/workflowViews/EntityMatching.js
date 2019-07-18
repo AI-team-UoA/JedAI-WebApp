@@ -7,8 +7,9 @@ import {Form, Row } from 'react-bootstrap/'
 class EntityMatching extends Component {
 
     state = {
-        method: "NO_SCHEMA_CLUSTERING",
-        conf_type: "default"
+        method: "GROUP_LINKAGE",
+        conf_type: "default",
+        label: "Group Linkage"
     }
 
     methods = 
@@ -27,7 +28,8 @@ class EntityMatching extends Component {
         this.setState(
             {
                 method: e.method,
-                conf_type: e.conf_type
+                conf_type: e.conf_type,
+                label: e.label
             }
         )
     } 
@@ -55,7 +57,7 @@ class EntityMatching extends Component {
                     <Form.Label><h5>Select parameters for Entity Matching</h5></Form.Label>
                 </Form.Group> 
 
-                <SelectMethod methods={this.methods} default_method="GROUP_LINKAGE" auto_disabled={false} onChange={this.onChange} title={"Entity Matching Parameters"}/>
+                <SelectMethod methods={this.methods} default_method="GROUP_LINKAGE" default_method_label="Group Linkage" auto_disabled={false} onChange={this.onChange} title={"Entity Matching Parameters"}/>
                     
             </div>
         )

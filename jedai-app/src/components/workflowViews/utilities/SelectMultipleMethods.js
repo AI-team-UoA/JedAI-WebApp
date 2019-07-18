@@ -9,6 +9,7 @@ class SelectMultipleMethods extends Component {
         super(...args);
         this.state = {
             name: this.props.name,
+            label:this.props.label,
             selected: false,
             conf_type: "default"
         }

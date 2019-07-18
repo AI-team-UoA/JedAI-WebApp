@@ -15,16 +15,19 @@ class BlockCleaning extends Component {
                 {
                     name: "SIZE_BASED_BLOCK_PURGING",
                     selected: false,
+                    label: "Size-based Block Purging",
                     conf_type: ""
                 },  
                 {
                     name: "COMPARISON_BASED_BLOCK_PURGING",
                     selected: false,
+                    label: "Comparison-based Block Purging",
                     conf_type: ""
                 },  
                 {
                     name: "BLOCK_FILTERING",
                     selected: false,
+                    label: "Block Filrering",
                     conf_type: ""
                 }
             ]

@@ -9,13 +9,19 @@ class SelectMethod extends Component {
 
         this.state = {
             method: this.props.default_method,
-            conf_type: "default"
+            conf_type: "default",
+            label: this.props.default_method_label
         }
     }
 
-    onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value},
-            () => (this.props.onChange(this.state)))
+    onChange = (label, e) => {
+        if (e.target.name ==="method"){
+            this.setState({[e.target.name]: e.target.value, label: label},
+                () => (this.props.onChange(this.state)))
+        }
+        else
+            this.setState({[e.target.name]: e.target.value},
+                () => (this.props.onChange(this.state)))
     } 
 
     
@@ -28,7 +34,7 @@ class SelectMethod extends Component {
                 label={conf.label}
                 name="method"
                 value={conf.value}
-                onChange={this.onChange}
+                onChange={(e) => this.onChange(conf.label, e)}
                 checked={this.state.method === conf.value }
                 key={index}
             />
@@ -50,7 +56,7 @@ class SelectMethod extends Component {
                                             label="Default"
                                             name="conf_type"
                                             value="default"
-                                            onChange={this.onChange}
+                                            onChange={(e) => this.onChange("", e)}
                                             checked={this.state.conf_type ===  "default"}
                                         />
                                         <Form.Check
@@ -58,7 +64,7 @@ class SelectMethod extends Component {
                                             label="Automatic"
                                             name="conf_type"
                                             value="automatic"
-                                            onChange={this.onChange}
+                                            onChange={(e) => this.onChange("", e)}
                                             disabled={this.props.auto_disabled}
                                         />
                                         <Form.Check
@@ -66,7 +72,7 @@ class SelectMethod extends Component {
                                             label="Manual"
                                             name="conf_type"
                                             value="manual"
-                                            onChange={this.onChange}
+                                            onChange={(e) => this.onChange("", e)}
                                         />
                                     </Col>
                                 </Form.Group>
@@ -81,6 +87,7 @@ class SelectMethod extends Component {
 SelectMethod.propTypes = {
     methods: PropTypes.array.isRequired,
     default_method: PropTypes.string.isRequired,
+    default_method_label: PropTypes.string.isRequired,
     auto_disabled: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired

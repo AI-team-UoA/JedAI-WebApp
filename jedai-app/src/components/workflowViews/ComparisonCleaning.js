@@ -7,7 +7,8 @@ class ComparisonCleaning extends Component {
 
     state = {
         method: "NO_CLEANING",
-        conf_type: "default"
+        conf_type: "default",
+        label: "No Cleaning"
     }
 
     methods = 
@@ -58,7 +59,8 @@ class ComparisonCleaning extends Component {
         this.setState(
             {
                 method: e.method,
-                conf_type: e.conf_type
+                conf_type: e.conf_type,
+                label: e.label
             }
         )
     } 
@@ -87,7 +89,7 @@ class ComparisonCleaning extends Component {
                     <Form.Label><h5>Select a Comparison Cleaning method (Optional)</h5>  </Form.Label>
                 </Form.Group> 
 
-                <SelectMethod methods={this.methods} default_method="NO_CLEANING" auto_disabled={false} onChange={this.onChange} title={"Comparison Cleaning method"}/>
+                <SelectMethod methods={this.methods} default_method="NO_CLEANING" default_method_label="No Cleaning" auto_disabled={false} onChange={this.onChange} title={"Comparison Cleaning method"}/>
 
             </div>
         )

@@ -6,8 +6,9 @@ import {Form, Row } from 'react-bootstrap/'
 class EntityClustering extends Component {
 
     state = {
-        method: "NO_SCHEMA_CLUSTERING",
-        conf_type: "default"
+        method: "CONNECTED_COMPONENTS_CLUSTERING",
+        conf_type: "default",
+        label: "Connected Component Clustering"
     }
 
     dirtyER_methods = 
@@ -50,7 +51,8 @@ class EntityClustering extends Component {
         this.setState(
             {
                 method: e.method,
-                conf_type: e.conf_type
+                conf_type: e.conf_type,
+                label: e.label
             }
         )
     } 
@@ -66,10 +68,10 @@ class EntityClustering extends Component {
         var er_mode = "dirty"
         var configurations 
         if (er_mode === "dirty"){
-            configurations = <SelectMethod methods={this.dirtyER_methods} default_method="CONNECTED_COMPONENTS_CLUSTERING" auto_disabled={false} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
+            configurations = <SelectMethod methods={this.dirtyER_methods} default_method="CONNECTED_COMPONENTS_CLUSTERING" default_method_label="Connected Component Clustering"  auto_disabled={false} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
         }
         else if (er_mode === "clean"){
-            configurations = <SelectMethod methods={this.cleanER_methods} default_method="UNIQUE_MAPPING_CLUSTERING" auto_disabled={false} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
+            configurations = <SelectMethod methods={this.cleanER_methods} default_method="UNIQUE_MAPPING_CLUSTERING" default_method_label="Unique Mapping Clustering" auto_disabled={false} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
         }
         else configurations = <h2>ERROR</h2>
         return (
