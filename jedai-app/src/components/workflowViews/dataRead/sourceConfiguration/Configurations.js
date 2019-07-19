@@ -71,8 +71,8 @@ class Configurations extends Component {
         // Form the data that will be sent to server
         formData.append('entity_id', this.props.entity_id)
         formData.append('filetype', this.props.filetype)
-        Object.keys(this.state.configuration).forEach((key) => { formData.append(key, this.state.configuration[key]);})
-       
+        Object.keys(this.state.configuration).forEach((key) => { formData.append(key, JSON.stringify(this.state.configuration[key]));})
+
         axios({
             url: '/desktopmode/dataread',
             method: 'POST',

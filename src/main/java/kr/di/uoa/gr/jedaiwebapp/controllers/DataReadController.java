@@ -39,16 +39,16 @@ public class DataReadController {
 	@PostMapping	
 	public String DataRead(
 			@RequestParam(value="file", required=false) MultipartFile file,
-			@RequestParam MultiValueMap<String, String> configurations) {
+			@RequestParam MultiValueMap<String, Object> configurations) {
 		
 		
-		String filetype = configurations.getFirst("filetype");
-		String source = filetype.equals("Database") ? configurations.getFirst("url"): UploadFile(file);
+		String filetype = (String) configurations.getFirst("filetype");
+		String source =  filetype.equals("Database") ? (String) configurations.getFirst("url"): UploadFile(file);
 		if (source == null || source.equals("")){
 			return "";
 		}
 		else {
-			String entity_id = configurations.getFirst("entity_id");
+			String entity_id = (String) configurations.getFirst("entity_id");
 			if (dataRead_map.containsKey(entity_id))
 				dataRead_map.remove(entity_id);
 			try {
@@ -56,6 +56,7 @@ public class DataReadController {
 				return source;
 			}
 			catch(Exception e) {
+				e.printStackTrace();
 				return "";
 			}
 		}

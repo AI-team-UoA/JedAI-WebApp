@@ -11,14 +11,16 @@ import org.scify.jedai.datareader.entityreader.EntityXMLreader;
 import org.scify.jedai.datareader.entityreader.IEntityReader;
 import org.springframework.util.MultiValueMap;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class DataReadModel {
 	private String filetype;
 	private String filepath;
 	private String url;
-	private MultiValueMap<String, String> configurations;
+	private MultiValueMap<String, Object> configurations;
 	private List<EntityProfile> profiles;
 	
-	public DataReadModel(String filetype, String source, MultiValueMap<String, String> configurations) throws Exception{
+	public DataReadModel(String filetype, String source, MultiValueMap<String, Object> configurations) throws Exception{
 		this.filetype = filetype;
 		if (filetype.equals("Database")) {
 			this.url = source;
@@ -71,51 +73,70 @@ public class DataReadModel {
 	public int getProfilesSize() { return this.profiles.size();}
 
 	
-	public IEntityReader CSVReader() {
+	public IEntityReader CSVReader() throws Exception{
 			
         EntityCSVReader csvReader = new EntityCSVReader(filepath);
-        boolean first_row = Boolean.parseBoolean(configurations.getFirst("first_row"));
-        char seperator = this.configurations.getFirst("seperator").charAt(0);
-        int id_index = Integer.parseInt(configurations.getFirst("id_index"));
+        boolean first_row = Boolean.parseBoolean((String) configurations.getFirst("first_row"));
+        char seperator = ((String)this.configurations.getFirst("seperator")).charAt(1);
+        int id_index = Integer.parseInt((String) configurations.getFirst("id_index"));
+        
+        ObjectMapper mapper = new ObjectMapper();
+        int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
         
         csvReader.setAttributeNamesInFirstRow(first_row);
         csvReader.setSeparator(seperator);
         csvReader.setIdIndex(id_index);
-        //csvReader.setAttributesToExclude(Ints.toArray(indicesToExcludeSet));
+        
+        csvReader.setAttributesToExclude(excluded);
         
         return csvReader;
 	}
 	
-	public IEntityReader DBReader() {
+	
+	public IEntityReader DBReader() throws Exception{
 		
         EntityDBReader dbReader = new EntityDBReader(this.url);
-        String table =  this.configurations.getFirst("table");
-        String username =  this.configurations.getFirst("username");
-        String password =  this.configurations.getFirst("password");
-        boolean ssl =  Boolean.parseBoolean(this.configurations.getFirst("ssl"));
-       
-        		
+        String table =  (String)this.configurations.getFirst("table");
+        String username = (String)  this.configurations.getFirst("username");
+        String password =  (String) this.configurations.getFirst("password");  
+        boolean ssl =  Boolean.parseBoolean((String) this.configurations.getFirst("ssl"));
+        
+        ObjectMapper mapper = new ObjectMapper();
+        int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
+        String[] excluded_str = new String[excluded.length];
+        for(int i =0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
+        
         dbReader.setTable(table);
         dbReader.setUser(username);
         dbReader.setPassword(password);
         dbReader.setSSL(ssl);
-        //dbReader.setAttributesToExclude(excludedAttrs.toArray(new String[0]));
+        dbReader.setAttributesToExclude(excluded_str);
         
         return dbReader;        
 	}
 	
 	
-	public IEntityReader RDFReader() {
+	public IEntityReader RDFReader() throws Exception {
 		
 		EntityRDFReader rdfReader = new EntityRDFReader(filepath);
-	    //rdfReader.setAttributesToExclude(excludedPredicates.toArray(new String[0]));
+		ObjectMapper mapper = new ObjectMapper();
+        int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
+        String[] excluded_str = new String[excluded.length];
+        for(int i =0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
+        
+	    rdfReader.setAttributesToExclude(excluded_str);
 		return rdfReader;
 	}
 		
-	public IEntityReader XMLReader() {
+	public IEntityReader XMLReader() throws Exception{
 			
 		EntityXMLreader xmlReader = new EntityXMLreader(filepath);
-		//rdfReader.setAttributesToExclude(excludedPredicates.toArray(new String[0]));
+		ObjectMapper mapper = new ObjectMapper();
+        int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
+        String[] excluded_str = new String[excluded.length];
+        for(int i =0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
+        
+        xmlReader.setAttributesToExclude(excluded_str);
 		return xmlReader;
 	}
 	
@@ -149,12 +170,12 @@ public class DataReadModel {
 	}
 
 
-	public MultiValueMap<String, String> getConfigurations() {
+	public MultiValueMap<String, Object> getConfigurations() {
 		return configurations;
 	}
 
 
-	public void setConfigurations(MultiValueMap<String, String> configurations) {
+	public void setConfigurations(MultiValueMap<String, Object> configurations) {
 		this.configurations = configurations;
 	}
 }

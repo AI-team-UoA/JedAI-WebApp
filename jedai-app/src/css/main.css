@@ -47,3 +47,14 @@
       margin-bottom: 20px;
   }
 
+
+  .X_btnStyle  {
+    background: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 50%;
+    border-color : #990000;
+    cursor: pointer;
+    float: right;
+  }
