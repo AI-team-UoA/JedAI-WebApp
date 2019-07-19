@@ -10,6 +10,7 @@ import AlertModal from '../utilities/AlertModal'
  class DataReader extends Component {
 
     constructor(...args) {
+        console.log("Created")
         super(...args);
         
         this.collapse_conf = false;
@@ -19,13 +20,22 @@ import AlertModal from '../utilities/AlertModal'
 
         this.alertText = "Select an ER Mode"
 
-
-        this.state = { 
-            er_mode : "",
-            entity1_set : null,
-            entity2_set : null,
-            groundTruth_set : null,
-            alertShow : false
+        if (this.props.state !== null){
+            this.state = { 
+                er_mode : this.props.state.er_mode,
+                entity1_set : this.props.state.entity1_set,
+                entity2_set : this.props.state.entity2_set,
+                groundTruth_set : this.props.state.groundTruth_set,
+                alertShow : false
+            }
+        }else{
+            this.state = { 
+                er_mode : "",
+                entity1_set : null,
+                entity2_set : null,
+                groundTruth_set : null,
+                alertShow : false
+            }
         }
     }
 
@@ -63,6 +73,7 @@ import AlertModal from '../utilities/AlertModal'
 
 
     isValidated(){
+        return true
         var isSet
         if(this.state.er_mode === "dirty") isSet = this.state.entity1_set !==null && this.state.groundTruth_set !==null
         else if(this.state.er_mode === "clean") isSet = this.state.entity1_set !==null && this.state.entity2_set !== null && this.state.groundTruth_set !==null
@@ -106,6 +117,7 @@ import AlertModal from '../utilities/AlertModal'
                                     name="er_mode"
                                     value="dirty"
                                     onChange={this.onChange}
+                                    checked={this.state.er_mode === "dirty"}
                                 />
                                 <Form.Check
                                     type="radio"
@@ -113,6 +125,7 @@ import AlertModal from '../utilities/AlertModal'
                                     name="er_mode"
                                     value="clean"
                                     onChange={this.onChange}
+                                    checked={this.state.er_mode === "clean"}
                                 />
                             </Col>
                         </Form.Group>
@@ -122,9 +135,9 @@ import AlertModal from '../utilities/AlertModal'
                     
                     <br/>
                     
-                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.er_mode === ""} type="entity" setEntity={this.setEntity}/>   
-                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.er_mode !== "clean"} type="entity" setEntity={this.setEntity}/> 
-                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.er_mode === ""} type="ground-truth" setEntity={this.setEntity}/>   
+                   <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.er_mode === ""} type="entity" setEntity={this.setEntity} state={this.state.entity1_set}/>   
+                   <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.er_mode !== "clean"} type="entity" setEntity={this.setEntity} state={this.state.entity2_set}/> 
+                   <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.er_mode === ""} type="ground-truth" setEntity={this.setEntity} state={this.state.groundTruth_set}/>   
                    
                 
             </div>   

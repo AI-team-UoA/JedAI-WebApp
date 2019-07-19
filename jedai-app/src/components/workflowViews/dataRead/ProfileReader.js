@@ -20,11 +20,21 @@ class ProfileReader extends Component {
         this.text_area_msg = ""
         this.explorer_get_entities = false
         
-        this.state = { 
-            entity_id: this.props.entity_id,
-            filetype : "",
-            source : "",
-            configurations: null
+        if (this.props.state !== null){
+            this.state = { 
+                entity_id: this.props.entity_id,
+                filetype : this.props.state.filetype,
+                source : this.props.state.source,
+                configurations: this.props.state.configurations
+            }
+        }
+        else{
+            this.state = { 
+                entity_id: this.props.entity_id,
+                filetype : "",
+                source : "",
+                configurations: null
+            }
         }
         
     }
@@ -33,6 +43,7 @@ class ProfileReader extends Component {
     // it also cleans the configurations
     onChange = (e) => {
         this.emptyConfiguration()
+        
         this.setState({[e.target.name]: e.target.value})
         
     }
@@ -91,6 +102,7 @@ class ProfileReader extends Component {
                 name="filetype" 
                 onChange={this.onChange}
                 disabled={this.props.disabled}
+                value={this.state.filetype}
             >
                 <option value="" ></option>
                 <option value="CSV" >CSV</option>

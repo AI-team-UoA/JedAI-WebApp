@@ -17,7 +17,10 @@ class DesktopForms extends Component {
 
     // Default states of the workflow stages
     state = {
+        
         data_reading: null,
+
+
         schema_clustering:  {
             method: "NO_SCHEMA_CLUSTERING",
             conf_type: "Default",
@@ -70,7 +73,7 @@ class DesktopForms extends Component {
 
         const steps =
         [
-            {name: 'Data Reading', component: <DataReader submitState={this.submitState} />},
+            {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading}/>},
             {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState} state={this.state.schema_clustering}/>},
             {name: 'Block Building', component: <BlockBuilding submitState={this.submitState} state={this.state.block_building}/>},
             {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState} state={this.state.block_cleaning}/>},
@@ -86,7 +89,7 @@ class DesktopForms extends Component {
                     <div className='step-progress'>
                     
                         <StepZilla 
-                            style={{padding:'10000px'}}
+                            
                             steps={steps} 
                             showSteps={true}
                             stepsNavigation={false}
