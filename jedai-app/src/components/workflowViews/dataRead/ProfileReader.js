@@ -39,11 +39,10 @@ class ProfileReader extends Component {
         
     }
 
-    // it is activated only by the filetype handler. 
+    // activated only by the filetype handler. 
     // it also cleans the configurations
     onChange = (e) => {
         this.emptyConfiguration()
-        
         this.setState({[e.target.name]: e.target.value})
         
     }
@@ -67,9 +66,12 @@ class ProfileReader extends Component {
     submitted = (conf_state, msg) => {
         this.text_area_msg = "Source: " + this.state.filetype + msg
         this.collapse_conf_flag = false;
-        this.explorer_get_entities = true
+        //tell explorer to empty your data
+        this.explorer_get_entities = false
         this.setState({source: conf_state.source, configurations: conf_state.configuration})
         this.props.setEntity(this.state.entity_id, this.state)
+        //tell explorer to fetch (probably new) data
+        this.explorer_get_entities = true
         
     }
 

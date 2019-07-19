@@ -114,8 +114,9 @@ class Explorer extends Component {
 
     render() {
 
-        // Get first data from the sercer
+        // Get first data from the server
         if (this.props.get_entities && this.state.entities.length === 0) {
+            console.log("FETCH DATA")
             axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/")
                 .then(res => {
                     this.maxPages = res.data
@@ -132,7 +133,14 @@ class Explorer extends Component {
                     
             
         }
-       
+        else if (!this.props.get_entities && this.state.entities.length !== 0)
+       {
+        console.log("EMPTY DATA")
+        this.setState({
+            entities: [],
+            headers:  []
+        })
+       }
         return (
             <div>
                 <Jumbotron style={{backgroundColor:"white", border:"groove" }}>
