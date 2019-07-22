@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import {Form, Col, Row, Alert } from 'react-bootstrap/'
+import {Form, Col, Row, Alert, Collapse } from 'react-bootstrap/'
 
 
 class SelectMultipleMethods extends Component {
@@ -73,7 +73,7 @@ class SelectMultipleMethods extends Component {
                                 />
                             </Col>
                         </Form>
-                    </Form.Group>   
+                    </Form.Group> 
                 </Alert>
             </div>
         )

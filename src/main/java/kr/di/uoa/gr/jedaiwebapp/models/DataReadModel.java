@@ -76,9 +76,9 @@ public class DataReadModel {
 	public IEntityReader CSVReader() throws Exception{
 			
         EntityCSVReader csvReader = new EntityCSVReader(filepath);
-        boolean first_row = Boolean.parseBoolean((String) configurations.getFirst("first_row"));
+        boolean first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
         char seperator = ((String)this.configurations.getFirst("seperator")).charAt(1);
-        int id_index = Integer.parseInt((String) configurations.getFirst("id_index"));
+        int id_index = Integer.parseInt(((String) configurations.getFirst("id_index")).replace("\"", ""));
         
         ObjectMapper mapper = new ObjectMapper();
         int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
@@ -96,13 +96,13 @@ public class DataReadModel {
 	public IEntityReader DBReader() throws Exception{
 		
         EntityDBReader dbReader = new EntityDBReader(this.url);
-        String table =  (String)this.configurations.getFirst("table");
-        String username = (String)  this.configurations.getFirst("username");
-        String password =  (String) this.configurations.getFirst("password");  
-        boolean ssl =  Boolean.parseBoolean((String) this.configurations.getFirst("ssl"));
+        String table =  ((String)this.configurations.getFirst("table")).replace("\"", "");
+        String username = ((String)  this.configurations.getFirst("username")).replace("\"", "");
+        String password =  ((String) this.configurations.getFirst("password")).replace("\"", "");  
+        boolean ssl =  Boolean.parseBoolean(((String) this.configurations.getFirst("ssl")).replace("\"", ""));
         
         ObjectMapper mapper = new ObjectMapper();
-        int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
+        int[] excluded = mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
         String[] excluded_str = new String[excluded.length];
         for(int i =0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
         
@@ -143,7 +143,6 @@ public class DataReadModel {
 	public IEntityReader SerializationReader() {
 		
 		EntitySerializationReader objReader = new EntitySerializationReader(filepath);
-	    //rdfReader.setAttributesToExclude(excludedPredicates.toArray(new String[0]));
 		return objReader;
 	}
 	

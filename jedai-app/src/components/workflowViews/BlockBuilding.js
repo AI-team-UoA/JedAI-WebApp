@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {Form, Row } from 'react-bootstrap/'
+import update from 'immutability-helper';
+import {Form, Row, FormControl, Col, Jumbotron, Collapse } from 'react-bootstrap/'
 import CheckboxMethod from './utilities/CheckboxMethod'
 import AlertModal from './utilities/AlertModal'
 
@@ -83,70 +84,127 @@ class BlockBuilding extends Component {
             this.state = {
                 block_building : [
                     {
-                            name: "STANDARD_TOKEN_BUILDING",
-                            selected: false,
-                            label: "Standard/Token Blocking",
-                            conf_type: "Default"
+                        name: "STANDARD_TOKEN_BUILDING",
+                        selected: false,
+                        label: "Standard/Token Blocking",
+                        conf_type: "Default"
                     },  
                     {
-                            name: "SORTED_NEIGHBORHOOD",
-                            selected: false,
-                            label: "Sorted Neighborhood",
-                            conf_type: "Default"
-                        },  
-                        {
-                            name: "SORTED_NEIGHBORHOOD_EXTENDED",
-                            selected: false,
-                            label: "Extended Sorted Neighborhood",
-                            conf_type: "Default"
-                        },  
-                        {
-                            name: "Q_GRAMS_BLOCKING",
-                            selected: false,
-                            label: "Q-Grams Blocking",
-                            conf_type: "Default"
-                        },  
-                        {
-                            name: "Q_GRAMS_BLOCKING_EXTENDED",
-                            selected: false,
-                            label: "Extended Q-Grams Blocking",
-                            conf_type: "Default"
-                        },  
-                        {
-                            name: "SUFFIX_ARRAYS_BLOCKING",
-                            selected: false,
-                            label: "Suffix Arrays Blocking",
-                            conf_type: "Default"
+                        name: "SORTED_NEIGHBORHOOD",
+                        selected: false,
+                        label: "Sorted Neighborhood",
+                        conf_type: "Default",
+                        window_size: 4
+                            
                     },  
                     {
-                            name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
-                            selected: false,
-                            label: "Extended Suffix Arrays Blocking",
-                            conf_type: "Default"
-                        },  
-                        {
-                            name: "LSH_SUPERBIT_BLOCKING",
-                            selected: false,
-                            label: "LSH SuperBit Blocking",
-                            conf_type: "Default"
-                        },  
-                        {
-                            name: "LSH_MINHASH_BLOCKING",
-                            selected: false,
-                            label: "LSH MinHash Blocking",
-                            conf_type: "Default"
-                        } 
+                        name: "SORTED_NEIGHBORHOOD_EXTENDED",
+                        selected: false,
+                        label: "Extended Sorted Neighborhood",
+                        conf_type: "Default"
+                    },  
+                    {
+                        name: "Q_GRAMS_BLOCKING",
+                        selected: false,
+                        label: "Q-Grams Blocking",
+                        conf_type: "Default"
+                    },  
+                    {
+                        name: "Q_GRAMS_BLOCKING_EXTENDED",
+                        selected: false,
+                        label: "Extended Q-Grams Blocking",
+                        conf_type: "Default"
+                    },  
+                    {
+                        name: "SUFFIX_ARRAYS_BLOCKING",
+                        selected: false,
+                        label: "Suffix Arrays Blocking",
+                        conf_type: "Default"
+                    },  
+                    {
+                        name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
+                        selected: false,
+                        label: "Extended Suffix Arrays Blocking",
+                        conf_type: "Default"
+                    },  
+                    {
+                        name: "LSH_SUPERBIT_BLOCKING",
+                        selected: false,
+                        label: "LSH SuperBit Blocking",
+                        conf_type: "Default"
+                    },  
+                    {
+                        name: "LSH_MINHASH_BLOCKING",
+                        selected: false,
+                        label: "LSH MinHash Blocking",
+                        conf_type: "Default"
+                    } 
                 ],
                 alertShow : false
             }
         }
+
+        var empty_col = 3
+        var first_col = 2
+        var second_col = 4
+
+        this.BB_configurations =  [ <div />, 
+                                <Jumbotron style={{backgroundColor:"white", border:"groove", width:"70%" }}>
+                                    <div style={{margin:"auto"}}>
+                                        <Form>
+                                            <div style ={{textAlign:'center'}}>
+                                                <h3>Sorted Neighborhood Blocking</h3>
+                                                <p>Please configure the method's parameter below</p>
+                                            </div>
+                                            <br />
+                                            <br />
+                                            <Form.Row className="form-row">
+                                                <Col sm={empty_col} />
+                                                <Col sm={first_col} >
+                                                    <Form.Label>Window Size</Form.Label> 
+                                                </Col>
+                                                <Col sm={second_col}>
+                                                    <FormControl 
+                                                        type="text" 
+                                                        name="window_size" 
+                                                        onChange={(e) => this.onChange(1, e)}
+                                                        value={this.state.block_building[1].window_size} 
+                                                    />
+                                                </Col>
+                                            </Form.Row>
+                                        </Form>
+                                    </div>
+                                </Jumbotron>, <div />, <div />, <div />, <div />, <div />, <div />, <div />, <div />, <div />,]
+        
+        this.configurations_collapse = [false, false, false, false, false, false, false, false, false]
+
     }
 
+    
+    // how to update varaible without knowing its name,
+    // e.target is null after o
+    onChange = (index, e) => {
+        console.log(e, index)
+
+        this.setState(prevState => ({
+            block_building: {
+                ...prevState.block_building,
+                [prevState.block_building[index].window_size]: e.target.value,
+            },
+        }));
+        console.log(this.state.block_building[index])
+    }
+                
+        
+
+    
     submitChange(child_state){
         this.setState({
             block_building: this.state.block_building.map(el => (el.name === child_state.name ? {...child_state} : el))
             });
     }
+
+    
 
     //handle alert modal
     handleAlertClose = () => this.setState({alertShow : false});
@@ -174,6 +232,12 @@ class BlockBuilding extends Component {
     }
 
     render() {
+        for (var i = 0; i < 9; i++) {
+            if (this.state.block_building[i].selected && this.state.block_building[i].conf_type === "Manual")    
+                this.configurations_collapse[i] = true
+            else
+                this.configurations_collapse[i] = false
+        }
         return (
             <div>
                 <AlertModal text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
@@ -191,9 +255,19 @@ class BlockBuilding extends Component {
                     <Form.Label><h5>Select Block Building methods and Configurations</h5></Form.Label>
                 </Form.Group>
                  
+               
+               
                 <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[0]} />
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[1]} />
+                
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[1]} configurations={this.SN_configurations}/>
+                <Collapse in={this.configurations_collapse[1]} >
+                    <div style={{width:'75%', margin:'auto'}}>
+                        {this.BB_configurations[1]}
+                    </div>
+                </Collapse>  
+                
                 <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[2]} />
+
                 <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[3]} />
                 <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[4]} />
                 <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[5]} />
