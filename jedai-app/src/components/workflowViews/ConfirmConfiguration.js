@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import ConfigurationsView from './utilities/ConfigurationsView'
+import {Link } from 'react-router-dom';
+import {Button} from 'react-bootstrap/'
 
 class ConfirmConfiguration extends Component {
     render() {
@@ -87,7 +89,10 @@ class ConfirmConfiguration extends Component {
                 <ConfigurationsView  type="inline" title="Entity Matching" data={entity_matching}/>
                 <ConfigurationsView  type="inline" title="Entity Clustering" data={entity_clustering}/>
 
-               
+                <Link to="/execution">
+                    <Button style={{float: 'right'}} >Confirm</Button>
+                </Link>
+
             </div>
         )
     }

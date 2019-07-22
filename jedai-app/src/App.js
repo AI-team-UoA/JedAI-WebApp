@@ -5,7 +5,7 @@ import Header from './components/layout/Headers'
 import Modes from './components/Modes'
 import ClusterForm from './components/ClusterForm'
 import DesktopForms from './components/DesktopForms'
-
+import ExecutionView from './components/ExecutionView'
  
 class App extends Component {
  
@@ -30,6 +30,7 @@ class App extends Component {
                 <div >
                   <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
                   <Route exact path="/desktopmode" render={props=>(  <DesktopForms/> )}/>
+                  <Route exact path="/execution" render={props=>(  <ExecutionView/> )}/>
                 </div>  
           </div>
           <br />
