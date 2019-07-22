@@ -77,6 +77,11 @@ class ConfigureXML extends Component {
     }
 
     render() {
+
+        const empty_col = 1
+        const first_col = 4
+        const second_col = 6
+
         return (
 
             <div>
@@ -86,10 +91,11 @@ class ConfigureXML extends Component {
                 </div>
                 
                 <Form.Row className="form-row">
-                    <Col sm={3}>
+                    <Col sm={empty_col} />
+                    <Col sm={first_col}>
                         <Form.Label> File Path </Form.Label> 
                     </Col>
-                    <Col sm={6}>
+                    <Col sm={second_col}>
                         <InputGroup >
                             <FormControl
                                 placeholder=".xml"
@@ -110,10 +116,11 @@ class ConfigureXML extends Component {
                 </Form.Row>
 
                 <Form.Row className="form-row">
-                    <Col sm={3} >
+                    <Col sm={empty_col} />
+                    <Col sm={first_col} >
                         <Form.Label >Attributes to Exclude</Form.Label> 
                     </Col>
-                    <Col sm={6}>
+                    <Col sm={second_col}>
                         <InputGroup >
                             <FormControl 
                                 type="text" 
@@ -130,8 +137,9 @@ class ConfigureXML extends Component {
                     </Col>
                 </Form.Row>
                 <Form.Row className="form-row">
-                    <Col sm={3} />
-                    <Col sm={4}>
+                    <Col sm={empty_col} />
+                    <Col sm={first_col} />
+                    <Col sm={second_col}>
                         <ListGroup>
                             {this.state.excluded_attr.map((attr, index) => (<ListGroup.Item key={index}> 
                                 <span style={{color:"#990000"}}>Exclude Item with ID: </span>{attr} <Button onClick={this.removeExcludedItem.bind(this, attr)} className="X_btnStyle">X</Button></ListGroup.Item>))}

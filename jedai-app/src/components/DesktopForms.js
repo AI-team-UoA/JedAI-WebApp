@@ -84,24 +84,23 @@ class DesktopForms extends Component {
            
         ]
         return (
-            <div >
+            
                 <Jumbotron  className='jumbotron_2'>
-                    <div className='step-progress'>
-                    
-                        <StepZilla 
-                            
-                            steps={steps} 
-                            showSteps={true}
-                            stepsNavigation={false}
-                            preventEnterSubmission={true}
-                            
-                            backButtonCls={"btn btn-next btn-primary float-left"}
-                            nextButtonCls={"btn btn-prev btn-primary float-right"}
-                            
-                        />
+                    <div className="container-fluid">
+                        <div className='step-progress'>
+                            <StepZilla    
+                                steps={steps} 
+                                showSteps={true}
+                                stepsNavigation={false}
+                                preventEnterSubmission={true}
+                                
+                                backButtonCls={"btn btn-next btn-primary float-left"}
+                                nextButtonCls={"btn btn-prev btn-primary float-right"}
+                                
+                            />
+                        </div>
                     </div>
                 </Jumbotron>
-            </div>
         )
     }
 }

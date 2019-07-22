@@ -37,6 +37,11 @@ class ConfigureSerialized extends Component {
     } 
 
     render() {
+      
+        const empty_col = 1
+        const first_col = 4
+        const second_col = 6
+
         return (
 
             <div>
@@ -46,10 +51,11 @@ class ConfigureSerialized extends Component {
                 </div>
                 
                 <Form.Row className="form-row">
-                    <Col sm={3}>
+                    <Col sm={empty_col} />
+                    <Col sm={first_col}>
                         <Form.Label> File Path </Form.Label> 
                     </Col>
-                    <Col sm={6}>
+                    <Col sm={second_col}>
                         <InputGroup >
                             <FormControl
                                 

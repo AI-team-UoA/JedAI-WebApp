@@ -8,11 +8,17 @@
 
 .jumbotron_2{
     border:groove;
-    width: 140%;
-    position: relative;
-    left: -38%;
     background:#E8E8E8;
+    padding-right: 0px;
+    width:90%;
 }
+
+
+.workflow-container {
+  margin-left: 1% ;
+  margin-right: 1% ;
+}
+
 
 .workflow-desc {
    font-size: 82%; 

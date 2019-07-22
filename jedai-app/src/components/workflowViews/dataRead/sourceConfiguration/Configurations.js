@@ -116,8 +116,8 @@ class Configurations extends Component {
 
         return (
 
-            <Jumbotron style={{backgroundColor:"white", border:"groove" }}>
-                <div>
+            <Jumbotron style={{backgroundColor:"white", border:"groove", width:"70%" }}>
+                <div style={{margin:"auto"}}>
                     <Form>
                         {configureSource}
                         <Collapse in={this.collapse_flag } >

@@ -21,18 +21,16 @@ class App extends Component {
         return (
           <Router>
             <div className="App">
-              <div className="container" >
               <Header />
                 <Route exact path="/"  render={props=>(
                   <React.Fragment >
                   <Modes />
                 </React.Fragment>
                 )}/>
-                <div style={{position:'relative', left:'20%'}}>
+                <div >
                   <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
                   <Route exact path="/desktopmode" render={props=>(  <DesktopForms/> )}/>
                 </div>  
-            </div>
           </div>
           <br />
           <br />
@@ -42,5 +40,5 @@ class App extends Component {
         );
     }
 }
- 
+ //style={{position:'relative', left:'20%'}}
 export default App;

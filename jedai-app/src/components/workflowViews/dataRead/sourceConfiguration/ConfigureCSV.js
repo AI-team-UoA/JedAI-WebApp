@@ -25,7 +25,7 @@ class ConfigureCSV extends Component {
 
     }
 
-
+    
 
 
     onChange = (e) => {
@@ -94,118 +94,126 @@ class ConfigureCSV extends Component {
     }
     
     render() {
-        
-        return (
+        const empty_col = 1
+        const first_col = 4
+        const second_col = 6
 
+        return (
             <div>
                 <div style ={{textAlign:'center'}}>
                     <h3>CSV Reader</h3>
                     <p>Please configure the method's parameter below</p>
                 </div>
-                
-                <Form.Row className="form-row">
-                    <Col sm={3}>
-                        <Form.Label> File Path </Form.Label> 
-                    </Col>
-                    <Col sm={4}>
-                        <InputGroup >
-                            <FormControl
-                                placeholder=".csv"
-                                aria-label=".csv"
-                                aria-describedby="basic-addon2"
-                                name="filename"
-                                value={this.state.filename}
-                                onChange={this.onChange}
-                                readOnly
-                            />
-                        
-                            <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
-                                <Button >Browse</Button>
-                                <FormControl type="file" name="file" onChange={this.onChange}/>
-                            </div>
-                        </InputGroup>
-                    </Col>
-                </Form.Row>
-
-                <Form.Row className="form-row">
-                    <Col sm={3}>
-                        <Form.Label>Attributes names in first row</Form.Label> 
-                    </Col>
-                    <Checkbox 
-                        as={Col}
-                        size="3"  
-                        color="#1a75ff"
-                        borderThickness="2" 
-                        name="first_row" 
-                        value={this.state.first_row} 
-                        checked={this.state.first_row} 
-                        onChange={this.handleCheckbox.bind(this)}
-                    />
+                <br/>
+                <div >
                     
-                </Form.Row>
+                    <Form.Row className="form-row">
+                        <Col sm={empty_col} />
+                        <Col sm={first_col}>
+                            <Form.Label> File Path </Form.Label> 
+                        </Col>
+                        <Col sm={second_col}>
+                            <InputGroup >
+                                <FormControl
+                                    placeholder=".csv"
+                                    aria-label=".csv"
+                                    aria-describedby="basic-addon2"
+                                    name="filename"
+                                    value={this.state.filename}
+                                    onChange={this.onChange}
+                                    readOnly
+                                />
+                            
+                                <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
+                                    <Button >Browse</Button>
+                                    <FormControl type="file" name="file" onChange={this.onChange}/>
+                                </div>
+                            </InputGroup>
+                        </Col>
+                    </Form.Row>
 
-                <Form.Row className="form-row">
-                    <Col sm={3} >
-                        <Form.Label>Seperator</Form.Label> 
-                    </Col>
-                    <Col sm={4}>
-                        <FormControl 
-                            type="text" 
-                            name="seperator" 
-                            value={this.state.seperator} 
-                            onChange={this.onChange}
-                            isInvalid={this.state.seperator === ""}
+                    <Form.Row className="form-row">
+                        <Col sm={empty_col} />
+                        <Col sm={first_col}>
+                            <Form.Label>Attributes names in first row</Form.Label> 
+                        </Col>
+                        <Checkbox 
+                            as={Col}
+                            size="3"  
+                            color="#1a75ff"
+                            borderThickness="2" 
+                            name="first_row" 
+                            value={this.state.first_row} 
+                            checked={this.state.first_row} 
+                            onChange={this.handleCheckbox.bind(this)}
                         />
-                    </Col>
-                </Form.Row>
+                        
+                    </Form.Row>
 
-                <Form.Row className="form-row">
-                    <Col sm={3} >
-                        <Form.Label >Id index</Form.Label> 
-                    </Col>
-                    <Col sm={4}>
-                        <FormControl 
-                            type="text" 
-                            name="id_index" 
-                            value={this.state.id_index} 
-                            onChange={this.onChange}
-                            isInvalid={isNaN(this.state.id_index) || this.state.id_index === "" }
-                        />
-                    </Col>
-                </Form.Row>
-
-
-
-
-                <Form.Row className="form-row">
-                    <Col sm={3} >
-                        <Form.Label >Attributes to Exclude</Form.Label> 
-                    </Col>
-                    <Col sm={4}>
-                        <InputGroup >
+                    <Form.Row className="form-row">
+                        <Col sm={empty_col} />
+                        <Col sm={first_col} >
+                            <Form.Label>Seperator</Form.Label> 
+                        </Col>
+                        <Col sm={second_col}>
                             <FormControl 
                                 type="text" 
-                                name="excluded_attr"   
-                                aria-describedby="basic-addon2" 
-                                disabled={this.state.filename === ""}   
-                                value={this.excluded_attr_value}
-                                onChange={this.excludedAttr_change}                     
+                                name="seperator" 
+                                value={this.state.seperator} 
+                                onChange={this.onChange}
+                                isInvalid={this.state.seperator === ""}
                             />
-                            <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
-                                <Button disabled={this.state.filename === ""} onClick={this.addExcludedItem}>Add</Button>
-                            </div>
-                        </InputGroup>
-                    </Col>
-                </Form.Row>
-                <Form.Row className="form-row">
-                    <Col sm={3} />
-                    <Col sm={4}>
-                        <ListGroup>
-                            {this.state.excluded_attr.map((attr, index) => (<ListGroup.Item key={index}> 
-                                <span style={{color:"#990000"}}>Exclude Item with ID: </span>{attr} <Button onClick={this.removeExcludedItem.bind(this, attr)} className="X_btnStyle">X</Button></ListGroup.Item>))}
-                        </ListGroup>                        
-                    </Col>
-                </Form.Row>
+                        </Col>
+                    </Form.Row>
+
+                    <Form.Row className="form-row">
+                        <Col sm={empty_col} />
+                        <Col sm={first_col} >
+                            <Form.Label >Id index</Form.Label> 
+                        </Col>
+                        <Col sm={second_col}>
+                            <FormControl 
+                                type="text" 
+                                name="id_index" 
+                                value={this.state.id_index} 
+                                onChange={this.onChange}
+                                isInvalid={isNaN(this.state.id_index) || this.state.id_index === "" }
+                            />
+                        </Col>
+                    </Form.Row>
+
+                    <Form.Row className="form-row">
+                        <Col sm={empty_col} />
+                        <Col sm={first_col} >
+                            <Form.Label >Attributes to Exclude</Form.Label> 
+                        </Col>
+                        <Col sm={second_col}>
+                            <InputGroup >
+                                <FormControl 
+                                    type="text" 
+                                    name="excluded_attr"   
+                                    aria-describedby="basic-addon2" 
+                                    disabled={this.state.filename === ""}   
+                                    value={this.excluded_attr_value}
+                                    onChange={this.excludedAttr_change}                     
+                                />
+                                <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
+                                    <Button disabled={this.state.filename === ""} onClick={this.addExcludedItem}>Add</Button>
+                                </div>
+                            </InputGroup>
+                        </Col>
+                    </Form.Row>
+                    <Form.Row className="form-row">
+                        <Col sm={empty_col} />
+                        <Col sm={first_col} />
+                        <Col sm={second_col}>
+                            <ListGroup>
+                                {this.state.excluded_attr.map((attr, index) => (<ListGroup.Item key={index}> 
+                                    <span style={{color:"#990000"}}>Exclude Item with ID: </span>{attr} <Button onClick={this.removeExcludedItem.bind(this, attr)} className="X_btnStyle">X</Button></ListGroup.Item>))}
+                            </ListGroup>                        
+                        </Col>
+                    </Form.Row>
+                </div>
 
 
 
