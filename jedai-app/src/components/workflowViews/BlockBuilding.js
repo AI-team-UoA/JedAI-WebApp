@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {Form, Row } from 'react-bootstrap/'
-import SelectMultipleMethods from './utilities/SelectMultipleMethods'
+import CheckboxMethod from './utilities/CheckboxMethod'
 import AlertModal from './utilities/AlertModal'
 
 class BlockBuilding extends Component {
@@ -191,15 +191,15 @@ class BlockBuilding extends Component {
                     <Form.Label><h5>Select Block Building methods and Configurations</h5></Form.Label>
                 </Form.Group>
                  
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[0]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[1]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[2]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[3]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[4]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[5]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[6]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[7]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_building[8]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[0]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[1]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[2]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[3]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[4]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[5]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[6]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[7]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[8]} />
                 
             </div>
         )

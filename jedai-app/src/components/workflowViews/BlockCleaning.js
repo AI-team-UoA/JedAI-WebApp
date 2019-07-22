@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {Form, Row } from 'react-bootstrap/'
-import SelectMultipleMethods from './utilities/SelectMultipleMethods'
+import CheckboxMethod from './utilities/CheckboxMethod'
 
 
 
@@ -110,9 +110,9 @@ class BlockCleaning extends Component {
                     <Form.Label><h5>Select methods for Block Cleaning (Optional)</h5></Form.Label>
                 </Form.Group> 
 
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_cleaning[0]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_cleaning[1]} />
-                <SelectMultipleMethods submitChange={this.submitChange} state={this.state.block_cleaning[2]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[0]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[1]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[2]} />
 
             </div>
         )

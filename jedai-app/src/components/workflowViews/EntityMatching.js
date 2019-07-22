@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import SelectMethod from './utilities/SelectMethod'
+import RadioMethod from './utilities/RadioMethod'
 import {Form, Row } from 'react-bootstrap/'
 
 
@@ -61,7 +61,7 @@ class EntityMatching extends Component {
                     <Form.Label><h5>Select parameters for Entity Matching</h5></Form.Label>
                 </Form.Group> 
 
-                <SelectMethod methods={this.methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Entity Matching Parameters"}/>
+                <RadioMethod methods={this.methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Entity Matching Parameters"}/>
                     
             </div>
         )

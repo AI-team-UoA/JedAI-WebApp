@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import SelectMethod from './utilities/SelectMethod'
+import RadioMethod from './utilities/RadioMethod'
 import {Form, Row } from 'react-bootstrap/'
 
 class EntityClustering extends Component {
@@ -72,10 +72,10 @@ class EntityClustering extends Component {
         var er_mode = this.props.er_mode
         var configurations 
         if (er_mode === "dirty"){
-            configurations = <SelectMethod methods={this.dirtyER_methods} state={this.state}  auto_disabled={false} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
+            configurations = <RadioMethod methods={this.dirtyER_methods} state={this.state}  auto_disabled={false} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
         }
         else if (er_mode === "clean"){
-            configurations = <SelectMethod methods={this.cleanER_methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
+            configurations = <RadioMethod methods={this.cleanER_methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
         }
         else configurations = <h2>ERROR</h2>
         return (
