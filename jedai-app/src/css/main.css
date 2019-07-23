@@ -13,6 +13,18 @@
     width:90%;
 }
 
+.jumbotron_parameters{
+  background-color: white;
+  border: groove;
+  width:70%;
+  padding:10px;
+}
+
+.jumbotron_parameters_container {
+  width: 50%;
+  margin:auto;
+}
+
 
 .workflow-container {
   margin-left: 1% ;

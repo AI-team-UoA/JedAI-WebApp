@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import {Form, Col, Row, Alert, Collapse } from 'react-bootstrap/'
+import {Form, Col, Row, Alert } from 'react-bootstrap/'
 
 
 class SelectMultipleMethods extends Component {
@@ -11,7 +11,8 @@ class SelectMultipleMethods extends Component {
             name: this.props.state.name,
             label:this.props.state.label,
             selected: this.props.state.selected,
-            conf_type: this.props.state.conf_type
+            conf_type: this.props.state.conf_type,
+            parameters: this.props.state.parameters
         }
     }
 
@@ -68,7 +69,7 @@ class SelectMultipleMethods extends Component {
                                     value="Manual"
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange} 
-                                    disabled={this.state.selected === false}
+                                    disabled={this.state.selected === false || this.props.disable_manual}
                                     checked={this.state.conf_type === "Manual"}
                                 />
                             </Col>
