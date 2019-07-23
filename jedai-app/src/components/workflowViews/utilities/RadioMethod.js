@@ -10,7 +10,8 @@ class SelectMethod extends Component {
         this.state = {
             method: this.props.state.method,
             conf_type: this.props.state.conf_type,
-            label: this.props.state.label
+            label: this.props.state.label,
+            parameters: this.props.state.parameters
         }
     }
 
@@ -74,6 +75,7 @@ class SelectMethod extends Component {
                                             name="conf_type"
                                             value="Manual"
                                             onChange={(e) => this.onChange("", e)}
+                                            disabled={this.props.disable_manual}
                                             checked={this.state.conf_type ===  "Manual"}
                                         />
                                     </Col>

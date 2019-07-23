@@ -24,7 +24,17 @@ class DesktopForms extends Component {
         schema_clustering:  {
             method: "NO_SCHEMA_CLUSTERING",
             conf_type: "Default",
-            label: "No Schema Clustering"
+            label: "No Schema Clustering",
+            parameters: [
+                {
+                    label: "Representation Model",
+                    value: "TOKEN_UNIGRAM_GRAPHS"
+                },
+                {
+                    label: "Similarity Measure",
+                    value: "GRAPH_VALUE_SIMILARITY"
+                }
+            ]
         },
         
         block_building: null,
