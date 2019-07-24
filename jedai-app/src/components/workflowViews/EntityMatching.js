@@ -219,6 +219,8 @@ class EntityMatching extends Component {
                         {default_window}
                     </Form>
                 break;
+            default:
+                parameters_JSX_window = <div />
         }
 
 

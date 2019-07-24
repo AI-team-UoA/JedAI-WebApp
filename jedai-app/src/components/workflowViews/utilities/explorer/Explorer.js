@@ -106,9 +106,6 @@ class Explorer extends Component {
                             headers:  res.data[0].attributes
                     })})
         }
-        else{
-            console.log("----->  " + e.target.name)
-        }
     }
 
 
@@ -116,7 +113,6 @@ class Explorer extends Component {
 
         // Get first data from the server
         if (this.props.get_entities && this.state.entities.length === 0) {
-            console.log("FETCH DATA")
             axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/")
                 .then(res => {
                     this.maxPages = res.data
