@@ -101,7 +101,7 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
                                 <Form.Row>
                                     <Col sm={empty_col} />
                                     <Col sm={first_col}>
-                                        <Form.Label ><h5>Representation Model</h5></Form.Label> 
+                                        <Form.Label >Representation Model</Form.Label> 
                                     </Col>
                                     <Col sm={second_col}>
                                         <Form.Group>
@@ -142,7 +142,7 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
                                 <Form.Row>
                                     <Col sm={empty_col} />
                                     <Col sm={first_col}>
-                                        <Form.Label ><h5>Similarity Measure</h5></Form.Label> 
+                                        <Form.Label >Similarity Measure</Form.Label> 
                                     </Col>
                                     <Col sm={second_col}>
                                         <Form.Group>
