@@ -27,6 +27,30 @@ class ProfileReader extends Component {
                 source : this.props.state.source,
                 configurations: this.props.state.configurations
             }
+            this.explorer_get_entities = true
+            var msg
+            switch(this.state.filetype) {
+                case "CSV":
+                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename  +"\nAtributes in firts row: " + this.state.configurations.first_row + "\nSeperator: " + this.state.configurations.seperator + "\nID index: "+ this.state.configurations.id_index
+                    break;
+                case "Database":
+                    msg = this.state.configurations === null? "" : "\nURL: " +  this.state.configurations.url  +"\nTable: " + this.state.configurations.table + "\nUsername: " + this.state.configurations.username + "\nSSL: "+ this.state.configurations.ssl
+                    break;
+                case "RDF":
+                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename  
+                    break;
+                case "XML":
+                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename  
+                    break;
+                case "Serialized":
+                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename  
+                    break;
+                default:
+                    msg = ""
+            }
+
+            this.text_area_msg = "Source: " + this.state.filetype + msg
+
         }
         else{
             this.state = { 
