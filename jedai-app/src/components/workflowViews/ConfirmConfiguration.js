@@ -3,8 +3,61 @@ import PropTypes from 'prop-types';
 import ConfigurationsView from './utilities/ConfigurationsView'
 import {Link } from 'react-router-dom';
 import {Button} from 'react-bootstrap/'
+import axios from 'axios';
 
 class ConfirmConfiguration extends Component {
+
+
+    
+    sendConfigurations = (e) => {
+        var data_reading = this.props.state.data_reading
+        console.log(data_reading)
+        let entity_1 = new FormData()
+        entity_1.append('entity_id',data_reading.entity1_set.entity_id)
+        entity_1.append('filetype', data_reading.entity1_set.filetype)
+        entity_1.append('source', data_reading.entity1_set.source)
+        Object.keys(data_reading.entity1_set.configurations).forEach((key) => { entity_1.append(key, JSON.stringify(data_reading.entity1_set.configurations[key]));})
+
+        var success = true
+
+        axios({
+            url: '/set_configurations/dataread',
+            method: 'POST',
+            data: entity_1
+        }).then(res => success = success && res.data)
+
+        if(data_reading.er_mode !== "dirty"){
+            let entity_2 = new FormData()
+            entity_2.append('entity_id',data_reading.entity2_set.entity_id)
+            entity_2.append('filetype', data_reading.entity2_set.filetype)
+            entity_2.append('source', data_reading.entity2_set.source)
+            Object.keys(data_reading.entity2_set.configurations).forEach((key) => { entity_2.append(key, JSON.stringify(data_reading.entity2_set.configurations[key]));})
+
+            axios({
+                url: '/set_configurations/dataread',
+                method: 'POST',
+                data: entity_2
+            }).then(res => success = success && res.data)
+        }
+
+        let ground_truth = new FormData()
+        ground_truth.append('entity_id',data_reading.groundTruth_set.entity_id)
+        ground_truth.append('filetype', data_reading.groundTruth_set.filetype)
+        ground_truth.append('source', data_reading.groundTruth_set.source)
+        Object.keys(data_reading.groundTruth_set.configurations).forEach((key) => { ground_truth.append(key, JSON.stringify(data_reading.groundTruth_set.configurations[key]));})
+
+        axios({
+            url: '/set_configurations/dataread',
+            method: 'POST',
+            data: ground_truth
+        }).then(res => success = success && res.data)
+
+        console.log(success )
+
+    }
+
+
+
     render() {
         window.scrollTo(0, 0)
 
@@ -94,9 +147,9 @@ class ConfirmConfiguration extends Component {
                 <ConfigurationsView  type="inline" title="Entity Matching" data={entity_matching}/>
                 <ConfigurationsView  type="inline" title="Entity Clustering" data={entity_clustering}/>
 
-                <Link to="/execution">
-                    <Button style={{float: 'right'}} >Confirm</Button>
-                </Link>
+                
+                    <Button style={{float: 'right'}} onClick={this.sendConfigurations}>Confirm</Button>
+                
 
             </div>
         )
@@ -106,4 +159,5 @@ class ConfirmConfiguration extends Component {
 ConfirmConfiguration.propTypes = {
     state: PropTypes.object.isRequired
   }
+
 export default ConfirmConfiguration
