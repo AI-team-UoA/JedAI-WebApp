@@ -73,7 +73,7 @@ import '../../../css/main.css'
 
 
     isValidated(){
-        return true
+        //return true
         var isSet
         if(this.state.er_mode === "dirty") isSet = this.state.entity1_set !==null && this.state.groundTruth_set !==null
         else if(this.state.er_mode === "clean") isSet = this.state.entity1_set !==null && this.state.entity2_set !== null && this.state.groundTruth_set !==null

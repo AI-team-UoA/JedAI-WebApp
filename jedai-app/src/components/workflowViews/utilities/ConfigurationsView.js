@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import {Form, Col, Table } from 'react-bootstrap/'
+import {Form, Col, Table, Row } from 'react-bootstrap/'
 
 class ConfigurationsView extends Component {
 
@@ -19,55 +19,90 @@ class ConfigurationsView extends Component {
 
 
     render() {
+        var title_col = 2
+        var empty_col = 1
+        var value_col_1 = 1
+        var value_col_2 = 2
+        var big_col = 6
         const {data, title, type} = this.props
         var return_stmnt = null
 
         if(type === "inline"){
-            if (data.conf_type !== "")
-                return_stmnt = 
-                        <Form.Row>
-                            <Col sm={2}>
-                                <Form.Label style={{color:"#990000"}}><h5>{title+ ": "}</h5></Form.Label> 
-                            </Col>
-                            <Col sm={1}></Col>
-                            <Col sm={2}>
-                                {data.label}
-                            </Col>
-                            <Col sm={2}>
-                                <h5 style={{color:"#990000", marginRight:'100px'}}>Configuration:</h5> 
-                            </Col>
-                            <Col sm={1}>
-                                {data.conf_type}
-                            </Col>
-                        </Form.Row>
-
+            if (data.conf_type !== ""){
+                if(data.conf_type === "Manual"){
+                    return_stmnt = 
+                            <Form.Row>
+                                <Col sm={title_col}>
+                                    <Form.Label style={{color:"#990000"}}><h5>{title+ ": "}</h5></Form.Label> 
+                                </Col>
+                                <Col sm={empty_col}></Col>
+                                <Col sm={big_col}>
+                                    <Table  striped bordered hover size="sm">
+                                        <thead>
+                                            <tr>
+                                                <th style={{color:"#990000"}}>Method</th>
+                                                {data.parameters.map((parameter) => (<th style={{color:"#990000"}}>{parameter.label}</th>))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr> 
+                                                {data.label}
+                                               {data.parameters.map((parameter) => (<td>{parameter.value}</td>))} 
+                                             </tr>
+                                        </tbody>
+                                    </Table>
+                                </Col>
+                            </Form.Row>
+                }
+                else {
+                    return_stmnt = 
+                            <Form.Row>
+                                <Col sm={title_col}>
+                                    <Form.Label style={{color:"#990000"}}><h5>{title+ ": "}</h5></Form.Label> 
+                                </Col>
+                                <Col sm={empty_col}></Col>
+                                <Col sm={value_col_2}>
+                                    {data.label}
+                                </Col>
+                                <Col sm={value_col_2}>
+                                    <h5 style={{color:"#990000", marginRight:'100px'}}>Configuration:</h5> 
+                                </Col>
+                                <Col sm={value_col_1}>
+                                    {data.conf_type}
+                                </Col>
+                            </Form.Row>
+                }
+            }
             else            
                 return_stmnt =
                         <Form.Row>
-                            <Col sm={2}>
+                            <Col sm={title_col}>
                                 <Form.Label style={{color:"#990000"}}><h5>{title+ ": "}</h5></Form.Label> 
                             </Col>
-                            <Col sm={1}></Col>
+                            <Col sm={empty_col}></Col>
                             <Col sm={2}>
                                 {data.label}
                             </Col>
                         </Form.Row>
 
         }
+
+
         else if (type === "array"){
             
             return_stmnt = 
                     <Form.Row>
-                        <Col sm={2}>
+                        <Col sm={title_col}>
                             <Form.Label style={{color:"#990000"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
                         </Col>
-                        <Col sm={1}></Col>
-                        <Col sm={6}>
+                        <Col sm={empty_col}></Col>
+                        <Col sm={big_col}>
                             <Table  striped bordered hover size="sm">
                                 <thead>
                                     <tr>
-                                    <th style={{color:"#990000"}}>Method</th>
-                                    <th style={{color:"#990000"}}>Configuration</th>
+                                        <th style={{color:"#990000"}}>Method</th>
+                                        <th style={{color:"#990000"}}>Configuration</th>
+                                        <th style={{color:"#990000"}}>Parameters</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -75,6 +110,19 @@ class ConfigurationsView extends Component {
                                         <tr> 
                                             <td>{method.label}</td>
                                             <td>{method.conf_type}</td>
+                                            <td>
+                                                {method.parameters.map((parameter) => (
+                                                    <Row>
+                                                        <Col>
+                                                            {parameter.label}
+                                                        </Col>
+                                                        <Col>
+                                                            {parameter.value}
+                                                        </Col>
+                                                    </Row>
+                                                ))}
+                                                
+                                            </td>
                                             
                                         </tr>
                                     ))}
@@ -83,16 +131,17 @@ class ConfigurationsView extends Component {
                         </Col>
                     </Form.Row>                
         }
+
         else if (type === "file"){
             var keys = Object.keys(data.conf);
             return_stmnt =
                 
                     <Form.Row>
-                        <Col sm={2}>
+                        <Col sm={title_col}>
                             <Form.Label style={{color:"#990000"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
                         </Col>
-                        <Col sm={1}></Col>
-                        <Col sm={6}>
+                        <Col sm={empty_col}></Col>
+                        <Col sm={big_col}>
                             <Form.Control as="select" multiple>
                                 <option key="filetype">Source: {data.source}</option>
                                 {keys.map((key) => (
@@ -106,7 +155,7 @@ class ConfigurationsView extends Component {
         }
         return(
             <div>
-                <div style={{margin:'auto', position:'relative', left:'16%'}}>
+                <div style={{margin:'auto', position:'relative', left:'12%'}}>
                     {return_stmnt}
                 </div>
                 <hr style={{ color: 'black', backgroundColor: 'black', height: '1', marginBottom:'5px' }}/>
