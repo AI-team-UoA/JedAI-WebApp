@@ -67,7 +67,7 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
 
     render() {
         var empty_col = 1
-        var first_col = 5
+        var first_col = 4
         var second_col = 5
 
         return (
@@ -91,7 +91,7 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
                 <br/>
                 <Collapse in={this.state.conf_type === "Manual" && this.state.method !== "NO_SCHEMA_CLUSTERING"} >
                     <div className="jumbotron_parameters_container">
-                        <Jumbotron className="jumbotron_parameters">
+                        <Jumbotron className="jumbotron_parameters" style={{width:"100%"}}>
                             <div style={{margin:"auto"}}>
                                 <div style ={{textAlign:'center'}}>
                                     <h3>{this.state.label}</h3>

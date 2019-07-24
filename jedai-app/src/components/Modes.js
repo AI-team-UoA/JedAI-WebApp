@@ -8,7 +8,7 @@ class Modes extends Component {
     render() {
         return (
             <div>
-               <Jumbotron className="jumbotron" style={{width:'55%'}}>
+               <Jumbotron className="jumbotron" style={{width:'35%'}}>
                     <header><h3>Execute JedAI </h3></header>
                     <br/>
                     <div style={{textAlign:'center'}}>

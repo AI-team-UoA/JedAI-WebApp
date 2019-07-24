@@ -13,6 +13,12 @@
     width:90%;
 }
 
+.jumbotron_3{
+  border:groove;
+  background:#E8E8E8;
+  padding-right: 0px;
+  width:45%;
+}
 .jumbotron_parameters{
   background-color: white;
   border: groove;
