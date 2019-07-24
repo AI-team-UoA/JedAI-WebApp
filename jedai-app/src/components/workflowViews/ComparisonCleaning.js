@@ -1,17 +1,57 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import RadioMethod from './utilities/RadioMethod'
-import {Form, Row } from 'react-bootstrap/'
+import {Form, Row, Col, FormControl, Jumbotron, Collapse } from 'react-bootstrap/'
+import update from 'immutability-helper'
 
 class ComparisonCleaning extends Component {
 
     constructor(...args) {
         super(...args);
 
+        this.default_parameters = [
+            {
+                parameters: []
+            },
+            {
+                parameters: [
+                    {
+                        label: "Weighting Scheme",
+                        value: "CBS"
+                    }
+                ]
+            },
+            {
+                parameters: [
+                    {
+                        label: "Inclusive Threshold",
+                        value: 0.5
+                    },
+                    {
+                        label: "Exclusive Threshold",
+                        value: 0.75
+                    }
+                ]
+            },
+            {
+                parameters: [
+                    {
+                        label: "Weighting Scheme",
+                        value: 10
+                    },
+                    {
+                        label: "Invalid Parameter id",
+                        value: 1
+                    }
+                ]
+            },
+        ]
+
         this.state = {
             method: this.props.state.method,
             conf_type: this.props.state.conf_type,
-            label: this.props.state.label
+            label: this.props.state.label,
+            parameters: this.props.state.parameters
         }
     }
 
@@ -60,14 +100,54 @@ class ComparisonCleaning extends Component {
         ]
 
     onChange = (e) => {
+        var parameters 
+
+        // set parameters to default values
+        switch(e.method) {
+            case "NO_CLEANING":
+                parameters = this.default_parameters[0].parameters
+                break;
+            case "CANOPY_CLUSTERING":
+                parameters = this.default_parameters[2].parameters
+                break;
+              case "CANOPY_CLUSTERING_EXTENDED":
+                parameters = this.default_parameters[3].parameters
+                break;
+            default:
+                parameters = this.default_parameters[1].parameters
+          }
+        
         this.setState(
             {
                 method: e.method,
                 conf_type: e.conf_type,
-                label: e.label
+                label: e.label,
+                parameters: parameters
+
             }
         )
     } 
+
+    
+    changeParameters = (e, parameter_index) =>{
+        var name = e.target.name
+        var value = e.target.value
+        var flag = false
+        if(name !== "select"){
+            if(!isNaN(value) && value !== "" )
+                flag=true
+        }
+        else flag =true
+
+        if (flag){
+            var updated_state = update(this.state.parameters[parameter_index], {value: {$set: value}}); 
+            var newData = update(this.state.parameters, {
+                    $splice: [[parameter_index, 1, updated_state]]
+            });
+            
+            this.setState({parameters: newData})
+        }
+    }
 
     isValidated(){
         this.props.submitState("comparison_cleaning", this.state)
@@ -75,6 +155,127 @@ class ComparisonCleaning extends Component {
     }
 
     render() {
+         //the JSX code of the parameters windows
+         var empty_col = 2
+         var first_col = 4
+         var second_col = 3
+ 
+        var parameters_JSX_window
+        switch(this.state.method) {
+            case "NO_CLEANING":
+                parameters_JSX_window = <div />
+                break;
+            case "CANOPY_CLUSTERING":
+                parameters_JSX_window = 
+                            <Form>
+                                <div style ={{textAlign:'center'}}>
+                                    <h3>{this.state.label}</h3>
+                                    <p>Please configure the method's parameters below</p>
+                                </div>
+                                <br />
+                                <Form.Row className="form-row">
+                                    <Col sm={empty_col} />
+                                    <Col sm={first_col} >
+                                        <Form.Label>Inclusive Threshold</Form.Label> 
+                                    </Col>
+                                    <Col sm={second_col}>
+                                        <FormControl 
+                                            type="text" 
+                                            name="value" 
+                                            onChange={(e) => this.changeParameters(e, 0)}
+                                            value={this.state.parameters[0].value}   
+                                        />
+                                    </Col>
+                                </Form.Row>
+                                <Form.Row className="form-row">
+                                    <Col sm={empty_col} />
+                                    <Col sm={first_col} >
+                                        <Form.Label>Exclusive Threshold</Form.Label> 
+                                    </Col>
+                                    <Col sm={second_col}>
+                                        <FormControl 
+                                            type="text" 
+                                            name="value" 
+                                            onChange={(e) => this.changeParameters(e, 1)}
+                                            value={this.state.parameters[1].value} 
+                                        />
+                                    </Col>
+                                </Form.Row>
+                            </Form>
+                            
+                break;
+              case "CANOPY_CLUSTERING_EXTENDED":
+                parameters_JSX_window = 
+                            <Form>
+                                <div style ={{textAlign:'center'}}>
+                                    <h3>{this.state.label}</h3>
+                                    <p>Please configure the method's parameters below</p>
+                                </div>
+                                <br />
+                                <Form.Row className="form-row">
+                                    <Col sm={empty_col} />
+                                    <Col sm={first_col} >
+                                        <Form.Label>Weighting Scheme</Form.Label> 
+                                    </Col>
+                                    <Col sm={second_col}>
+                                        <FormControl 
+                                            type="text" 
+                                            name="value" 
+                                            onChange={(e) => this.changeParameters(e, 0)}
+                                            value={this.state.parameters[0].value}   
+                                        />
+                                    </Col>
+                                </Form.Row>
+                                <Form.Row className="form-row">
+                                    <Col sm={empty_col} />
+                                    <Col sm={first_col} >
+                                        <Form.Label>Invalid Parameter id</Form.Label> 
+                                    </Col>
+                                    <Col sm={second_col}>
+                                        <FormControl 
+                                            type="text" 
+                                            name="value" 
+                                            onChange={(e) => this.changeParameters(e, 1)}
+                                            value={this.state.parameters[1].value} 
+                                        />
+                                    </Col>
+                                </Form.Row>
+                            </Form>
+                break;
+            default:
+                parameters_JSX_window = 
+                            <Form>
+                                <div style ={{textAlign:'center'}}>
+                                    <h3>{this.state.label}</h3>
+                                    <p>Please configure the method's parameter below</p>
+                                </div>
+                                <br/>
+                                <Form.Row>
+                                    <Col sm={empty_col} />
+                                    <Col sm={first_col}>
+                                        <Form.Label >Weighting Scheme</Form.Label> 
+                                    </Col>
+                                    <Col sm={second_col}>
+                                        <Form.Group>
+                                            <Form.Control 
+                                                as="select" 
+                                                name="select" 
+                                                value={this.state.parameters[0].value}
+                                                onChange={(e) => this.changeParameters(e, 0)}
+                                            >
+                                                <option value="CBS" >CBS</option>
+                                                <option value="ARCS" >ARCS</option>
+                                                <option value="ECBS" >ECBS</option>
+                                                <option value="JS" >JS</option>
+                                                <option value="EJS" >EJS</option>
+                                                <option value="PEARSON_X2" >PEARSON_X2</option>
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Col>
+                                </Form.Row>
+                            </Form>
+          }
+            
         return (
             <div >
                 <br/>
@@ -93,8 +294,17 @@ class ComparisonCleaning extends Component {
                     <Form.Label><h5>Select a Comparison Cleaning method (Optional)</h5>  </Form.Label>
                 </Form.Group> 
 
-                <RadioMethod methods={this.methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Comparison Cleaning method"}/>
-
+                <RadioMethod methods={this.methods} state={this.state} auto_disabled={false} disable_manual={this.state.method === "NO_CLEANING"} onChange={this.onChange} title={"Comparison Cleaning method"}/>
+                <br/>
+                <Collapse in={this.state.conf_type === "Manual" && this.state.method !== "NO_CLEANING"} >
+                    <div className="jumbotron_parameters_container">
+                        <Jumbotron className="jumbotron_parameters" style={{width:"100%"}}>
+                            <div style={{margin:"auto"}}>
+                                {parameters_JSX_window}
+                            </div>
+                        </Jumbotron>
+                    </div>
+                </Collapse>
             </div>
         )
     }

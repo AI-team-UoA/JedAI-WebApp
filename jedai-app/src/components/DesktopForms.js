@@ -44,19 +44,40 @@ class DesktopForms extends Component {
         comparison_cleaning: {
             method: "NO_CLEANING",
             conf_type: "Default",
-            label: "No Cleaning"
+            label: "No Cleaning",
+            parameters: []
         },
         
         entity_matching:  {
             method: "GROUP_LINKAGE",
             conf_type: "Default",
-            label: "Group Linkage"
+            label: "Group Linkage",
+            parameters: [
+                {
+                    label: "Representation Model",
+                    value: "TOKEN_UNIGRAM_GRAPHS"
+                },
+                {
+                    label: "Similarity Measure",
+                    value: "GRAPH_VALUE_SIMILARITY"
+                },
+                {
+                    label: "Similarity Threshold",
+                    value: 0.5
+                }
+            ]
         },
         
         entity_clustering: {
             method: "CONNECTED_COMPONENTS_CLUSTERING",
             conf_type: "Default",
-            label: "Connected Component Clustering"
+            label: "Connected Component Clustering",
+            parameters  : [
+                {
+                    label: "Similarity Threshold",
+                    value: 0.5
+                }
+            ]
         }
     }
     
@@ -76,7 +97,13 @@ class DesktopForms extends Component {
                 this.setState({ entity_clustering : {
                         method: "UNIQUE_MAPPING_CLUSTERING",
                         label: "Unique Mapping Clustering",
-                        conf_type: "Default"
+                        conf_type: "Default",
+                        parameters  : [
+                            {
+                                label: "Similarity Threshold",
+                                value: 0.5
+                            }
+                        ]
                     }
                 })
             }
