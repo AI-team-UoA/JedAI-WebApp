@@ -10,6 +10,7 @@ class BlockBuilding extends Component {
 
     constructor(...args) {
         super(...args);
+        window.scrollTo(0, 0)
         this.submitChange = this.submitChange.bind(this)
         this.alertText = "Select at least one Block Building method!"
 

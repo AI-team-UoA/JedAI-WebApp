@@ -6,6 +6,7 @@ import {Button} from 'react-bootstrap/'
 
 class ConfirmConfiguration extends Component {
     render() {
+        window.scrollTo(0, 0)
 
         const state = this.props.state
 

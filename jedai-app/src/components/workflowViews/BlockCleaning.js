@@ -9,6 +9,7 @@ class BlockCleaning extends Component {
 
     constructor(...args) {
         super(...args);
+        window.scrollTo(0, 0)
         this.submitChange = this.submitChange.bind(this)
         
         // Default values of the parameters of the methods

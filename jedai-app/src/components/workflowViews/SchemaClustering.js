@@ -8,6 +8,7 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
     
     constructor(...args) {
         super(...args);
+        window.scrollTo(0, 0)
 
         this.state = {
             method: this.props.state.method,

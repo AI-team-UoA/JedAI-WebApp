@@ -8,6 +8,7 @@ class EntityClustering extends Component {
 
     constructor(...args) {
         super(...args);
+        window.scrollTo(0, 0)
 
         this.default_parameters = [
             {
