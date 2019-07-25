@@ -7,7 +7,7 @@ public class MethodModel {
 	private String method_name;
 	private String label;
 	private String configuration_type;
-	private List<ParametersModel> parameters;
+	private List<Parameter> parameters;
 	
 	
 
@@ -17,10 +17,10 @@ public class MethodModel {
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	public List<ParametersModel> getParameters() {
+	public List<Parameter> getParameters() {
 		return parameters;
 	}
-	public void setParameters(List<ParametersModel> parameters) {
+	public void setParameters(List<Parameter> parameters) {
 		this.parameters = parameters;
 	}
 	public String getMethod() {
