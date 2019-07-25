@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.datamodel.EntityProfile;
+import org.scify.jedai.entityclustering.IEntityClustering;
+import org.scify.jedai.entitymatching.IEntityMatching;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +35,8 @@ public class ConfigurationsController {
 	private ISchemaClustering schema_clustering;
 	
 	private IBlockProcessing comparison_cleaning;
-	private MethodModel entity_matching;
-	private MethodModel entity_clustering;
+	private IEntityMatching entity_matching;
+	private IEntityClustering entity_clustering;
 	private List<MethodModel> block_building;
 	private List<MethodModel> block_cleaning;
 	
@@ -99,10 +101,9 @@ public class ConfigurationsController {
 	
 	
 	
-	
-	
 	@PostMapping("/set_configurations/schemaclustering")	
 	public boolean setSchemaClustering(@RequestBody MethodModel schema_clustering) {
+		
 		if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
 			this.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
 		else
@@ -131,26 +132,47 @@ public class ConfigurationsController {
             	this.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
             			comparison_cleaning.getLabel(),
             			comparison_cleaning.getParameters() );
-            
         }
 		
 		System.out.println("CC: " + this.comparison_cleaning);
 		return this.comparison_cleaning != null;
 	}
 	
+	
+	
 	@PostMapping("/set_configurations/entitymatching")	
 	public boolean setEntityMatching(@RequestBody MethodModel entity_matching) {
-		this.setEntity_matching(entity_matching);
 		
+		if(!entity_matching.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
+            this.entity_matching = DynamicMethodConfiguration
+                    .configureEntityMatchingMethod(entity_matching.getLabel(), null);
+         else 
+            this.entity_matching = DynamicMethodConfiguration
+                    .configureEntityMatchingMethod(entity_matching.getLabel(), entity_matching.getParameters());
+        
+		
+		System.out.println("EM: " + this.entity_matching);
 		return this.entity_matching != null;
 	}
 	
+	
+	
+	
 	@PostMapping("/set_configurations/entityclustering")	
 	public boolean setEntityClustering(@RequestBody MethodModel entity_clustering) {
-		this.setEntity_clustering(entity_clustering);
 		
+
+		if(!entity_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+			this.entity_clustering = MethodConfigurations.getEntityClusteringMethod(entity_clustering.getLabel());
+         else 
+        	this.entity_clustering = DynamicMethodConfiguration.configureEntityClusteringMethod(entity_clustering.getLabel(), entity_clustering.getParameters());
+        
+		System.out.println("EC: " + this.entity_clustering);
 		return this.entity_clustering != null;
 	}
+	
+	
+	
 	
 	@PostMapping("/set_configurations/blockbuilding")	
 	public boolean setBlockBuilding(@RequestBody List<MethodModel> block_building) {
@@ -199,26 +221,6 @@ public class ConfigurationsController {
 	public void setGround_trut(DataReadModel ground_truth) {
 		this.ground_truth = ground_truth;
 	}
-
-	public MethodModel getEntity_matching() {
-		return entity_matching;
-	}
-
-
-	public void setEntity_matching(MethodModel entity_matching) {
-		this.entity_matching = entity_matching;
-	}
-
-
-	public MethodModel getEntity_clustering() {
-		return entity_clustering;
-	}
-
-
-	public void setEntity_clustering(MethodModel entity_clustering) {
-		this.entity_clustering = entity_clustering;
-	}
-
 
 	public List<MethodModel> getBlock_building() {
 		return block_building;

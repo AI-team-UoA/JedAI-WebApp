@@ -6,6 +6,8 @@ import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.enumerations.RepresentationModel;
 import org.scify.jedai.utilities.enumerations.SimilarityMetric;
 import org.scify.jedai.utilities.enumerations.WeightingScheme;
+
+
 import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.blockprocessing.blockcleaning.BlockFiltering;
 import org.scify.jedai.blockprocessing.blockcleaning.ComparisonsBasedBlockPurging;
@@ -19,6 +21,14 @@ import org.scify.jedai.blockprocessing.comparisoncleaning.ReciprocalCardinalityN
 import org.scify.jedai.blockprocessing.comparisoncleaning.ReciprocalWeightedNodePruning;
 import org.scify.jedai.blockprocessing.comparisoncleaning.WeightedEdgePruning;
 import org.scify.jedai.blockprocessing.comparisoncleaning.WeightedNodePruning;
+import org.scify.jedai.entityclustering.CenterClustering;
+import org.scify.jedai.entityclustering.ConnectedComponentsClustering;
+import org.scify.jedai.entityclustering.CutClustering;
+import org.scify.jedai.entityclustering.IEntityClustering;
+import org.scify.jedai.entityclustering.MarkovClustering;
+import org.scify.jedai.entityclustering.MergeCenterClustering;
+import org.scify.jedai.entityclustering.RicochetSRClustering;
+import org.scify.jedai.entityclustering.UniqueMappingClustering;
 import org.scify.jedai.schemaclustering.AttributeNameClustering;
 
 
@@ -49,6 +59,43 @@ public class MethodConfigurations {
 
         return schemaClustering;
     }
+	
+	
+	public static IEntityClustering getEntityClusteringMethod(String methodName) {
+        IEntityClustering method;
+
+        switch (methodName) {
+            case JedaiOptions.CENTER_CLUSTERING:
+                method = new CenterClustering();
+                break;
+            case JedaiOptions.CONNECTED_COMPONENTS_CLUSTERING:
+                method = new ConnectedComponentsClustering();
+                break;
+            case JedaiOptions.CUT_CLUSTERING:
+                method = new CutClustering();
+                break;
+            case JedaiOptions.MARKOV_CLUSTERING:
+                method = new MarkovClustering();
+                break;
+            case JedaiOptions.MERGE_CENTER_CLUSTERING:
+                method = new MergeCenterClustering();
+                break;
+            case JedaiOptions.RICOCHET_SR_CLUSTERING:
+                method = new RicochetSRClustering();
+                break;
+            case JedaiOptions.UNIQUE_MAPPING_CLUSTERING:
+                method = new UniqueMappingClustering();
+                break;
+            default:
+            	System.out.println("ERROR: Entity clustering method does not exist: " + methodName);
+                method = null;
+        }
+
+        return method;
+    }
+	
+	
+    
 	
 	
 	

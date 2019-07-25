@@ -12,6 +12,17 @@ import org.scify.jedai.blockprocessing.comparisoncleaning.ReciprocalCardinalityN
 import org.scify.jedai.blockprocessing.comparisoncleaning.ReciprocalWeightedNodePruning;
 import org.scify.jedai.blockprocessing.comparisoncleaning.WeightedEdgePruning;
 import org.scify.jedai.blockprocessing.comparisoncleaning.WeightedNodePruning;
+import org.scify.jedai.entityclustering.CenterClustering;
+import org.scify.jedai.entityclustering.ConnectedComponentsClustering;
+import org.scify.jedai.entityclustering.CutClustering;
+import org.scify.jedai.entityclustering.IEntityClustering;
+import org.scify.jedai.entityclustering.MarkovClustering;
+import org.scify.jedai.entityclustering.MergeCenterClustering;
+import org.scify.jedai.entityclustering.RicochetSRClustering;
+import org.scify.jedai.entityclustering.UniqueMappingClustering;
+import org.scify.jedai.entitymatching.GroupLinkage;
+import org.scify.jedai.entitymatching.IEntityMatching;
+import org.scify.jedai.entitymatching.ProfileMatcher;
 import org.scify.jedai.schemaclustering.AttributeNameClustering;
 import org.scify.jedai.schemaclustering.AttributeValueClustering;
 import org.scify.jedai.schemaclustering.HolisticAttributeClustering;
@@ -52,6 +63,94 @@ public class DynamicMethodConfiguration {
 
         return processingMethod;
     }
+    
+    
+    
+public static IEntityMatching configureEntityMatchingMethod(String emMethodName, List<Parameter> parameters) {
+		
+    	RepresentationModel rep;
+		SimilarityMetric simMetric;
+		
+		switch (emMethodName) {
+			
+			case JedaiOptions.GROUP_LINKAGE:
+				double simThr = (parameters != null) ? (double) parameters.get(2).getValue() : 0.5;
+				
+				rep = (parameters != null) ?
+						RepresentationModel.valueOf((String) parameters.get(0).getValue()) : RepresentationModel.TOKEN_UNIGRAM_GRAPHS;
+				simMetric = (parameters != null) ?
+						SimilarityMetric.valueOf((String) parameters.get(1).getValue()) : SimilarityMetric.GRAPH_VALUE_SIMILARITY;
+				
+				return new GroupLinkage(simThr, rep, simMetric);
+			
+			case JedaiOptions.PROFILE_MATCHER:
+				rep = (parameters != null) ?
+						RepresentationModel.valueOf((String) parameters.get(0).getValue()) : RepresentationModel.TOKEN_UNIGRAM_GRAPHS;
+				simMetric = (parameters != null) ?
+						SimilarityMetric.valueOf((String) parameters.get(1).getValue()) : SimilarityMetric.GRAPH_VALUE_SIMILARITY;
+				
+				return new ProfileMatcher(rep, simMetric);
+			
+			default:
+				
+				return null;
+		}
+	}
+
+
+	public static IEntityClustering configureEntityClusteringMethod(String methodName, List<Parameter> parameters) {
+		IEntityClustering ecMethod = null;
+		
+		// Get appropriate processing method
+		switch (methodName) {
+			case JedaiOptions.CENTER_CLUSTERING:
+				ecMethod = new CenterClustering(
+				(double) parameters.get(0).getValue()
+				);
+				break;
+				
+			case JedaiOptions.CONNECTED_COMPONENTS_CLUSTERING:
+				ecMethod = new ConnectedComponentsClustering(
+						(double) parameters.get(0).getValue());
+				break;
+				
+			case JedaiOptions.CUT_CLUSTERING:
+				ecMethod = new CutClustering(
+					(double) parameters.get(1).getValue(),  // 1st parameter of CutClustering, but 2nd in JedAI-core
+					(double) parameters.get(0).getValue());
+				break;
+				
+			case JedaiOptions.MARKOV_CLUSTERING:
+				ecMethod = new MarkovClustering(
+					(double) parameters.get(1).getValue(),  // Cluster Threshold
+					(double) parameters.get(2).getValue(),  // Matrix Similarity Threshold
+					(int) parameters.get(3).getValue(),     // Similarity Checks Limit
+					(double) parameters.get(0).getValue()   // Similarity Threshold
+				);
+				break;
+				
+			case JedaiOptions.MERGE_CENTER_CLUSTERING:
+				ecMethod = new MergeCenterClustering(
+						(double) parameters.get(0).getValue());
+				break;
+				
+			case JedaiOptions.RICOCHET_SR_CLUSTERING:
+				ecMethod = new RicochetSRClustering(
+						(double) parameters.get(0).getValue());
+				break;
+				
+			case JedaiOptions.UNIQUE_MAPPING_CLUSTERING:
+				ecMethod = new UniqueMappingClustering(
+						(double) parameters.get(0).getValue());
+				break;
+				
+			default:
+	        	System.out.println("ERROR: Entity clustering method does not exist: " + methodName);
+	        	ecMethod = null;
+		}
+		
+		return ecMethod;
+	}
     
     
     public static IBlockProcessing configureComparisonCleaningMethod(String methodName,List<Parameter> parameters) {
