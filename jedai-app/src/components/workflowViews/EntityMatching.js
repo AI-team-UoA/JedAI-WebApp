@@ -127,28 +127,28 @@ class EntityMatching extends Component {
                                         onChange={e => this.changeParameters(e, 0)}
                                     >
                                         <option value="CHARACTER_BIGRAMS" >CHARACTER_BIGRAMS</option>
-                                        <option value="CHARACTER_BIGRAMS_TF_IDF" >CHARACTER_BIGRAMS</option>
-                                        <option value="CHARACTER_BIGRAMS_GRAPHS" >CHARACTER_BIGRAMS</option>
+                                        <option value="CHARACTER_BIGRAMS_TF_IDF" >CHARACTER_BIGRAMS_TF_IDF</option>
+                                        <option value="CHARACTER_BIGRAM_GRAPHS" >CHARACTER_BIGRAM_GRAPHS</option>
 
                                         <option value="CHARACTER_TRIGRAMS" >CHARACTER_TRIGRAMS</option>
                                         <option value="CHARACTER_TRIGRAMS_TF_IDF" >CHARACTER_TRIGRAMS_TF_IDF</option>
-                                        <option value="CHARACTER_TRIGRAMS_GRAPHS" >CHARACTER_TRIGRAMS_GRAPHS</option>
+                                        <option value="CHARACTER_TRIGRAM_GRAPHS" >CHARACTER_TRIGRAM_GRAPHS</option>
 
                                         <option value="CHARACTER_FOURGRAMS" >CHARACTER_FOURGRAMS</option>
                                         <option value="CHARACTER_FOURGRAMS_TF_IDF" >CHARACTER_FOURGRAMS_TF_IDF</option>
-                                        <option value="CHARACTER_FOURGRAMS_GRAPHS" >CHARACTER_FOURGRAMS_GRAPHS</option>
+                                        <option value="CHARACTER_FOURGRAM_GRAPHS" >CHARACTER_FOURGRAM_GRAPHS</option>
 
-                                        <option value="TOKEN_UNIGRAM" >TOKEN_UNIGRAM</option>
-                                        <option value="TOKEN_UNIGRAM_TF_IDF" >TOKEN_UNIGRAM_TF_IDF</option>
+                                        <option value="TOKEN_UNIGRAMS" >TOKEN_UNIGRAMS</option>
+                                        <option value="TOKEN_UNIGRAMS_TF_IDF" >TOKEN_UNIGRAMS_TF_IDF</option>
                                         <option value="TOKEN_UNIGRAM_GRAPHS" >TOKEN_UNIGRAM_GRAPHS</option>
 
                                         <option value="TOKEN_BIGRAMS" >TOKEN_BIGRAMS</option>
                                         <option value="TOKEN_BIGRAMS_TF_IDF" >TOKEN_BIGRAMS_TF_IDF</option>
-                                        <option value="TOKEN_BIGRAMS_GRAPHS" >TOKEN_BIGRAMS_GRAPHS</option>
+                                        <option value="TOKEN_BIGRAM_GRAPHS" >TOKEN_BIGRAM_GRAPHS</option>
 
                                         <option value="TOKEN_TRIGRAMS" >TOKEN_TRIGRAMS</option>
                                         <option value="TOKEN_TRIGRAMS_TF_IDF" >TOKEN_TRIGRAMS_TF_IDF</option>
-                                        <option value="TOKEN_TRIGRAMS_GRAPHS" >TOKEN_TRIGRAMS_GRAPHS</option>
+                                        <option value="TOKEN_TRIGRAM_GRAPHS" >TOKEN_TRIGRAM_GRAPHS</option>
 
                                     </Form.Control>
                                 </Form.Group>
