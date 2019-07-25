@@ -37,9 +37,9 @@ class DesktopForms extends Component {
             ]
         },
         
-        block_building: null,
+        block_building: [],
         
-        block_cleaning: null,
+        block_cleaning: [],
 
         comparison_cleaning: {
             method_name: "NO_CLEANING",

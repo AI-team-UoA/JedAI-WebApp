@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {Form, Row, FormControl, Col, Jumbotron, Collapse } from 'react-bootstrap/'
 import CheckboxMethod from './utilities/CheckboxMethod'
+import update from 'immutability-helper'
 import "../../css/main.css"
 
 
@@ -15,20 +16,36 @@ class BlockCleaning extends Component {
         // Default values of the parameters of the methods
         this.default_parameters = [
             {
-                label: "Purging Factor",
-                value: 0.005
+                parameters:
+                    [
+                        {
+                            label: "Purging Factor",
+                            value: 0.005
+                        }
+                    ]
             },
             {
-                label: "Smoothing Factor",
-                value: 1.025
+                parameters:
+                    [
+                        {
+                            label: "Smoothing Factor",
+                            value: 1.025
+                        }
+                    ]
             },
             {
-                label: "Filtering Ratio",
-                value: 0.8
+                parameters:
+                    [
+                        {
+                            label: "Filtering Ratio",
+                            value: 0.8
+                        }
+                    ]
+                
             }
         ]
         
-        if (this.props.state !== null){
+        if (this.props.state.length !== 0){
             var selected_methods = new Map()
             this.props.state.forEach((selected_method) => {
                 selected_methods.set(selected_method.method_name, selected_method)
@@ -42,21 +59,21 @@ class BlockCleaning extends Component {
                         selected: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").selected : false,
                         label: "Size-based Block Purging",
                         configuration_type: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").configuration_type : "Default",
-                        parameters: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").parameters : this.default_parameters[0]
+                        parameters: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").parameters : this.default_parameters[0].parameters
                     },  
                     {
                         method_name: "COMPARISON_BASED_BLOCK_PURGING",
                         selected: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").selected : false,
                         label: "Comparison-based Block Purging",
                         configuration_type: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").configuration_type : "Default",
-                        parameters: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").parameters : this.default_parameters[1]
+                        parameters: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").parameters : this.default_parameters[1].parameters
                     },  
                     {
                         method_name: "BLOCK_FILTERING",
                         selected: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").selected : false,
                         label: "Block Filrering",
                         configuration_type: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").configuration_type : "Default",
-                        parameters: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").parameters : this.default_parameters[2]
+                        parameters: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").parameters : this.default_parameters[2].parameters
                     }
                 ]
             }
@@ -70,21 +87,21 @@ class BlockCleaning extends Component {
                         selected: false,
                         label: "Size-based Block Purging",
                         configuration_type: "Default",
-                        parameters:  this.default_parameters[0]
+                        parameters:  this.default_parameters[0].parameters
                     },  
                     {
                         method_name: "COMPARISON_BASED_BLOCK_PURGING",
                         selected: false,
                         label: "Comparison-based Block Purging",
                         configuration_type: "Default",
-                        parameters: this.default_parameters[1]
+                        parameters: this.default_parameters[1].parameters
                     },  
                     {
                         method_name: "BLOCK_FILTERING",
                         selected: false,
                         label: "Block Filrering",
                         configuration_type: "Default",
-                        parameters: this.default_parameters[2]
+                        parameters: this.default_parameters[2].parameters
                     }
                 ]
             }
@@ -97,10 +114,19 @@ class BlockCleaning extends Component {
     onChange = (e, index) => {
         var value = e.target.value
         if (!isNaN(value) && value!== ""){
-            this.setState(state => {
+
+
+            // first calculate the new parameters
+            var updated_state = update(this.state.block_cleaning[index].parameters[0], {value: {$set: value}}); 
+            var newData = update(this.state.block_cleaning[index].parameters, {
+                    $splice: [[0, 1, updated_state]]
+            });  
+
+             //then, apply them to the state
+             this.setState(state => {
                 const block_cleaning = state.block_cleaning.map((method, i) => {
                     if (i === index) 
-                        return {...method, parameters: { label: this.state.block_cleaning[index].parameters.label, value: value}}
+                        return {...method, parameters: newData}
                     else 
                         return method;
                 });
@@ -127,7 +153,7 @@ class BlockCleaning extends Component {
             }
         })
         if(selected_methods.length > 0) this.props.submitState("block_cleaning", selected_methods)
-        else this.props.submitState("block_cleaning", null)
+        else this.props.submitState("block_cleaning", [])
         return true
     }
 
@@ -155,7 +181,7 @@ class BlockCleaning extends Component {
                                     type="text" 
                                     name="value" 
                                     onChange={(e) => this.onChange(e, 0)}
-                                    value={this.state.block_cleaning[0].parameters.value} 
+                                    value={this.state.block_cleaning[0].parameters[0].value} 
                                 />
                             </Col>
                         </Form.Row>
@@ -177,7 +203,7 @@ class BlockCleaning extends Component {
                                 type="text" 
                                 name="value" 
                                 onChange={(e) => this.onChange(e, 1)}
-                                value={this.state.block_cleaning[1].parameters.value} 
+                                value={this.state.block_cleaning[1].parameters[0].value} 
                             />
                         </Col>
                     </Form.Row>
@@ -198,7 +224,7 @@ class BlockCleaning extends Component {
                                 type="text" 
                                 name="value" 
                                 onChange={(e) => this.onChange(e, 2)}
-                                value={this.state.block_cleaning[2].parameters.value} 
+                                value={this.state.block_cleaning[2].parameters[0].value} 
                             />
                         </Col>
                     </Form.Row>

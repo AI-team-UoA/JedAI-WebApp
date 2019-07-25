@@ -115,7 +115,7 @@ class BlockBuilding extends Component {
             }
         ]
 
-        if (this.props.state !== null){
+        if (this.props.state.length !== 0){
             var selected_methods = new Map()
             this.props.state.forEach((selected_method) => {
                 selected_methods.set(selected_method.method_name, selected_method)
