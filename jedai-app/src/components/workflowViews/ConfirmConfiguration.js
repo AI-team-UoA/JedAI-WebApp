@@ -10,6 +10,8 @@ class ConfirmConfiguration extends Component {
 
     
     sendConfigurations = (e) => {
+
+        // firstly send the state of data reading to server
         var data_reading = this.props.state.data_reading
         console.log(data_reading)
         let entity_1 = new FormData()
@@ -52,8 +54,37 @@ class ConfirmConfiguration extends Component {
             data: ground_truth
         }).then(res => success = success && res.data)
 
-        console.log(success )
+        console.log("DATA READING SUCCESS: " + success )
 
+    
+        var schema_clustering = this.props.state.schema_clustering
+        var comparison_cleaning = this.props.state.comparison_cleaning
+        var entity_matching = this.props.state.entity_matching
+        var entity_clustering = this.props.state.entity_clustering
+        
+        axios({
+            url: '/set_configurations/schemaclustering',
+            method: 'POST',
+            data: schema_clustering
+        }).then(res => console.log("schema_clustering SUCCESS: " + res.data))
+
+        axios({
+            url: '/set_configurations/comparisoncleaning',
+            method: 'POST',
+            data: comparison_cleaning
+        }).then(res => console.log("comparison_cleaning SUCCESS: " + res.data))
+
+        axios({
+            url: '/set_configurations/entitymatching',
+            method: 'POST',
+            data: entity_matching
+        }).then(res => console.log("entity_matching SUCCESS: " + res.data))
+
+        axios({
+            url: '/set_configurations/entityclustering',
+            method: 'POST',
+            data: entity_clustering
+        }).then(res => console.log("entity_clustering SUCCESS: " + res.data))
     }
 
 
