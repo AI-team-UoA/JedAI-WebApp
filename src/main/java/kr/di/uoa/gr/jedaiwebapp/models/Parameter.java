@@ -1,8 +1,8 @@
 package kr.di.uoa.gr.jedaiwebapp.models;
 
-public class ParametersModel {
+public class Parameter {
 		private String label;
-		private String value;
+		private Object value;
 		
 		public String getLabel() {
 			return label;
@@ -10,10 +10,10 @@ public class ParametersModel {
 		public void setLabel(String label) {
 			this.label = label;
 		}
-		public String getValue() {
+		public Object getValue() {
 			return value;
 		}
-		public void setValue(String value) {
+		public void setValue(Object value) {
 			this.value = value;
 		}
 		
