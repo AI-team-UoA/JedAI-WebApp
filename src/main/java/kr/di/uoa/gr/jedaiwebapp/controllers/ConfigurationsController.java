@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
-import kr.di.uoa.gr.jedaiwebapp.models.RadioMethodModel;
+import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 
 @RestController
 @RequestMapping("/set_configurations/**")
@@ -19,10 +19,10 @@ public class ConfigurationsController {
 	private DataReadModel entity_1;
 	private DataReadModel entity_2;
 	private DataReadModel ground_trut;
-	private RadioMethodModel schema_clustering;
-	private RadioMethodModel comparison_cleaning;
-	private RadioMethodModel entity_matching;
-	private RadioMethodModel entity_clustering;
+	private MethodModel schema_clustering;
+	private MethodModel comparison_cleaning;
+	private MethodModel entity_matching;
+	private MethodModel entity_clustering;
 	
 	
 
@@ -60,25 +60,25 @@ public class ConfigurationsController {
 	
 	
 	@PostMapping("/set_configurations/schemaclustering")	
-	public boolean setSchemaClustering(@RequestBody RadioMethodModel schema_clustering) {
+	public boolean setSchemaClustering(@RequestBody MethodModel schema_clustering) {
 		this.setSchema_clustering(schema_clustering);
 		return this.schema_clustering != null;
 	}
 	
 	@PostMapping("/set_configurations/comparisoncleaning")	
-	public boolean setComparisonCleaning(@RequestBody RadioMethodModel comparison_cleaning) {
+	public boolean setComparisonCleaning(@RequestBody MethodModel comparison_cleaning) {
 		this.setComparison_cleaning(comparison_cleaning);
 		return this.comparison_cleaning != null;
 	}
 	
 	@PostMapping("/set_configurations/entitymatching")	
-	public boolean setEntityMatching(@RequestBody RadioMethodModel entity_matching) {
+	public boolean setEntityMatching(@RequestBody MethodModel entity_matching) {
 		this.setEntity_matching(entity_matching);
 		return this.entity_matching != null;
 	}
 	
 	@PostMapping("/set_configurations/entityclustering")	
-	public boolean setEntityClustering(@RequestBody RadioMethodModel entity_clustering) {
+	public boolean setEntityClustering(@RequestBody MethodModel entity_clustering) {
 		this.setEntity_clustering(entity_clustering);
 		return this.entity_clustering != null;
 	}
@@ -107,41 +107,60 @@ public class ConfigurationsController {
 	public void setGround_trut(DataReadModel ground_trut) {
 		this.ground_trut = ground_trut;
 	}
-	public RadioMethodModel getSchema_clustering() {
+	public MethodModel getSchema_clustering() {
 		return schema_clustering;
 	}
-	public void setSchema_clustering(RadioMethodModel schema_clustering) {
+	public void setSchema_clustering(MethodModel schema_clustering) {
 		this.schema_clustering = schema_clustering;
 	}
 
 
-	public RadioMethodModel getComparison_cleaning() {
+	public MethodModel getComparison_cleaning() {
 		return comparison_cleaning;
 	}
 
 
-	public void setComparison_cleaning(RadioMethodModel comparison_cleaning) {
+	public void setComparison_cleaning(MethodModel comparison_cleaning) {
 		this.comparison_cleaning = comparison_cleaning;
 	}
 
 
-	public RadioMethodModel getEntity_matching() {
+	public MethodModel getEntity_matching() {
 		return entity_matching;
 	}
 
 
-	public void setEntity_matching(RadioMethodModel entity_matching) {
+	public void setEntity_matching(MethodModel entity_matching) {
 		this.entity_matching = entity_matching;
 	}
 
 
-	public RadioMethodModel getEntity_clustering() {
+	public MethodModel getEntity_clustering() {
 		return entity_clustering;
 	}
 
 
-	public void setEntity_clustering(RadioMethodModel entity_clustering) {
+	public void setEntity_clustering(MethodModel entity_clustering) {
 		this.entity_clustering = entity_clustering;
+	}
+
+
+	public List<MethodModel> getBlock_building() {
+		return block_building;
+	}
+
+
+	public void setBlock_building(List<MethodModel> block_building) {
+		this.block_building = block_building;
+	}
+	
+	public List<MethodModel> getBlock_cleaning() {
+		return block_cleaning;
+	}
+
+
+	public void setBlock_cleaning(List<MethodModel> block_cleaning) {
+		this.block_cleaning = block_cleaning;
 	}
 	
 	

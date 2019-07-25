@@ -96,7 +96,7 @@ class ConfirmConfiguration extends Component {
 
         //Data Reading Configurations
         var er_label = state.data_reading.er_mode ==="dirty" ? "Dirty Entity Resolution" : "Clean-Clean Entity Resolution"
-        var er_mode = {label: er_label, conf_type: ""}
+        var er_mode = {label: er_label, configuration_type: ""}
 
         var entity_1 = 
             {
@@ -121,7 +121,7 @@ class ConfirmConfiguration extends Component {
         if (state.schema_clustering !== null){
             shcema_clustering = {
                 label: state.schema_clustering.label,
-                conf_type: state.schema_clustering.conf_type,
+                configuration_type: state.schema_clustering.configuration_type,
                 parameters: state.schema_clustering.parameters
             }
         }
@@ -130,7 +130,7 @@ class ConfirmConfiguration extends Component {
         if (state.comparison_cleaning !== null){
             comparison_cleaning = {
                 label: state.comparison_cleaning.label,
-                conf_type: state.comparison_cleaning.conf_type,
+                configuration_type: state.comparison_cleaning.configuration_type,
                 parameters: state.comparison_cleaning.parameters
             }
         }
@@ -139,7 +139,7 @@ class ConfirmConfiguration extends Component {
         if (state.entity_matching !== null){
             entity_matching = {
                 label: state.entity_matching.label,
-                conf_type: state.entity_matching.conf_type,
+                configuration_type: state.entity_matching.configuration_type,
                 parameters: state.entity_matching.parameters
             }
         }
@@ -148,7 +148,7 @@ class ConfirmConfiguration extends Component {
         if (state.entity_clustering !== null){
             entity_clustering = {
                 label: state.entity_clustering.label,
-                conf_type: state.entity_clustering.conf_type,
+                configuration_type: state.entity_clustering.configuration_type,
                 parameters: state.entity_clustering.parameters
             }
         }
