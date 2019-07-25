@@ -2,11 +2,11 @@ package kr.di.uoa.gr.jedaiwebapp.models;
 
 import java.util.List;
 
-public class RadioMethodModel {
+public class MethodModel {
 	
-	private String method;
+	private String method_name;
 	private String label;
-	private String conf_type;
+	private String configuration_type;
 	private List<ParametersModel> parameters;
 	
 	
