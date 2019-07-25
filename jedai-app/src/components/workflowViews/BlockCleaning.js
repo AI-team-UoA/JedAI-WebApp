@@ -71,7 +71,7 @@ class BlockCleaning extends Component {
                     {
                         method_name: "BLOCK_FILTERING",
                         selected: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").selected : false,
-                        label: "Block Filrering",
+                        label: "Block Filtering",
                         configuration_type: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").configuration_type : "Default",
                         parameters: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").parameters : this.default_parameters[2].parameters
                     }

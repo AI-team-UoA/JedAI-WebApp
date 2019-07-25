@@ -84,11 +84,11 @@ class ComparisonCleaning extends Component {
             },
             {
                 value: "RECIPROCAL_CARDINALITY_NODE_PRUNING",
-                label: "Reciprocal Cardinality Node Pruning"
+                label: "Reciprocal Cardinality Node Pruning (ReCNP)"
             },
             {
                 value: "RECIPROCAL_WEIGHED_NODE_PRUNING",
-                label: "Reciprocal Weighed Node Pruning"
+                label: "Reciprocal Weighed Node Pruning (ReWNP)"
             },
             {
                 value: "CANOPY_CLUSTERING",

@@ -69,7 +69,7 @@ class EntityClustering extends Component {
         },
         {
             value: "CONNECTED_COMPONENTS_CLUSTERING",
-            label: "Connected Component Clustering"
+            label: "Connected Components Clustering"
         },
         {
             value: "CUT_CLUSTERING",
@@ -80,7 +80,7 @@ class EntityClustering extends Component {
             label: "Markov Clustering"
         },
         {
-            value: "GROUP_LIMERGE_CENTER_CLUSTERINGNKAGE",
+            value: "MERGE_CENTER_CLUSTERING",
             label: "Merge-Center Clustering"
         },
         {
