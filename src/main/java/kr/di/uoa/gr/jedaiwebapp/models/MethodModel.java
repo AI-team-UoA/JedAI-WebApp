@@ -23,16 +23,16 @@ public class MethodModel {
 	public void setParameters(List<Parameter> parameters) {
 		this.parameters = parameters;
 	}
-	public String getMethod() {
+	public String getMethod_name() {
 		return method_name;
 	}
-	public void setMethod(String method_name) {
+	public void setMethod_name(String method_name) {
 		this.method_name = method_name;
 	}
-	public String getConf_type() {
+	public String getConfiguration_type() {
 		return configuration_type;
 	}
-	public void setConf_type(String configuration_type) {
+	public void setConfiguration_type(String configuration_type) {
 		this.configuration_type = configuration_type;
 	}
 	
