@@ -11,16 +11,19 @@ class ConfirmConfiguration extends Component {
     
     sendConfigurations = (e) => {
         var success = true
-
-        // firstly send the state of data reading to server
         var data_reading = this.props.state.data_reading
+
+        // firstly send the ER mode to server
+        axios
+            .get("/set_configurations/ermode/"+data_reading.er_mode)
+            .then(res => success = success && res.data)
+
+        // then send the state of data reading to server
         let entity_1 = new FormData()
         entity_1.append('entity_id',data_reading.entity1_set.entity_id)
         entity_1.append('filetype', data_reading.entity1_set.filetype)
         entity_1.append('source', data_reading.entity1_set.source)
         Object.keys(data_reading.entity1_set.configurations).forEach((key) => { entity_1.append(key, JSON.stringify(data_reading.entity1_set.configurations[key]));})
-
-       
 
         axios({
             url: '/set_configurations/dataread',
