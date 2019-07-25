@@ -118,73 +118,73 @@ class BlockBuilding extends Component {
         if (this.props.state !== null){
             var selected_methods = new Map()
             this.props.state.forEach((selected_method) => {
-                selected_methods.set(selected_method.name, selected_method)
+                selected_methods.set(selected_method.method_name, selected_method)
             })
 
             // in case user has already selected and returned back, initialize state based on father component's state
             this.state = {
                 block_building : [
                     {
-                        name: "STANDARD_TOKEN_BUILDING",
+                        method_name: "STANDARD_TOKEN_BUILDING",
                         selected: selected_methods.has("STANDARD_TOKEN_BUILDING") ? selected_methods.get("STANDARD_TOKEN_BUILDING").selected : false,
                         label: "Standard/Token Blocking",
-                        conf_type: selected_methods.has("STANDARD_TOKEN_BUILDING") ? selected_methods.get("STANDARD_TOKEN_BUILDING").conf_type : "Default",
+                        configuration_type: selected_methods.has("STANDARD_TOKEN_BUILDING") ? selected_methods.get("STANDARD_TOKEN_BUILDING").configuration_type : "Default",
                         parameters: selected_methods.has("STANDARD_TOKEN_BUILDING") ? selected_methods.get("STANDARD_TOKEN_BUILDING").parameters : this.default_parameters[0].parameters
                     },  
                     {
-                        name: "SORTED_NEIGHBORHOOD",
+                        method_name: "SORTED_NEIGHBORHOOD",
                         selected: selected_methods.has("SORTED_NEIGHBORHOOD") ? selected_methods.get("SORTED_NEIGHBORHOOD").selected : false,
                         label: "Sorted Neighborhood",
-                        conf_type: selected_methods.has("SORTED_NEIGHBORHOOD") ? selected_methods.get("SORTED_NEIGHBORHOOD").conf_type : "Default",
+                        configuration_type: selected_methods.has("SORTED_NEIGHBORHOOD") ? selected_methods.get("SORTED_NEIGHBORHOOD").configuration_type : "Default",
                         parameters: selected_methods.has("SORTED_NEIGHBORHOOD") ? selected_methods.get("SORTED_NEIGHBORHOOD").parameters : this.default_parameters[1].parameters
                     },  
                     {
-                        name: "SORTED_NEIGHBORHOOD_EXTENDED",
+                        method_name: "SORTED_NEIGHBORHOOD_EXTENDED",
                         selected: selected_methods.has("SORTED_NEIGHBORHOOD_EXTENDED") ? selected_methods.get("SORTED_NEIGHBORHOOD_EXTENDED").selected : false,
                         label: "Extended Sorted Neighborhood",
-                        conf_type: selected_methods.has("SORTED_NEIGHBORHOOD_EXTENDED") ? selected_methods.get("SORTED_NEIGHBORHOOD_EXTENDED").conf_type : "Default",
+                        configuration_type: selected_methods.has("SORTED_NEIGHBORHOOD_EXTENDED") ? selected_methods.get("SORTED_NEIGHBORHOOD_EXTENDED").configuration_type : "Default",
                         parameters: selected_methods.has("SORTED_NEIGHBORHOOD_EXTENDED") ? selected_methods.get("SORTED_NEIGHBORHOOD_EXTENDED").parameters : this.default_parameters[2].parameters
                     },  
                     {
-                        name: "Q_GRAMS_BLOCKING",
+                        method_name: "Q_GRAMS_BLOCKING",
                         selected: selected_methods.has("Q_GRAMS_BLOCKING") ? selected_methods.get("Q_GRAMS_BLOCKING").selected : false,
                         label: "Q-Grams Blocking",
-                        conf_type: selected_methods.has("Q_GRAMS_BLOCKING") ? selected_methods.get("Q_GRAMS_BLOCKING").conf_type : "Default",
+                        configuration_type: selected_methods.has("Q_GRAMS_BLOCKING") ? selected_methods.get("Q_GRAMS_BLOCKING").configuration_type : "Default",
                         parameters: selected_methods.has("Q_GRAMS_BLOCKING") ? selected_methods.get("Q_GRAMS_BLOCKING").parameters : this.default_parameters[3].parameters
                     },  
                     {
-                        name: "Q_GRAMS_BLOCKING_EXTENDED",
+                        method_name: "Q_GRAMS_BLOCKING_EXTENDED",
                         selected: selected_methods.has("Q_GRAMS_BLOCKING_EXTENDED") ? selected_methods.get("Q_GRAMS_BLOCKING_EXTENDED").selected : false,
                         label: "Extended Q-Grams Blocking",
-                        conf_type: selected_methods.has("Q_GRAMS_BLOCKING_EXTENDED") ? selected_methods.get("Q_GRAMS_BLOCKING_EXTENDED").conf_type : "Default",
+                        configuration_type: selected_methods.has("Q_GRAMS_BLOCKING_EXTENDED") ? selected_methods.get("Q_GRAMS_BLOCKING_EXTENDED").configuration_type : "Default",
                         parameters: selected_methods.has("Q_GRAMS_BLOCKING_EXTENDED") ? selected_methods.get("Q_GRAMS_BLOCKING_EXTENDED").parameters : this.default_parameters[4].parameters
                     },  
                     {
-                        name: "SUFFIX_ARRAYS_BLOCKING",
+                        method_name: "SUFFIX_ARRAYS_BLOCKING",
                         selected: selected_methods.has("SUFFIX_ARRAYS_BLOCKING") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING").selected : false,
                         label: "Suffix Arrays Blocking",
-                        conf_type: selected_methods.has("SUFFIX_ARRAYS_BLOCKING") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING").conf_type : "Default",
+                        configuration_type: selected_methods.has("SUFFIX_ARRAYS_BLOCKING") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING").configuration_type : "Default",
                         parameters: selected_methods.has("SUFFIX_ARRAYS_BLOCKING") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING").parameters : this.default_parameters[5].parameters
                     },  
                     {
-                        name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
+                        method_name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
                         selected: selected_methods.has("SUFFIX_ARRAYS_BLOCKING_EXTENDED") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING_EXTENDED").selected : false,
                         label: "Extended Suffix Arrays Blocking",
-                        conf_type: selected_methods.has("SUFFIX_ARRAYS_BLOCKING_EXTENDED") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING_EXTENDED").conf_type : "Default",
+                        configuration_type: selected_methods.has("SUFFIX_ARRAYS_BLOCKING_EXTENDED") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING_EXTENDED").configuration_type : "Default",
                         parameters: selected_methods.has("SUFFIX_ARRAYS_BLOCKING_EXTENDED") ? selected_methods.get("SUFFIX_ARRAYS_BLOCKING_EXTENDED").parameters : this.default_parameters[6].parameters
                     },  
                     {
-                        name: "LSH_SUPERBIT_BLOCKING",
+                        method_name: "LSH_SUPERBIT_BLOCKING",
                         selected: selected_methods.has("LSH_SUPERBIT_BLOCKING") ? selected_methods.get("LSH_SUPERBIT_BLOCKING").selected : false,
                         label: "LSH SuperBit Blocking",
-                        conf_type: selected_methods.has("LSH_SUPERBIT_BLOCKING") ? selected_methods.get("LSH_SUPERBIT_BLOCKING").conf_type : "Default",
+                        configuration_type: selected_methods.has("LSH_SUPERBIT_BLOCKING") ? selected_methods.get("LSH_SUPERBIT_BLOCKING").configuration_type : "Default",
                         parameters: selected_methods.has("LSH_SUPERBIT_BLOCKING") ? selected_methods.get("LSH_SUPERBIT_BLOCKING").parameters : this.default_parameters[7].parameters
                     },  
                     {
-                        name: "LSH_MINHASH_BLOCKING",
+                        method_name: "LSH_MINHASH_BLOCKING",
                         selected: selected_methods.has("LSH_MINHASH_BLOCKING") ? selected_methods.get("LSH_MINHASH_BLOCKING").selected : false,
                         label: "LSH MinHash Blocking",
-                        conf_type: selected_methods.has("LSH_MINHASH_BLOCKING") ? selected_methods.get("LSH_MINHASH_BLOCKING").conf_type : "Default",
+                        configuration_type: selected_methods.has("LSH_MINHASH_BLOCKING") ? selected_methods.get("LSH_MINHASH_BLOCKING").configuration_type : "Default",
                         parameters: selected_methods.has("LSH_MINHASH_BLOCKING") ? selected_methods.get("LSH_MINHASH_BLOCKING").parameters : this.default_parameters[8].parameters
                     } 
             ],
@@ -196,66 +196,66 @@ class BlockBuilding extends Component {
             this.state = {
                 block_building : [
                     {
-                        name: "STANDARD_TOKEN_BUILDING",
+                        method_name: "STANDARD_TOKEN_BUILDING",
                         selected: false,
                         label: "Standard/Token Blocking",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[0].parameters
                     },  
                     {
-                        name: "SORTED_NEIGHBORHOOD",
+                        method_name: "SORTED_NEIGHBORHOOD",
                         selected: false,
                         label: "Sorted Neighborhood",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[1].parameters
                     },  
                     {
-                        name: "SORTED_NEIGHBORHOOD_EXTENDED",
+                        method_name: "SORTED_NEIGHBORHOOD_EXTENDED",
                         selected: false,
                         label: "Extended Sorted Neighborhood",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[2].parameters
                     },  
                     {
-                        name: "Q_GRAMS_BLOCKING",
+                        method_name: "Q_GRAMS_BLOCKING",
                         selected: false,
                         label: "Q-Grams Blocking",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[3].parameters
                     },  
                     {
-                        name: "Q_GRAMS_BLOCKING_EXTENDED",
+                        method_name: "Q_GRAMS_BLOCKING_EXTENDED",
                         selected: false,
                         label: "Extended Q-Grams Blocking",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[4].parameters
                     },  
                     {
-                        name: "SUFFIX_ARRAYS_BLOCKING",
+                        method_name: "SUFFIX_ARRAYS_BLOCKING",
                         selected: false,
                         label: "Suffix Arrays Blocking",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[5].parameters
                     },  
                     {
-                        name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
+                        method_name: "SUFFIX_ARRAYS_BLOCKING_EXTENDED",
                         selected: false,
                         label: "Extended Suffix Arrays Blocking",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[6].parameters
                     },  
                     {
-                        name: "LSH_SUPERBIT_BLOCKING",
+                        method_name: "LSH_SUPERBIT_BLOCKING",
                         selected: false,
                         label: "LSH SuperBit Blocking",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[7].parameters
                     },  
                     {
-                        name: "LSH_MINHASH_BLOCKING",
+                        method_name: "LSH_MINHASH_BLOCKING",
                         selected: false,
                         label: "LSH MinHash Blocking",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[8].parameters
                     } 
                 ],
@@ -296,7 +296,7 @@ class BlockBuilding extends Component {
     
     submitChange(child_state){
         this.setState({
-            block_building: this.state.block_building.map(el => (el.name === child_state.name ? {...child_state} : el))
+            block_building: this.state.block_building.map(el => (el.method_name === child_state.method_name ? {...child_state} : el))
             });
     }
 
@@ -591,7 +591,7 @@ class BlockBuilding extends Component {
         
         // open the Collapses of the Manual configurations 
         for (var i = 0; i < 9; i++) {
-            if (this.state.block_building[i].selected && this.state.block_building[i].conf_type === "Manual")    
+            if (this.state.block_building[i].selected && this.state.block_building[i].configuration_type === "Manual")    
                 this.parameters_collapse[i] = true
             else
                 this.parameters_collapse[i] = false

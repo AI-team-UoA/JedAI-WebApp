@@ -31,31 +31,31 @@ class BlockCleaning extends Component {
         if (this.props.state !== null){
             var selected_methods = new Map()
             this.props.state.forEach((selected_method) => {
-                selected_methods.set(selected_method.name, selected_method)
+                selected_methods.set(selected_method.method_name, selected_method)
             })
 
             // in case user has already selected and returns back, initialize state based on father component's state
             this.state = {
                 block_cleaning : [
                     {
-                        name: "SIZE_BASED_BLOCK_PURGING",
+                        method_name: "SIZE_BASED_BLOCK_PURGING",
                         selected: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").selected : false,
                         label: "Size-based Block Purging",
-                        conf_type: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").conf_type : "Default",
+                        configuration_type: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").configuration_type : "Default",
                         parameters: selected_methods.has("SIZE_BASED_BLOCK_PURGING") ? selected_methods.get("SIZE_BASED_BLOCK_PURGING").parameters : this.default_parameters[0]
                     },  
                     {
-                        name: "COMPARISON_BASED_BLOCK_PURGING",
+                        method_name: "COMPARISON_BASED_BLOCK_PURGING",
                         selected: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").selected : false,
                         label: "Comparison-based Block Purging",
-                        conf_type: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").conf_type : "Default",
+                        configuration_type: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").configuration_type : "Default",
                         parameters: selected_methods.has("COMPARISON_BASED_BLOCK_PURGING") ? selected_methods.get("COMPARISON_BASED_BLOCK_PURGING").parameters : this.default_parameters[1]
                     },  
                     {
-                        name: "BLOCK_FILTERING",
+                        method_name: "BLOCK_FILTERING",
                         selected: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").selected : false,
                         label: "Block Filrering",
-                        conf_type: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").conf_type : "Default",
+                        configuration_type: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").configuration_type : "Default",
                         parameters: selected_methods.has("BLOCK_FILTERING") ? selected_methods.get("BLOCK_FILTERING").parameters : this.default_parameters[2]
                     }
                 ]
@@ -66,24 +66,24 @@ class BlockCleaning extends Component {
             this.state = {
                 block_cleaning : [
                     {
-                        name: "SIZE_BASED_BLOCK_PURGING",
+                        method_name: "SIZE_BASED_BLOCK_PURGING",
                         selected: false,
                         label: "Size-based Block Purging",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters:  this.default_parameters[0]
                     },  
                     {
-                        name: "COMPARISON_BASED_BLOCK_PURGING",
+                        method_name: "COMPARISON_BASED_BLOCK_PURGING",
                         selected: false,
                         label: "Comparison-based Block Purging",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters: this.default_parameters[1]
                     },  
                     {
-                        name: "BLOCK_FILTERING",
+                        method_name: "BLOCK_FILTERING",
                         selected: false,
                         label: "Block Filrering",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters: this.default_parameters[2]
                     }
                 ]
@@ -112,7 +112,7 @@ class BlockCleaning extends Component {
     // update the selected element in the state
     submitChange(child_state){
         this.setState({
-            block_cleaning: this.state.block_cleaning.map(el => (el.name === child_state.name ? {...child_state} : el))
+            block_cleaning: this.state.block_cleaning.map(el => (el.method_name === child_state.method_name ? {...child_state} : el))
         });
     }
 
@@ -209,7 +209,7 @@ class BlockCleaning extends Component {
         
         // open the Collapses of the Manual configurations 
         for (var i = 0; i < 3; i++) {
-            if (this.state.block_cleaning[i].selected && this.state.block_cleaning[i].conf_type === "Manual")    
+            if (this.state.block_cleaning[i].selected && this.state.block_cleaning[i].configuration_type === "Manual")    
                 this.parameters_collapse[i] = true
             else
                 this.parameters_collapse[i] = false

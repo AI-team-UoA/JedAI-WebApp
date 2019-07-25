@@ -28,8 +28,8 @@ class ConfigurationsView extends Component {
         var return_stmnt = null
 
         if(type === "inline"){
-            if (data.conf_type !== ""){
-                if(data.conf_type === "Manual"){
+            if (data.configuration_type !== ""){
+                if(data.configuration_type === "Manual"){
                     return_stmnt = 
                             <Form.Row>
                                 <Col sm={title_col}>
@@ -68,7 +68,7 @@ class ConfigurationsView extends Component {
                                     <h5 style={{color:"#990000", marginRight:'100px'}}>Configuration:</h5> 
                                 </Col>
                                 <Col sm={value_col_1}>
-                                    {data.conf_type}
+                                    {data.configuration_type}
                                 </Col>
                             </Form.Row>
                 }
@@ -109,7 +109,7 @@ class ConfigurationsView extends Component {
                                     {data.map((method) => (
                                         <tr> 
                                             <td>{method.label}</td>
-                                            <td>{method.conf_type}</td>
+                                            <td>{method.configuration_type}</td>
                                             <td>
                                                 {method.parameters.map((parameter) => (
                                                     <Row>

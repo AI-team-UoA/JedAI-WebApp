@@ -49,8 +49,8 @@ class ComparisonCleaning extends Component {
         ]
 
         this.state = {
-            method: this.props.state.method,
-            conf_type: this.props.state.conf_type,
+            method_name: this.props.state.method_name,
+            configuration_type: this.props.state.configuration_type,
             label: this.props.state.label,
             parameters: this.props.state.parameters
         }
@@ -104,7 +104,7 @@ class ComparisonCleaning extends Component {
         var parameters 
 
         // set parameters to default values
-        switch(e.method) {
+        switch(e.method_name) {
             case "NO_CLEANING":
                 parameters = this.default_parameters[0].parameters
                 break;
@@ -120,8 +120,8 @@ class ComparisonCleaning extends Component {
         
         this.setState(
             {
-                method: e.method,
-                conf_type: e.conf_type,
+                method_name: e.method_name,
+                configuration_type: e.configuration_type,
                 label: e.label,
                 parameters: parameters
 
@@ -162,7 +162,7 @@ class ComparisonCleaning extends Component {
          var second_col = 3
  
         var parameters_JSX_window
-        switch(this.state.method) {
+        switch(this.state.method_name) {
             case "NO_CLEANING":
                 parameters_JSX_window = <div />
                 break;
@@ -295,9 +295,9 @@ class ComparisonCleaning extends Component {
                     <Form.Label><h5>Select a Comparison Cleaning method (Optional)</h5>  </Form.Label>
                 </Form.Group> 
 
-                <RadioMethod methods={this.methods} state={this.state} auto_disabled={false} disable_manual={this.state.method === "NO_CLEANING"} onChange={this.onChange} title={"Comparison Cleaning method"}/>
+                <RadioMethod methods={this.methods} state={this.state} auto_disabled={false} disable_manual={this.state.method_name === "NO_CLEANING"} onChange={this.onChange} title={"Comparison Cleaning method"}/>
                 <br/>
-                <Collapse in={this.state.conf_type === "Manual" && this.state.method !== "NO_CLEANING"} >
+                <Collapse in={this.state.configuration_type === "Manual" && this.state.method_name !== "NO_CLEANING"} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters" style={{width:"100%"}}>
                             <div style={{margin:"auto"}}>

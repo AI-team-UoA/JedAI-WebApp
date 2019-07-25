@@ -11,8 +11,8 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
         window.scrollTo(0, 0)
 
         this.state = {
-            method: this.props.state.method,
-            conf_type: this.props.state.conf_type,
+            method_name: this.props.state.method_name,
+            configuration_type: this.props.state.configuration_type,
             label: this.props.state.label,
             parameters: this.props.state.parameters
         }
@@ -41,8 +41,8 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
     onChange = (e) => {
         this.setState(
             {
-                method: e.method,
-                conf_type: e.conf_type,
+                method_name: e.method_name,
+                configuration_type: e.configuration_type,
                 label: e.label
             }
         )
@@ -50,7 +50,7 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
 
     isValidated(){
         this.props.submitState("schema_clustering", this.state)
-        return this.state.method !== "" && this.state.conf_type !== ""
+        return this.state.method_name !== "" && this.state.configuration_type !== ""
     }
 
     // set the new parameters...triggered by select bars
@@ -87,10 +87,10 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
                     <Form.Label><h5>Select a Schema Clustering method</h5></Form.Label>
                 </Form.Group> 
 
-                <RadioMethod methods={this.methods} state={this.state}  auto_disabled={true} disable_manual={this.state.method === "NO_SCHEMA_CLUSTERING"} onChange={this.onChange} title={"Schema Clustering methods"}/>
+                <RadioMethod methods={this.methods} state={this.state}  auto_disabled={true} disable_manual={this.state.method_name === "NO_SCHEMA_CLUSTERING"} onChange={this.onChange} title={"Schema Clustering methods"}/>
                 
                 <br/>
-                <Collapse in={this.state.conf_type === "Manual" && this.state.method !== "NO_SCHEMA_CLUSTERING"} >
+                <Collapse in={this.state.configuration_type === "Manual" && this.state.method !== "NO_SCHEMA_CLUSTERING"} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters" style={{width:"100%"}}>
                             <div style={{margin:"auto"}}>

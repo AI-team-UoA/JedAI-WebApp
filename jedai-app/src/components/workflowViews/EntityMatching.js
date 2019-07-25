@@ -42,8 +42,8 @@ class EntityMatching extends Component {
         ]
 
         this.state = {
-            method: this.props.state.method,
-            conf_type: this.props.state.conf_type,
+            method_name: this.props.state.method_name,
+            configuration_type: this.props.state.configuration_type,
             label: this.props.state.label,
             parameters: this.props.state.parameters
         }
@@ -64,14 +64,14 @@ class EntityMatching extends Component {
     onChange = (e) => {
         // set parameters to default values
         var parameters 
-        if (e.method === "GROUP_LINKAGE")
+        if (e.method_name === "GROUP_LINKAGE")
             parameters = this.default_parameters[0].parameters
         else 
             parameters = this.default_parameters[1].parameters
         this.setState(
             {
-                method: e.method,
-                conf_type: e.conf_type,
+                method_name: e.method_name,
+                configuration_type: e.configuration_type,
                 label: e.label,
                 parameters: parameters
             }
@@ -100,7 +100,7 @@ class EntityMatching extends Component {
 
     isValidated(){
         this.props.submitState("entity_matching", this.state)
-        return this.state.method !== "" && this.state.conf_type !== ""
+        return this.state.method_name !== "" && this.state.configuration_type !== ""
     }
 
 
@@ -182,7 +182,7 @@ class EntityMatching extends Component {
 
         var parameters_JSX_window 
 
-        switch(this.state.method) {
+        switch(this.state.method_name) {
             case "GROUP_LINKAGE":
                 parameters_JSX_window = 
                     <Form>
@@ -244,7 +244,7 @@ class EntityMatching extends Component {
                 <RadioMethod methods={this.methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Entity Matching Parameters"}/>
 
                 <br/>
-                <Collapse in={this.state.conf_type === "Manual"} >
+                <Collapse in={this.state.configuration_type === "Manual"} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters" style={{width:"100%"}}>
                             <div style={{margin:"auto"}}>

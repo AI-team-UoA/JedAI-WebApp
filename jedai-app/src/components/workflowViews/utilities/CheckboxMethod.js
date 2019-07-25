@@ -8,17 +8,17 @@ class SelectMultipleMethods extends Component {
     constructor(...args) {
         super(...args);
         this.state = {
-            name: this.props.state.name,
+            method_name: this.props.state.method_name,
             label:this.props.state.label,
             selected: this.props.state.selected,
-            conf_type: this.props.state.conf_type,
+            configuration_type: this.props.state.configuration_type,
             parameters: this.props.state.parameters
         }
     }
 
     onChange = (e) => {
-        if (e.target.name === "conf_type")
-            this.setState({conf_type: e.target.value}, () => (this.submitChange()))
+        if (e.target.name === "configuration_type")
+            this.setState({configuration_type: e.target.value}, () => (this.submitChange()))
         else
             this.setState({selected:  !this.state.selected},() => (this.submitChange()))
     }
@@ -33,7 +33,7 @@ class SelectMultipleMethods extends Component {
                 <Alert  variant="primary" style={{height:'45px', width:"65%", margin:'auto', marginBottom:'10px' }}>
                     <Form.Group as={Row} className="form-row" > 
                         <Col sm={1}>
-                            <input type="checkbox" name={this.state.name} onChange={this.onChange} checked={this.state.selected}/>
+                            <input type="checkbox" name={this.state.method_name} onChange={this.onChange} checked={this.state.selected}/>
                         </Col>
 
                         <Col sm={4}>
@@ -45,32 +45,32 @@ class SelectMultipleMethods extends Component {
                             <Form.Check
                                     type="radio"
                                     label="Default"
-                                    name="conf_type"
+                                    name="configuration_type"
                                     value="Default"
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange}   
                                     disabled={this.state.selected === false}   
-                                    checked={this.state.conf_type === "Default"}              
+                                    checked={this.state.configuration_type === "Default"}              
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="Automatic"
-                                    name="conf_type"
+                                    name="configuration_type"
                                     value="Automatic"
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange} 
                                     disabled={this.state.selected === false}
-                                    checked={this.state.conf_type === "Automatic"}
+                                    checked={this.state.configuration_type === "Automatic"}
                                 />
                                 <Form.Check
                                     type="radio"
                                     label="Manual"
-                                    name="conf_type"
+                                    name="configuration_type"
                                     value="Manual"
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange} 
                                     disabled={this.state.selected === false || this.props.disable_manual}
-                                    checked={this.state.conf_type === "Manual"}
+                                    checked={this.state.configuration_type === "Manual"}
                                 />
                             </Col>
                         </Form>

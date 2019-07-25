@@ -22,8 +22,8 @@ class DesktopForms extends Component {
 
 
         schema_clustering:  {
-            method: "NO_SCHEMA_CLUSTERING",
-            conf_type: "Default",
+            method_name: "NO_SCHEMA_CLUSTERING",
+            configuration_type: "Default",
             label: "No Schema Clustering",
             parameters: [
                 {
@@ -42,15 +42,15 @@ class DesktopForms extends Component {
         block_cleaning: null,
 
         comparison_cleaning: {
-            method: "NO_CLEANING",
-            conf_type: "Default",
+            method_name: "NO_CLEANING",
+            configuration_type: "Default",
             label: "No Cleaning",
             parameters: []
         },
         
         entity_matching:  {
-            method: "GROUP_LINKAGE",
-            conf_type: "Default",
+            method_name: "GROUP_LINKAGE",
+            configuration_type: "Default",
             label: "Group Linkage",
             parameters: [
                 {
@@ -69,8 +69,8 @@ class DesktopForms extends Component {
         },
         
         entity_clustering: {
-            method: "CONNECTED_COMPONENTS_CLUSTERING",
-            conf_type: "Default",
+            method_name: "CONNECTED_COMPONENTS_CLUSTERING",
+            configuration_type: "Default",
             label: "Connected Component Clustering",
             parameters  : [
                 {
@@ -93,11 +93,11 @@ class DesktopForms extends Component {
         var er_mode = "dirty"
         if (this.state.data_reading !== null)
             er_mode = this.state.data_reading.er_mode
-            if (er_mode === "clean" && this.state.entity_clustering.method !=="UNIQUE_MAPPING_CLUSTERING"){
+            if (er_mode === "clean" && this.state.entity_clustering.method_name !=="UNIQUE_MAPPING_CLUSTERING"){
                 this.setState({ entity_clustering : {
-                        method: "UNIQUE_MAPPING_CLUSTERING",
+                        method_name: "UNIQUE_MAPPING_CLUSTERING",
                         label: "Unique Mapping Clustering",
-                        conf_type: "Default",
+                        configuration_type: "Default",
                         parameters  : [
                             {
                                 label: "Similarity Threshold",
