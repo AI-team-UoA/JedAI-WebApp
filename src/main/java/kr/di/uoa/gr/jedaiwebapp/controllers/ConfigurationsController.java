@@ -1,6 +1,8 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 
+import java.util.List;
+
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.models.Parameter;
 
 @RestController
 @RequestMapping("/set_configurations/**")
@@ -23,6 +26,8 @@ public class ConfigurationsController {
 	private MethodModel comparison_cleaning;
 	private MethodModel entity_matching;
 	private MethodModel entity_clustering;
+	private List<MethodModel> block_building;
+	private List<MethodModel> block_cleaning;
 	
 	
 
@@ -82,6 +87,19 @@ public class ConfigurationsController {
 		this.setEntity_clustering(entity_clustering);
 		return this.entity_clustering != null;
 	}
+	
+	@PostMapping("/set_configurations/blockbuilding")	
+	public boolean setBlockBuilding(@RequestBody List<MethodModel> block_building) {
+		this.setBlock_building(block_building);
+		return this.block_building != null;
+	}
+	
+	@PostMapping("/set_configurations/blockcleaning")	
+	public boolean setBlockCleaning(@RequestBody List<MethodModel> block_cleaning) {
+		this.setBlock_cleaning(block_cleaning);
+		return this.block_cleaning != null;
+	}
+	
 	
 	
 	public DataReadModel getEntity_1() {

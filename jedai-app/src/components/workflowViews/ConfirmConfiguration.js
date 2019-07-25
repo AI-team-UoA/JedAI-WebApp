@@ -10,17 +10,17 @@ class ConfirmConfiguration extends Component {
 
     
     sendConfigurations = (e) => {
+        var success = true
 
         // firstly send the state of data reading to server
         var data_reading = this.props.state.data_reading
-        console.log(data_reading)
         let entity_1 = new FormData()
         entity_1.append('entity_id',data_reading.entity1_set.entity_id)
         entity_1.append('filetype', data_reading.entity1_set.filetype)
         entity_1.append('source', data_reading.entity1_set.source)
         Object.keys(data_reading.entity1_set.configurations).forEach((key) => { entity_1.append(key, JSON.stringify(data_reading.entity1_set.configurations[key]));})
 
-        var success = true
+       
 
         axios({
             url: '/set_configurations/dataread',
@@ -54,9 +54,8 @@ class ConfirmConfiguration extends Component {
             data: ground_truth
         }).then(res => success = success && res.data)
 
-        console.log("DATA READING SUCCESS: " + success )
-
-    
+        
+        // then send the radio selected methods to server
         var schema_clustering = this.props.state.schema_clustering
         var comparison_cleaning = this.props.state.comparison_cleaning
         var entity_matching = this.props.state.entity_matching
@@ -66,25 +65,42 @@ class ConfirmConfiguration extends Component {
             url: '/set_configurations/schemaclustering',
             method: 'POST',
             data: schema_clustering
-        }).then(res => console.log("schema_clustering SUCCESS: " + res.data))
+        }).then(res => success = success && res.data)
 
         axios({
             url: '/set_configurations/comparisoncleaning',
             method: 'POST',
             data: comparison_cleaning
-        }).then(res => console.log("comparison_cleaning SUCCESS: " + res.data))
+        }).then(res => success = success && res.data)
 
         axios({
             url: '/set_configurations/entitymatching',
             method: 'POST',
             data: entity_matching
-        }).then(res => console.log("entity_matching SUCCESS: " + res.data))
+        }).then(res => success = success && res.data)
 
         axios({
             url: '/set_configurations/entityclustering',
             method: 'POST',
             data: entity_clustering
-        }).then(res => console.log("entity_clustering SUCCESS: " + res.data))
+        }).then(res => success = success && res.data)
+
+        // and finally send the checkbox selected methods to server
+        var block_building = this.props.state.block_building
+        var block_cleaning = this.props.state.block_cleaning
+        axios({
+            url: '/set_configurations/blockbuilding',
+            method: 'POST',
+            data: block_building
+        }).then(res => success = success && res.data)
+
+        axios({
+            url: '/set_configurations/blockcleaning ',
+            method: 'POST',
+            data: block_cleaning
+        }).then(res => success = success && res.data)
+
+        console.log("SUCCESS: " + success)
     }
 
 
