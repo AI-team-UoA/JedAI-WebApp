@@ -100,7 +100,7 @@ class BlockCleaning extends Component {
                     {
                         method_name: "BLOCK_FILTERING",
                         selected: false,
-                        label: "Block Filrering",
+                        label: "Block Filtering",
                         configuration_type: "Default",
                         parameters: this.default_parameters[2].parameters
                     }
