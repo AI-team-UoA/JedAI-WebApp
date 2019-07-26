@@ -197,9 +197,9 @@ class ConfirmConfiguration extends Component {
                 <ConfigurationsView  type="inline" title="Entity Matching" data={entity_matching}/>
                 <ConfigurationsView  type="inline" title="Entity Clustering" data={entity_clustering}/>
 
-                
+                <Link to="/execution">
                     <Button style={{float: 'right'}} onClick={this.sendConfigurations}>Confirm</Button>
-                
+                </Link>
 
             </div>
         )
