@@ -50,6 +50,14 @@ import kr.di.uoa.gr.jedaiwebapp.models.Parameter;
 public class DynamicMethodConfiguration {
 	
 	
+	/**
+     * Given a schema clustering method name and list of parameters, create an instance of the method configured with
+     * the specified parameters. Used for manual configuration.
+     *
+     * @param methodName Name of the block cleaning method
+     * @param parameters Parameters for method
+     * @return Configured schema clustering method
+     */
     public static ISchemaClustering configureSchemaClusteringMethod(String methodName, List<Parameter> parameters) {
         ISchemaClustering processingMethod = null;
 
@@ -179,7 +187,14 @@ public class DynamicMethodConfiguration {
     
     
     
-    
+    /**
+     * Given a Comparison Cleaning method name and a list of parameters, initialize and return that method with these
+     * parameters. Assumes the parameters are of the correct type (they are cast) and correct number.
+     *
+     * @param methodName Name of comparison cleaning method
+     * @param parameters Parameters for method
+     * @return Configured comparison cleaning method
+     */
     public static IBlockProcessing configureComparisonCleaningMethod(String methodName,List<Parameter> parameters) {
             
 		IBlockProcessing processingMethod = null;
@@ -241,6 +256,13 @@ public class DynamicMethodConfiguration {
 	}
     
     
+    /**
+     * Create and return an Entity Matching method, with the specified parameters
+     *
+     * @param emMethodName Name of the Entity Matching method
+     * @param parameters   Parameters for the method
+     * @return Entity Matching method configured with the given parameters
+     */
     public static IEntityMatching configureEntityMatchingMethod(String emMethodName, List<Parameter> parameters) {
 		
     	RepresentationModel rep;
@@ -272,7 +294,15 @@ public class DynamicMethodConfiguration {
 		}
 	}
 
-
+    
+    /**
+     * Given a Entity Clustering method name and a list of parameters, initialize and return that method with these
+     * parameters. Assumes the parameters are of the correct type (they are cast) and correct number.
+     *
+     * @param methodName Name of entity clustering method
+     * @param parameters Parameters for method
+     * @return Configured entity clustering method
+     */
 	public static IEntityClustering configureEntityClusteringMethod(String methodName, List<Parameter> parameters) {
 		IEntityClustering ecMethod = null;
 		
