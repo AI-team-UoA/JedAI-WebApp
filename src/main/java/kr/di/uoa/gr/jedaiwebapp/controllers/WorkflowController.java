@@ -26,37 +26,17 @@ import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.MethodConfigurations;
+import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 
 
 @RestController
 @RequestMapping("/workflow/**")
 public class WorkflowController {
 	
-	private String er_mode;
-	private List<EntityProfile> profilesD1;
-	private List<EntityProfile> profilesD2;
-	private DataReadModel ground_truth;
-
-	private ISchemaClustering schema_clustering;
-	private IBlockProcessing comparison_cleaning;
-	private IEntityMatching entity_matching;
-	private IEntityClustering entity_clustering;
-	private List<IBlockBuilding> block_building;
-	private List<IBlockProcessing> block_cleaning;
 	
 	private Map<String, Object> methodsConfig;
 	
 	WorkflowController(){
-		this.er_mode = null;
-		this.profilesD1 = null;
-		this.profilesD2 = null;
-		this.ground_truth = null;
-		this.schema_clustering = null;
-		this.comparison_cleaning = null;
-		this.entity_matching = null;
-		this.entity_clustering = null;
-		this.block_building = null;
-		this.block_cleaning = null;
 		
 		this.methodsConfig = new HashMap<String, Object>();
 	}
@@ -73,11 +53,11 @@ public class WorkflowController {
 	public boolean getERMode(@PathVariable(value = "er_mode") String er_mode) {
 		if (er_mode != null) {
 			if (er_mode.equals("dirty"))
-				this.setEr_mode(JedaiOptions.DIRTY_ER);
+				WorkflowManager.er_mode = JedaiOptions.DIRTY_ER;
 			else
-				this.setEr_mode(JedaiOptions.CLEAN_CLEAN_ER);
+				WorkflowManager.er_mode = JedaiOptions.CLEAN_CLEAN_ER;
 		}
-		return er_mode != null;		
+		return WorkflowManager.er_mode != null;		
 	}
 	
 
@@ -100,13 +80,13 @@ public class WorkflowController {
 				
 			switch (entity_id) {
 			case "1":
-				this.profilesD1 = new DataReadModel(filetype, source, configurations).read();
+				WorkflowManager.profilesD1 = new DataReadModel(filetype, source, configurations).read();
 				break;
 			case "2":
-				this.profilesD1 = new DataReadModel(filetype, source, configurations).read();
+				WorkflowManager.profilesD1 = new DataReadModel(filetype, source, configurations).read();
 				break;
 			case "3":
-				this.ground_truth = new DataReadModel(filetype, source, configurations);
+				WorkflowManager.ground_truth = new DataReadModel(filetype, source, configurations);
 				break;
 			default:
 				break;
@@ -136,20 +116,20 @@ public class WorkflowController {
 			if (schema_clustering.getLabel().equals(JedaiOptions.NO_SCHEMA_CLUSTERING)) return true;
 			
 			if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
-				this.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
+				WorkflowManager.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
 			else
-				this.schema_clustering = DynamicMethodConfiguration.configureSchemaClusteringMethod(
+				WorkflowManager.schema_clustering = DynamicMethodConfiguration.configureSchemaClusteringMethod(
 						schema_clustering.getLabel(),
 						schema_clustering.getParameters());
 	                    
 			
-			System.out.println("SC: " + this.schema_clustering);
+			System.out.println("SC: " + WorkflowManager.schema_clustering);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		return this.schema_clustering != null;
+		return WorkflowManager.schema_clustering != null;
 	}
 	
 	
@@ -172,10 +152,10 @@ public class WorkflowController {
 			if (comparison_cleaning != null) {
 				if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
 	                
-	                this.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
+					WorkflowManager.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
 	             else 
 	                
-	            	this.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
+	            	 WorkflowManager.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
 	            			comparison_cleaning.getLabel(),
 	            			comparison_cleaning.getParameters() );
 	        }
@@ -185,8 +165,8 @@ public class WorkflowController {
 			return false;
 		}
 			
-		System.out.println("CC: " + this.comparison_cleaning);
-		return this.comparison_cleaning != null;
+		System.out.println("CC: " + WorkflowManager.comparison_cleaning);
+		return WorkflowManager.comparison_cleaning != null;
 	}
 	
 	
@@ -203,14 +183,14 @@ public class WorkflowController {
 			methodsConfig.put(JedaiOptions.ENTITY_MATHCING, entity_matching);
 			
 			if(!entity_matching.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
-	            this.entity_matching = DynamicMethodConfiguration
+				WorkflowManager.entity_matching = DynamicMethodConfiguration
 	                    .configureEntityMatchingMethod(entity_matching.getLabel(), null);
 	         else 
-	            this.entity_matching = DynamicMethodConfiguration
+	        	 WorkflowManager.entity_matching = DynamicMethodConfiguration
 	                    .configureEntityMatchingMethod(entity_matching.getLabel(), entity_matching.getParameters());
 	        
 			
-			System.out.println("EM: " + this.entity_matching);
+			System.out.println("EM: " + WorkflowManager.entity_matching);
 			
 		}
 		catch(Exception e) {
@@ -218,8 +198,10 @@ public class WorkflowController {
 			return false;
 		}
 		
-		return this.entity_matching != null;
+		return WorkflowManager.entity_matching != null;
 	}
+	
+	
 	
 	
 	
@@ -236,11 +218,11 @@ public class WorkflowController {
 			methodsConfig.put(JedaiOptions.ENTITY_CLUSTERING, entity_clustering);
 			
 			if(!entity_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-				this.entity_clustering = MethodConfigurations.getEntityClusteringMethod(entity_clustering.getLabel());
+				WorkflowManager.entity_clustering = MethodConfigurations.getEntityClusteringMethod(entity_clustering.getLabel());
 	         else 
-	        	this.entity_clustering = DynamicMethodConfiguration.configureEntityClusteringMethod(entity_clustering.getLabel(), entity_clustering.getParameters());
+	        	 WorkflowManager.entity_clustering = DynamicMethodConfiguration.configureEntityClusteringMethod(entity_clustering.getLabel(), entity_clustering.getParameters());
 	        
-			System.out.println("EC: " + this.entity_clustering);
+			System.out.println("EC: " + WorkflowManager.entity_clustering);
 			
 		}
 		catch(Exception e) {
@@ -248,7 +230,7 @@ public class WorkflowController {
 			return false;
 		}
 		
-		return this.entity_clustering != null;
+		return WorkflowManager.entity_clustering != null;
 	}
 	
 	
@@ -265,7 +247,7 @@ public class WorkflowController {
 		try {
 			methodsConfig.put(JedaiOptions.BLOCK_BUILDING, block_building);
 			
-			this.block_building = new ArrayList<>();
+			WorkflowManager.block_building = new ArrayList<>();
 	        for (MethodModel method : block_building) {
 	
 	        	BlockBuildingMethod blockBuilding_method = MethodConfigurations.blockBuildingMethods.get(method.getLabel());
@@ -278,7 +260,7 @@ public class WorkflowController {
 	            	 blockBuildingMethod = DynamicMethodConfiguration.configureBlockBuildingMethod(blockBuilding_method, method.getParameters());
 	            
 	
-	            this.block_building.add(blockBuildingMethod);
+	            WorkflowManager.block_building.add(blockBuildingMethod);
 	        }
 	        
 		}
@@ -287,7 +269,7 @@ public class WorkflowController {
 			return false;
 		}
 		        
-		return this.block_building != null;
+		return WorkflowManager.block_building != null;
 	}
 	
 	
@@ -305,20 +287,18 @@ public class WorkflowController {
 			
 			if(block_cleaning.size() == 0) return true;
 			
-			this.block_cleaning = new ArrayList<>();
+			WorkflowManager.block_cleaning = new ArrayList<>();
 	        for (MethodModel method : block_cleaning) {
 	          
 	            IBlockProcessing blockCleaning_method;
 	            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-	                
 	            	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
 	             else 
-	            
 	            	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
 	                		method.getLabel(), method.getParameters());
 	            
 	
-	            this.block_cleaning.add(blockCleaning_method);
+	            WorkflowManager.block_cleaning.add(blockCleaning_method);
 	        }
 		}
 		catch(Exception e) {
@@ -326,143 +306,9 @@ public class WorkflowController {
 			return false;
 		}
 				
-		return this.block_cleaning != null;
+		return WorkflowManager.block_cleaning != null;
 	}
 
-
-	// Setters and Getters
-	
-	public String getEr_mode() {
-		return er_mode;
-	}
-
-
-
-	public void setEr_mode(String er_mode) {
-		this.er_mode = er_mode;
-	}
-
-
-
-	public List<EntityProfile> getProfilesD1() {
-		return profilesD1;
-	}
-
-
-
-	public void setProfilesD1(List<EntityProfile> profilesD1) {
-		this.profilesD1 = profilesD1;
-	}
-
-
-
-	public List<EntityProfile> getProfilesD2() {
-		return profilesD2;
-	}
-
-
-
-	public void setProfilesD2(List<EntityProfile> profilesD2) {
-		this.profilesD2 = profilesD2;
-	}
-
-
-
-	public DataReadModel getGround_truth() {
-		return ground_truth;
-	}
-
-
-
-	public void setGround_truth(DataReadModel ground_truth) {
-		this.ground_truth = ground_truth;
-	}
-
-
-
-	public ISchemaClustering getSchema_clustering() {
-		return schema_clustering;
-	}
-
-
-
-	public void setSchema_clustering(ISchemaClustering schema_clustering) {
-		this.schema_clustering = schema_clustering;
-	}
-
-
-
-	public IBlockProcessing getComparison_cleaning() {
-		return comparison_cleaning;
-	}
-
-
-
-	public void setComparison_cleaning(IBlockProcessing comparison_cleaning) {
-		this.comparison_cleaning = comparison_cleaning;
-	}
-
-
-
-	public IEntityMatching getEntity_matching() {
-		return entity_matching;
-	}
-
-
-
-	public void setEntity_matching(IEntityMatching entity_matching) {
-		this.entity_matching = entity_matching;
-	}
-
-
-
-	public IEntityClustering getEntity_clustering() {
-		return entity_clustering;
-	}
-
-
-
-	public Map<String, Object> getMethodsConfig() {
-		return methodsConfig;
-	}
-
-
-
-	public void setMethodsConfig(Map<String, Object> methodsConfig) {
-		this.methodsConfig = methodsConfig;
-	}
-
-
-
-	public void setEntity_clustering(IEntityClustering entity_clustering) {
-		this.entity_clustering = entity_clustering;
-	}
-
-
-
-	public List<IBlockBuilding> getBlock_building() {
-		return block_building;
-	}
-
-
-
-	public void setBlock_building(List<IBlockBuilding> block_building) {
-		this.block_building = block_building;
-	}
-
-
-
-	public List<IBlockProcessing> getBlock_cleaning() {
-		return block_cleaning;
-	}
-
-
-
-	public void setBlock_cleaning(List<IBlockProcessing> block_cleaning) {
-		this.block_cleaning = block_cleaning;
-	}
-	
-	
 	
 
 }
