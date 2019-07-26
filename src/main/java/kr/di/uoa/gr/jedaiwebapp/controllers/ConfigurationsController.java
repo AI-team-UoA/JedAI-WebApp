@@ -2,7 +2,9 @@ package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
@@ -34,14 +36,15 @@ public class ConfigurationsController {
 	private List<EntityProfile> profilesD1;
 	private List<EntityProfile> profilesD2;
 	private DataReadModel ground_truth;
-	
+
 	private ISchemaClustering schema_clustering;
-	
 	private IBlockProcessing comparison_cleaning;
 	private IEntityMatching entity_matching;
 	private IEntityClustering entity_clustering;
 	private List<IBlockBuilding> block_building;
 	private List<IBlockProcessing> block_cleaning;
+	
+	private Map<String, Object> methodsConfig;
 	
 	ConfigurationsController(){
 		this.er_mode = null;
@@ -54,6 +57,8 @@ public class ConfigurationsController {
 		this.entity_clustering = null;
 		this.block_building = null;
 		this.block_cleaning = null;
+		
+		this.methodsConfig = new HashMap<String, Object>();
 	}
 	
 	
@@ -126,6 +131,8 @@ public class ConfigurationsController {
 	@PostMapping("/set_configurations/schemaclustering")	
 	public boolean setSchemaClustering(@RequestBody MethodModel schema_clustering) {
 		
+		methodsConfig.put(JedaiOptions.SCHEMA_CLUSTERING, schema_clustering);
+		
 		if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
 			this.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
 		else
@@ -149,6 +156,8 @@ public class ConfigurationsController {
      */	
 	@PostMapping("/set_configurations/comparisoncleaning")	
 	public boolean setComparisonCleaning(@RequestBody MethodModel comparison_cleaning) {
+		
+		methodsConfig.put(JedaiOptions.COMPARISON_CLEANING, comparison_cleaning);
 		
 		if (comparison_cleaning != null && !comparison_cleaning.getMethod_name().equals(JedaiOptions.NO_CLEANING)) {
 			if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
@@ -175,6 +184,8 @@ public class ConfigurationsController {
 	@PostMapping("/set_configurations/entitymatching")	
 	public boolean setEntityMatching(@RequestBody MethodModel entity_matching) {
 		
+		methodsConfig.put(JedaiOptions.ENTITY_MATHCING, entity_matching);
+		
 		if(!entity_matching.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
             this.entity_matching = DynamicMethodConfiguration
                     .configureEntityMatchingMethod(entity_matching.getLabel(), null);
@@ -198,6 +209,8 @@ public class ConfigurationsController {
 	@PostMapping("/set_configurations/entityclustering")	
 	public boolean setEntityClustering(@RequestBody MethodModel entity_clustering) {
 		
+		methodsConfig.put(JedaiOptions.ENTITY_CLUSTERING, entity_clustering);
+		
 		if(!entity_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
 			this.entity_clustering = MethodConfigurations.getEntityClusteringMethod(entity_clustering.getLabel());
          else 
@@ -217,6 +230,8 @@ public class ConfigurationsController {
      */	
 	@PostMapping("/set_configurations/blockbuilding")	
 	public boolean setBlockBuilding(@RequestBody List<MethodModel> block_building) {
+		
+		methodsConfig.put(JedaiOptions.BLOCK_BUILDING, block_building);
 		
 		this.block_building = new ArrayList<>();
         for (MethodModel method : block_building) {
@@ -246,6 +261,8 @@ public class ConfigurationsController {
      */	
 	@PostMapping("/set_configurations/blockcleaning")	
 	public boolean setBlockCleaning(@RequestBody List<MethodModel> block_cleaning) {
+		
+		methodsConfig.put(JedaiOptions.BLOCK_CLEANING, block_cleaning);
 		
 		this.block_cleaning = new ArrayList<>();
         for (MethodModel method : block_cleaning) {
@@ -355,6 +372,18 @@ public class ConfigurationsController {
 
 	public IEntityClustering getEntity_clustering() {
 		return entity_clustering;
+	}
+
+
+
+	public Map<String, Object> getMethodsConfig() {
+		return methodsConfig;
+	}
+
+
+
+	public void setMethodsConfig(Map<String, Object> methodsConfig) {
+		this.methodsConfig = methodsConfig;
 	}
 
 

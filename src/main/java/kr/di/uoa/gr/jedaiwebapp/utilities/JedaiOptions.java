@@ -1,6 +1,18 @@
 package kr.di.uoa.gr.jedaiwebapp.utilities;
 
 public class JedaiOptions {
+	
+	
+	
+	
+	public static final String SCHEMA_CLUSTERING = "Schema Clustering";
+    public static final String BLOCK_BUILDING = "Block Building";
+    public static final String BLOCK_CLEANING = "Block Cleaning";
+    public static final String COMPARISON_CLEANING = "Comparison Cleaning";
+    public static final String ENTITY_MATHCING = "Entity Matching";
+    public static final String ENTITY_CLUSTERING = "Entity Clustering";
+    
+    
     // Method configuration types
     public static final String DEFAULT_CONFIG = "Default";
     public static final String AUTOMATIC_CONFIG = "Automatic";
