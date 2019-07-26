@@ -2,7 +2,20 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 
 import java.util.List;
 
+import org.scify.jedai.blockbuilding.ExtendedQGramsBlocking;
+import org.scify.jedai.blockbuilding.ExtendedSortedNeighborhoodBlocking;
+import org.scify.jedai.blockbuilding.ExtendedSuffixArraysBlocking;
+import org.scify.jedai.blockbuilding.IBlockBuilding;
+import org.scify.jedai.blockbuilding.LSHMinHashBlocking;
+import org.scify.jedai.blockbuilding.LSHSuperBitBlocking;
+import org.scify.jedai.blockbuilding.QGramsBlocking;
+import org.scify.jedai.blockbuilding.SortedNeighborhoodBlocking;
+import org.scify.jedai.blockbuilding.StandardBlocking;
+import org.scify.jedai.blockbuilding.SuffixArraysBlocking;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
+import org.scify.jedai.blockprocessing.blockcleaning.BlockFiltering;
+import org.scify.jedai.blockprocessing.blockcleaning.ComparisonsBasedBlockPurging;
+import org.scify.jedai.blockprocessing.blockcleaning.SizeBasedBlockPurging;
 import org.scify.jedai.blockprocessing.comparisoncleaning.CanopyClustering;
 import org.scify.jedai.blockprocessing.comparisoncleaning.CardinalityEdgePruning;
 import org.scify.jedai.blockprocessing.comparisoncleaning.CardinalityNodePruning;
@@ -27,6 +40,7 @@ import org.scify.jedai.schemaclustering.AttributeNameClustering;
 import org.scify.jedai.schemaclustering.AttributeValueClustering;
 import org.scify.jedai.schemaclustering.HolisticAttributeClustering;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
+import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
 import org.scify.jedai.utilities.enumerations.RepresentationModel;
 import org.scify.jedai.utilities.enumerations.SimilarityMetric;
 import org.scify.jedai.utilities.enumerations.WeightingScheme;
@@ -66,7 +80,168 @@ public class DynamicMethodConfiguration {
     
     
     
-public static IEntityMatching configureEntityMatchingMethod(String emMethodName, List<Parameter> parameters) {
+
+    
+	
+	
+	
+	/**
+     * Given a Block Building method and a list of parameters, initialize and return that method with the given
+     * parameters. Assumes the parameters are of the correct type (they are cast) and correct number.
+     *
+     * @param method     Method to initialize
+     * @param parameters Parameter values
+     * @return Block Building method configured with the given parameters
+     */
+    public static IBlockBuilding configureBlockBuildingMethod(BlockBuildingMethod method, List<Parameter> parameters) {
+        
+    	switch (method) {
+        
+    	case STANDARD_BLOCKING:
+                return new StandardBlocking();
+            case SUFFIX_ARRAYS:
+                // todo: make sure these are correct
+                return new SuffixArraysBlocking(
+                        (int) parameters.get(0).getValue(), // Maximum Suffix Frequency
+                        (int) parameters.get(1).getValue()  // Minimum Suffix Length
+                );
+            case Q_GRAMS_BLOCKING:
+                return new QGramsBlocking(
+                        (int) parameters.get(0).getValue()
+                );
+            case SORTED_NEIGHBORHOOD:
+                return new SortedNeighborhoodBlocking(
+                        (int) parameters.get(0).getValue()
+                );
+            case EXTENDED_SUFFIX_ARRAYS:
+                // todo: make sure these are correct
+                return new ExtendedSuffixArraysBlocking(
+                        (int) parameters.get(0).getValue(), // Maximum Substring Frequency
+                        (int) parameters.get(1).getValue()  // Minimum Substring Length
+                );
+            case EXTENDED_Q_GRAMS_BLOCKING:
+                return new ExtendedQGramsBlocking(
+                        (double) parameters.get(1).getValue(),
+                        (int) parameters.get(0).getValue()
+                );
+            case EXTENDED_SORTED_NEIGHBORHOOD:
+                return new ExtendedSortedNeighborhoodBlocking(
+                        (int) parameters.get(0).getValue()
+                );
+            case LSH_SUPERBIT_BLOCKING:
+                return new LSHSuperBitBlocking(
+                        (int) parameters.get(0).getValue(),
+                        (int) parameters.get(1).getValue()
+                );
+            case LSH_MINHASH_BLOCKING:
+                return new LSHMinHashBlocking(
+                        (int) parameters.get(0).getValue(),
+                        (int) parameters.get(1).getValue()
+                );
+            default:
+                return null;
+        }
+    }
+    
+    
+    /**
+     * Given a Block Cleaning method configuration object, create an instance of the method, configured with the
+     * specified parameters. Assumes that configuration type is manual.
+     *
+     * @param methodName Name of the block cleaning method
+     * @param parameters Parameters for method
+     * @return Configured block cleaning method
+     */
+    public static IBlockProcessing configureBlockCleaningMethod(String methodName,List<Parameter> parameters) {
+        IBlockProcessing processingMethod = null;
+
+        // Get appropriate processing method
+        switch (methodName) {
+            case JedaiOptions.BLOCK_FILTERING:
+                processingMethod = new BlockFiltering(
+                        (double) parameters.get(0).getValue()
+                );
+                break;
+            case JedaiOptions.SIZE_BASED_BLOCK_PURGING:
+                processingMethod = new SizeBasedBlockPurging(
+                        (double) parameters.get(0).getValue()
+                );
+                break;
+            case JedaiOptions.COMPARISON_BASED_BLOCK_PURGING:
+                processingMethod = new ComparisonsBasedBlockPurging(
+                        (double) parameters.get(0).getValue()
+                );
+                break;
+        }
+
+        return processingMethod;
+    }
+    
+    
+    
+    
+    public static IBlockProcessing configureComparisonCleaningMethod(String methodName,List<Parameter> parameters) {
+            
+		IBlockProcessing processingMethod = null;
+		
+		// Get appropriate processing method
+		switch (methodName) {
+			case JedaiOptions.COMPARISON_PROPAGATION:
+				processingMethod = new ComparisonPropagation(); // Parameter-free
+				break;
+			
+			
+			case JedaiOptions.CARDINALITY_EDGE_PRUNING:
+				processingMethod = new CardinalityEdgePruning(
+						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
+				break;
+			
+			case JedaiOptions.CARDINALITY_NODE_PRUNING:
+				processingMethod = new CardinalityNodePruning(
+						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
+			
+				break;
+			
+			case JedaiOptions.WEIGHED_EDGE_PRUNING:
+				processingMethod = new WeightedEdgePruning(
+						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
+				break;
+			
+			case JedaiOptions.WEIGHED_NODE_PRUNING:
+				processingMethod = new WeightedNodePruning(
+						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
+				break;
+			
+			case JedaiOptions.RECIPROCAL_CARDINALITY_NODE_PRUNING:
+				processingMethod = new ReciprocalCardinalityNodePruning(
+						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
+				break;
+			
+			case JedaiOptions.RECIPROCAL_WEIGHED_NODE_PRUNING:
+				processingMethod = new ReciprocalWeightedNodePruning(
+						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
+				break;
+			
+			case JedaiOptions.CANOPY_CLUSTERING:
+				processingMethod = new CanopyClustering(
+						(double) parameters.get(0).getValue(), // Inclusive threshold
+						(double) parameters.get(1).getValue()  // Exclusive threshold
+				);
+				break;
+			
+			case JedaiOptions.CANOPY_CLUSTERING_EXTENDED:
+				processingMethod = new ExtendedCanopyClustering(
+						(int) parameters.get(0).getValue(), // Inclusive threshold
+						(int) parameters.get(1).getValue()  // Exclusive threshold
+				);
+				break;
+		}
+		
+		return processingMethod;
+	}
+    
+    
+    public static IEntityMatching configureEntityMatchingMethod(String emMethodName, List<Parameter> parameters) {
 		
     	RepresentationModel rep;
 		SimilarityMetric simMetric;
@@ -150,67 +325,6 @@ public static IEntityMatching configureEntityMatchingMethod(String emMethodName,
 		}
 		
 		return ecMethod;
-	}
-    
-    
-    public static IBlockProcessing configureComparisonCleaningMethod(String methodName,List<Parameter> parameters) {
-            
-		IBlockProcessing processingMethod = null;
-		
-		// Get appropriate processing method
-		switch (methodName) {
-			case JedaiOptions.COMPARISON_PROPAGATION:
-				processingMethod = new ComparisonPropagation(); // Parameter-free
-				break;
-			
-			
-			case JedaiOptions.CARDINALITY_EDGE_PRUNING:
-				processingMethod = new CardinalityEdgePruning(
-						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
-				break;
-			
-			case JedaiOptions.CARDINALITY_NODE_PRUNING:
-				processingMethod = new CardinalityNodePruning(
-						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
-			
-				break;
-			
-			case JedaiOptions.WEIGHED_EDGE_PRUNING:
-				processingMethod = new WeightedEdgePruning(
-						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
-				break;
-			
-			case JedaiOptions.WEIGHED_NODE_PRUNING:
-				processingMethod = new WeightedNodePruning(
-						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
-				break;
-			
-			case JedaiOptions.RECIPROCAL_CARDINALITY_NODE_PRUNING:
-				processingMethod = new ReciprocalCardinalityNodePruning(
-						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
-				break;
-			
-			case JedaiOptions.RECIPROCAL_WEIGHED_NODE_PRUNING:
-				processingMethod = new ReciprocalWeightedNodePruning(
-						WeightingScheme.valueOf((String) parameters.get(0).getValue()));
-				break;
-			
-			case JedaiOptions.CANOPY_CLUSTERING:
-				processingMethod = new CanopyClustering(
-						(double) parameters.get(0).getValue(), // Inclusive threshold
-						(double) parameters.get(1).getValue()  // Exclusive threshold
-				);
-				break;
-			
-			case JedaiOptions.CANOPY_CLUSTERING_EXTENDED:
-				processingMethod = new ExtendedCanopyClustering(
-						(int) parameters.get(0).getValue(), // Inclusive threshold
-						(int) parameters.get(1).getValue()  // Exclusive threshold
-				);
-				break;
-		}
-		
-		return processingMethod;
 	}
 
 }

@@ -1,13 +1,16 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.datamodel.EntityProfile;
 import org.scify.jedai.entityclustering.IEntityClustering;
 import org.scify.jedai.entitymatching.IEntityMatching;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
+import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,8 +40,8 @@ public class ConfigurationsController {
 	private IBlockProcessing comparison_cleaning;
 	private IEntityMatching entity_matching;
 	private IEntityClustering entity_clustering;
-	private List<MethodModel> block_building;
-	private List<MethodModel> block_cleaning;
+	private List<IBlockBuilding> block_building;
+	private List<IBlockProcessing> block_cleaning;
 	
 	ConfigurationsController(){
 		this.er_mode = null;
@@ -176,14 +179,46 @@ public class ConfigurationsController {
 	
 	@PostMapping("/set_configurations/blockbuilding")	
 	public boolean setBlockBuilding(@RequestBody List<MethodModel> block_building) {
-		this.setBlock_building(block_building);
 		
+		this.block_building = new ArrayList<>();
+        for (MethodModel method : block_building) {
+
+        	BlockBuildingMethod blockBuilding_method = MethodConfigurations.blockBuildingMethods.get(method.getLabel());
+           
+            IBlockBuilding blockBuildingMethod;
+            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+                
+                blockBuildingMethod = BlockBuildingMethod.getDefaultConfiguration(blockBuilding_method);
+             else 
+            	 blockBuildingMethod = DynamicMethodConfiguration.configureBlockBuildingMethod(blockBuilding_method, method.getParameters());
+            
+
+            this.block_building.add(blockBuildingMethod);
+        }
+        
 		return this.block_building != null;
 	}
 	
+	
+	
 	@PostMapping("/set_configurations/blockcleaning")	
 	public boolean setBlockCleaning(@RequestBody List<MethodModel> block_cleaning) {
-		this.setBlock_cleaning(block_cleaning);
+		
+		this.block_cleaning = new ArrayList<>();
+        for (MethodModel method : block_cleaning) {
+          
+            IBlockProcessing blockCleaning_method;
+            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+                
+            	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
+             else 
+            
+            	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
+                		method.getLabel(), method.getParameters());
+            
+
+            this.block_cleaning.add(blockCleaning_method);
+        }
 		
 		return this.block_cleaning != null;
 	}
@@ -220,15 +255,6 @@ public class ConfigurationsController {
 
 	public void setGround_trut(DataReadModel ground_truth) {
 		this.ground_truth = ground_truth;
-	}
-
-	public List<MethodModel> getBlock_building() {
-		return block_building;
-	}
-
-
-	public void setBlock_building(List<MethodModel> block_building) {
-		this.block_building = block_building;
 	}
 	
 	public List<MethodModel> getBlock_cleaning() {

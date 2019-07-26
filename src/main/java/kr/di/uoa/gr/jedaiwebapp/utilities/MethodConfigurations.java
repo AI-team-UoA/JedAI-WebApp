@@ -3,10 +3,11 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import org.scify.jedai.schemaclustering.AttributeValueClustering;
 import org.scify.jedai.schemaclustering.HolisticAttributeClustering;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
-import org.scify.jedai.utilities.enumerations.RepresentationModel;
-import org.scify.jedai.utilities.enumerations.SimilarityMetric;
-import org.scify.jedai.utilities.enumerations.WeightingScheme;
+import org.scify.jedai.utilities.enumerations.*;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.blockprocessing.blockcleaning.BlockFiltering;
@@ -35,8 +36,31 @@ import org.scify.jedai.schemaclustering.AttributeNameClustering;
 
 public class MethodConfigurations {
 	
+	public static final Map<String, BlockBuildingMethod> blockBuildingMethods = createMap();
 	
 	
+	
+	/**
+     * Return map of block building methods' String names to their enumeration values
+     *
+     * @return Mapping of block building method names to enum values
+     */
+    private static Map<String, BlockBuildingMethod> createMap() {
+        Map<String, BlockBuildingMethod> result = new HashMap<>();
+        result.put(JedaiOptions.STANDARD_TOKEN_BUILDING, BlockBuildingMethod.STANDARD_BLOCKING);
+        result.put(JedaiOptions.SORTED_NEIGHBORHOOD, BlockBuildingMethod.SORTED_NEIGHBORHOOD);
+        result.put(JedaiOptions.SORTED_NEIGHBORHOOD_EXTENDED, BlockBuildingMethod.EXTENDED_SORTED_NEIGHBORHOOD);
+        result.put(JedaiOptions.Q_GRAMS_BLOCKING, BlockBuildingMethod.Q_GRAMS_BLOCKING);
+        result.put(JedaiOptions.Q_GRAMS_BLOCKING_EXTENDED, BlockBuildingMethod.EXTENDED_Q_GRAMS_BLOCKING);
+        result.put(JedaiOptions.SUFFIX_ARRAYS_BLOCKING, BlockBuildingMethod.SUFFIX_ARRAYS);
+        result.put(JedaiOptions.SUFFIX_ARRAYS_BLOCKING_EXTENDED, BlockBuildingMethod.EXTENDED_SUFFIX_ARRAYS);
+        result.put(JedaiOptions.LSH_SUPERBIT_BLOCKING, BlockBuildingMethod.LSH_SUPERBIT_BLOCKING);
+        result.put(JedaiOptions.LSH_MINHASH_BLOCKING, BlockBuildingMethod.LSH_MINHASH_BLOCKING);
+        return Collections.unmodifiableMap(result);
+    }
+    
+    
+    
 	public static ISchemaClustering getSchemaClusteringMethodByName(String methodName) {
         ISchemaClustering schemaClustering = null;
 
