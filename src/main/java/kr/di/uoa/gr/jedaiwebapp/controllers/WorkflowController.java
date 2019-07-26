@@ -167,7 +167,9 @@ public class WorkflowController {
 		try {
 			methodsConfig.put(JedaiOptions.COMPARISON_CLEANING, comparison_cleaning);
 			
-			if (comparison_cleaning != null && !comparison_cleaning.getMethod_name().equals(JedaiOptions.NO_CLEANING)) {
+			if (comparison_cleaning.getLabel().equals(JedaiOptions.NO_CLEANING)) return true;
+			
+			if (comparison_cleaning != null) {
 				if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
 	                
 	                this.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
@@ -300,6 +302,8 @@ public class WorkflowController {
 		
 		try {
 			methodsConfig.put(JedaiOptions.BLOCK_CLEANING, block_cleaning);
+			
+			if(block_cleaning.size() == 0) return true;
 			
 			this.block_cleaning = new ArrayList<>();
 	        for (MethodModel method : block_cleaning) {
