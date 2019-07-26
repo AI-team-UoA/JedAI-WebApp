@@ -82,3 +82,30 @@
     cursor: pointer;
     float: right;
   }
+
+
+  .Jumbotron_Tabs {
+    background-color: #D3D3D3;
+  }
+
+  .Jumbotron_Tab {
+    background-color: white;
+  }
+
+  .Tab_container {
+    margin-left: 2%;
+    padding-bottom: 3%;
+    padding-top: 1%;
+    
+  }
+
+.caption_item {
+    vertical-align: top;
+    display: inline-block;
+    text-align: center;
+}
+
+.caption {
+  margin-bottom: 20px;
+  display: block;
+}
