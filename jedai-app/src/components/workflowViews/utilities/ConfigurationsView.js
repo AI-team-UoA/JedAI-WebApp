@@ -166,7 +166,6 @@ class ConfigurationsView extends Component {
 
 ConfigurationsView.propTypes = {
     title: PropTypes.string.isRequired,
-    data: PropTypes.object.isRequired,
     type: PropTypes.string.isRequired
 
   }
