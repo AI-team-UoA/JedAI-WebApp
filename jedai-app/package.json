@@ -9,6 +9,7 @@
     "immutability-helper": "^3.0.1",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.9",
+    "react-d3-speedometer": "^0.6.1",
     "react-dom": "^16.8.6",
     "react-dropdown": "^1.6.4",
     "react-router-dom": "^5.0.1",
