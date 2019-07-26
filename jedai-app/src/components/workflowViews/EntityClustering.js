@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import RadioMethod from './utilities/RadioMethod'
 import {Form, Row, Col, FormControl, Jumbotron, Collapse } from 'react-bootstrap/'
 import update from 'immutability-helper'
+import axios from 'axios';
 
 class EntityClustering extends Component {
 
@@ -135,8 +136,16 @@ class EntityClustering extends Component {
     }
 
     isValidated(){
-        this.props.submitState("entity_clustering", this.state)
-        return this.state.method_name !== "" && this.state.configuration_type !== ""
+
+        axios({
+            url: '/workflow/set_configurations/entityclustering',
+            method: 'POST',
+            data: this.state
+        }).then(res => {
+            var success = res.data
+            this.props.submitState("entity_clustering", this.state)
+            return this.state.method_name !== "" && this.state.configuration_type !== "" && success
+        })       
     }
 
 

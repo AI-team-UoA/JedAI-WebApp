@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import RadioMethod from './utilities/RadioMethod'
 import {Form, Row, Col, FormControl, Jumbotron, Collapse } from 'react-bootstrap/'
 import update from 'immutability-helper'
+import axios from 'axios';
 
 class ComparisonCleaning extends Component {
 
@@ -151,8 +152,16 @@ class ComparisonCleaning extends Component {
     }
 
     isValidated(){
-        this.props.submitState("comparison_cleaning", this.state)
-        return true
+
+        axios({
+            url: '/workflow/set_configurations/comparisoncleaning',
+            method: 'POST',
+            data: this.state
+        }).then(res => {
+            var success = res.data
+            this.props.submitState("comparison_cleaning", this.state)
+            return success
+        })
     }
 
     render() {

@@ -5,6 +5,7 @@ import {Form, Row, FormControl, Col, Jumbotron, Collapse } from 'react-bootstrap
 import CheckboxMethod from './utilities/CheckboxMethod'
 import AlertModal from './utilities/AlertModal'
 import "../../css/main.css"
+import axios from 'axios';
 
 class BlockBuilding extends Component {
 
@@ -70,7 +71,7 @@ class BlockBuilding extends Component {
                         },
                         {
                             label: "Maximum Suffix Frequency",
-                            value: 0.95
+                            value: 53
                         }
                     ]
             },
@@ -320,8 +321,15 @@ class BlockBuilding extends Component {
             return false
         }
         else{
-            this.props.submitState("block_building", selected_methods)
-            return true
+            axios({
+                url: '/workflow/set_configurations/blockbuilding',
+                method: 'POST',
+                data: selected_methods
+            }).then(res => {
+                var success = res.data
+                this.props.submitState("block_building", selected_methods)
+                return success
+            })
         }
     }
 

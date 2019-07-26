@@ -29,8 +29,8 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.MethodConfigurations;
 
 
 @RestController
-@RequestMapping("/set_configurations/**")
-public class ConfigurationsController {
+@RequestMapping("/workflow/**")
+public class WorkflowController {
 	
 	private String er_mode;
 	private List<EntityProfile> profilesD1;
@@ -46,7 +46,7 @@ public class ConfigurationsController {
 	
 	private Map<String, Object> methodsConfig;
 	
-	ConfigurationsController(){
+	WorkflowController(){
 		this.er_mode = null;
 		this.profilesD1 = null;
 		this.profilesD2 = null;
@@ -69,7 +69,7 @@ public class ConfigurationsController {
      * @er_mode the selected er mode
      * @return whether it was set successfully 
      */	
-	@GetMapping("/set_configurations/ermode/{er_mode}")	
+	@GetMapping("/workflow/set_configurations/ermode/{er_mode}")	
 	public boolean getERMode(@PathVariable(value = "er_mode") String er_mode) {
 		if (er_mode != null) {
 			if (er_mode.equals("dirty"))
@@ -90,7 +90,7 @@ public class ConfigurationsController {
      * @configurations configurations of how to read the input file
      * @return whether it was set successfully 
      */	
-	@PostMapping("/set_configurations/dataread")	
+	@PostMapping("/workflow/set_configurations/dataread")	
 	public boolean DataRead(
 			@RequestParam String entity_id,
 			@RequestParam String filetype,
@@ -128,20 +128,27 @@ public class ConfigurationsController {
      * @schema_clustering the method and its configurations that the user has selected
      * @return whether it was set successfully 
      */	
-	@PostMapping("/set_configurations/schemaclustering")	
+	@PostMapping("/workflow/set_configurations/schemaclustering")	
 	public boolean setSchemaClustering(@RequestBody MethodModel schema_clustering) {
-		
-		methodsConfig.put(JedaiOptions.SCHEMA_CLUSTERING, schema_clustering);
-		
-		if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
-			this.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
-		else
-			this.schema_clustering = DynamicMethodConfiguration.configureSchemaClusteringMethod(
-					schema_clustering.getLabel(),
-					schema_clustering.getParameters());
-                    
-		
-		System.out.println("SC: " + this.schema_clustering);
+		try {
+			methodsConfig.put(JedaiOptions.SCHEMA_CLUSTERING, schema_clustering);
+			
+			if (schema_clustering.getLabel().equals(JedaiOptions.NO_SCHEMA_CLUSTERING)) return true;
+			
+			if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
+				this.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
+			else
+				this.schema_clustering = DynamicMethodConfiguration.configureSchemaClusteringMethod(
+						schema_clustering.getLabel(),
+						schema_clustering.getParameters());
+	                    
+			
+			System.out.println("SC: " + this.schema_clustering);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		return this.schema_clustering != null;
 	}
 	
@@ -154,22 +161,28 @@ public class ConfigurationsController {
      * @comparison_cleaning the method and its configurations that the user has selected
      * @return whether it was set successfully 
      */	
-	@PostMapping("/set_configurations/comparisoncleaning")	
+	@PostMapping("/workflow/set_configurations/comparisoncleaning")	
 	public boolean setComparisonCleaning(@RequestBody MethodModel comparison_cleaning) {
 		
-		methodsConfig.put(JedaiOptions.COMPARISON_CLEANING, comparison_cleaning);
-		
-		if (comparison_cleaning != null && !comparison_cleaning.getMethod_name().equals(JedaiOptions.NO_CLEANING)) {
-			if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
-                
-                this.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
-             else 
-                
-            	this.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
-            			comparison_cleaning.getLabel(),
-            			comparison_cleaning.getParameters() );
-        }
-		
+		try {
+			methodsConfig.put(JedaiOptions.COMPARISON_CLEANING, comparison_cleaning);
+			
+			if (comparison_cleaning != null && !comparison_cleaning.getMethod_name().equals(JedaiOptions.NO_CLEANING)) {
+				if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
+	                
+	                this.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
+	             else 
+	                
+	            	this.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
+	            			comparison_cleaning.getLabel(),
+	            			comparison_cleaning.getParameters() );
+	        }
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+			
 		System.out.println("CC: " + this.comparison_cleaning);
 		return this.comparison_cleaning != null;
 	}
@@ -181,20 +194,28 @@ public class ConfigurationsController {
      * @entity_matching the method and its configurations that the user has selected
      * @return whether it was set successfully 
      */	
-	@PostMapping("/set_configurations/entitymatching")	
+	@PostMapping("/workflow/set_configurations/entitymatching")	
 	public boolean setEntityMatching(@RequestBody MethodModel entity_matching) {
 		
-		methodsConfig.put(JedaiOptions.ENTITY_MATHCING, entity_matching);
+		try {
+			methodsConfig.put(JedaiOptions.ENTITY_MATHCING, entity_matching);
+			
+			if(!entity_matching.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
+	            this.entity_matching = DynamicMethodConfiguration
+	                    .configureEntityMatchingMethod(entity_matching.getLabel(), null);
+	         else 
+	            this.entity_matching = DynamicMethodConfiguration
+	                    .configureEntityMatchingMethod(entity_matching.getLabel(), entity_matching.getParameters());
+	        
+			
+			System.out.println("EM: " + this.entity_matching);
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		
-		if(!entity_matching.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
-            this.entity_matching = DynamicMethodConfiguration
-                    .configureEntityMatchingMethod(entity_matching.getLabel(), null);
-         else 
-            this.entity_matching = DynamicMethodConfiguration
-                    .configureEntityMatchingMethod(entity_matching.getLabel(), entity_matching.getParameters());
-        
-		
-		System.out.println("EM: " + this.entity_matching);
 		return this.entity_matching != null;
 	}
 	
@@ -206,17 +227,25 @@ public class ConfigurationsController {
      * @entity_clustering the method and its configurations that the user has selected
      * @return whether it was set successfully 
      */	
-	@PostMapping("/set_configurations/entityclustering")	
+	@PostMapping("/workflow/set_configurations/entityclustering")	
 	public boolean setEntityClustering(@RequestBody MethodModel entity_clustering) {
 		
-		methodsConfig.put(JedaiOptions.ENTITY_CLUSTERING, entity_clustering);
+		try {
+			methodsConfig.put(JedaiOptions.ENTITY_CLUSTERING, entity_clustering);
+			
+			if(!entity_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+				this.entity_clustering = MethodConfigurations.getEntityClusteringMethod(entity_clustering.getLabel());
+	         else 
+	        	this.entity_clustering = DynamicMethodConfiguration.configureEntityClusteringMethod(entity_clustering.getLabel(), entity_clustering.getParameters());
+	        
+			System.out.println("EC: " + this.entity_clustering);
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		
-		if(!entity_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-			this.entity_clustering = MethodConfigurations.getEntityClusteringMethod(entity_clustering.getLabel());
-         else 
-        	this.entity_clustering = DynamicMethodConfiguration.configureEntityClusteringMethod(entity_clustering.getLabel(), entity_clustering.getParameters());
-        
-		System.out.println("EC: " + this.entity_clustering);
 		return this.entity_clustering != null;
 	}
 	
@@ -231,24 +260,31 @@ public class ConfigurationsController {
 	@PostMapping("/set_configurations/blockbuilding")	
 	public boolean setBlockBuilding(@RequestBody List<MethodModel> block_building) {
 		
-		methodsConfig.put(JedaiOptions.BLOCK_BUILDING, block_building);
-		
-		this.block_building = new ArrayList<>();
-        for (MethodModel method : block_building) {
-
-        	BlockBuildingMethod blockBuilding_method = MethodConfigurations.blockBuildingMethods.get(method.getLabel());
-           
-            IBlockBuilding blockBuildingMethod;
-            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-                
-                blockBuildingMethod = BlockBuildingMethod.getDefaultConfiguration(blockBuilding_method);
-             else 
-            	 blockBuildingMethod = DynamicMethodConfiguration.configureBlockBuildingMethod(blockBuilding_method, method.getParameters());
-            
-
-            this.block_building.add(blockBuildingMethod);
-        }
-        
+		try {
+			methodsConfig.put(JedaiOptions.BLOCK_BUILDING, block_building);
+			
+			this.block_building = new ArrayList<>();
+	        for (MethodModel method : block_building) {
+	
+	        	BlockBuildingMethod blockBuilding_method = MethodConfigurations.blockBuildingMethods.get(method.getLabel());
+	           
+	            IBlockBuilding blockBuildingMethod;
+	            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+	                
+	                blockBuildingMethod = BlockBuildingMethod.getDefaultConfiguration(blockBuilding_method);
+	             else 
+	            	 blockBuildingMethod = DynamicMethodConfiguration.configureBlockBuildingMethod(blockBuilding_method, method.getParameters());
+	            
+	
+	            this.block_building.add(blockBuildingMethod);
+	        }
+	        
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		        
 		return this.block_building != null;
 	}
 	
@@ -262,24 +298,30 @@ public class ConfigurationsController {
 	@PostMapping("/set_configurations/blockcleaning")	
 	public boolean setBlockCleaning(@RequestBody List<MethodModel> block_cleaning) {
 		
-		methodsConfig.put(JedaiOptions.BLOCK_CLEANING, block_cleaning);
-		
-		this.block_cleaning = new ArrayList<>();
-        for (MethodModel method : block_cleaning) {
-          
-            IBlockProcessing blockCleaning_method;
-            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-                
-            	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
-             else 
-            
-            	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
-                		method.getLabel(), method.getParameters());
-            
-
-            this.block_cleaning.add(blockCleaning_method);
-        }
-		
+		try {
+			methodsConfig.put(JedaiOptions.BLOCK_CLEANING, block_cleaning);
+			
+			this.block_cleaning = new ArrayList<>();
+	        for (MethodModel method : block_cleaning) {
+	          
+	            IBlockProcessing blockCleaning_method;
+	            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+	                
+	            	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
+	             else 
+	            
+	            	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
+	                		method.getLabel(), method.getParameters());
+	            
+	
+	            this.block_cleaning.add(blockCleaning_method);
+	        }
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+				
 		return this.block_cleaning != null;
 	}
 

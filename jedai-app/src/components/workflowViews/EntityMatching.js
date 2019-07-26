@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import RadioMethod from './utilities/RadioMethod'
 import {Form, Row, Col, FormControl, Collapse, Jumbotron } from 'react-bootstrap/'
 import update from 'immutability-helper'
+import axios from 'axios';
 
 class EntityMatching extends Component {
 
@@ -99,8 +100,16 @@ class EntityMatching extends Component {
     }
 
     isValidated(){
-        this.props.submitState("entity_matching", this.state)
-        return this.state.method_name !== "" && this.state.configuration_type !== ""
+
+        axios({
+            url: '/workflow/set_configurations/entitymatching',
+            method: 'POST',
+            data: this.state
+        }).then(res => {
+            var success = res.data
+            this.props.submitState("entity_matching", this.state)
+            return this.state.method_name !== "" && this.state.configuration_type !== "" && success
+        })
     }
 
 

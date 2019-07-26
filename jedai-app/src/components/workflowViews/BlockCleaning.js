@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {Form, Row, FormControl, Col, Jumbotron, Collapse } from 'react-bootstrap/'
 import CheckboxMethod from './utilities/CheckboxMethod'
 import update from 'immutability-helper'
+import axios from 'axios';
 import "../../css/main.css"
 
 
@@ -152,7 +153,18 @@ class BlockCleaning extends Component {
                 selected_methods.push(method)
             }
         })
-        if(selected_methods.length > 0) this.props.submitState("block_cleaning", selected_methods)
+        if(selected_methods.length > 0) {
+
+            axios({
+                url: '/workflow/set_configurations/blockcleaning',
+                method: 'POST',
+                data: selected_methods
+            }).then(res => {
+                var success = res.data
+                this.props.submitState("block_cleaning", selected_methods)
+                return  success
+            })     
+        }
         else this.props.submitState("block_cleaning", [])
         return true
     }

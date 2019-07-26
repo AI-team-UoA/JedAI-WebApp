@@ -7,7 +7,6 @@ import AlertModal from '../utilities/AlertModal'
 import '../../../css/main.css'
 
 
-
  class DataReader extends Component {
 
     constructor(...args) {

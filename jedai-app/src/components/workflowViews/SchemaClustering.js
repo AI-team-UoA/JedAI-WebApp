@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import RadioMethod from './utilities/RadioMethod'
 import update from 'immutability-helper'
 import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
+import axios from 'axios';
 
  class SchemaClustering extends Component {
     
@@ -49,8 +50,17 @@ import {Form, Row, Jumbotron, Collapse, Col } from 'react-bootstrap/'
     } 
 
     isValidated(){
-        this.props.submitState("schema_clustering", this.state)
-        return this.state.method_name !== "" && this.state.configuration_type !== ""
+        var schema_clustering = this.state
+        
+        axios({
+            url: '/workflow/set_configurations/schemaclustering',
+            method: 'POST',
+            data: schema_clustering
+        }).then(res => {
+            var success = res.data
+            this.props.submitState("schema_clustering", this.state)
+            return this.state.method_name !== "" && this.state.configuration_type !== "" && success
+        })
     }
 
     // set the new parameters...triggered by select bars

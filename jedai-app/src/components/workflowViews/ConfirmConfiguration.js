@@ -58,32 +58,32 @@ class ConfirmConfiguration extends Component {
         }).then(res => success = success && res.data)
 
         
-        // then send the radio selected methods to server
+        /*
         var schema_clustering = this.props.state.schema_clustering
         var comparison_cleaning = this.props.state.comparison_cleaning
         var entity_matching = this.props.state.entity_matching
         var entity_clustering = this.props.state.entity_clustering
         
         axios({
-            url: '/set_configurations/schemaclustering',
+            url: '/workflow/set_configurations/schemaclustering',
             method: 'POST',
             data: schema_clustering
         }).then(res => success = success && res.data)
 
         axios({
-            url: '/set_configurations/comparisoncleaning',
+            url: '/workflow/set_configurations/comparisoncleaning',
             method: 'POST',
             data: comparison_cleaning
         }).then(res => success = success && res.data)
 
         axios({
-            url: '/set_configurations/entitymatching',
+            url: '/workflow/set_configurations/entitymatching',
             method: 'POST',
             data: entity_matching
         }).then(res => success = success && res.data)
 
         axios({
-            url: '/set_configurations/entityclustering',
+            url: '/workflow/set_configurations/entityclustering',
             method: 'POST',
             data: entity_clustering
         }).then(res => success = success && res.data)
@@ -92,18 +92,18 @@ class ConfirmConfiguration extends Component {
         var block_building = this.props.state.block_building
         var block_cleaning = this.props.state.block_cleaning
         axios({
-            url: '/set_configurations/blockbuilding',
+            url: '/workflow/set_configurations/blockbuilding',
             method: 'POST',
             data: block_building
         }).then(res => success = success && res.data)
 
         axios({
-            url: '/set_configurations/blockcleaning ',
+            url: '/workflow/set_configurations/blockcleaning ',
             method: 'POST',
             data: block_cleaning
         }).then(res => success = success && res.data)
 
-        console.log("SUCCESS: " + success)
+        console.log("SUCCESS: " + success)*/
     }
 
 
