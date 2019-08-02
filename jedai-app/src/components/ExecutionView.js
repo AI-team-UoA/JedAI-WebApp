@@ -12,8 +12,11 @@ class ExecutionView extends Component {
         export_filetype: ""
       };
 
-      onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
+    onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
+    executeWorkFlow = (e) =>{
+       axios.get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
+    }
 
     render() {
 
@@ -141,7 +144,7 @@ class ExecutionView extends Component {
                                     
                                         <Form.Group as={Row}  className="form-row">
                                             
-                                                <Button variant="primary" style={{width:"150", marginRight:"10px"}}>Execute Workflow</Button>
+                                                <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
                                                 <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Explore</Button>
                                                 <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
                                           
