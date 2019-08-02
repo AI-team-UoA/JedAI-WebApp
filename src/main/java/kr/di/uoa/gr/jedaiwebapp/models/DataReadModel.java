@@ -9,9 +9,18 @@ import org.scify.jedai.datareader.entityreader.EntityRDFReader;
 import org.scify.jedai.datareader.entityreader.EntitySerializationReader;
 import org.scify.jedai.datareader.entityreader.EntityXMLreader;
 import org.scify.jedai.datareader.entityreader.IEntityReader;
+import org.scify.jedai.datareader.groundtruthreader.GtCSVReader;
+import org.scify.jedai.datareader.groundtruthreader.GtRDFReader;
+import org.scify.jedai.datareader.groundtruthreader.GtSerializationReader;
+import org.scify.jedai.datareader.groundtruthreader.IGroundTruthReader;
+import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
+import org.scify.jedai.utilities.datastructures.BilateralDuplicatePropagation;
+import org.scify.jedai.utilities.datastructures.UnilateralDuplicatePropagation;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.di.uoa.gr.jedaiwebapp.utilities.JedaiOptions;
 
 public class DataReadModel {
 	private String filetype;
@@ -77,14 +86,14 @@ public class DataReadModel {
 			
         EntityCSVReader csvReader = new EntityCSVReader(filepath);
         boolean first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
-        char seperator = ((String)this.configurations.getFirst("seperator")).charAt(1);
+        char separator = ((String)this.configurations.getFirst("separator")).charAt(1);
         int id_index = Integer.parseInt(((String) configurations.getFirst("id_index")).replace("\"", ""));
         
         ObjectMapper mapper = new ObjectMapper();
         int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
         
         csvReader.setAttributeNamesInFirstRow(first_row);
-        csvReader.setSeparator(seperator);
+        csvReader.setSeparator(separator);
         csvReader.setIdIndex(id_index);
         
         csvReader.setAttributesToExclude(excluded);
@@ -145,6 +154,61 @@ public class DataReadModel {
 		EntitySerializationReader objReader = new EntitySerializationReader(filepath);
 		return objReader;
 	}
+	
+	
+	
+	
+	 /**
+     * Read ground truth using the specified reader.
+     *
+     * @param er_type     Clean-Clean or Dirty ER
+     * @param profilesD1 Entity Profiles for Dataset 1
+     * @param profilesD2 Entity Profiles for Dataset 2
+     * @return Ground truth (duplicate propagation)
+     */
+    public AbstractDuplicatePropagation read_GroundTruth(String er_type, List<EntityProfile> profilesD1, List<EntityProfile> profilesD2) {
+        AbstractDuplicatePropagation dp = null;
+        IGroundTruthReader gtReader = null;
+        
+
+        // If there are no parameters, we cannot initialize the reader
+        if (configurations.isEmpty())
+            return null;
+
+        switch (filetype) {
+            case JedaiOptions.CSV:
+                // Get parameters              
+                boolean first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
+                char separator = ((String)this.configurations.getFirst("separator")).charAt(1);
+               
+                // Initialize the reader
+                GtCSVReader csvReader = new GtCSVReader(filepath);
+                csvReader.setIgnoreFirstRow(first_row);
+                csvReader.setSeparator(separator);
+
+                gtReader = csvReader;
+                break;
+                
+            case JedaiOptions.RDF:
+                gtReader = new GtRDFReader(filepath);
+                break;
+                
+            case JedaiOptions.SERIALIZED:
+
+                gtReader = new GtSerializationReader(filepath);
+                break;
+        }
+
+        if (gtReader != null) {
+            if (er_type.equals(JedaiOptions.DIRTY_ER)) {
+                dp = new UnilateralDuplicatePropagation(gtReader.getDuplicatePairs(profilesD1));
+            } else {
+                dp = new BilateralDuplicatePropagation(gtReader.getDuplicatePairs(profilesD1, profilesD2));
+            }
+        }
+
+        return dp;
+    }
 	
 	
 
