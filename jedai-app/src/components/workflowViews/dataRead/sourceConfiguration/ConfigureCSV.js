@@ -18,7 +18,7 @@ class ConfigureCSV extends Component {
             file: null,
             filename : "",
             first_row : true,
-            seperator : ",",
+            separator : ",",
             id_index : 0,
             excluded_attr : []
         }
@@ -34,18 +34,18 @@ class ConfigureCSV extends Component {
             var file = e.target.files[0]
             if (file == null){
                 this.setState({file:null, filename: ""}, () =>{
-                    var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                    var isDisabled = this.state.filename === "" || this.state.separator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
                     this.props.onChange(this.state, isDisabled)})         
             }
             else{
                 this.setState({file:file, filename: file.name}, () =>{
-                    var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                    var isDisabled = this.state.filename === "" || this.state.separator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
                     this.props.onChange(this.state, isDisabled)})         
             }
         }
         else{
             this.setState({[e.target.name]: e.target.value}, () =>{
-                var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                var isDisabled = this.state.filename === "" || this.state.separator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
                 this.props.onChange(this.state, isDisabled)
             })   
         }
@@ -72,7 +72,7 @@ class ConfigureCSV extends Component {
             })
             if (!exist && id !== "")
                 this.setState({ excluded_attr: [...this.state.excluded_attr, id] }, () => {
-                    var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                    var isDisabled = this.state.filename === "" || this.state.separator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
                     this.props.onChange(this.state, isDisabled)
             })
         }
@@ -88,7 +88,7 @@ class ConfigureCSV extends Component {
             if (item_id === id)
                 excluded.splice(index, 1);
                 this.setState({excluded_attr: excluded}, () =>{
-                    var isDisabled = this.state.filename === "" || this.state.seperator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
+                    var isDisabled = this.state.filename === "" || this.state.separator === "" || this.state.id_index === "" || isNaN(this.state.id_index)
                     this.props.onChange(this.state, isDisabled)});
         })        
     }
@@ -158,10 +158,10 @@ class ConfigureCSV extends Component {
                         <Col sm={second_col}>
                             <FormControl 
                                 type="text" 
-                                name="seperator" 
-                                value={this.state.seperator} 
+                                name="separator" 
+                                value={this.state.separator} 
                                 onChange={this.onChange}
-                                isInvalid={this.state.seperator === ""}
+                                isInvalid={this.state.separator === ""}
                             />
                         </Col>
                     </Form.Row>

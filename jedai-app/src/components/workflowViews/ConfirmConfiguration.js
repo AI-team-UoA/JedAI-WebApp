@@ -192,7 +192,7 @@ class ConfirmConfiguration extends Component {
                 <ConfigurationsView  type="file" title="Ground Truth Parameters" data={ground_truth}/>
                 <ConfigurationsView  type="inline" title="Schema Clustering" data={shcema_clustering}/>
                 <ConfigurationsView  type="array" title="Block Building" data={state.block_building}/>
-                {state.block_cleaning !== null ? <ConfigurationsView  type="array" title="Block Building" data={state.block_building}/> : <div />}
+                {state.block_cleaning.length !== 0 ? <ConfigurationsView  type="array" title="Block Cleaning" data={state.block_cleaning}/> : <div />}
                 <ConfigurationsView  type="inline" title="Comparison Cleaning" data={comparison_cleaning}/>
                 <ConfigurationsView  type="inline" title="Entity Matching" data={entity_matching}/>
                 <ConfigurationsView  type="inline" title="Entity Clustering" data={entity_clustering}/>

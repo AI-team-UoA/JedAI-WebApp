@@ -31,7 +31,7 @@ class ProfileReader extends Component {
             var msg
             switch(this.state.filetype) {
                 case "CSV":
-                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename  +"\nAtributes in firts row: " + this.state.configurations.first_row + "\nSeperator: " + this.state.configurations.seperator + "\nID index: "+ this.state.configurations.id_index
+                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename  +"\nAtributes in firts row: " + this.state.configurations.first_row + "\nSeperator: " + this.state.configurations.separator + "\nID index: "+ this.state.configurations.id_index
                     break;
                 case "Database":
                     msg = this.state.configurations === null? "" : "\nURL: " +  this.state.configurations.url  +"\nTable: " + this.state.configurations.table + "\nUsername: " + this.state.configurations.username + "\nSSL: "+ this.state.configurations.ssl

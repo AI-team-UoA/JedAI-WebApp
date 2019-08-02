@@ -52,7 +52,7 @@ public class JedaiOptions {
     public static final String COMPARISON_BASED_BLOCK_PURGING = "Comparison-based Block Purging";
 
     // Comparison Cleaning methods
-    public static final String NO_CLEANING = "No cleaning";
+    public static final String NO_CLEANING = "No Cleaning";
     public static final String COMPARISON_PROPAGATION = "Comparison Propagation";
     public static final String CARDINALITY_EDGE_PRUNING = "Cardinality Edge Pruning (CEP)";
     public static final String CARDINALITY_NODE_PRUNING = "Cardinality Node Pruning (CNP)";
