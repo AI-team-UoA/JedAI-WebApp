@@ -61,6 +61,7 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.restdocs</groupId>
 			<artifactId>spring-restdocs-mockmvc</artifactId>
@@ -68,10 +69,18 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>org.javatuples</groupId>
+		    <artifactId>javatuples</artifactId>
+		    <version>1.2</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>gr.scify</groupId>
 		    <artifactId>jedai</artifactId>
 		    <version>1.3</version>
 		</dependency>
+		
+		
 				
 	</dependencies>
 
