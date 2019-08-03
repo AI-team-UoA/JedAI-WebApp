@@ -30,7 +30,7 @@ class App extends Component {
                 <div >
                   <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
                   <Route exact path="/desktopmode" render={props=>(  <DesktopForms/> )}/>
-                  <Route exact path="/execution" render={props=>(  <ExecutionView/> )}/>
+                  <Route exact path="/workflow" render={props=>(  <ExecutionView/> )}/>
                 </div>  
           </div>
           <br />
