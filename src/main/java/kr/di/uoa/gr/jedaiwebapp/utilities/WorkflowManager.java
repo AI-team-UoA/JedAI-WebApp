@@ -69,12 +69,12 @@ public class WorkflowManager {
 		SseEmitter emitter = new SseEmitter();
 		 SseEventBuilder event = SseEmitter.event()
                  .data("SSE MVC - " + LocalTime.now().toString())
-                 .name("sse event - mvc");
+                 .name("SSE");
 		 emitter.send(event);
 		 Thread.sleep(1000);
 		 event = SseEmitter.event()
                  .data("SSE MVC - " + LocalTime.now().toString())
-                 .name("sse event - mvc");
+                 .name("SSE");
 		 emitter.send(event);
 		 
 		// TODO: if final_run write "Running schema clustering..."

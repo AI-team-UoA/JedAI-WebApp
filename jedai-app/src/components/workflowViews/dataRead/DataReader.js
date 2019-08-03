@@ -5,7 +5,7 @@ import 'react-dropdown/style.css'
 import ProfileReader from './ProfileReader';
 import AlertModal from '../utilities/AlertModal'
 import '../../../css/main.css'
-
+import axios from 'axios'
 
  class DataReader extends Component {
 
@@ -40,14 +40,21 @@ import '../../../css/main.css'
 
     // Set er_mode and based on that it disables the second profileReader
     onChange = (e) => {
+        var name = e.target.name
+        var value = e.target.value
         this.setState({[e.target.name]: e.target.value})
-        if (e.target.name === "er_mode")
-            if(e.target.value === "dirty") {
+        if (name === "er_mode"){
+            console.log(e)
+            axios
+            .get("/workflow/set_configurations/ermode/"+value)
+
+            if(value === "dirty") {
                 this.alertText = "Entity profile D1 and Ground-truth must be set!"
             }
             else {
                 this.alertText = "Entity profile D1, Entity profile D2 and Ground-truth must be set!"
             }
+        }
     }        
 
     //Check which entities have been completed successfully
@@ -89,6 +96,7 @@ import '../../../css/main.css'
 
     render() {
         
+        var disable_ground_truth = this.state.er_mode === "dirty" ? this.state.entity1_set === null : this.state.entity1_set === null || this.state.entity2_set === null 
         return ( 
             
             <div >
@@ -137,7 +145,7 @@ import '../../../css/main.css'
                         
                     <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.er_mode === ""} type="entity" setEntity={this.setEntity} state={this.state.entity1_set}/>   
                     <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.er_mode !== "clean"} type="entity" setEntity={this.setEntity} state={this.state.entity2_set}/> 
-                    <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.er_mode === ""} type="ground-truth" setEntity={this.setEntity} state={this.state.groundTruth_set}/>   
+                    <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.er_mode === "" || disable_ground_truth} type="ground-truth" setEntity={this.setEntity} state={this.state.groundTruth_set} />   
                     
                 </div>
             </div>   

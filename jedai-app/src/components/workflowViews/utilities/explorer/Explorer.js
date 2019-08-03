@@ -93,7 +93,7 @@ class Explorer extends Component {
         return  pagination 
     }
 
-    // Handle page change and set paginations
+    // Handle page changes and set pagination
     handlePageChange = (e) => {
         var tmp_page = parseInt(e.target.name)
         if (!isNaN(tmp_page)){
@@ -142,7 +142,7 @@ class Explorer extends Component {
                 <Jumbotron style={{backgroundColor:"white", border:"groove" }}>
                 <Form>
                     <div>
-                        {this.state.entities.map((entity, index) => ( <EntityProfileView key={index} page={this.page} entity={entity} index={index}/>))}
+                        {this.state.entities.map((entity, index) => ( <EntityProfileView key={index} page={this.page} entity={entity} entity_type={this.props.entity_id}/>))}
                         <br/>
                         <div style={{margin:'auto' }}>
                             {this.pagination}

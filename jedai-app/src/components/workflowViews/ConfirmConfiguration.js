@@ -3,109 +3,9 @@ import PropTypes from 'prop-types';
 import ConfigurationsView from './utilities/ConfigurationsView'
 import {Link } from 'react-router-dom';
 import {Button} from 'react-bootstrap/'
-import axios from 'axios';
+
 
 class ConfirmConfiguration extends Component {
-
-
-    
-    sendConfigurations = (e) => {
-        var success = true
-        var data_reading = this.props.state.data_reading
-
-        // firstly send the ER mode to server
-        axios
-            .get("/set_configurations/ermode/"+data_reading.er_mode)
-            .then(res => success = success && res.data)
-
-        // then send the state of data reading to server
-        let entity_1 = new FormData()
-        entity_1.append('entity_id',data_reading.entity1_set.entity_id)
-        entity_1.append('filetype', data_reading.entity1_set.filetype)
-        entity_1.append('source', data_reading.entity1_set.source)
-        Object.keys(data_reading.entity1_set.configurations).forEach((key) => { entity_1.append(key, JSON.stringify(data_reading.entity1_set.configurations[key]));})
-
-        axios({
-            url: '/set_configurations/dataread',
-            method: 'POST',
-            data: entity_1
-        }).then(res => success = success && res.data)
-
-        if(data_reading.er_mode !== "dirty"){
-            let entity_2 = new FormData()
-            entity_2.append('entity_id',data_reading.entity2_set.entity_id)
-            entity_2.append('filetype', data_reading.entity2_set.filetype)
-            entity_2.append('source', data_reading.entity2_set.source)
-            Object.keys(data_reading.entity2_set.configurations).forEach((key) => { entity_2.append(key, JSON.stringify(data_reading.entity2_set.configurations[key]));})
-
-            axios({
-                url: '/set_configurations/dataread',
-                method: 'POST',
-                data: entity_2
-            }).then(res => success = success && res.data)
-        }
-
-        let ground_truth = new FormData()
-        ground_truth.append('entity_id',data_reading.groundTruth_set.entity_id)
-        ground_truth.append('filetype', data_reading.groundTruth_set.filetype)
-        ground_truth.append('source', data_reading.groundTruth_set.source)
-        Object.keys(data_reading.groundTruth_set.configurations).forEach((key) => { ground_truth.append(key, JSON.stringify(data_reading.groundTruth_set.configurations[key]));})
-
-        axios({
-            url: '/set_configurations/dataread',
-            method: 'POST',
-            data: ground_truth
-        }).then(res => success = success && res.data)
-
-        
-        /*
-        var schema_clustering = this.props.state.schema_clustering
-        var comparison_cleaning = this.props.state.comparison_cleaning
-        var entity_matching = this.props.state.entity_matching
-        var entity_clustering = this.props.state.entity_clustering
-        
-        axios({
-            url: '/workflow/set_configurations/schemaclustering',
-            method: 'POST',
-            data: schema_clustering
-        }).then(res => success = success && res.data)
-
-        axios({
-            url: '/workflow/set_configurations/comparisoncleaning',
-            method: 'POST',
-            data: comparison_cleaning
-        }).then(res => success = success && res.data)
-
-        axios({
-            url: '/workflow/set_configurations/entitymatching',
-            method: 'POST',
-            data: entity_matching
-        }).then(res => success = success && res.data)
-
-        axios({
-            url: '/workflow/set_configurations/entityclustering',
-            method: 'POST',
-            data: entity_clustering
-        }).then(res => success = success && res.data)
-
-        // and finally send the checkbox selected methods to server
-        var block_building = this.props.state.block_building
-        var block_cleaning = this.props.state.block_cleaning
-        axios({
-            url: '/workflow/set_configurations/blockbuilding',
-            method: 'POST',
-            data: block_building
-        }).then(res => success = success && res.data)
-
-        axios({
-            url: '/workflow/set_configurations/blockcleaning ',
-            method: 'POST',
-            data: block_cleaning
-        }).then(res => success = success && res.data)
-
-        console.log("SUCCESS: " + success)*/
-    }
-
 
 
     render() {
@@ -197,8 +97,8 @@ class ConfirmConfiguration extends Component {
                 <ConfigurationsView  type="inline" title="Entity Matching" data={entity_matching}/>
                 <ConfigurationsView  type="inline" title="Entity Clustering" data={entity_clustering}/>
 
-                <Link to="/execution">
-                    <Button style={{float: 'right'}} onClick={this.sendConfigurations}>Confirm</Button>
+                <Link to="/workflow">
+                    <Button style={{float: 'right'}} >Confirm</Button>
                 </Link>
 
             </div>

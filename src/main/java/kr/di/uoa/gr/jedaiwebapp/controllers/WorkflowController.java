@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DynamicMethodConfiguration;
@@ -61,49 +63,6 @@ public class WorkflowController {
 		return WorkflowManager.er_mode != null;		
 	}
 	
-
-	/**
-     * Handle POST request and set the appropriate entity profile
-     *
-     * @entity_id the id of the input entity - if id == 3 then it is the ground-truth file
-     * @filetype the type of the input -it can also be a database
-     * @source the path or the db url
-     * @configurations configurations of how to read the input file
-     * @return whether it was set successfully 
-     */	
-	@PostMapping("/workflow/set_configurations/dataread")	
-	public boolean DataRead(
-			@RequestParam String entity_id,
-			@RequestParam String filetype,
-			@RequestParam String source,
-			@RequestParam MultiValueMap<String, Object> configurations) {
-		try {
-				
-			switch (entity_id) {
-			case "1":
-				WorkflowManager.profilesD1 = new DataReadModel(filetype, source, configurations).read();
-				break;
-			case "2":
-				WorkflowManager.profilesD1 = new DataReadModel(filetype, source, configurations).read();
-				break;
-			case "3":
-				 WorkflowManager.ground_truth = new DataReadModel(filetype, source, configurations)
-				 									.read_GroundTruth(WorkflowManager.er_mode,
-				 											WorkflowManager.profilesD1,
-				 											WorkflowManager.profilesD2);
-				break;
-			default:
-				break;
-			}
-			
-			
-			return true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
 	
 	
 	/**
