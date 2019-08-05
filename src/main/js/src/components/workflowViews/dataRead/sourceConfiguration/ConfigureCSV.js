@@ -2,7 +2,7 @@ import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, InputGroup, FormControl, ListGroup} from 'react-bootstrap/'
 import Checkbox from 'react-simple-checkbox';
-import "../../../../css/main.css"
+import '../../../../../../resources/static/css/main.css'
 
 
 /**

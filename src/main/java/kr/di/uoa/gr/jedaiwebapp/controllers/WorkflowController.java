@@ -1,6 +1,8 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 
+import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
@@ -289,6 +294,9 @@ public class WorkflowController {
 			@PathVariable(value = "automatic_type") String automatic_type,
 			@PathVariable(value = "search_type") String search_type) {
 		try {
+			
+			this.SSE_sender();
+
 			if(this.anyAutomaticConfig()) {
 				
 				if(automatic_type.equals(JedaiOptions.AUTOCONFIG_HOLISTIC)) {				
@@ -345,6 +353,21 @@ public class WorkflowController {
 	}
 	
 	
+	@CrossOrigin(origins = "http://localhost:3000/workflow")
+	@GetMapping("/workflow")	
+	public boolean SSE_sender() throws IOException {
+		SseEmitter emitter = new SseEmitter();
+		SseEventBuilder event = SseEmitter.event()
+                 .data("SSE MVC - " + LocalTime.now().toString())
+                 .name("SSE");
+		
+		emitter.send(event);
+		System.out.println("Emitted!!");
+		return true;
+		
+	}
+		
+			
 	
 	
 	public boolean anyAutomaticConfig() {

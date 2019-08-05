@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Link } from 'react-router-dom';
-import jedai_logo from '../../images/JedAI_logo.png'
+import jedai_logo from '../../../../../../images/JedAI_logo.png';
 
 class Headers extends Component {
     render() {
@@ -8,7 +8,7 @@ class Headers extends Component {
             <div style={{textAlign:'center'}}>
                 <p>
                     <Link to="/">
-                        <img src={jedai_logo} alt="jedai-logo" /> 
+                        <img src={jedai_logo}  /> 
                     </Link>
                     
                 </p>

@@ -2,15 +2,31 @@ import React, { Component } from 'react'
 import {Jumbotron, Tabs, Tab, Form, Row, Col, Button} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
 
-import "../css/main.css"
+import "../../../resources/static/css/main.css"
+import axios from 'axios';
+
+
 
 class ExecutionView extends Component {
+   
+    constructor(...args) {
+        super(...args);
 
-    state = {
-        automatic_type: "Holistic",
-        search_type: "Random Search",
-        export_filetype: ""
-      };
+   
+        this.state = {
+            automatic_type: "Holistic",
+            search_type: "Random Search",
+            export_filetype: ""    
+        }
+        
+        this.eventSource = new EventSource("http://localhost:8080/workflow",  {withCredentials: true}) 
+        this.eventSource.addEventListener('SSE', (e) => console.log("SSE cought", e));
+
+    }
+    
+    
+    
+    
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 

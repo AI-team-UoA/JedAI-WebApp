@@ -4,7 +4,7 @@ import {Form, Col, Row} from 'react-bootstrap/'
 import 'react-dropdown/style.css'
 import ProfileReader from './ProfileReader';
 import AlertModal from '../utilities/AlertModal'
-import '../../../css/main.css'
+import '../../../../../resources/static/css/main.css'
 import axios from 'axios'
 
  class DataReader extends Component {

@@ -4,7 +4,7 @@ import update from 'immutability-helper'
 import {Form, Row, FormControl, Col, Jumbotron, Collapse } from 'react-bootstrap/'
 import CheckboxMethod from './utilities/CheckboxMethod'
 import AlertModal from './utilities/AlertModal'
-import "../../css/main.css"
+import "../../../../resources/static/css/main.css"
 import axios from 'axios';
 
 class BlockBuilding extends Component {

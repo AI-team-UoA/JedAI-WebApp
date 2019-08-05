@@ -7,7 +7,7 @@ import ConfigureRDB from './ConfigureRDB'
 import ConfigureRDF from './ConfigureRDF'
 import ConfigureXML from './ConfigureXML'
 import ConfigureSerialized from './ConfigureSerialized'
-import "../../../../css/main.css"
+import '../../../../../../resources/static/css/main.css'
 
 
 /**
@@ -67,7 +67,6 @@ class Configurations extends Component {
                 text_area_msg = ""
         }
 
-
         // Form the data that will be sent to server
         formData.append('entity_id', this.props.entity_id)
         formData.append('filetype', this.props.filetype)
@@ -88,7 +87,7 @@ class Configurations extends Component {
                 this.collapse_flag = true
                 this.forceUpdate()
                 }
-            });
+        });
 
     }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Form, Col, Button, Jumbotron } from 'react-bootstrap/';
-import '../css/main.css'
+import '../../../resources/static/css/main.css'
 
 class ClusterForm extends Component {
 

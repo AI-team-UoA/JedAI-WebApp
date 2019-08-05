@@ -7,9 +7,12 @@ import ClusterForm from './components/ClusterForm'
 import DesktopForms from './components/DesktopForms'
 import ExecutionView from './components/ExecutionView'
  
+
+
+
+
 class App extends Component {
  
-    state = {};
  
     componentDidMount() {
         setInterval(this.hello, 250);
@@ -18,6 +21,7 @@ class App extends Component {
 
  
     render() {
+
         return (
           <Router>
             <div className="App">

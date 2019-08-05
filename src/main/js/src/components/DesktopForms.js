@@ -9,8 +9,8 @@ import ComparisonCleaning from './workflowViews/ComparisonCleaning'
 import EntityMatching from './workflowViews/EntityMatching' 
 import EntityClustering from './workflowViews/EntityClustering' 
 import ConfirmConfiguration from './workflowViews/ConfirmConfiguration'
-import '../css/progressSteps.css'
-import '../css/main.css'
+import '../../../resources/static/css/progressSteps.css'
+import '../../../resources/static/css/main.css'
 
 
 class DesktopForms extends Component {
