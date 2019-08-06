@@ -82,20 +82,16 @@ public class WorkflowManager {
 	public static ClustersPerformance runWorkflow(boolean final_run)  throws Exception {
 		 
 		
-		
-		
-		 
-		// TODO: if final_run write "Running schema clustering..."
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
 		eventPublisher = context.getBean(EventPublisher.class);
-		String message = "Running schema clustering...";
-		eventPublisher.publish(message);
 		
-		message = "Original blocks";
-		eventPublisher.publish(message);
+		if(final_run) {
+			String message = "Schema Clustering";
+			eventPublisher.publish(message);
+		}
 		
 		 
-		/*TObjectIntMap<String>[] clusters = null;
+		TObjectIntMap<String>[] clusters = null;
         if (schema_clustering != null) {
             // Run schema clustering
             if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
@@ -110,7 +106,11 @@ public class WorkflowManager {
         double overheadEnd;
         BlocksPerformance blp;
 
-        // TODO: if final_run write "Running block building..."
+        if(final_run) {
+			String message = "Block Building";
+			eventPublisher.publish(message);
+		}
+        
         List<AbstractBlock> blocks = new ArrayList<>();
         for (IBlockBuilding bb : block_building) {
             // Start time measurement
@@ -139,8 +139,10 @@ public class WorkflowManager {
         //TODO: if final_run write "Original blocks\t:\t" + blocks.size() 
 
         // Run Block Cleaning
-        if (final_run)
-        	//TODO: if final_run write "Running block cleaning..."
+        if(final_run) {
+			String message = "Block Cleaning";
+			eventPublisher.publish(message);
+		}
 
         if (block_cleaning != null && !block_cleaning.isEmpty()) {
             // Execute the methods
@@ -154,7 +156,10 @@ public class WorkflowManager {
         }
 
         // Run Comparison Cleaning
-        //TODO: if final_run write "Running comparison cleaning..."
+        if(final_run) {
+			String message = "Comparison Cleaning";
+			eventPublisher.publish(message);
+		}
         
         if (comparison_cleaning != null) {
             blocks = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
@@ -165,7 +170,10 @@ public class WorkflowManager {
         }
 
         // Run Entity Matching
-        //TODO: if final_run write"Running entity matching..."
+        if(final_run) {
+			String message = "Entity Matching";
+			eventPublisher.publish(message);
+		}
         
         SimilarityPairs simPairs;
 
@@ -179,7 +187,10 @@ public class WorkflowManager {
         
 
         // Run Entity Clustering
-        //TODO: if final_run write "Running entity clustering..."
+        if(final_run) {
+			String message = "Entity Clustering";
+			eventPublisher.publish(message);
+		}
         
         overheadStart = System.currentTimeMillis();
 
@@ -196,8 +207,7 @@ public class WorkflowManager {
         //    clp.printStatistics(overheadEnd - overheadStart, entity_clustering.getMethodName(),
         //    		entity_clustering.getMethodConfiguration());
 
-        return clp;*/
-		return null;
+        return clp;
         
 	}
 	

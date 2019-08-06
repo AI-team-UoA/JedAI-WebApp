@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Jumbotron, Tabs, Tab, Form, Row, Col, Button} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
-
+import {Link } from 'react-router-dom';
 import "../../../resources/static/css/main.css"
 import axios from 'axios';
 
@@ -16,7 +16,9 @@ class ExecutionView extends Component {
                 automatic_type: "Holistic",
                 search_type: "Random Search",
                 export_filetype: "",
-                automatic_conf: false
+                automatic_conf: false,
+
+                workflow_message: ""
             }
         
         
@@ -25,17 +27,12 @@ class ExecutionView extends Component {
       
         
         this.eventSource = new EventSource("/workflow") 
-        this.eventSource.onmessage = (e) => console.log("SSE cought", e)
+        this.eventSource.onmessage = (e) => this.setState({workflow_message: e.data})
     }
-    
-    
-    
-    
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
     executeWorkFlow = (e) =>{
-    	 console.log("Sent!")
        axios.get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
     }
 
@@ -45,6 +42,12 @@ class ExecutionView extends Component {
         var empty_col = 1
         var speedometer_col = 2.5
 
+        var execution_msg = this.state.workflow_message !== "" ? 
+        		<div>
+        			<h3 style={{marginLeft:'5%', marginRight:'20px', color:"#990000", display:'inline'}}>Executing:</h3> 
+        			<h4 style={{display:'inline'}}>{this.state.workflow_message}</h4>
+        		</div>
+        		: <div/>
 
         return (
             <Jumbotron  className='jumbotron_2'>
@@ -166,46 +169,54 @@ class ExecutionView extends Component {
                                     </Form.Group>
                                     <br />
 
+                                    <div style={{marginBottom: '20px'}}>
+	                                    <div style={{float:'left'}}>
+	                                        <Form.Group as={Row}  className="form-row">
+	                                            <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
+	                                            <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Explore</Button>
+	                                            <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
+	                                        </Form.Group>
+	                                        <Form.Group as={Row}  className="form-row">
+	                                            <Form.Control
+	                                                style={{width:"260px", marginRight:"10px"}} 
+	                                                as="select" 
+	                                                placeholder="Select Filetype" 
+	                                                name="export_filetype" 
+	                                                onChange={this.onChange}
+	                                                disabled={false}
+	                                                value={this.state.export_filetype}
+	                                            >
+	                                                <option value="" ></option>
+	                                                <option value="CSV" >CSV</option>
+	                                                <option value="RDF" >RDF</option>
+	                                                <option value="XML" >XML</option>
+	                                            </Form.Control>   
+	                                            <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""}>Export</Button>
+	                                        </Form.Group>
+	                                    </div>
+	                                  
+                                        
+	                                    
+	                                    <div style={{float: 'right'}}>                                    	
+	                                    	<Form.Group as={Row}   className="form-row">
+			                                    <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Back</Button>
+			                                    <Link to="/">
+			                                    	<Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Start Over</Button>
+			                                    </Link>
+			                                </Form.Group>
+	                                    </div>
+	                                 </div>
                                     
-                                        <Form.Group as={Row}  className="form-row">
-                                            
-                                                <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
-                                                <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Explore</Button>
-                                                <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
-                                          
-                                        </Form.Group>
-
-                                        <Form.Group as={Row}  className="form-row">
-                                           
-                                                <Form.Control
-                                                    style={{width:"260px", marginRight:"10px"}} 
-                                                    as="select" 
-                                                    placeholder="Select Filetype" 
-                                                    name="export_filetype" 
-                                                    onChange={this.onChange}
-                                                    disabled={false}
-                                                    value={this.state.export_filetype}
-                                                >
-                                                    <option value="" ></option>
-                                                    <option value="CSV" >CSV</option>
-                                                    <option value="RDF" >RDF</option>
-                                                    <option value="XML" >XML</option>
-                                                    
-                                                </Form.Control>
-                                           
-                                            
-                                                <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""}>Export</Button>
-                                            
-                                        </Form.Group>
+                                     {execution_msg}
                                     
 
-
+                                    <br/>
                                 </Form>
                             </div>
                         </Tab>
                         <Tab eventKey="details" title="Details" className="Jumbotron_Tab">
                             <br/>
-                            <h1>Details</h1>
+                            <h1 color="red">Details</h1>
                         </Tab>
                         <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
                             <br/>
