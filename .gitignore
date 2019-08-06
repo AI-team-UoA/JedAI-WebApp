@@ -61,3 +61,5 @@ yarn-error.log*
 
 
 
+
+src/main/resources/static/built/
