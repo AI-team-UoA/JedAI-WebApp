@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React,{ Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Row} from 'react-bootstrap/'
 import 'react-dropdown/style.css'
@@ -44,7 +44,6 @@ import axios from 'axios'
         var value = e.target.value
         this.setState({[e.target.name]: e.target.value})
         if (name === "er_mode"){
-            console.log(e)
             axios
             .get("/workflow/set_configurations/ermode/"+value)
 
