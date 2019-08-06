@@ -1,12 +1,13 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 
-import java.io.IOException;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
@@ -16,6 +17,9 @@ import org.scify.jedai.entitymatching.IEntityMatching;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +38,9 @@ import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.MethodConfigurations;
+import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventMessage;
 
 
 @RestController
@@ -44,11 +50,16 @@ public class WorkflowController {
 	private final static int NO_OF_TRIALS = 100;
 	private Map<String, Object> methodsConfig;
 	
+	SSE_Manager sse_manager = new SSE_Manager();
+
+	
+	
 	WorkflowController(){
 		
 		this.methodsConfig = new HashMap<String, Object>();
 	}
 	
+
 	
 	
 	/**
@@ -178,7 +189,7 @@ public class WorkflowController {
      *
      * @entity_clustering the method and its configurations that the user has selected
      * @return whether it was set successfully 
-     */	
+    */	
 	@PostMapping("/workflow/set_configurations/entityclustering")	
 	public boolean setEntityClustering(@RequestBody MethodModel entity_clustering) {
 		
@@ -208,7 +219,7 @@ public class WorkflowController {
      *
      * @block_building a list of methods and their configurations, selected by the user
      * @return whether it was set successfully 
-     */	
+    */	
 	@PostMapping("/set_configurations/blockbuilding")	
 	public boolean setBlockBuilding(@RequestBody List<MethodModel> block_building) {
 		
@@ -295,7 +306,6 @@ public class WorkflowController {
 			@PathVariable(value = "search_type") String search_type) {
 		try {
 			
-			this.SSE_sender();
 
 			if(this.anyAutomaticConfig()) {
 				
@@ -350,23 +360,7 @@ public class WorkflowController {
 			return null;
 		}
 		
-	}
-	
-	
-	@CrossOrigin(origins = "http://localhost:3000/workflow")
-	@GetMapping("/workflow")	
-	public boolean SSE_sender() throws IOException {
-		SseEmitter emitter = new SseEmitter();
-		SseEventBuilder event = SseEmitter.event()
-                 .data("SSE MVC - " + LocalTime.now().toString())
-                 .name("SSE");
-		
-		emitter.send(event);
-		System.out.println("Emitted!!");
-		return true;
-		
-	}
-		
+	}	
 			
 	
 	
@@ -392,6 +386,22 @@ public class WorkflowController {
 		 System.out.println("Auto Config: " + automatic_conf);
 		 return automatic_conf;	
 	}
+	
+	
+	@GetMapping("/workflow")	
+	 public SseEmitter handle(HttpServletResponse response) {
+	    response.setHeader("Cache-Control", "no-store");
+
+	    SseEmitter emitter = new SseEmitter();
+	    // SseEmitter emitter = new SseEmitter(180_000L);
+
+	    sse_manager.setEmitter(emitter);
+	     
+	    
+	    return emitter;
+		
+	}
+	
 	
 	
 	
