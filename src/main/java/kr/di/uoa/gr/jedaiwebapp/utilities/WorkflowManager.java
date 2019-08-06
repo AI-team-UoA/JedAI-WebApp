@@ -29,42 +29,24 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 
 public class WorkflowManager {
 	
-	public static  String er_mode;
-	public static List<EntityProfile> profilesD1;
-	public static List<EntityProfile> profilesD2;
-	public static AbstractDuplicatePropagation ground_truth;
+	public static  String er_mode = null;
+	public static List<EntityProfile> profilesD1 = null;
+	public static List<EntityProfile> profilesD2 = null;
+	public static AbstractDuplicatePropagation ground_truth = null;
 
-	public static ISchemaClustering schema_clustering;
-	public static IBlockProcessing comparison_cleaning;
-	public static IEntityMatching entity_matching;
-	public static IEntityClustering entity_clustering;
-	public static List<IBlockBuilding> block_building;
-	public static List<IBlockProcessing> block_cleaning;
+	public static ISchemaClustering schema_clustering = null;
+	public static IBlockProcessing comparison_cleaning = null;
+	public static IEntityMatching entity_matching = null;
+	public static IEntityClustering entity_clustering = null;
+	public static List<IBlockBuilding> block_building = null;
+	public static List<IBlockProcessing> block_cleaning = null;
 	
-	private static EquivalenceCluster[] entityClusters;
+	private static EquivalenceCluster[] entityClusters = null;
 	
 	private static EventPublisher eventPublisher;
 	
 
-	
-	
 
-	
-	WorkflowManager(){
-		WorkflowManager.er_mode = null;
-		WorkflowManager.profilesD1 = null;
-		WorkflowManager.profilesD2 = null;
-		WorkflowManager.ground_truth = null;
-		WorkflowManager.schema_clustering = null;
-		WorkflowManager.comparison_cleaning = null;
-		WorkflowManager.entity_matching = null;
-		WorkflowManager.entity_clustering = null;
-		WorkflowManager.block_building = null;
-		WorkflowManager.block_cleaning = null;
-		
-		
-		
-	}
 	
 	
 	@Bean
