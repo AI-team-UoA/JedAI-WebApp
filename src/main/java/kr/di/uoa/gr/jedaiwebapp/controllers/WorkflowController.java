@@ -362,8 +362,43 @@ public class WorkflowController {
 		
 	}	
 			
+		
+	/**
+	 *  
+	 * @return true if any configurations has been set to automatic
+	 * */	
+	@GetMapping("/workflow/automatic_conf/")
+	public boolean getAutomaticIsSet() {
+		return anyAutomaticConfig();
+		
+	}
+	
+	/**
+	 * Initialize the emitter which will be used in the SSE 
+	 *
+	 */
+	@GetMapping("/workflow")	
+	 public SseEmitter handle(HttpServletResponse response) {
+	    response.setHeader("Cache-Control", "no-store");
+
+	    SseEmitter emitter = new SseEmitter();
+	    sse_manager.setEmitter(emitter);
+	     
+	    return emitter;
+		
+	}
 	
 	
+	
+	
+	
+	
+	
+	/**
+	 * Check if any automatic configuration has been set
+	 * 
+	 * @return true if any configurations has been set to automatic
+	 * */
 	public boolean anyAutomaticConfig() {
 		
 		boolean automatic_conf = false;
@@ -383,32 +418,8 @@ public class WorkflowController {
 			 }
 		 }
 		
-		 System.out.println("Auto Config: " + automatic_conf);
 		 return automatic_conf;	
 	}
-	
-	
-	@GetMapping("/workflow")	
-	 public SseEmitter handle(HttpServletResponse response) {
-	    response.setHeader("Cache-Control", "no-store");
-
-	    SseEmitter emitter = new SseEmitter();
-	    // SseEmitter emitter = new SseEmitter(180_000L);
-
-	    sse_manager.setEmitter(emitter);
-	     
-	    
-	    return emitter;
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

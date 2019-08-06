@@ -11,19 +11,21 @@ class ExecutionView extends Component {
    
     constructor(...args) {
         super(...args);
-
-   
+        
         this.state = {
-            automatic_type: "Holistic",
-            search_type: "Random Search",
-            export_filetype: ""    
-        }
+                automatic_type: "Holistic",
+                search_type: "Random Search",
+                export_filetype: "",
+                automatic_conf: false
+            }
+        
+        
+        axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
+   
+      
         
         this.eventSource = new EventSource("/workflow") 
         this.eventSource.onmessage = (e) => console.log("SSE cought", e)
-        
-        console.log("Sent!")
-
     }
     
     
@@ -63,7 +65,7 @@ class ExecutionView extends Component {
                             <div className="Tab_container">
                                 <br/>
                                 <Form>
-                                    <Form.Group as={Row}  className="form-row">
+                                    <Form.Group as={Row}  className="form-row" >
                                         <Col  sm={radio_col}>
                                             <Form.Label as="legend"><h5>Automatic Configuration Type</h5> </Form.Label>
                                             <Form.Check
@@ -73,6 +75,7 @@ class ExecutionView extends Component {
                                                 value="Holistic"
                                                 checked={this.state.automatic_type === "Holistic"}
                                                 onChange={this.onChange}
+                                            	disabled={!this.state.automatic_conf}
                                             />
                                             <Form.Check
                                                 type="radio"
@@ -81,6 +84,7 @@ class ExecutionView extends Component {
                                                 value="Step-by-step"
                                                 checked={this.state.automatic_type === "Step-by-step"}
                                                 onChange={this.onChange}
+                                            	disabled={!this.state.automatic_conf}
                                             />
                                             <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
                                             <Form.Label as="legend"><h5>Search Type</h5> </Form.Label>
@@ -91,6 +95,7 @@ class ExecutionView extends Component {
                                                 value="Random Search"
                                                 checked={this.state.search_type === "Random Search"}
                                                 onChange={this.onChange}
+                                            	disabled={!this.state.automatic_conf || this.state.automatic_type !== "Holistic"}
                                             />
                                             <Form.Check
                                                 type="radio"
@@ -99,6 +104,7 @@ class ExecutionView extends Component {
                                                 value="Grid Search"
                                                 checked={this.state.search_type === "Grid Search"}
                                                 onChange={this.onChange}
+                                            	disabled={!this.state.automatic_conf || this.state.automatic_type !== "Holistic"}
                                             />                                            
                                         </Col>
 
