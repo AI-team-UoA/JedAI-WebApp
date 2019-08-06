@@ -16,11 +16,16 @@ import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.BlocksPerformance;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 import gnu.trove.map.TObjectIntMap;
 import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
+import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 
 public class WorkflowManager {
 	
@@ -38,6 +43,7 @@ public class WorkflowManager {
 	
 	private static EquivalenceCluster[] entityClusters;
 	
+	private static EventPublisher eventPublisher;
 	
 
 	
@@ -56,9 +62,20 @@ public class WorkflowManager {
 		WorkflowManager.block_building = null;
 		WorkflowManager.block_cleaning = null;
 		
+		
+		
 	}
 	
 	
+	@Bean
+	EventPublisher publisherBean () {
+        return new EventPublisher();
+    }
+	
+	@Bean
+	SSE_Manager SSE_ManagerBean () {
+		return new SSE_Manager();
+	}
 	
 	
 	
@@ -66,22 +83,19 @@ public class WorkflowManager {
 		 
 		
 		
-		SseEmitter emitter = new SseEmitter();
-		SseEventBuilder event = SseEmitter.event()
-                 .data("SSE MVC - " + LocalTime.now().toString())
-                 .name("SSE");
-		emitter.send(event);
-		Thread.sleep(1000);
-		event = SseEmitter.event()
-                 .data("SSE MVC - " + LocalTime.now().toString())
-                 .name("SSE");
-		emitter.send(event);
+		
 		 
 		// TODO: if final_run write "Running schema clustering..."
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
+		eventPublisher = context.getBean(EventPublisher.class);
+		String message = "Running schema clustering...";
+		eventPublisher.publish(message);
 		
+		message = "Original blocks";
+		eventPublisher.publish(message);
 		
 		 
-		 TObjectIntMap<String>[] clusters = null;
+		/*TObjectIntMap<String>[] clusters = null;
         if (schema_clustering != null) {
             // Run schema clustering
             if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
@@ -182,7 +196,8 @@ public class WorkflowManager {
         //    clp.printStatistics(overheadEnd - overheadStart, entity_clustering.getMethodName(),
         //    		entity_clustering.getMethodConfiguration());
 
-        return clp;
+        return clp;*/
+		return null;
         
 	}
 	

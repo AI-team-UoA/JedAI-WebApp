@@ -19,8 +19,10 @@ class ExecutionView extends Component {
             export_filetype: ""    
         }
         
-        this.eventSource = new EventSource("http://localhost:8080/workflow",  {withCredentials: true}) 
-        this.eventSource.addEventListener('SSE', (e) => console.log("SSE cought", e));
+        this.eventSource = new EventSource("/workflow") 
+        this.eventSource.onmessage = (e) => console.log("SSE cought", e)
+        
+        console.log("Sent!")
 
     }
     
@@ -31,6 +33,7 @@ class ExecutionView extends Component {
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
     executeWorkFlow = (e) =>{
+    	 console.log("Sent!")
        axios.get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
     }
 

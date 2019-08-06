@@ -107,13 +107,13 @@ public class DataReadController {
 					break;
 					
 				case "3":
-					 WorkflowManager.ground_truth = entity_profile.read_GroundTruth(WorkflowManager.er_mode,
+					WorkflowManager.ground_truth = entity_profile.read_GroundTruth(WorkflowManager.er_mode,
 								WorkflowManager.profilesD1,
 								WorkflowManager.profilesD2);
 					 
-					//construct the dataset which will be displayed in explore
-					 this.duplicates = entity_profile.getDuplicates_GroundTruth();
-					 break;
+				    //construct the dataset which will be displayed in explore
+					this.duplicates = entity_profile.getDuplicates_GroundTruth();
+					break;
 				}
 				return source;
 			}
