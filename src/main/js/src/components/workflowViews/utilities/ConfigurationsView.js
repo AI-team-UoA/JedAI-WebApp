@@ -41,13 +41,13 @@ class ConfigurationsView extends Component {
                                         <thead>
                                             <tr>
                                                 <th style={{color:"#990000"}}>Method</th>
-                                                {data.parameters.map((parameter) => (<th style={{color:"#990000"}}>{parameter.label}</th>))}
+                                                {data.parameters.map((parameter, i) => (<th key={i} style={{color:"#990000"}}>{parameter.label}</th>))}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr> 
                                                 {data.label}
-                                               {data.parameters.map((parameter) => (<td>{parameter.value}</td>))} 
+                                                {data.parameters.map((parameter, i) => (<td key={i} >{parameter.value}</td>))} 
                                              </tr>
                                         </tbody>
                                     </Table>
@@ -106,13 +106,13 @@ class ConfigurationsView extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.map((method) => (
-                                        <tr> 
+                                    {data.map((method, i) => (
+                                        <tr key={i}> 
                                             <td>{method.label}</td>
                                             <td>{method.configuration_type}</td>
                                             <td>
-                                                {method.parameters.map((parameter) => (
-                                                    <Row>
+                                                {method.parameters.map((parameter, j) => (
+                                                    <Row key={j}>
                                                         <Col>
                                                             {parameter.label}
                                                         </Col>
@@ -145,9 +145,7 @@ class ConfigurationsView extends Component {
                             <Form.Control as="select" multiple>
                                 <option key="filetype">Source: {data.source}</option>
                                 {keys.map((key) => (
-                                    this.confLabels.has(key) ?
                                     <option key={key}>{this.confLabels.get(key) + ": " + data.conf[key]}</option>
-                                    : <div/>
                                 ))}
                             </Form.Control>
                         </Col>
