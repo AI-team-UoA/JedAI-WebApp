@@ -41,6 +41,8 @@ node_modules/
 # testing
 ./coverage
 
+image/
+
 # production
 ./build
 
