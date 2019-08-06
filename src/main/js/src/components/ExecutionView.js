@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Jumbotron, Tabs, Tab, Form, Row, Col, Button} from 'react-bootstrap';
+import {Jumbotron, Tabs, Tab, Form, Row, Col, Button, Spinner} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
 import {Link } from 'react-router-dom';
 import "../../../resources/static/css/main.css"
@@ -43,10 +43,14 @@ class ExecutionView extends Component {
         var speedometer_col = 2.5
 
         var execution_msg = this.state.workflow_message !== "" ? 
-        		<div>
-        			<h3 style={{marginLeft:'5%', marginRight:'20px', color:"#990000", display:'inline'}}>Executing:</h3> 
-        			<h4 style={{display:'inline'}}>{this.state.workflow_message}</h4>
-        		</div>
+        		
+        		<div >
+        			<Spinner  style={{color:"#0073e6"}} animation="grow" />
+	        		<div style={{marginLeft:"10px", display:"inline"}}>
+	        			<h3 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>Executing:</h3> 
+	        			<h4 style={{display:'inline'}}>{this.state.workflow_message}</h4>
+	        		</div>
+                </div>
         		: <div/>
 
         return (
@@ -169,6 +173,11 @@ class ExecutionView extends Component {
                                     </Form.Group>
                                     <br />
 
+                                    
+                                    {execution_msg}
+
+                                    <br/>
+
                                     <div style={{marginBottom: '20px'}}>
 	                                    <div style={{float:'left'}}>
 	                                        <Form.Group as={Row}  className="form-row">
@@ -207,9 +216,8 @@ class ExecutionView extends Component {
 	                                    </div>
 	                                 </div>
                                     
-                                     {execution_msg}
-                                    
-
+                                     
+                
                                     <br/>
                                 </Form>
                             </div>
