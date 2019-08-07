@@ -13,11 +13,11 @@ public class EventPublisher {
 	
 	
 
-    public void publish(final String message) {
+    public void publish(final String message, String name) {
     	
         System.out.println("Publishing custom event. MSG: " + message);
         
-        EventMessage event = new EventMessage(this, message);
+        EventMessage event = new EventMessage(this, message, name);
         applicationEventPublisher.publishEvent(event);
     }
 

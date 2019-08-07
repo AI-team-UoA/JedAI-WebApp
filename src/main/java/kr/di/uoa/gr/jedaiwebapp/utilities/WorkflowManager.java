@@ -63,19 +63,16 @@ public class WorkflowManager {
 	
 	public static ClustersPerformance runWorkflow(boolean final_run)  throws Exception {
 		 
-		
+		String execution_step="execution_step";
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
 		eventPublisher = context.getBean(EventPublisher.class);
-		
-		if(final_run) {
-			String message = "Schema Clustering";
-			eventPublisher.publish(message);
-		}
-		
 		 
 		TObjectIntMap<String>[] clusters = null;
         if (schema_clustering != null) {
             // Run schema clustering
+        	if(final_run) 
+    			eventPublisher.publish("Schema Clustering", execution_step);
+    		
             if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
                 clusters = schema_clustering.getClusters(profilesD1);
             } else {
@@ -88,10 +85,8 @@ public class WorkflowManager {
         double overheadEnd;
         BlocksPerformance blp;
 
-        if(final_run) {
-			String message = "Block Building";
-			eventPublisher.publish(message);
-		}
+        if(final_run) 
+			eventPublisher.publish("Block Building", execution_step);
         
         List<AbstractBlock> blocks = new ArrayList<>();
         for (IBlockBuilding bb : block_building) {
@@ -110,7 +105,7 @@ public class WorkflowManager {
                 double totalTime = overheadEnd - overheadStart;
 
                 //TODO: Print performance
-                //blp.printStatistics(totalTime, bb.getMethodConfiguration(), bb.getMethodName());
+                blp.printStatistics(totalTime, bb.getMethodConfiguration(), bb.getMethodName());
 
                 // Save the performance of block building
                 //TODO: Store the results in a Model 
@@ -120,13 +115,13 @@ public class WorkflowManager {
         
         //TODO: if final_run write "Original blocks\t:\t" + blocks.size() 
 
-        // Run Block Cleaning
-        if(final_run) {
-			String message = "Block Cleaning";
-			eventPublisher.publish(message);
-		}
+        
 
         if (block_cleaning != null && !block_cleaning.isEmpty()) {
+        	// Run Block Cleaning
+            if(final_run) 
+    			eventPublisher.publish("Block Cleaning", execution_step);
+            
             // Execute the methods
             for (IBlockProcessing currentMethod : block_cleaning) {
                 blocks = runBlockProcessing(ground_truth, final_run, blocks, currentMethod);
@@ -137,13 +132,12 @@ public class WorkflowManager {
             }
         }
 
-        // Run Comparison Cleaning
-        if(final_run) {
-			String message = "Comparison Cleaning";
-			eventPublisher.publish(message);
-		}
-        
+          
         if (comparison_cleaning != null) {
+        	// Run Comparison Cleaning     
+        	if(final_run) 
+    			eventPublisher.publish("Comparison Cleaning", execution_step);
+    		
             blocks = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
 
             if (blocks.isEmpty()) {
@@ -151,17 +145,15 @@ public class WorkflowManager {
             }
         }
 
-        // Run Entity Matching
-        if(final_run) {
-			String message = "Entity Matching";
-			eventPublisher.publish(message);
-		}
         
+        // Run Entity Matching
         SimilarityPairs simPairs;
-
         if (entity_matching == null)
             throw new Exception("Entity Matching method is null!");
-
+                
+        if(final_run) 
+			eventPublisher.publish("Entity Matching", execution_step);
+		
         if (er_mode.equals(JedaiOptions.DIRTY_ER)) 
             simPairs = entity_matching.executeComparisons(blocks, profilesD1);
         else 
@@ -169,10 +161,8 @@ public class WorkflowManager {
         
 
         // Run Entity Clustering
-        if(final_run) {
-			String message = "Entity Clustering";
-			eventPublisher.publish(message);
-		}
+        if(final_run) 
+			eventPublisher.publish("Entity Clustering", execution_step);
         
         overheadStart = System.currentTimeMillis();
 
@@ -183,11 +173,11 @@ public class WorkflowManager {
         ClustersPerformance clp = new ClustersPerformance(entityClusters, ground_truth);
         
         //TODO: Print statistics 
-        //
-        //clp.setStatistics();        
-        //if (final_run)
-        //    clp.printStatistics(overheadEnd - overheadStart, entity_clustering.getMethodName(),
-        //    		entity_clustering.getMethodConfiguration());
+        
+        clp.setStatistics();        
+        if (final_run)
+            clp.printStatistics(overheadEnd - overheadStart, entity_clustering.getMethodName(),
+            		entity_clustering.getMethodConfiguration());
 
         return clp;
         

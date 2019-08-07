@@ -18,7 +18,7 @@ class ExecutionView extends Component {
                 export_filetype: "",
                 automatic_conf: false,
 
-                workflow_message: ""
+                execution_step: ""
             }
         
         
@@ -27,7 +27,7 @@ class ExecutionView extends Component {
       
         
         this.eventSource = new EventSource("/workflow") 
-        this.eventSource.onmessage = (e) => this.setState({workflow_message: e.data})
+        this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
     }
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
@@ -42,13 +42,13 @@ class ExecutionView extends Component {
         var empty_col = 1
         var speedometer_col = 2.5
 
-        var execution_msg = this.state.workflow_message !== "" ? 
+        var execution_msg = this.state.execution_step !== "" ? 
         		
-        		<div >
+        		<div  style={{marginTop:"20px"}}>
         			<Spinner  style={{color:"#0073e6"}} animation="grow" />
 	        		<div style={{marginLeft:"10px", display:"inline"}}>
 	        			<h3 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>Executing:</h3> 
-	        			<h4 style={{display:'inline'}}>{this.state.workflow_message}</h4>
+	        			<h4 style={{display:'inline'}}>{this.state.execution_step}</h4>
 	        		</div>
                 </div>
         		: <div/>
