@@ -3,7 +3,9 @@ import {Jumbotron, Tabs, Tab, Form, Row, Col, Button, Spinner} from 'react-boots
 import ReactSpeedometer from "react-d3-speedometer"
 import {Link } from 'react-router-dom';
 import "../../../resources/static/css/main.css"
+import AlertModal from './workflowViews/utilities/AlertModal'
 import axios from 'axios';
+
 
 
 
@@ -19,8 +21,11 @@ class ExecutionView extends Component {
                 automatic_conf: false,
 
                 execution_step: "",
-                details_msg: ""
+                details_msg: "", 
+                alertShow: false
             }
+        
+        this.alertText = ""
         
         
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
@@ -30,11 +35,20 @@ class ExecutionView extends Component {
         this.eventSource = new EventSource("/workflow") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
         this.eventSource.addEventListener("workflow_details", (e) => {
-        	console.log(e)
         	var msg = this.state.details_msg + "\n" + e.data 
         	this.setState({details_msg: msg})
         })
+
+        this.eventSource.addEventListener("exception", (e) => {
+        	console.log(e)
+            this.alertText = e.data
+            this.handleAlerShow()
+            this.setState({execution_step: ""})
+        })
     }
+
+    handleAlertClose = () => this.setState({alertShow : false});
+    handleAlerShow = () => this.setState({alertShow : true});
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
@@ -60,188 +74,191 @@ class ExecutionView extends Component {
         		: <div/>
 
         return (
-            <Jumbotron  className='jumbotron_2'>
-                <div className="container-fluid">
-                    <br/>
-                    <div style={{marginBottom:"5px"}}> 
-                        <h1 style={{display:'inline', marginRight:"20px"}}>Workflow Execution</h1> 
-                        <span className="workflow-desc" >Press "Run algorithm" to run the algorithm. You can export the results to a CSV file with the "Export CSV" button.</span>
-                    </div>
+            <div>
+                <AlertModal title="Exception" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
+                <Jumbotron  className='jumbotron_2'>
+                    <div className="container-fluid">
+                        <br/>
+                        <div style={{marginBottom:"5px"}}> 
+                            <h1 style={{display:'inline', marginRight:"20px"}}>Workflow Execution</h1> 
+                            <span className="workflow-desc" >Press "Run algorithm" to run the algorithm. You can export the results to a CSV file with the "Export CSV" button.</span>
+                        </div>
 
-                    <br/>
-                    <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
-                    <br/>
+                        <br/>
+                        <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                        <br/>
 
-                    
-                    <Tabs defaultActiveKey="result" className="Jumbotron_Tabs">
-                        <Tab eventKey="result" title="Results" className="Jumbotron_Tab">
-                            <div className="Tab_container">
-                                <br/>
-                                <Form>
-                                    <Form.Group as={Row}  className="form-row" >
-                                        <Col  sm={radio_col}>
-                                            <Form.Label as="legend"><h5>Automatic Configuration Type</h5> </Form.Label>
-                                            <Form.Check
-                                                type="radio"
-                                                label="Holistic"
-                                                name="automatic_type"
-                                                value="Holistic"
-                                                checked={this.state.automatic_type === "Holistic"}
-                                                onChange={this.onChange}
-                                            	disabled={!this.state.automatic_conf}
-                                            />
-                                            <Form.Check
-                                                type="radio"
-                                                label="Step-by-step"
-                                                name="automatic_type"
-                                                value="Step-by-step"
-                                                checked={this.state.automatic_type === "Step-by-step"}
-                                                onChange={this.onChange}
-                                            	disabled={!this.state.automatic_conf}
-                                            />
-                                            <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
-                                            <Form.Label as="legend"><h5>Search Type</h5> </Form.Label>
-                                            <Form.Check
-                                                type="radio"
-                                                label="Random Search"
-                                                name="search_type"
-                                                value="Random Search"
-                                                checked={this.state.search_type === "Random Search"}
-                                                onChange={this.onChange}
-                                            	disabled={!this.state.automatic_conf || this.state.automatic_type !== "Holistic"}
-                                            />
-                                            <Form.Check
-                                                type="radio"
-                                                label="Grid Search"
-                                                name="search_type"
-                                                value="Grid Search"
-                                                checked={this.state.search_type === "Grid Search"}
-                                                onChange={this.onChange}
-                                            	disabled={!this.state.automatic_conf || this.state.automatic_type !== "Holistic"}
-                                            />                                            
-                                        </Col>
-
-                                        <Col  sm={empty_col} />
-
-                                        <Col  sm={speedometer_col}>
-                                            <div className="caption_item">
-                                            <span className="caption">Recall</span>
-                                                <ReactSpeedometer  
-                                                    value={50} 
-                                                    maxValue={100} 
-                                                    segments={5} 
-                                                    segmentColors={[
-                                                        "#ffad33",
-                                                        "#ffad33",
-                                                        "#a3be8c",
-                                                        "#a3be8c",
-                                                        "#61d161"
-                                                    ]}
-                                                />
-                                            </div>
-                                        </Col>
-                                        
-                                        <Col  sm={speedometer_col}>
-                                            <div className="caption_item">
-                                            <span className="caption">Precision</span>
-                                                <ReactSpeedometer  
-                                                    value={50} 
-                                                    maxValue={100} 
-                                                    segments={5} 
-                                                    segmentColors={[
-                                                        "#ffad33",
-                                                        "#ffad33",
-                                                        "#a3be8c",
-                                                        "#a3be8c",
-                                                        "#61d161"
-                                                    ]}
-                                                />
-                                            </div>
-                                        </Col>
-
-                                        <Col  sm={speedometer_col}>
-                                            <div className="caption_item">
-                                            <span className="caption">F1-measure</span>
-                                                <ReactSpeedometer  
-                                                    value={50} 
-                                                    maxValue={100} 
-                                                    segments={5} 
-                                                    segmentColors={[
-                                                        "#ffad33",
-                                                        "#ffad33",
-                                                        "#a3be8c",
-                                                        "#a3be8c",
-                                                        "#61d161"
-                                                    ]}
-                                                />
-                                            </div>
-                                        </Col>
-                                    </Form.Group>                
+                        
+                        <Tabs defaultActiveKey="result" className="Jumbotron_Tabs">
+                            <Tab eventKey="result" title="Results" className="Jumbotron_Tab">
+                                <div className="Tab_container">
                                     <br/>
-                                </Form>
+                                    <Form>
+                                        <Form.Group as={Row}  className="form-row" >
+                                            <Col  sm={radio_col}>
+                                                <Form.Label as="legend"><h5>Automatic Configuration Type</h5> </Form.Label>
+                                                <Form.Check
+                                                    type="radio"
+                                                    label="Holistic"
+                                                    name="automatic_type"
+                                                    value="Holistic"
+                                                    checked={this.state.automatic_type === "Holistic"}
+                                                    onChange={this.onChange}
+                                                    disabled={!this.state.automatic_conf}
+                                                />
+                                                <Form.Check
+                                                    type="radio"
+                                                    label="Step-by-step"
+                                                    name="automatic_type"
+                                                    value="Step-by-step"
+                                                    checked={this.state.automatic_type === "Step-by-step"}
+                                                    onChange={this.onChange}
+                                                    disabled={!this.state.automatic_conf}
+                                                />
+                                                <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                                                <Form.Label as="legend"><h5>Search Type</h5> </Form.Label>
+                                                <Form.Check
+                                                    type="radio"
+                                                    label="Random Search"
+                                                    name="search_type"
+                                                    value="Random Search"
+                                                    checked={this.state.search_type === "Random Search"}
+                                                    onChange={this.onChange}
+                                                    disabled={!this.state.automatic_conf || this.state.automatic_type === "Holistic"}
+                                                />
+                                                <Form.Check
+                                                    type="radio"
+                                                    label="Grid Search"
+                                                    name="search_type"
+                                                    value="Grid Search"
+                                                    checked={this.state.search_type === "Grid Search"}
+                                                    onChange={this.onChange}
+                                                    disabled={!this.state.automatic_conf || this.state.automatic_type === "Holistic"}
+                                                />                                            
+                                            </Col>
+
+                                            <Col  sm={empty_col} />
+
+                                            <Col  sm={speedometer_col}>
+                                                <div className="caption_item">
+                                                <span className="caption">Recall</span>
+                                                    <ReactSpeedometer  
+                                                        value={50} 
+                                                        maxValue={100} 
+                                                        segments={5} 
+                                                        segmentColors={[
+                                                            "#ffad33",
+                                                            "#ffad33",
+                                                            "#a3be8c",
+                                                            "#a3be8c",
+                                                            "#61d161"
+                                                        ]}
+                                                    />
+                                                </div>
+                                            </Col>
+                                            
+                                            <Col  sm={speedometer_col}>
+                                                <div className="caption_item">
+                                                <span className="caption">Precision</span>
+                                                    <ReactSpeedometer  
+                                                        value={50} 
+                                                        maxValue={100} 
+                                                        segments={5} 
+                                                        segmentColors={[
+                                                            "#ffad33",
+                                                            "#ffad33",
+                                                            "#a3be8c",
+                                                            "#a3be8c",
+                                                            "#61d161"
+                                                        ]}
+                                                    />
+                                                </div>
+                                            </Col>
+
+                                            <Col  sm={speedometer_col}>
+                                                <div className="caption_item">
+                                                <span className="caption">F1-measure</span>
+                                                    <ReactSpeedometer  
+                                                        value={50} 
+                                                        maxValue={100} 
+                                                        segments={5} 
+                                                        segmentColors={[
+                                                            "#ffad33",
+                                                            "#ffad33",
+                                                            "#a3be8c",
+                                                            "#a3be8c",
+                                                            "#61d161"
+                                                        ]}
+                                                    />
+                                                </div>
+                                            </Col>
+                                        </Form.Group>                
+                                        <br/>
+                                    </Form>
+                                </div>
+                            </Tab>
+                            <Tab eventKey="details" title="Details" className="Jumbotron_Tab">
+                                <br/>
+                                <h1>Details</h1>
+                                
+                                <Form.Group>
+                                    <Form.Control as="textarea" rows="20" readOnly={true} value={this.state.details_msg}/>
+                                </Form.Group>
+                            </Tab>
+                            <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
+                                <br/>
+                                <h1>Workbench</h1>
+                            </Tab>
+                        </Tabs>
+
+
+                        {execution_msg}
+
+                        <br/>
+
+                        <div style={{marginBottom: '20px', paddingBottom:'20px'}}>
+                            <div style={{float:'left'}}>
+                                <Form.Group as={Row}  className="form-row">
+                                    <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
+                                    <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Explore</Button>
+                                    <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
+                                </Form.Group>
+                                <Form.Group as={Row}  className="form-row">
+                                    <Form.Control
+                                        style={{width:"260px", marginRight:"10px"}} 
+                                        as="select" 
+                                        placeholder="Select Filetype" 
+                                        name="export_filetype" 
+                                        onChange={this.onChange}
+                                        disabled={false}
+                                        value={this.state.export_filetype}
+                                    >
+                                        <option value="" ></option>
+                                        <option value="CSV" >CSV</option>
+                                        <option value="RDF" >RDF</option>
+                                        <option value="XML" >XML</option>
+                                    </Form.Control>   
+                                    <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""}>Export</Button>
+                                </Form.Group>
                             </div>
-                        </Tab>
-                        <Tab eventKey="details" title="Details" className="Jumbotron_Tab">
-                            <br/>
-                            <h1>Details</h1>
                             
-                            <Form.Group>
-                            	<Form.Control as="textarea" rows="20" readOnly={true} value={this.state.details_msg}/>
-                            </Form.Group>
-                        </Tab>
-                        <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
-                            <br/>
-                            <h1>Workbench</h1>
-                        </Tab>
-                    </Tabs>
-
-
-                    {execution_msg}
-
-                    <br/>
-
-                    <div style={{marginBottom: '20px', paddingBottom:'20px'}}>
-                        <div style={{float:'left'}}>
-                            <Form.Group as={Row}  className="form-row">
-                                <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
-                                <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Explore</Button>
-                                <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
-                            </Form.Group>
-                            <Form.Group as={Row}  className="form-row">
-                                <Form.Control
-                                    style={{width:"260px", marginRight:"10px"}} 
-                                    as="select" 
-                                    placeholder="Select Filetype" 
-                                    name="export_filetype" 
-                                    onChange={this.onChange}
-                                    disabled={false}
-                                    value={this.state.export_filetype}
-                                >
-                                    <option value="" ></option>
-                                    <option value="CSV" >CSV</option>
-                                    <option value="RDF" >RDF</option>
-                                    <option value="XML" >XML</option>
-                                </Form.Control>   
-                                <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""}>Export</Button>
-                            </Form.Group>
+                            
+                            
+                            <div style={{float: 'right'}}>                                    	
+                                <Form.Group as={Row}   className="form-row">
+                                    <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Back</Button>
+                                    <Link to="/">
+                                        <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Start Over</Button>
+                                    </Link>
+                                </Form.Group>
+                            </div>
                         </div>
+                        <br/>
+
                         
-                        
-                        
-                        <div style={{float: 'right'}}>                                    	
-                            <Form.Group as={Row}   className="form-row">
-                                <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Back</Button>
-                                <Link to="/">
-                                    <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Start Over</Button>
-                                </Link>
-                            </Form.Group>
-                        </div>
                     </div>
-                    <br/>
-
-                    
-                </div>
-            </Jumbotron>
+                </Jumbotron>
+            </div>
         )
     }
 }
