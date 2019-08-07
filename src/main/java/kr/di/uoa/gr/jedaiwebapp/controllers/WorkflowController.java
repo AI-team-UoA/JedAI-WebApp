@@ -348,7 +348,7 @@ public class WorkflowController {
 				}
 				else {
 					 // Step-by-step automatic configuration. Set random or grid depending on the selected search type.
-	                return WorkflowManager.runStepByStepWorkflow(search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH));
+	                return WorkflowManager.runStepByStepWorkflow(methodsConfig, search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH));
 				}
 				
 			}
