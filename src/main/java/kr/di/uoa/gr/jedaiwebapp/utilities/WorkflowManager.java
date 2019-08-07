@@ -332,7 +332,7 @@ public class WorkflowManager {
 	        			entity_clustering.getMethodName(), 
 	        			entity_clustering.getMethodConfiguration());
 	
-	        
+	        eventPublisher.publish("", event_name);
 	        return clp;
 		}
         catch(Exception e) {
@@ -668,6 +668,7 @@ public class WorkflowManager {
 	    			entity_clustering.getMethodName(), 
 	    			entity_clustering.getMethodConfiguration());
 		    
+		    eventPublisher.publish("", event_name);
 		    return clp;
 		}
 		
