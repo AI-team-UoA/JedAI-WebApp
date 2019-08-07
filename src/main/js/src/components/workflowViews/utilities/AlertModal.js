@@ -10,7 +10,7 @@ class AlertModal extends Component{
             
                 <Modal show={this.props.show} onHide={this.props.handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Wrong Input</Modal.Title>
+                        <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>{this.props.text}</Modal.Body>
                     <Modal.Footer>
@@ -28,6 +28,7 @@ class AlertModal extends Component{
 AlertModal.propTypes = {
     show: PropTypes.bool.isRequired,
     text: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     handleClose: PropTypes.func.isRequired
 }
 

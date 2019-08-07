@@ -612,7 +612,7 @@ class BlockBuilding extends Component {
         
         return (
             <div>
-                <AlertModal text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
+                <AlertModal title="Wrong Input" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 <br/>
                 <div style={{marginBottom:"5px"}}> 
                     <h1 style={{display:'inline', marginRight:"20px"}}>Block Building</h1> 

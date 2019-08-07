@@ -99,7 +99,7 @@ import axios from 'axios'
         return ( 
             
             <div >
-                <AlertModal text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
+                <AlertModal title="Wrong Input" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 <div className="workflow-container">
                     <br/>
                     <div style={{marginBottom:"5px"}}> 
