@@ -170,54 +170,7 @@ class ExecutionView extends Component {
                                                 />
                                             </div>
                                         </Col>
-                                    </Form.Group>
-                                    <br />
-
-                                    
-                                    {execution_msg}
-
-                                    <br/>
-
-                                    <div style={{marginBottom: '20px'}}>
-	                                    <div style={{float:'left'}}>
-	                                        <Form.Group as={Row}  className="form-row">
-	                                            <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
-	                                            <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Explore</Button>
-	                                            <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
-	                                        </Form.Group>
-	                                        <Form.Group as={Row}  className="form-row">
-	                                            <Form.Control
-	                                                style={{width:"260px", marginRight:"10px"}} 
-	                                                as="select" 
-	                                                placeholder="Select Filetype" 
-	                                                name="export_filetype" 
-	                                                onChange={this.onChange}
-	                                                disabled={false}
-	                                                value={this.state.export_filetype}
-	                                            >
-	                                                <option value="" ></option>
-	                                                <option value="CSV" >CSV</option>
-	                                                <option value="RDF" >RDF</option>
-	                                                <option value="XML" >XML</option>
-	                                            </Form.Control>   
-	                                            <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""}>Export</Button>
-	                                        </Form.Group>
-	                                    </div>
-	                                  
-                                        
-	                                    
-	                                    <div style={{float: 'right'}}>                                    	
-	                                    	<Form.Group as={Row}   className="form-row">
-			                                    <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Back</Button>
-			                                    <Link to="/">
-			                                    	<Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Start Over</Button>
-			                                    </Link>
-			                                </Form.Group>
-	                                    </div>
-	                                 </div>
-                                    
-                                     
-                
+                                    </Form.Group>                
                                     <br/>
                                 </Form>
                             </div>
@@ -231,14 +184,57 @@ class ExecutionView extends Component {
                             <h1>Workbench</h1>
                         </Tab>
                     </Tabs>
+
+
+                    {execution_msg}
+
+                    <br/>
+
+                    <div style={{marginBottom: '20px', paddingBottom:'20px'}}>
+                        <div style={{float:'left'}}>
+                            <Form.Group as={Row}  className="form-row">
+                                <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
+                                <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Explore</Button>
+                                <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
+                            </Form.Group>
+                            <Form.Group as={Row}  className="form-row">
+                                <Form.Control
+                                    style={{width:"260px", marginRight:"10px"}} 
+                                    as="select" 
+                                    placeholder="Select Filetype" 
+                                    name="export_filetype" 
+                                    onChange={this.onChange}
+                                    disabled={false}
+                                    value={this.state.export_filetype}
+                                >
+                                    <option value="" ></option>
+                                    <option value="CSV" >CSV</option>
+                                    <option value="RDF" >RDF</option>
+                                    <option value="XML" >XML</option>
+                                </Form.Control>   
+                                <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""}>Export</Button>
+                            </Form.Group>
+                        </div>
+                        
+                        
+                        
+                        <div style={{float: 'right'}}>                                    	
+                            <Form.Group as={Row}   className="form-row">
+                                <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Back</Button>
+                                <Link to="/">
+                                    <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Start Over</Button>
+                                </Link>
+                            </Form.Group>
+                        </div>
+                    </div>
+                    <br/>
+
                     
                 </div>
             </Jumbotron>
         )
     }
 }
-
-
 
 
 export default ExecutionView 
