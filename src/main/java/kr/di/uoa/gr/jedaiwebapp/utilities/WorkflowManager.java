@@ -210,7 +210,7 @@ public class WorkflowManager {
 				eventPublisher.publish("Processing Automatic Configurations", event_name);
 			
 			// Print profile entities statistics
-			if(!final_run) {
+			if(final_run) {
 				if(er_mode.equals(JedaiOptions.DIRTY_ER))
 					details_manager.print_Sentence("Input Entity Profiles", profilesD1.size());
 				else {
