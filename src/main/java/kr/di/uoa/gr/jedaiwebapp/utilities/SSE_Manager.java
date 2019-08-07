@@ -8,6 +8,10 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEvent
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventMessage;
 
 
+/**
+ * Send SSE to the front-end
+ * */
+
 @Component
 public  class SSE_Manager implements ApplicationListener<EventMessage>{
 	private static SseEmitter emitter = null ;
@@ -15,7 +19,10 @@ public  class SSE_Manager implements ApplicationListener<EventMessage>{
 	 
 	public void setEmitter(SseEmitter emitter) { SSE_Manager.emitter = emitter;	}
 	
-
+	/**
+	 * Listen to an emitted event and send the SSE to the front-end
+	 * @param event the emitted event containing the SSE name and the message
+	 * */
 	@Override
 	public void onApplicationEvent(EventMessage event) {
 	    try {

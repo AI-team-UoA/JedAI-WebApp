@@ -65,7 +65,7 @@ public class WorkflowController {
 	/**
      * Handle GET request and set the Entity Resolution mode
      *
-     * @er_mode the selected er mode
+     * @param er_mode the selected er mode
      * @return whether it was set successfully 
      */	
 	@GetMapping("/workflow/set_configurations/ermode/{er_mode}")	
@@ -84,7 +84,7 @@ public class WorkflowController {
 	/**
      * Handle POST request and set the schema clustering method
      *
-     * @schema_clustering the method and its configurations that the user has selected
+     * @param schema_clustering the method and its configurations that the user has selected
      * @return whether it was set successfully 
      */	
 	@PostMapping("/workflow/set_configurations/schemaclustering")	
@@ -117,7 +117,7 @@ public class WorkflowController {
 	/**
      * Handle POST request and set the comparison cleaning method
      *
-     * @comparison_cleaning the method and its configurations that the user has selected
+     * @param comparison_cleaning the method and its configurations that the user has selected
      * @return whether it was set successfully 
      */	
 	@PostMapping("/workflow/set_configurations/comparisoncleaning")	
@@ -153,7 +153,7 @@ public class WorkflowController {
 	/**
      * Handle POST request and set the entity mathcing method
      *
-     * @entity_matching the method and its configurations that the user has selected
+     * @param entity_matching the method and its configurations that the user has selected
      * @return whether it was set successfully 
      */	
 	@PostMapping("/workflow/set_configurations/entitymatching")	
@@ -187,7 +187,7 @@ public class WorkflowController {
 	/**
      * Handle POST request and set the entity clustering method
      *
-     * @entity_clustering the method and its configurations that the user has selected
+     * @param entity_clustering the method and its configurations that the user has selected
      * @return whether it was set successfully 
     */	
 	@PostMapping("/workflow/set_configurations/entityclustering")	
@@ -217,7 +217,7 @@ public class WorkflowController {
 	/**
      * Handle POST request and set the Block Building methods
      *
-     * @block_building a list of methods and their configurations, selected by the user
+     * @param block_building a list of methods and their configurations, selected by the user
      * @return whether it was set successfully 
     */	
 	@PostMapping("/set_configurations/blockbuilding")	
@@ -255,7 +255,7 @@ public class WorkflowController {
 	/**
      * Handle POST request and set the Block Cleaning methods
      *
-     * @block_cleaning a list of methods and their configurations, selected by the user
+     * @param block_cleaning a list of methods and their configurations, selected by the user
      * @return whether it was set successfully 
      */	
 	@PostMapping("/set_configurations/blockcleaning")	
@@ -296,8 +296,8 @@ public class WorkflowController {
      * Firstly set the parameters if the configuration type of any method is automatic. 
      * Then execute the Work Flow.
      *
-     * @automatic_type Holistic or Step-by-step
-     * @search_type 
+     * @param automatic_type Holistic or Step-by-step
+     * @param search_type 
      * @return  
      */		
 	@GetMapping("/workflow/execution/automatic_type/{automatic_type}/search_type/{search_type}")	

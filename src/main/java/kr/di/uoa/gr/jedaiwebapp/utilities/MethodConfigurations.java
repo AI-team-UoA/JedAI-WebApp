@@ -63,6 +63,7 @@ public class MethodConfigurations {
     /**
      * Return a Schema Clustering method according to the input method name 
      *
+     * @param methodName the name of the method
      * @return Schema Clustering method
      */
 	public static ISchemaClustering getSchemaClusteringMethodByName(String methodName) {
@@ -92,6 +93,7 @@ public class MethodConfigurations {
 	/**
      * Return an Entity Clustering method according to the input method name 
      *
+     * @param methodName the name of the method
      * @return Entity Clustering method
      */
 	public static IEntityClustering getEntityClusteringMethod(String methodName) {
@@ -133,6 +135,7 @@ public class MethodConfigurations {
 	/**
      * Return a method according to the input method name 
      *
+     * @param method the name of the method
      * @return Block Processing method
      */	
 	public static IBlockProcessing getMethodByName(String method) {

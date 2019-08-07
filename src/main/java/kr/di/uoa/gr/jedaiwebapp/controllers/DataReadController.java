@@ -60,8 +60,8 @@ public class DataReadController {
 	 * Set the dataset of the workflow and initialize the list which will be displayed in explore.
 	 * The input file will be uploaded and stored in the server.
 	 * 
-	 * @file the selected file
-	 * @configurations informations regarding the input dataset
+	 * @param file the selected file
+	 * @param configurations informations regarding the input dataset
 	 * @return the path in the server of the uploaded file
 	 * */
 	@PostMapping	
@@ -130,7 +130,7 @@ public class DataReadController {
 	/**
 	 * Calculate the number of pages
 	 * 
-	 *  @entity_id the id of the examined entityProfile
+	 *  @param entity_id the id of the examined entityProfile
 	 *  @return the maximum number of pages
 	 */
 	@GetMapping("/desktopmode/dataread/{entity_id}/explore")
@@ -153,7 +153,7 @@ public class DataReadController {
 	 * Calculate and return the entities which will be displayed in the
 	 * requested page
 	 * 
-	 * @page the examined page
+	 * @param page the examined page
 	 * @return the entities which will be displayed
 	 **/
 	@GetMapping("/desktopmode/dataread/{entity_id}/explore/{page}")
@@ -182,7 +182,7 @@ public class DataReadController {
 		
 	/**
 	 * Upload the input file in the server
-	 * @file the input file
+	 * @param file the input file
 	 * @return the path
 	 **/
 	public String UploadFile(MultipartFile file) {

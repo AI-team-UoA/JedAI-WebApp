@@ -9,26 +9,52 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 
+
+/**
+ * Send messages containing the Performance of the workflow steps
+ * The messages will be displayed in the details tab of the front-end
+ * */
 public class WorkflowDetailsManager {
 	private static EventPublisher eventPublisher;
 	String event_name="workflow_details";
 	
+	
+	/**
+	 * Constructor
+	 * */
 	public WorkflowDetailsManager() {
 		
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
 		eventPublisher = context.getBean(EventPublisher.class);
 	}
 	
+	
+	/**
+	 * Publish the event via the publisher
+	 * @param message 
+	 * */
 	private void emit(String message) {eventPublisher.publish(message, this.event_name);	}
 	
 	
-	public void print_Sentence(String entityProfile, int size) {
-		String message = entityProfile + " :  " + size;
+	/**
+	 * Create a message 
+	 * @param text the message
+	 * @param value the corresponding value
+	 * */
+	public void print_Sentence(String text, int value) {
+		String message = text + " :  " + value;
 		this.emit(message);
 	}
 	
 	
 	
+	/**
+	 * Create a message containing the performance of the block building process
+	 * @param blp the block building performance object
+	 * @param totalTime duration time
+	 * @param methodConfiguration the method's configurations
+	 * @param methodName the method's name
+	 * */
 	public void print_BlockBuildingPerformance(BlocksPerformance blp, double totalTime, String methodConfiguration, String methodName) {
 		
 		
@@ -48,6 +74,13 @@ public class WorkflowDetailsManager {
 	}
 	
 	
+	/**
+	 * Create a message containing the performance of the clusters
+	 * @param clp the clusters performace object
+	 * @param totalTime duration time
+	 * @param methodConfiguration the method's configurations
+	 * @param methodName the method's name
+	 * */
 	public void print_ClustersPerformance(ClustersPerformance clp, double totalTime, String methodConfiguration, String methodName) {
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

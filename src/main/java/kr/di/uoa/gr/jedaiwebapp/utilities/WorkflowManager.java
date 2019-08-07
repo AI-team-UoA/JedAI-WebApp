@@ -55,7 +55,12 @@ public class WorkflowManager {
 	}
 	
 	
-	
+	/**
+	 * Run a workflow with the given methods and return its ClustersPerformance
+	 *
+	 * @param final_run true if this is the final run
+	 * @return  the Cluster Performance
+	 * */
 	public static ClustersPerformance runWorkflow(boolean final_run)  throws Exception {
 		 
 		String event_name="execution_step";
@@ -72,9 +77,10 @@ public class WorkflowManager {
 		}
 		details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
 		 
+		
+		// Run Schema Clustering
 		TObjectIntMap<String>[] clusters = null;
         if (schema_clustering != null) {
-            // Run schema clustering
         	if(final_run) 
     			eventPublisher.publish("Schema Clustering", event_name);
     		
@@ -85,7 +91,8 @@ public class WorkflowManager {
             }
         }
         
-        // Initialize a few variables
+        
+        // run Block Building
         double overheadStart;
         double overheadEnd;
         BlocksPerformance blp;
@@ -123,9 +130,8 @@ public class WorkflowManager {
         	details_manager.print_Sentence("Original blocks\t:\t", blocks.size()); 
 
         
-
+        // Run Block Cleaning
         if (block_cleaning != null && !block_cleaning.isEmpty()) {
-        	// Run Block Cleaning
             if(final_run) 
     			eventPublisher.publish("Block Cleaning", event_name);
             
@@ -139,9 +145,8 @@ public class WorkflowManager {
             }
         }
 
-          
+        // Run Comparison Cleaning     
         if (comparison_cleaning != null) {
-        	// Run Comparison Cleaning     
         	if(final_run) 
     			eventPublisher.publish("Comparison Cleaning", event_name);
     		
@@ -178,9 +183,6 @@ public class WorkflowManager {
         // Print clustering performance
         overheadEnd = System.currentTimeMillis();
         ClustersPerformance clp = new ClustersPerformance(entityClusters, ground_truth);
-        
-        
-        
         clp.setStatistics();        
         if (final_run)
         	details_manager.print_ClustersPerformance(clp, 
@@ -188,6 +190,7 @@ public class WorkflowManager {
         			entity_clustering.getMethodName(), 
         			entity_clustering.getMethodConfiguration());
 
+        
         return clp;
         
 	}
@@ -195,7 +198,12 @@ public class WorkflowManager {
 	
 	
 	
-	
+	/**
+     * Run a step by step workflow, using random or grid search based on the given parameter.
+     *
+     * @param random      If true, will use random search. Otherwise, grid.
+     * @return ClustersPerformance of the workflow result
+     */
 	public static ClustersPerformance runStepByStepWorkflow(boolean random) throws Exception{
 		return null;
 	}
@@ -265,6 +273,7 @@ public class WorkflowManager {
                 blp = new BlocksPerformance(blocks, duProp);
                 blp.setStatistics();
                 details_manager.print_BlockBuildingPerformance(blp, overheadEnd - overheadStart, currentMethod.getMethodConfiguration(),  currentMethod.getMethodName());
+                
                 // Save the performance of block processing
                 //TODO: this.addBlocksPerformance(currentMethod.getMethodName(), totalTime, blp);
             }

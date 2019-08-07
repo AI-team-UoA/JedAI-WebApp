@@ -5,6 +5,12 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * Publish an event. The event will be received by the SSE Manager
+ * which is the listener
+ * */
+
 @Component
 public class EventPublisher {
 	
@@ -12,7 +18,11 @@ public class EventPublisher {
     private ApplicationEventPublisher applicationEventPublisher;
 	
 	
-
+	/**
+	 * Publish an event. 
+	 * @param message 
+	 * @param name the name of the SSE 
+	 * */
     public void publish(final String message, String name) {
     	
         System.out.println("Publishing custom event. MSG: " + message);
