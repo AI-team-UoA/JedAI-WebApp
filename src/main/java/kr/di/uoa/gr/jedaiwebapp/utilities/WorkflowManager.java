@@ -199,137 +199,148 @@ public class WorkflowManager {
 	 * @param final_run true if this is the final run
 	 * @return  the Cluster Performance
 	 * */
-	public static ClustersPerformance runWorkflow(boolean final_run)  throws Exception {
-		 
-		String event_name="execution_step";
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
-		eventPublisher = context.getBean(EventPublisher.class);
-		details_manager = new WorkflowDetailsManager();
-		
-		// Print profile entities statistics
-		if(er_mode.equals(JedaiOptions.DIRTY_ER))
-			details_manager.print_Sentence("Input Entity Profiles", profilesD1.size());
-		else {
-			details_manager.print_Sentence("Input Entity Profiles 1", profilesD1.size());
-			details_manager.print_Sentence("Input Entity Profiles 2", profilesD2.size());
+	public static ClustersPerformance runWorkflow(boolean final_run)  {
+		try {
+			String event_name="execution_step";
+			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
+			eventPublisher = context.getBean(EventPublisher.class);
+			details_manager = new WorkflowDetailsManager();
+			
+			if(!final_run)
+				eventPublisher.publish("Processing Automatic Configurations", event_name);
+			
+			// Print profile entities statistics
+			if(!final_run) {
+				if(er_mode.equals(JedaiOptions.DIRTY_ER))
+					details_manager.print_Sentence("Input Entity Profiles", profilesD1.size());
+				else {
+					details_manager.print_Sentence("Input Entity Profiles 1", profilesD1.size());
+					details_manager.print_Sentence("Input Entity Profiles 2", profilesD2.size());
+				}
+				details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
+			}
+			
+			// Run Schema Clustering
+			TObjectIntMap<String>[] clusters = null;
+	        if (schema_clustering != null) {
+	        	if(final_run) 
+	    			eventPublisher.publish("Schema Clustering", event_name);
+	    		
+	            if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
+	                clusters = schema_clustering.getClusters(profilesD1);
+	            } else {
+	                clusters = schema_clustering.getClusters(profilesD1, profilesD2);
+	            }
+	        }
+	        
+	        
+	        // run Block Building
+	        double overheadStart;
+	        double overheadEnd;
+	        BlocksPerformance blp;
+	
+	        if(final_run) 
+				eventPublisher.publish("Block Building", event_name);
+	        
+	        List<AbstractBlock> blocks = new ArrayList<>();
+	        for (IBlockBuilding bb : block_building) {
+	            // Start time measurement
+	            overheadStart = System.currentTimeMillis();
+	
+	            // Run the method
+	            blocks.addAll(runBlockBuilding(er_mode, clusters, profilesD1, profilesD2, bb));
+	
+	            // Get blocks performance to print
+	            overheadEnd = System.currentTimeMillis();
+	            blp = new BlocksPerformance(blocks, ground_truth);
+	            blp.setStatistics();
+	            
+	            if (final_run) {
+	                // print block Building performance
+	                details_manager.print_BlockBuildingPerformance(blp, 
+	                		overheadEnd - overheadStart, 
+	                		bb.getMethodConfiguration(), 
+	                		bb.getMethodName());
+	                
+	                // Save the performance of block building
+	                //TODO: Store the results in a Model 
+	                //this.addBlocksPerformance(bb.getMethodName(), totalTime, blp);
+	            }
+	        }
+	        
+	        if(final_run)
+	        	details_manager.print_Sentence("Original blocks\t:\t", blocks.size()); 
+	
+	        
+	        // Run Block Cleaning
+	        if (block_cleaning != null && !block_cleaning.isEmpty()) {
+	            if(final_run) 
+	    			eventPublisher.publish("Block Cleaning", event_name);
+	            
+	            // Execute the methods
+	            for (IBlockProcessing currentMethod : block_cleaning) {
+	                blocks = runBlockProcessing(ground_truth, final_run, blocks, currentMethod);
+	
+	                if (blocks.isEmpty()) {
+	                    return null;
+	                }
+	            }
+	        }
+	
+	        // Run Comparison Cleaning     
+	        if (comparison_cleaning != null) {
+	        	if(final_run) 
+	    			eventPublisher.publish("Comparison Cleaning", event_name);
+	    		
+	            blocks = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
+	
+	            if (blocks.isEmpty()) {
+	                return null;
+	            }
+	        }
+	
+	        
+	        // Run Entity Matching
+	        SimilarityPairs simPairs;
+	        if (entity_matching == null)
+	            throw new Exception("Entity Matching method is null!");
+	                
+	        if(final_run) 
+				eventPublisher.publish("Entity Matching", event_name);
+			
+	        if (er_mode.equals(JedaiOptions.DIRTY_ER)) 
+	            simPairs = entity_matching.executeComparisons(blocks, profilesD1);
+	        else 
+	            simPairs = entity_matching.executeComparisons(blocks, profilesD1, profilesD2);
+	        
+	
+	        // Run Entity Clustering
+	        if(final_run) 
+				eventPublisher.publish("Entity Clustering", event_name);
+	        
+	        overheadStart = System.currentTimeMillis();
+	
+	        entityClusters = entity_clustering.getDuplicates(simPairs);
+	
+	        // Print clustering performance
+	        overheadEnd = System.currentTimeMillis();
+	        ClustersPerformance clp = new ClustersPerformance(entityClusters, ground_truth);
+	        clp.setStatistics();        
+	        if (final_run)
+	        	details_manager.print_ClustersPerformance(clp, 
+	        			overheadEnd - overheadStart, 
+	        			entity_clustering.getMethodName(), 
+	        			entity_clustering.getMethodConfiguration());
+	
+	        
+	        return clp;
 		}
-		details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
-		 
-		
-		// Run Schema Clustering
-		TObjectIntMap<String>[] clusters = null;
-        if (schema_clustering != null) {
-        	if(final_run) 
-    			eventPublisher.publish("Schema Clustering", event_name);
-    		
-            if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
-                clusters = schema_clustering.getClusters(profilesD1);
-            } else {
-                clusters = schema_clustering.getClusters(profilesD1, profilesD2);
-            }
-        }
-        
-        
-        // run Block Building
-        double overheadStart;
-        double overheadEnd;
-        BlocksPerformance blp;
-
-        if(final_run) 
-			eventPublisher.publish("Block Building", event_name);
-        
-        List<AbstractBlock> blocks = new ArrayList<>();
-        for (IBlockBuilding bb : block_building) {
-            // Start time measurement
-            overheadStart = System.currentTimeMillis();
-
-            // Run the method
-            blocks.addAll(runBlockBuilding(er_mode, clusters, profilesD1, profilesD2, bb));
-
-            // Get blocks performance to print
-            overheadEnd = System.currentTimeMillis();
-            blp = new BlocksPerformance(blocks, ground_truth);
-            blp.setStatistics();
-            
-            if (final_run) {
-                // print block Building performance
-                details_manager.print_BlockBuildingPerformance(blp, 
-                		overheadEnd - overheadStart, 
-                		bb.getMethodConfiguration(), 
-                		bb.getMethodName());
-                
-                // Save the performance of block building
-                //TODO: Store the results in a Model 
-                //this.addBlocksPerformance(bb.getMethodName(), totalTime, blp);
-            }
-        }
-        
-        if(final_run)
-        	details_manager.print_Sentence("Original blocks\t:\t", blocks.size()); 
-
-        
-        // Run Block Cleaning
-        if (block_cleaning != null && !block_cleaning.isEmpty()) {
-            if(final_run) 
-    			eventPublisher.publish("Block Cleaning", event_name);
-            
-            // Execute the methods
-            for (IBlockProcessing currentMethod : block_cleaning) {
-                blocks = runBlockProcessing(ground_truth, final_run, blocks, currentMethod);
-
-                if (blocks.isEmpty()) {
-                    return null;
-                }
-            }
-        }
-
-        // Run Comparison Cleaning     
-        if (comparison_cleaning != null) {
-        	if(final_run) 
-    			eventPublisher.publish("Comparison Cleaning", event_name);
-    		
-            blocks = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
-
-            if (blocks.isEmpty()) {
-                return null;
-            }
-        }
-
-        
-        // Run Entity Matching
-        SimilarityPairs simPairs;
-        if (entity_matching == null)
-            throw new Exception("Entity Matching method is null!");
-                
-        if(final_run) 
-			eventPublisher.publish("Entity Matching", event_name);
-		
-        if (er_mode.equals(JedaiOptions.DIRTY_ER)) 
-            simPairs = entity_matching.executeComparisons(blocks, profilesD1);
-        else 
-            simPairs = entity_matching.executeComparisons(blocks, profilesD1, profilesD2);
-        
-
-        // Run Entity Clustering
-        if(final_run) 
-			eventPublisher.publish("Entity Clustering", event_name);
-        
-        overheadStart = System.currentTimeMillis();
-
-        entityClusters = entity_clustering.getDuplicates(simPairs);
-
-        // Print clustering performance
-        overheadEnd = System.currentTimeMillis();
-        ClustersPerformance clp = new ClustersPerformance(entityClusters, ground_truth);
-        clp.setStatistics();        
-        if (final_run)
-        	details_manager.print_ClustersPerformance(clp, 
-        			overheadEnd - overheadStart, 
-        			entity_clustering.getMethodName(), 
-        			entity_clustering.getMethodConfiguration());
-
-        
-        return clp;
+        catch(Exception e) {
+        	e.printStackTrace();
+			String error = e.getMessage();
+			eventPublisher.publish(error, "exception");
+			return null;
+		}
         
 	}
 	
@@ -342,322 +353,330 @@ public class WorkflowManager {
      * @param random      If true, will use random search. Otherwise, grid.
      * @return ClustersPerformance of the workflow result
      */
-	public static ClustersPerformance runStepByStepWorkflow(Map<String, Object> methodsConfig, boolean random) throws Exception{
+	public static ClustersPerformance runStepByStepWorkflow(Map<String, Object> methodsConfig, boolean random) {
 	
-		double bestA = 0, time1, time2, originalComparisons;
-	    int bestIteration = 0, iterationsNum;
-	    BlocksPerformance blp;
+		try {
+			double bestA = 0, time1, time2, originalComparisons;
+		    int bestIteration = 0, iterationsNum;
+		    BlocksPerformance blp;
+		    
+		    
+			String event_name="execution_step";
+			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
+			eventPublisher = context.getBean(EventPublisher.class);
+			details_manager = new WorkflowDetailsManager();
+			
+			// Print profile entities statistics
+			if(er_mode.equals(JedaiOptions.DIRTY_ER))
+				details_manager.print_Sentence("Input Entity Profiles", profilesD1.size());
+			else {
+				details_manager.print_Sentence("Input Entity Profiles 1", profilesD1.size());
+				details_manager.print_Sentence("Input Entity Profiles 2", profilesD2.size());
+			}
+			details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
+			 
+			
+			
 	    
-	    
-		String event_name="execution_step";
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
-		eventPublisher = context.getBean(EventPublisher.class);
-		details_manager = new WorkflowDetailsManager();
+		    
 		
-		// Print profile entities statistics
-		if(er_mode.equals(JedaiOptions.DIRTY_ER))
-			details_manager.print_Sentence("Input Entity Profiles", profilesD1.size());
-		else {
-			details_manager.print_Sentence("Input Entity Profiles 1", profilesD1.size());
-			details_manager.print_Sentence("Input Entity Profiles 2", profilesD2.size());
+		    // Schema Clustering local optimization
+		    TObjectIntMap<String>[] scClusters = null;
+		    if (schema_clustering != null) {
+	    		eventPublisher.publish("Schema Clustering", event_name);
+		
+		        // Optimize schema clustering
+		        // if (model.getSchemaClusteringConfigType().equals(JedaiOptions.AUTOMATIC_CONFIG)) { }
+		        // TODO: optimize together with block building (and enable the option in the GUI)
+		
+		        // Run Schema Clustering 
+		        if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
+		            scClusters = schema_clustering.getClusters(profilesD1);
+		        } else {
+		            scClusters = schema_clustering.getClusters(profilesD1, profilesD2);
+		        }
+		    }
+		    
+		    
+		    
+		    
+		    final List<AbstractBlock> blocks = new ArrayList<>();
+		    if (block_building != null && !block_building.isEmpty()) {	
+		    	
+		    	List<MethodModel> bb_methods = (List<MethodModel>) methodsConfig.get(JedaiOptions.BLOCK_BUILDING);
+		    	int index = 0;
+		    	for (IBlockBuilding bb : block_building) {
+		    		
+		    		time1 = System.currentTimeMillis();
+		            if (bb_methods.get(index).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
+		            	
+		            	// Block Building local optimization
+		        	    eventPublisher.publish("Block Building Optimizations", event_name);
+		        	    
+		                if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
+		                    originalComparisons = profilesD1.size() * profilesD1.size();
+		                } else {
+		                    originalComparisons = ((double) profilesD1.size()) * profilesD2.size();
+		                }
+		
+		                iterationsNum = random ? NO_OF_TRIALS : bb.getNumberOfGridConfigurations();
+		
+		                for (int j = 0; j < iterationsNum; j++) {
+		                    // Set next configuration
+		                    if (random) {
+		                        bb.setNextRandomConfiguration();
+		                    } else {
+		                        bb.setNumberedGridConfiguration(j);
+		                    }
+		
+		                    // Process the blocks
+		                    final List<AbstractBlock> originalBlocks = new ArrayList<>(blocks);
+		                    originalBlocks.addAll(runBlockBuilding(er_mode, scClusters, profilesD1, profilesD2, bb));
+		
+		                    if (originalBlocks.isEmpty()) {
+		                        continue;
+		                    }
+		
+		                    final BlocksPerformance methodBlp = new BlocksPerformance(originalBlocks, ground_truth);
+		                    methodBlp.setStatistics();
+		                    double recall = methodBlp.getPc();
+		                    double rr = 1 - methodBlp.getAggregateCardinality() / originalComparisons;
+		                    double a = rr * recall;
+		                    if (bestA < a) {
+		                        bestIteration = j;
+		                        bestA = a;
+		                    }
+		                }
+		                details_manager.print_Sentence("\nBest iteration", bestIteration);
+		                details_manager.print_Sentence("Best performance", bestA);
+		
+		                // Set final block building parameters
+		                if (random) {
+		                    bb.setNumberedRandomConfiguration(bestIteration);
+		                } else {
+		                    bb.setNumberedGridConfiguration(bestIteration);
+		                }
+		            }
+		            
+		            
+		            // Process the blocks with block building
+		            eventPublisher.publish("Block Building", event_name);
+		            
+		            if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
+		                blocks.addAll(bb.getBlocks(profilesD1));
+		            } else {
+		                blocks.addAll(bb.getBlocks(profilesD1, profilesD2));
+		            }
+		
+		            time2 = System.currentTimeMillis();
+		            	
+		            blp = new BlocksPerformance(blocks, ground_truth);
+		            blp.setStatistics();
+		            details_manager.print_BlockBuildingPerformance(blp, 
+		            		time2 - time1, 
+	                		bb.getMethodConfiguration(), 
+	                		bb.getMethodName());
+		            
+		            
+		            //TODO: this.addBlocksPerformance(bb.getMethodName(), totalTimeMillis, blp);
+		
+		            index++;
+		        }
+		    }
+		    
+		    
+		    
+		    
+		
+		    // Block Cleaning methods local optimization	
+		    List<AbstractBlock> cleanedBlocks = blocks;
+		    if (block_cleaning != null && !block_cleaning.isEmpty()) {
+		    	 eventPublisher.publish("Block Cleaning", event_name);
+		    	List<MethodModel> bp_methods = (List<MethodModel>) methodsConfig.get(JedaiOptions.BLOCK_CLEANING);
+		    	int index = 0;
+		        for (IBlockProcessing bp: block_cleaning) {	
+		           
+		        	// Start time measurement
+		            time1 = System.currentTimeMillis();
+		
+		            // Check if we should configure this method automatically
+		            if (bp_methods.get(index).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
+		                // Optimize the method
+		                optimizeBlockProcessing(bp, blocks, random);
+		            }
+		
+		            // Process blocks with this method
+		            cleanedBlocks = bp.refineBlocks(blocks);
+		
+		            // Measure milliseconds it took to optimize & run method
+		            time2 = System.currentTimeMillis();
+		
+		            blp = new BlocksPerformance(cleanedBlocks, ground_truth);
+		            blp.setStatistics();
+		            details_manager.print_BlockBuildingPerformance(blp, 
+		            		time2 - time1, 
+	                		bp.getMethodConfiguration(), 
+	                		bp.getMethodName());
+		            //TODO: this.addBlocksPerformance(bp.getMethodName(), totalTimeMillis, blp);
+		
+		            // Increment index
+		            index++;
+		        }
+		    }
+		    
+		    
+		
+		    
+		    // Comparison Cleaning local optimization
+		    eventPublisher.publish("Comparison Cleaning", event_name);
+		    time1 = System.currentTimeMillis();
+		    List<AbstractBlock> finalBlocks;
+		    MethodModel cc_method = (MethodModel) methodsConfig.get(JedaiOptions.COMPARISON_CLEANING);
+		    if (cc_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
+		        optimizeBlockProcessing(comparison_cleaning, cleanedBlocks, random);
+		    }	
+		    finalBlocks = comparison_cleaning.refineBlocks(cleanedBlocks);
+		    time2 = System.currentTimeMillis();
+	
+		    blp = new BlocksPerformance(finalBlocks, ground_truth);
+		    blp.setStatistics();
+		    details_manager.print_BlockBuildingPerformance(blp, 
+	        		time2 - time1, 
+	        		comparison_cleaning.getMethodConfiguration(), 
+	        		comparison_cleaning.getMethodName());
+		    // TODO: this.addBlocksPerformance(comparisonCleaningMethod.getMethodName(), totalTimeMillis, blp);
+		
+		    
+		    
+		    // Entity Matching & Clustering local optimization
+		    time1 = System.currentTimeMillis();
+		    MethodModel em_method = (MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATHCING);
+		    MethodModel ec_method = (MethodModel) methodsConfig.get(JedaiOptions.ENTITY_CLUSTERING);
+		    boolean matchingAutomatic = em_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG);
+		    boolean clusteringAutomatic = ec_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG);
+		    
+		    if (matchingAutomatic || clusteringAutomatic) {
+		        // Show message that we are doing optimization based on the selected options
+		        String optimizationMsg = (matchingAutomatic ? "Matching" : "") +
+		                (matchingAutomatic && clusteringAutomatic ? " & " : "") +
+		                (clusteringAutomatic ? "Clustering" : "");
+		        eventPublisher.publish("Entity " + optimizationMsg + " Optimizations", event_name);
+		
+		        double bestFMeasure = 0;
+		
+		        // Check if we are using random search or grid search
+		        if (random) {
+		            bestIteration = 0;
+		
+		            // Optimize entity matching and clustering with random search
+		            for (int j = 0; j < NO_OF_TRIALS; j++) {
+		                // Set entity matching parameters automatically if needed
+		                if (matchingAutomatic) 
+		                    entity_matching.setNextRandomConfiguration();
+		                
+		                final SimilarityPairs sims = entity_matching.executeComparisons(finalBlocks, profilesD1, profilesD2);
+		
+		                // Set entity clustering parameters automatically if needed
+		                if (clusteringAutomatic) 
+		                    entity_clustering.setNextRandomConfiguration();
+		                
+		                final EquivalenceCluster[] clusters = entity_clustering.getDuplicates(sims);
+		
+		                final ClustersPerformance clp = new ClustersPerformance(clusters, ground_truth);
+		                clp.setStatistics();
+		                double fMeasure = clp.getFMeasure();
+		                if (bestFMeasure < fMeasure) {
+		                    bestIteration = j;
+		                    bestFMeasure = fMeasure;
+		                }
+		            }
+		            details_manager.print_Sentence("\nBest Iteration", bestIteration);
+		            details_manager.print_Sentence("Best FMeasure", bestFMeasure);
+		
+		            time1 = System.currentTimeMillis();
+		
+		            // Set the best iteration's parameters to the methods that should be automatically configured
+		            if (matchingAutomatic) 
+		            	entity_matching.setNumberedRandomConfiguration(bestIteration);
+		            
+		            if (clusteringAutomatic) 
+		            	entity_clustering.setNumberedRandomConfiguration(bestIteration);
+		            
+		        } else {
+		
+		            int bestInnerIteration = 0;
+		            int bestOuterIteration = 0;
+		
+		            // Get number of loops for each
+		            int outerLoops = (matchingAutomatic) ? entity_matching.getNumberOfGridConfigurations() : 1;
+		            int innerLoops = (clusteringAutomatic) ? entity_clustering.getNumberOfGridConfigurations() : 1;
+		
+		            // Iterate all entity matching configurations
+		            for (int j = 0; j < outerLoops; j++) {
+		                if (matchingAutomatic) {
+		                    entity_matching.setNumberedGridConfiguration(j);
+		                }
+		                final SimilarityPairs sims = entity_matching.executeComparisons(finalBlocks, profilesD1, profilesD2);
+		
+		                // Iterate all entity clustering configurations
+		                for (int k = 0; k < innerLoops; k++) {
+		                    if (clusteringAutomatic) {
+		                        entity_clustering.setNumberedGridConfiguration(k);
+		                    }
+		                    final EquivalenceCluster[] clusters = entity_clustering.getDuplicates(sims);
+		
+		                    final ClustersPerformance clp = new ClustersPerformance(clusters, ground_truth);
+		                    clp.setStatistics();
+		                    double fMeasure = clp.getFMeasure();
+		                    if (bestFMeasure < fMeasure) {
+		                        bestInnerIteration = k;
+		                        bestOuterIteration = j;
+		                        bestFMeasure = fMeasure;
+		                    }
+		                }
+		            }
+		            eventPublisher.publish("\nBest Inner Iteration", String.valueOf(bestInnerIteration));
+		            eventPublisher.publish("Best Outer Iteration", String.valueOf(bestOuterIteration));
+		            eventPublisher.publish("Best FMeasure", String.valueOf(bestFMeasure));
+		
+		            // Set the best iteration's parameters to the methods that should be automatically configured
+		            if (matchingAutomatic) 
+		                entity_matching.setNumberedGridConfiguration(bestOuterIteration);
+		            
+		            if (clusteringAutomatic) 
+		            	entity_clustering.setNumberedGridConfiguration(bestInnerIteration);
+		        }
+		    }
+		    
+			
+		    // Run entity matching with final configuration
+		    eventPublisher.publish("Entity Matching", event_name);
+		    final SimilarityPairs sims = entity_matching.executeComparisons(finalBlocks, profilesD1, profilesD2);
+		
+		    // Run entity clustering with final configuration
+		    eventPublisher.publish("Entity Clustering", event_name);
+		    entityClusters = entity_clustering.getDuplicates(sims);
+		
+		    time2 = System.currentTimeMillis();
+	
+		
+		    final ClustersPerformance clp = new ClustersPerformance(entityClusters, ground_truth);
+		    clp.setStatistics();
+		    // TODO: Could set the entire configuration details instead of entity clustering method name & config.	
+		    details_manager.print_ClustersPerformance(clp, 
+		    		time2 - time1,
+	    			entity_clustering.getMethodName(), 
+	    			entity_clustering.getMethodConfiguration());
+		    
+		    return clp;
 		}
-		details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
-		 
 		
-		
-    
-	    
-	
-	    // Schema Clustering local optimization
-	    TObjectIntMap<String>[] scClusters = null;
-	    if (schema_clustering != null) {
-    		eventPublisher.publish("Schema Clustering", event_name);
-	
-	        // Optimize schema clustering
-	        // if (model.getSchemaClusteringConfigType().equals(JedaiOptions.AUTOMATIC_CONFIG)) { }
-	        // TODO: optimize together with block building (and enable the option in the GUI)
-	
-	        // Run Schema Clustering 
-	        if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
-	            scClusters = schema_clustering.getClusters(profilesD1);
-	        } else {
-	            scClusters = schema_clustering.getClusters(profilesD1, profilesD2);
-	        }
-	    }
-	    
-	    
-	    
-	    
-	    final List<AbstractBlock> blocks = new ArrayList<>();
-	    if (block_building != null && !block_building.isEmpty()) {	
-	    	
-	    	List<MethodModel> bb_methods = (List<MethodModel>) methodsConfig.get(JedaiOptions.BLOCK_BUILDING);
-	    	int index = 0;
-	    	for (IBlockBuilding bb : block_building) {
-	    		
-	    		time1 = System.currentTimeMillis();
-	            if (bb_methods.get(index).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
-	            	
-	            	// Block Building local optimization
-	        	    eventPublisher.publish("Block Building Optimization", event_name);
-	        	    
-	                if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
-	                    originalComparisons = profilesD1.size() * profilesD1.size();
-	                } else {
-	                    originalComparisons = ((double) profilesD1.size()) * profilesD2.size();
-	                }
-	
-	                iterationsNum = random ? NO_OF_TRIALS : bb.getNumberOfGridConfigurations();
-	
-	                for (int j = 0; j < iterationsNum; j++) {
-	                    // Set next configuration
-	                    if (random) {
-	                        bb.setNextRandomConfiguration();
-	                    } else {
-	                        bb.setNumberedGridConfiguration(j);
-	                    }
-	
-	                    // Process the blocks
-	                    final List<AbstractBlock> originalBlocks = new ArrayList<>(blocks);
-	                    originalBlocks.addAll(runBlockBuilding(er_mode, scClusters, profilesD1, profilesD2, bb));
-	
-	                    if (originalBlocks.isEmpty()) {
-	                        continue;
-	                    }
-	
-	                    final BlocksPerformance methodBlp = new BlocksPerformance(originalBlocks, ground_truth);
-	                    methodBlp.setStatistics();
-	                    double recall = methodBlp.getPc();
-	                    double rr = 1 - methodBlp.getAggregateCardinality() / originalComparisons;
-	                    double a = rr * recall;
-	                    if (bestA < a) {
-	                        bestIteration = j;
-	                        bestA = a;
-	                    }
-	                }
-	                details_manager.print_Sentence("\nBest iteration", bestIteration);
-	                details_manager.print_Sentence("Best performance", bestA);
-	
-	                // Set final block building parameters
-	                if (random) {
-	                    bb.setNumberedRandomConfiguration(bestIteration);
-	                } else {
-	                    bb.setNumberedGridConfiguration(bestIteration);
-	                }
-	            }
-	            
-	            
-	            // Process the blocks with block building
-	            eventPublisher.publish("Block Building", event_name);
-	            
-	            if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
-	                blocks.addAll(bb.getBlocks(profilesD1));
-	            } else {
-	                blocks.addAll(bb.getBlocks(profilesD1, profilesD2));
-	            }
-	
-	            time2 = System.currentTimeMillis();
-	            	
-	            blp = new BlocksPerformance(blocks, ground_truth);
-	            blp.setStatistics();
-	            details_manager.print_BlockBuildingPerformance(blp, 
-	            		time2 - time1, 
-                		bb.getMethodConfiguration(), 
-                		bb.getMethodName());
-	            
-	            
-	            //TODO: this.addBlocksPerformance(bb.getMethodName(), totalTimeMillis, blp);
-	
-	            index++;
-	        }
-	    }
-	    
-	    
-	    
-	    
-	
-	    // Block Cleaning methods local optimization	
-	    List<AbstractBlock> cleanedBlocks = blocks;
-	    if (block_cleaning != null && !block_cleaning.isEmpty()) {
-	    	 eventPublisher.publish("Block Cleaning", event_name);
-	    	List<MethodModel> bp_methods = (List<MethodModel>) methodsConfig.get(JedaiOptions.BLOCK_CLEANING);
-	    	int index = 0;
-	        for (IBlockProcessing bp: block_cleaning) {	
-	           
-	        	// Start time measurement
-	            time1 = System.currentTimeMillis();
-	
-	            // Check if we should configure this method automatically
-	            if (bp_methods.get(index).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
-	                // Optimize the method
-	                optimizeBlockProcessing(bp, blocks, random);
-	            }
-	
-	            // Process blocks with this method
-	            cleanedBlocks = bp.refineBlocks(blocks);
-	
-	            // Measure milliseconds it took to optimize & run method
-	            time2 = System.currentTimeMillis();
-	
-	            blp = new BlocksPerformance(cleanedBlocks, ground_truth);
-	            blp.setStatistics();
-	            details_manager.print_BlockBuildingPerformance(blp, 
-	            		time2 - time1, 
-                		bp.getMethodConfiguration(), 
-                		bp.getMethodName());
-	            //TODO: this.addBlocksPerformance(bp.getMethodName(), totalTimeMillis, blp);
-	
-	            // Increment index
-	            index++;
-	        }
-	    }
-	    
-	    
-	
-	    
-	    // Comparison Cleaning local optimization
-	    eventPublisher.publish("Comparison Cleaning", event_name);
-	    time1 = System.currentTimeMillis();
-	    List<AbstractBlock> finalBlocks;
-	    MethodModel cc_method = (MethodModel) methodsConfig.get(JedaiOptions.COMPARISON_CLEANING);
-	    if (cc_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
-	        optimizeBlockProcessing(comparison_cleaning, cleanedBlocks, random);
-	    }	
-	    finalBlocks = comparison_cleaning.refineBlocks(cleanedBlocks);
-	    time2 = System.currentTimeMillis();
-
-	    blp = new BlocksPerformance(finalBlocks, ground_truth);
-	    blp.setStatistics();
-	    details_manager.print_BlockBuildingPerformance(blp, 
-        		time2 - time1, 
-        		comparison_cleaning.getMethodConfiguration(), 
-        		comparison_cleaning.getMethodName());
-	    // TODO: this.addBlocksPerformance(comparisonCleaningMethod.getMethodName(), totalTimeMillis, blp);
-	
-	    
-	    
-	    // Entity Matching & Clustering local optimization
-	    time1 = System.currentTimeMillis();
-	    MethodModel em_method = (MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATHCING);
-	    MethodModel ec_method = (MethodModel) methodsConfig.get(JedaiOptions.ENTITY_CLUSTERING);
-	    boolean matchingAutomatic = em_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG);
-	    boolean clusteringAutomatic = ec_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG);
-	    
-	    if (matchingAutomatic || clusteringAutomatic) {
-	        // Show message that we are doing optimization based on the selected options
-	        String optimizationMsg = (matchingAutomatic ? "Matching" : "") +
-	                (matchingAutomatic && clusteringAutomatic ? " & " : "") +
-	                (clusteringAutomatic ? "Clustering" : "");
-	        eventPublisher.publish("Entity " + optimizationMsg + " Optimization", event_name);
-	
-	        double bestFMeasure = 0;
-	
-	        // Check if we are using random search or grid search
-	        if (random) {
-	            bestIteration = 0;
-	
-	            // Optimize entity matching and clustering with random search
-	            for (int j = 0; j < NO_OF_TRIALS; j++) {
-	                // Set entity matching parameters automatically if needed
-	                if (matchingAutomatic) 
-	                    entity_matching.setNextRandomConfiguration();
-	                
-	                final SimilarityPairs sims = entity_matching.executeComparisons(finalBlocks, profilesD1, profilesD2);
-	
-	                // Set entity clustering parameters automatically if needed
-	                if (clusteringAutomatic) 
-	                    entity_clustering.setNextRandomConfiguration();
-	                
-	                final EquivalenceCluster[] clusters = entity_clustering.getDuplicates(sims);
-	
-	                final ClustersPerformance clp = new ClustersPerformance(clusters, ground_truth);
-	                clp.setStatistics();
-	                double fMeasure = clp.getFMeasure();
-	                if (bestFMeasure < fMeasure) {
-	                    bestIteration = j;
-	                    bestFMeasure = fMeasure;
-	                }
-	            }
-	            details_manager.print_Sentence("\nBest Iteration", bestIteration);
-	            details_manager.print_Sentence("Best FMeasure", bestFMeasure);
-	
-	            time1 = System.currentTimeMillis();
-	
-	            // Set the best iteration's parameters to the methods that should be automatically configured
-	            if (matchingAutomatic) 
-	            	entity_matching.setNumberedRandomConfiguration(bestIteration);
-	            
-	            if (clusteringAutomatic) 
-	            	entity_clustering.setNumberedRandomConfiguration(bestIteration);
-	            
-	        } else {
-	
-	            int bestInnerIteration = 0;
-	            int bestOuterIteration = 0;
-	
-	            // Get number of loops for each
-	            int outerLoops = (matchingAutomatic) ? entity_matching.getNumberOfGridConfigurations() : 1;
-	            int innerLoops = (clusteringAutomatic) ? entity_clustering.getNumberOfGridConfigurations() : 1;
-	
-	            // Iterate all entity matching configurations
-	            for (int j = 0; j < outerLoops; j++) {
-	                if (matchingAutomatic) {
-	                    entity_matching.setNumberedGridConfiguration(j);
-	                }
-	                final SimilarityPairs sims = entity_matching.executeComparisons(finalBlocks, profilesD1, profilesD2);
-	
-	                // Iterate all entity clustering configurations
-	                for (int k = 0; k < innerLoops; k++) {
-	                    if (clusteringAutomatic) {
-	                        entity_clustering.setNumberedGridConfiguration(k);
-	                    }
-	                    final EquivalenceCluster[] clusters = entity_clustering.getDuplicates(sims);
-	
-	                    final ClustersPerformance clp = new ClustersPerformance(clusters, ground_truth);
-	                    clp.setStatistics();
-	                    double fMeasure = clp.getFMeasure();
-	                    if (bestFMeasure < fMeasure) {
-	                        bestInnerIteration = k;
-	                        bestOuterIteration = j;
-	                        bestFMeasure = fMeasure;
-	                    }
-	                }
-	            }
-	            System.out.println("\nBest Inner Iteration\t:\t" + bestInnerIteration);
-	            System.out.println("\nBest Outer Iteration\t:\t" + bestOuterIteration);
-	            System.out.println("Best FMeasure\t:\t" + bestFMeasure);
-	
-	            // Set the best iteration's parameters to the methods that should be automatically configured
-	            if (matchingAutomatic) 
-	                entity_matching.setNumberedGridConfiguration(bestOuterIteration);
-	            
-	            if (clusteringAutomatic) 
-	            	entity_clustering.setNumberedGridConfiguration(bestInnerIteration);
-	        }
-	    }
-	    
-		
-	    // Run entity matching with final configuration
-	    eventPublisher.publish("Entity Matching", event_name);
-	    final SimilarityPairs sims = entity_matching.executeComparisons(finalBlocks, profilesD1, profilesD2);
-	
-	    // Run entity clustering with final configuration
-	    eventPublisher.publish("Entity Clustering", event_name);
-	    entityClusters = entity_clustering.getDuplicates(sims);
-	
-	    time2 = System.currentTimeMillis();
-
-	
-	    final ClustersPerformance clp = new ClustersPerformance(entityClusters, ground_truth);
-	    clp.setStatistics();
-	    // TODO: Could set the entire configuration details instead of entity clustering method name & config.	
-	    details_manager.print_ClustersPerformance(clp, 
-	    		time2 - time1,
-    			entity_clustering.getMethodName(), 
-    			entity_clustering.getMethodConfiguration());
-	    
-	    return clp;
-	   
+		catch(Exception e) {
+			e.printStackTrace();
+			String error = e.getMessage();
+			eventPublisher.publish(error, "exception");
+			return null;
+		}
 	}
     
     

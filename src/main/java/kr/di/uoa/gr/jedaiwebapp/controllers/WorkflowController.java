@@ -501,7 +501,7 @@ public class WorkflowController {
         
         
         // Check if entity matching parameters should be set automatically
-        if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATHCING)).equals(JedaiOptions.AUTOMATIC_CONFIG)) {
+        if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATHCING)).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
             if (bestIteration == null) 
             	WorkflowManager.entity_matching.setNextRandomConfiguration();
             else 
@@ -510,7 +510,7 @@ public class WorkflowController {
 
         
         // Check if entity clustering parameters should be set automatically
-        if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_CLUSTERING)).equals(JedaiOptions.AUTOMATIC_CONFIG)) {
+        if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_CLUSTERING)).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
             if (bestIteration == null) 
             	WorkflowManager.entity_clustering.setNextRandomConfiguration();
             else 
