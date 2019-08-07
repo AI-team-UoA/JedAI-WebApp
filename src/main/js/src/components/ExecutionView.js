@@ -18,7 +18,8 @@ class ExecutionView extends Component {
                 export_filetype: "",
                 automatic_conf: false,
 
-                execution_step: ""
+                execution_step: "",
+                details_msg: ""
             }
         
         
@@ -28,6 +29,11 @@ class ExecutionView extends Component {
         
         this.eventSource = new EventSource("/workflow") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
+        this.eventSource.addEventListener("workflow_details", (e) => {
+        	console.log(e)
+        	var msg = this.state.details_msg + "\n" + e.data 
+        	this.setState({details_msg: msg})
+        })
     }
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
@@ -177,7 +183,11 @@ class ExecutionView extends Component {
                         </Tab>
                         <Tab eventKey="details" title="Details" className="Jumbotron_Tab">
                             <br/>
-                            <h1 color="red">Details</h1>
+                            <h1>Details</h1>
+                            
+                            <Form.Group>
+                            	<Form.Control as="textarea" rows="20" readOnly={true} value={this.state.details_msg}/>
+                            </Form.Group>
                         </Tab>
                         <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
                             <br/>

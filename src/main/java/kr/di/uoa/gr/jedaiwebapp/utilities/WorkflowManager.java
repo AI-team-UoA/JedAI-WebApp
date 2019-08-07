@@ -1,6 +1,6 @@
 package kr.di.uoa.gr.jedaiwebapp.utilities;
 
-import java.time.LocalTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,15 +16,9 @@ import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.BlocksPerformance;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
-
 import gnu.trove.map.TObjectIntMap;
-import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 
 public class WorkflowManager {
@@ -44,6 +38,7 @@ public class WorkflowManager {
 	private static EquivalenceCluster[] entityClusters = null;
 	
 	private static EventPublisher eventPublisher;
+	private static WorkflowDetailsManager details_manager ;
 	
 
 
@@ -63,15 +58,25 @@ public class WorkflowManager {
 	
 	public static ClustersPerformance runWorkflow(boolean final_run)  throws Exception {
 		 
-		String execution_step="execution_step";
+		String event_name="execution_step";
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
 		eventPublisher = context.getBean(EventPublisher.class);
+		details_manager = new WorkflowDetailsManager();
+		
+		// Print profile entities statistics
+		if(er_mode.equals(JedaiOptions.DIRTY_ER))
+			details_manager.print_Sentence("Input Entity Profiles", profilesD1.size());
+		else {
+			details_manager.print_Sentence("Input Entity Profiles 1", profilesD1.size());
+			details_manager.print_Sentence("Input Entity Profiles 2", profilesD2.size());
+		}
+		details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
 		 
 		TObjectIntMap<String>[] clusters = null;
         if (schema_clustering != null) {
             // Run schema clustering
         	if(final_run) 
-    			eventPublisher.publish("Schema Clustering", execution_step);
+    			eventPublisher.publish("Schema Clustering", event_name);
     		
             if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
                 clusters = schema_clustering.getClusters(profilesD1);
@@ -86,7 +91,7 @@ public class WorkflowManager {
         BlocksPerformance blp;
 
         if(final_run) 
-			eventPublisher.publish("Block Building", execution_step);
+			eventPublisher.publish("Block Building", event_name);
         
         List<AbstractBlock> blocks = new ArrayList<>();
         for (IBlockBuilding bb : block_building) {
@@ -102,25 +107,27 @@ public class WorkflowManager {
             blp.setStatistics();
             
             if (final_run) {
-                double totalTime = overheadEnd - overheadStart;
-
-                //TODO: Print performance
-                blp.printStatistics(totalTime, bb.getMethodConfiguration(), bb.getMethodName());
-
+                // print block Building performance
+                details_manager.print_BlockBuildingPerformance(blp, 
+                		overheadEnd - overheadStart, 
+                		bb.getMethodConfiguration(), 
+                		bb.getMethodName());
+                
                 // Save the performance of block building
                 //TODO: Store the results in a Model 
                 //this.addBlocksPerformance(bb.getMethodName(), totalTime, blp);
             }
         }
         
-        //TODO: if final_run write "Original blocks\t:\t" + blocks.size() 
+        if(final_run)
+        	details_manager.print_Sentence("Original blocks\t:\t", blocks.size()); 
 
         
 
         if (block_cleaning != null && !block_cleaning.isEmpty()) {
         	// Run Block Cleaning
             if(final_run) 
-    			eventPublisher.publish("Block Cleaning", execution_step);
+    			eventPublisher.publish("Block Cleaning", event_name);
             
             // Execute the methods
             for (IBlockProcessing currentMethod : block_cleaning) {
@@ -136,7 +143,7 @@ public class WorkflowManager {
         if (comparison_cleaning != null) {
         	// Run Comparison Cleaning     
         	if(final_run) 
-    			eventPublisher.publish("Comparison Cleaning", execution_step);
+    			eventPublisher.publish("Comparison Cleaning", event_name);
     		
             blocks = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
 
@@ -152,7 +159,7 @@ public class WorkflowManager {
             throw new Exception("Entity Matching method is null!");
                 
         if(final_run) 
-			eventPublisher.publish("Entity Matching", execution_step);
+			eventPublisher.publish("Entity Matching", event_name);
 		
         if (er_mode.equals(JedaiOptions.DIRTY_ER)) 
             simPairs = entity_matching.executeComparisons(blocks, profilesD1);
@@ -162,7 +169,7 @@ public class WorkflowManager {
 
         // Run Entity Clustering
         if(final_run) 
-			eventPublisher.publish("Entity Clustering", execution_step);
+			eventPublisher.publish("Entity Clustering", event_name);
         
         overheadStart = System.currentTimeMillis();
 
@@ -172,12 +179,14 @@ public class WorkflowManager {
         overheadEnd = System.currentTimeMillis();
         ClustersPerformance clp = new ClustersPerformance(entityClusters, ground_truth);
         
-        //TODO: Print statistics 
+        
         
         clp.setStatistics();        
         if (final_run)
-            clp.printStatistics(overheadEnd - overheadStart, entity_clustering.getMethodName(),
-            		entity_clustering.getMethodConfiguration());
+        	details_manager.print_ClustersPerformance(clp, 
+        			overheadEnd - overheadStart, 
+        			entity_clustering.getMethodName(), 
+        			entity_clustering.getMethodConfiguration());
 
         return clp;
         
@@ -255,11 +264,7 @@ public class WorkflowManager {
                 // Print blocks performance
                 blp = new BlocksPerformance(blocks, duProp);
                 blp.setStatistics();
-
-                double totalTime = overheadEnd - overheadStart;
-                blp.printStatistics(totalTime, currentMethod.getMethodConfiguration(),
-                        currentMethod.getMethodName());
-
+                details_manager.print_BlockBuildingPerformance(blp, overheadEnd - overheadStart, currentMethod.getMethodConfiguration(),  currentMethod.getMethodName());
                 // Save the performance of block processing
                 //TODO: this.addBlocksPerformance(currentMethod.getMethodName(), totalTime, blp);
             }

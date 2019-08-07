@@ -20,7 +20,17 @@ public  class SSE_Manager implements ApplicationListener<EventMessage>{
 	public void onApplicationEvent(EventMessage event) {
 	    try {
 	    	
-	    	SseEventBuilder builder = SseEmitter.event().name(event.getEventName()).data(event.getMessage());
+	    	
+	    	String message = event.getMessage();
+	    	
+	    	// multiline message
+	    	if (message.contains("\n")) {
+	    		if(message.charAt(0)!= '\n')
+	    			message = "data:" + message;
+	    		message = message.replace("\n", "\ndata:");
+	    	}
+	    	
+	    	SseEventBuilder builder = SseEmitter.event().name(event.getEventName()).data(message);
 	    	SSE_Manager.emitter.send(builder);
 
 	      }
