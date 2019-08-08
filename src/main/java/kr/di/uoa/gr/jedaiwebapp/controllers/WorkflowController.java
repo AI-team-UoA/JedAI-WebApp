@@ -9,6 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.javatuples.Pair;
+import org.javatuples.Triplet;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.datamodel.EntityProfile;
@@ -301,10 +303,19 @@ public class WorkflowController {
      * @return  
      */		
 	@GetMapping("/workflow/execution/automatic_type/{automatic_type}/search_type/{search_type}")	
-	public ClustersPerformance executeWorkflow(
+	public Triplet<ClustersPerformance , Double, Integer> executeWorkflow(
 			@PathVariable(value = "automatic_type") String automatic_type,
 			@PathVariable(value = "search_type") String search_type) {
 		try {
+			ClustersPerformance clp = null;
+			double start_time = System.currentTimeMillis();
+			
+			int no_instances = 0;
+			if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER))
+				no_instances = WorkflowManager.profilesD1.size();
+			else
+				no_instances = WorkflowManager.profilesD1.size() + WorkflowManager.profilesD2.size();
+			
 			
 
 			if(this.anyAutomaticConfig()) {
@@ -322,7 +333,7 @@ public class WorkflowController {
 	
 	                    // Run a workflow and check its F-measure
 	                    
-	                    ClustersPerformance clp = WorkflowManager.runWorkflow(false);
+	                    clp = WorkflowManager.runWorkflow(false);
 	
 	                    // If there was a problem with this random workflow, skip this iteration
 	                    if (clp == null) {
@@ -343,17 +354,21 @@ public class WorkflowController {
 		                iterateHolisticRandom(bestIteration);
 		
 		                // Run the final workflow (whether there was an automatic configuration or not)
-		                return WorkflowManager.runWorkflow(true);
+		                clp =  WorkflowManager.runWorkflow(true);
+		                return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
+		               
 	                }
 				}
 				else {
 					 // Step-by-step automatic configuration. Set random or grid depending on the selected search type.
-	                return WorkflowManager.runStepByStepWorkflow(methodsConfig, search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH));
+					clp =  WorkflowManager.runStepByStepWorkflow(methodsConfig, search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH));
+					return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
 				}
 				
 			}
 			 // Run workflow without any automatic configuration
-	        return WorkflowManager.runWorkflow(true);
+	        clp = WorkflowManager.runWorkflow(true);
+	        return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
 		}
 		catch(Exception e) {
 			e.printStackTrace();

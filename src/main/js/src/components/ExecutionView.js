@@ -13,6 +13,7 @@ class ExecutionView extends Component {
    
     constructor(...args) {
         super(...args);
+        this.alertText = ""
         
         this.state = {
                 automatic_type: "Holistic",
@@ -20,20 +21,32 @@ class ExecutionView extends Component {
                 export_filetype: "",
                 automatic_conf: false,
 
-                execution_step: "",
                 details_msg: "", 
-                alertShow: false
+                execution_step: "",
+                execution_status : "Not Run",
+
+                execution_results:{
+                    recall: 0,
+                    f1_measure: 0,
+                    precision: 0,
+
+                    input_instances: 0,
+                    existing_duplicates: 0,
+                    total_time : 0,
+
+                    no_clusters : 0,
+                    detected_duplicates : 0,
+                    total_matches: 0
+                },
+                
+                alertShow: false,
             }
-        
-        this.alertText = ""
-        
         
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
    
-      
-        
         this.eventSource = new EventSource("/workflow") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
+        
         this.eventSource.addEventListener("workflow_details", (e) => {
         	var msg = this.state.details_msg + "\n" + e.data 
         	this.setState({details_msg: msg})
@@ -43,7 +56,10 @@ class ExecutionView extends Component {
         	console.log(e)
             this.alertText = e.data
             this.handleAlerShow()
-            this.setState({execution_step: ""})
+            this.setState({
+            		execution_step: "",
+            		execution_status: "Failed"}
+            )
         })
     }
 
@@ -52,8 +68,45 @@ class ExecutionView extends Component {
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
+    
+    
     executeWorkFlow = (e) =>{
-       axios.get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
+        this.setState({
+            execution_status: "Running"
+        })
+        axios
+            .get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
+            .then(res => {
+            	
+                var data_stat = res.data.value0
+                var total_time = res.data.value1
+                var no_istamces = res.data.value2
+                
+                if (res.data !== null){
+                    var reuslts = {
+                        recall: data_stat.recall,
+                        f1_measure: data_stat.fmeasure,
+                        precision: data_stat.precision,
+
+                        input_instances: no_istamces,
+                        existing_duplicates: data_stat.existingDuplicates,
+                        total_time : total_time,
+
+                        no_clusters : data_stat.entityClusters,
+                        detected_duplicates : data_stat.detectedDuplicates,
+                        total_matches: data_stat.totalMatches
+                    }
+                    this.setState({
+                        execution_results: reuslts,
+                        execution_status: "Completed"
+                    })
+                }
+                else{
+                    this.setState({
+                        execution_status: "Failed"
+                    })
+                }
+            })
     }
 
     render() {
@@ -61,18 +114,101 @@ class ExecutionView extends Component {
         var radio_col = 1.8
         var empty_col = 1
         var speedometer_col = 2.5
+        
+        // Set execution status view
+        var execution_status_view
+        switch(this.state.execution_status) {
+            case "Not Run":
+                execution_status_view =
+                    <div>
+                        <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#990000"}}><b>{this.state.execution_status}</b></span></h3>
+                    </div>
+                break;
+            case "Running":
+                execution_status_view =
+                    <div>
+                        <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#0073e6"}}><b>{this.state.execution_status}</b></span></h3>
+                    </div>
+                break;
+            case "Completed":
+                execution_status_view =
+                    <div>
+                        <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#00802b"}}><b>{this.state.execution_status}</b></span></h3>
+                    </div>
+                break;
+            case "Failed":
+                execution_status_view =
+                    <div>
+                        <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#e63900"}}><b>{this.state.execution_status}</b></span></h3>
+                    </div>
+                break;
+            default:
+                    execution_status_view =
+                    <div>
+                        <h3 style={{display:"inline"}}>Status</h3>  {this.state.execution_status}
+                    </div>
+          }
+        
+         
+            
 
-        var execution_msg = this.state.execution_step !== "" ? 
+
+        // Workflow Step msg
+        var execution_msg
+        if (this.state.execution_step !== "" &&  this.state.execution_status === "Running"){
+            execution_msg = 
         		
         		<div  style={{marginTop:"20px"}}>
         			<Spinner  style={{color:"#0073e6"}} animation="grow" />
 	        		<div style={{marginLeft:"10px", display:"inline"}}>
-	        			<h3 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>Executing:</h3> 
+	        			<h4 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>Executing:</h4> 
 	        			<h4 style={{display:'inline'}}>{this.state.execution_step}</h4>
 	        		</div>
                 </div>
-        		: <div/>
+        }
+        
+        
 
+
+        // Execution Results
+        var execution_stats = this.state.execution_status === "Completed" ?
+        <Form.Group style={{position:"relative", left:"28%"}}>
+                <Row>
+                    <Col Col sm={3}>
+                        <Row>
+                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Input Instances:</h4> </Col>
+                            <Col sm={1}>{this.state.execution_results.input_instances}</Col>
+                        </Row>
+                        <Row>
+                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Existing Duplicates:</h4> </Col>
+                            <Col sm={1}>{this.state.execution_results.existing_duplicates}</Col>
+                        </Row>
+                        <Row>
+                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Total execution time:</h4> </Col>
+                            <Col sm={1}>{this.state.execution_results.total_time}</Col>
+                        </Row>
+                    </Col>
+                    <Col Col sm={3}>
+                        <Row>
+                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Number of Clusters:</h4> </Col>
+                            <Col sm={1}>{this.state.execution_results.no_clusters}</Col>
+                        </Row>
+                        <Row>
+                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Detected Duplicates:</h4> </Col>
+                            <Col sm={1}>{this.state.execution_results.detected_duplicates}</Col>
+                        </Row>
+                        <Row>
+                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Total Matches:</h4> </Col>
+                            <Col sm={1}>{this.state.execution_results.total_matches}</Col>
+                        </Row>
+                    </Col>
+                </Row>
+            </Form.Group>
+
+            : <div/>
+
+
+        
         return (
             <div>
                 <AlertModal title="Exception" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
@@ -134,7 +270,12 @@ class ExecutionView extends Component {
                                                     checked={this.state.search_type === "Grid Search"}
                                                     onChange={this.onChange}
                                                     disabled={!this.state.automatic_conf || this.state.automatic_type === "Holistic"}
-                                                />                                            
+                                                /> 
+                                            
+                                            <br/>
+                                            <br/>
+                                            {execution_status_view}
+
                                             </Col>
 
                                             <Col  sm={empty_col} />
@@ -143,7 +284,7 @@ class ExecutionView extends Component {
                                                 <div className="caption_item">
                                                 <span className="caption">Recall</span>
                                                     <ReactSpeedometer  
-                                                        value={50} 
+                                                        value={this.state.execution_results.recall} 
                                                         maxValue={100} 
                                                         segments={5} 
                                                         segmentColors={[
@@ -154,6 +295,7 @@ class ExecutionView extends Component {
                                                             "#61d161"
                                                         ]}
                                                     />
+                                                   
                                                 </div>
                                             </Col>
                                             
@@ -161,7 +303,7 @@ class ExecutionView extends Component {
                                                 <div className="caption_item">
                                                 <span className="caption">Precision</span>
                                                     <ReactSpeedometer  
-                                                        value={50} 
+                                                        value={this.state.execution_results.precision} 
                                                         maxValue={100} 
                                                         segments={5} 
                                                         segmentColors={[
@@ -172,6 +314,7 @@ class ExecutionView extends Component {
                                                             "#61d161"
                                                         ]}
                                                     />
+                                                   
                                                 </div>
                                             </Col>
 
@@ -179,7 +322,7 @@ class ExecutionView extends Component {
                                                 <div className="caption_item">
                                                 <span className="caption">F1-measure</span>
                                                     <ReactSpeedometer  
-                                                        value={50} 
+                                                        value={this.state.execution_results.f1_measure} 
                                                         maxValue={100} 
                                                         segments={5} 
                                                         segmentColors={[
@@ -190,9 +333,15 @@ class ExecutionView extends Component {
                                                             "#61d161"
                                                         ]}
                                                     />
+                                                    
                                                 </div>
                                             </Col>
-                                        </Form.Group>                
+                                        </Form.Group>
+
+                                        
+                                                
+                                        {execution_stats}
+                                       
                                         <br/>
                                     </Form>
                                 </div>
