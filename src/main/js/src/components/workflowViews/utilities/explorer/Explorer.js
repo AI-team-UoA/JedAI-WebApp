@@ -19,7 +19,7 @@ class Explorer extends Component {
         }
     }
     
-
+ 
     // Form pagianation based on the requested page
     setPagination(pageNumber){
         var displayed_pages = [];
@@ -99,27 +99,23 @@ class Explorer extends Component {
         if (!isNaN(tmp_page)){
             this.page = tmp_page
             this.pagination = this.setPagination(this.page)
-            axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/" + this.page)
-                    .then(
-                        res => {this.setState({
+            axios.get(this.props.source+this.props.entity_id+"/explore/" + this.page)
+                    .then(res => {this.setState({
                             entities: res.data,
                             headers:  res.data[0].attributes
                     })})
         }
     }
 
-
-    render() {
-
-        // Get first data from the server
-        if (this.props.get_entities && this.state.entities.length === 0) {
-            axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/")
+    componentDidUpdate() {
+    	if (this.props.get_entities && this.state.entities.length === 0) {
+            axios.get(this.props.source+this.props.entity_id+"/explore/")
                 .then(res => {
                     this.maxPages = res.data
                     this.pagination = this.setPagination(1)
                 })
                 
-            axios.get("/desktopmode/dataread/"+this.props.entity_id+"/explore/" + this.page)
+            axios.get(this.props.source+this.props.entity_id+"/explore/" + this.page)
                 .then(
                     res => {this.setState({
                             entities: res.data,
@@ -131,12 +127,20 @@ class Explorer extends Component {
         }
         else if (!this.props.get_entities && this.state.entities.length !== 0)
        {
-        console.log("EMPTY DATA")
-        this.setState({
-            entities: [],
-            headers:  []
-        })
+        	
+        	console.log("EMPTY DATA")
+            this.setState({
+                entities: [],
+                headers:  []
+            })
        }
+    }
+
+    render() {
+
+        // Get first data from the server
+        
+        
         return (
             <div>
                 <Jumbotron style={{backgroundColor:"white", border:"groove" }}>
@@ -157,7 +161,8 @@ class Explorer extends Component {
 
 Explorer.propTypes = {
     get_entities: PropTypes.bool.isRequired,
-    entity_id: PropTypes.string.isRequired
+    entity_id: PropTypes.string.isRequired,
+    source: PropTypes.string.isRequired
 }
 
 

@@ -193,7 +193,7 @@ class ProfileReader extends Component {
                         <Collapse in={this.collapse_explore_flag} >
                             <div style={{width:'75%', margin:'auto'}}>
                                 <h1>Explore</h1>
-                                <Explorer entity_id={this.state.entity_id} get_entities={ this.explorer_get_entities}/>
+                                <Explorer source="/desktopmode/dataread/" entity_id={this.state.entity_id} get_entities={ this.explorer_get_entities}/>
                             </div>
                         </Collapse>
                     </Form.Row>

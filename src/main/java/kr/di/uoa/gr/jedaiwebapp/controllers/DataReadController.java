@@ -49,8 +49,8 @@ public class DataReadController {
 	 * 
 	 * */
 	DataReadController(){
-		entityProfiles_1 = new ArrayList<>();
-		entityProfiles_2 = new ArrayList<>();
+		
+		
 		dataRead_map = new HashMap<String, DataReadModel>();
 	}
 	
@@ -86,7 +86,7 @@ public class DataReadController {
 				switch(entity_id) {
 				case "1":
 					WorkflowManager.profilesD1 = entity_profile.read();
-					
+					entityProfiles_1 = new ArrayList<>();
 					//construct the dataset which will be displayed in explore
 					for (int i=0; i<WorkflowManager.profilesD1.size(); i++) {
 						EntityProfile entity = WorkflowManager.profilesD1.get(i);
@@ -97,7 +97,7 @@ public class DataReadController {
 					
 				case "2":	
 					WorkflowManager.profilesD2 = entity_profile.read();
-					
+					entityProfiles_2 = new ArrayList<>();
 					//construct the dataset which will be displayed in explore
 					for (int i=0; i<WorkflowManager.profilesD2.size(); i++) {
 						EntityProfile entity = WorkflowManager.profilesD2.get(i);

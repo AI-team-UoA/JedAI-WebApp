@@ -18,10 +18,10 @@ class EntityProfileView extends Component {
             return (
                 <div>
                     <div style={{marginBottom:"5px"}}> 
-                        <span style={{display:'inline', marginRight:"200px"}} >
-                            <h5 style={{display:'inline'}} >Entity ID:</h5> {id} 
+                        <span style={{display:"inline", float:"left"}} >
+                            <h5 style={{display:"inline"}} >Entity ID:</h5> {id} 
                         </span>
-                        <span><h5 style={{display:'inline'}}>Entity URL:</h5> {entityUrl} </span>
+                        <span style={{float:"right"}}><h5 style={{display:"inline"}}>Entity URL:</h5> {entityUrl} </span>
                         
                         <br/>
 
@@ -51,10 +51,10 @@ class EntityProfileView extends Component {
                 <div style={{marginBottom:"5px"}}>
                     <Row>
                         <Col >
-                            <span style={{display:'inline', marginRight:"200px"}} >
-                                <h5 style={{display:'inline'}} >Entity ID:</h5> {id_1} 
+                            <span style={{display:"inline", float:"left"}} >
+                                <h5 style={{display:"inline"}} >Entity ID:</h5> {id_1} 
                             </span>
-                            <span><h5 style={{display:'inline'}}>Entity URL:</h5> {entityUrl_1} </span>
+                            <span style={{float:"right"}}><h5 style={{display:"inline"}}>Entity URL:</h5> {entityUrl_1} </span>
                             
                             <br/>
 
@@ -65,10 +65,10 @@ class EntityProfileView extends Component {
                             </Form.Group>
                         </Col>
                         <Col >
-                            <span style={{display:'inline', marginRight:"200px"}} >
+                            <span style={{display:'inline'}} >
                                 <h5 style={{display:'inline'}} >Entity ID:</h5> {id_2} 
                             </span>
-                            <span><h5 style={{display:'inline'}}>Entity URL:</h5> {entityUrl_2} </span>
+                            <span style={{float:"right"}}><h5 style={{display:'inline'}}>Entity URL:</h5> {entityUrl_2} </span>
                             
                             <br/>
 
