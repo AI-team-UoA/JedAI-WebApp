@@ -1,54 +1,55 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
-import org.scify.jedai.datamodel.EntityProfile;
-import org.scify.jedai.entityclustering.IEntityClustering;
-import org.scify.jedai.entitymatching.IEntityMatching;
-import org.scify.jedai.schemaclustering.ISchemaClustering;
+import org.scify.jedai.datawriter.ClustersPerformanceWriter;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
-import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.MethodConfigurations;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
-import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventMessage;
+
 
 
 @RestController
 @RequestMapping("/workflow/**")
 public class WorkflowController {
 	
+	@Autowired
+	private HttpServletRequest request;
+	@Autowired
+    private ApplicationContext applicationContext;
+    
 	private final static int NO_OF_TRIALS = 100;
 	private Map<String, Object> methodsConfig;
 	
@@ -288,6 +289,78 @@ public class WorkflowController {
 		}
 				
 		return WorkflowManager.block_cleaning != null;
+	}
+	
+	
+	
+	/**
+     * Construct and return file containing the performance of the Workflow execution
+     *
+     * @param filetype the type of the file
+     * @return stream of data which will be downloaded as file
+     */
+	@GetMapping("/workflow/export/{filetype}")
+	public void exportResults(@PathVariable(value = "filetype") String filetype,
+			HttpServletResponse response) {
+		try {
+			
+			// construct file
+			String export_path = null;
+			String export_dir =  request.getServletContext().getRealPath("/exports");
+			if(! new File(export_dir).exists())
+				new File(export_dir).mkdir();
+	            
+	        switch (filetype) {
+	            case JedaiOptions.CSV:
+	                export_path = export_dir+"/workflow_results.csv";
+	                response.setContentType("application/csv");
+	                break;
+	            case JedaiOptions.XML:
+	            case JedaiOptions.RDF:
+	            	export_path = export_dir+"/workflow_results.xml";
+	            	response.setContentType("application/xml");
+	                break;        
+	        }
+	        
+	        
+	        File export_file = new File(export_path);
+	        if (!export_file.exists()) 
+	        	export_file.createNewFile();
+	        
+	        // Construct file containing the results of the execution
+	       	ClustersPerformanceWriter cpw = new ClustersPerformanceWriter(
+                    WorkflowManager.getEntityClusters(),
+                    WorkflowManager.ground_truth);
+	        	       
+			switch (filetype) {
+	            case JedaiOptions.CSV:
+	                // Output CSV
+	                cpw.printDetailedResultsToCSV(WorkflowManager.profilesD1, WorkflowManager.profilesD2,
+	                		export_path);
+	                break;
+	            case JedaiOptions.XML:
+	                cpw.printDetailedResultsToXML(WorkflowManager.profilesD1, WorkflowManager.profilesD2,
+	                		export_path);
+	                break;
+	            case JedaiOptions.RDF:
+	                cpw.printDetailedResultsToRDF(WorkflowManager.profilesD1, WorkflowManager.profilesD2,
+	                		export_path);
+	                break;
+	        }
+			
+			
+	       	// Insert the stream to the response
+			response.setHeader(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"" + export_file.getName() + "\"");
+		    // get your file as InputStream
+		    InputStream exported_is =  new FileInputStream(export_file);		   
+		    // copy it to response's OutputStream
+		    org.apache.commons.io.IOUtils.copy(exported_is, response.getOutputStream());
+		    
+		    response.flushBuffer();
+		}
+		catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	
@@ -532,5 +605,9 @@ public class WorkflowController {
             	WorkflowManager.entity_clustering.setNumberedRandomConfiguration(bestIteration);
         }
     }
+    
+    
+    
+    
 
 }

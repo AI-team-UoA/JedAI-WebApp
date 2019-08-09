@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
+import { Blob } from 'react-blob'
 import {Jumbotron, Tabs, Tab, Form, Row, Col, Button, Spinner} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
 import {Link } from 'react-router-dom';
 import "../../../resources/static/css/main.css"
 import AlertModal from './workflowViews/utilities/AlertModal'
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 
 
@@ -69,7 +71,54 @@ class ExecutionView extends Component {
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
     
+    // get filename from header
+    extractFileName = (contentDispositionValue) => {
+         var filename = "";
+         if (contentDispositionValue && contentDispositionValue.indexOf('attachment') !== -1) {
+             var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+             var matches = filenameRegex.exec(contentDispositionValue);
+             if (matches != null && matches[1]) {
+                 filename = matches[1].replace(/['"]/g, '');
+             }
+         }
+         return filename;
+     }
     
+    
+    // export file containing the results and the performance
+    export =(e) =>{
+    	
+    	this.setState({ execution_status: "Downloading" });
+        axios
+        .get("/workflow/export/"+this.state.export_filetype, { responseType:"blob" })
+        .then(response => {
+        	
+            console.log("Response", response);
+            this.setState({ execution_status: "Completed" });
+            
+            //extract file name from Content-Disposition header
+            var filename=this.extractFileName(response.headers['content-disposition']);
+            console.log("File name",filename);
+            saveAs(response.data, filename);
+            
+        }).catch(function (error) {
+            console.log(error);
+            
+            if (error.response) {
+                console.log('Error', error.response.status);
+                this.alertText = error.response.status
+                this.handleAlerShow()
+            } else {
+                console.log('Error', error.message);
+                this.alertText = error.message
+                this.handleAlerShow()
+            }
+        });
+    }
+
+    
+    
+    // Execute the Workflow
     executeWorkFlow = (e) =>{
         this.setState({
             execution_status: "Running"
@@ -114,6 +163,7 @@ class ExecutionView extends Component {
         var radio_col = 1.8
         var empty_col = 1
         var speedometer_col = 2.5
+        var execution_stats = <div />
         
         // Set execution status view
         var execution_status_view
@@ -125,6 +175,7 @@ class ExecutionView extends Component {
                     </div>
                 break;
             case "Running":
+            case "Downloading":
                 execution_status_view =
                     <div>
                         <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#0073e6"}}><b>{this.state.execution_status}</b></span></h3>
@@ -135,8 +186,44 @@ class ExecutionView extends Component {
                     <div>
                         <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#00802b"}}><b>{this.state.execution_status}</b></span></h3>
                     </div>
+                    
+                    // Execution Results
+               execution_stats = 
+                    <Form.Group style={{position:"relative", left:"28%"}}>
+                            <Row>
+                                <Col Col sm={3}>
+                                    <Row>
+                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Input Instances:</h4> </Col>
+                                        <Col sm={1}>{this.state.execution_results.input_instances}</Col>
+                                    </Row>
+                                    <Row>
+                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Existing Duplicates:</h4> </Col>
+                                        <Col sm={1}>{this.state.execution_results.existing_duplicates}</Col>
+                                    </Row>
+                                    <Row>
+                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Total execution time:</h4> </Col>
+                                        <Col sm={1}>{this.state.execution_results.total_time}</Col>
+                                    </Row>
+                                </Col>
+                                <Col Col sm={3}>
+                                    <Row>
+                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Number of Clusters:</h4> </Col>
+                                        <Col sm={1}>{this.state.execution_results.no_clusters}</Col>
+                                    </Row>
+                                    <Row>
+                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Detected Duplicates:</h4> </Col>
+                                        <Col sm={1}>{this.state.execution_results.detected_duplicates}</Col>
+                                    </Row>
+                                    <Row>
+                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Total Matches:</h4> </Col>
+                                        <Col sm={1}>{this.state.execution_results.total_matches}</Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Form.Group>
                 break;
             case "Failed":
+            case "Download Failed":
                 execution_status_view =
                     <div>
                         <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#e63900"}}><b>{this.state.execution_status}</b></span></h3>
@@ -167,46 +254,6 @@ class ExecutionView extends Component {
                 </div>
         }
         
-        
-
-
-        // Execution Results
-        var execution_stats = this.state.execution_status === "Completed" ?
-        <Form.Group style={{position:"relative", left:"28%"}}>
-                <Row>
-                    <Col Col sm={3}>
-                        <Row>
-                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Input Instances:</h4> </Col>
-                            <Col sm={1}>{this.state.execution_results.input_instances}</Col>
-                        </Row>
-                        <Row>
-                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Existing Duplicates:</h4> </Col>
-                            <Col sm={1}>{this.state.execution_results.existing_duplicates}</Col>
-                        </Row>
-                        <Row>
-                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Total execution time:</h4> </Col>
-                            <Col sm={1}>{this.state.execution_results.total_time}</Col>
-                        </Row>
-                    </Col>
-                    <Col Col sm={3}>
-                        <Row>
-                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Number of Clusters:</h4> </Col>
-                            <Col sm={1}>{this.state.execution_results.no_clusters}</Col>
-                        </Row>
-                        <Row>
-                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Detected Duplicates:</h4> </Col>
-                            <Col sm={1}>{this.state.execution_results.detected_duplicates}</Col>
-                        </Row>
-                        <Row>
-                            <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Total Matches:</h4> </Col>
-                            <Col sm={1}>{this.state.execution_results.total_matches}</Col>
-                        </Row>
-                    </Col>
-                </Row>
-            </Form.Group>
-
-            : <div/>
-
 
         
         return (
@@ -285,7 +332,7 @@ class ExecutionView extends Component {
                                                 <span className="caption">Recall</span>
                                                     <ReactSpeedometer  
                                                         value={this.state.execution_results.recall} 
-                                                        maxValue={100} 
+                                                        maxValue={1} 
                                                         segments={5} 
                                                         segmentColors={[
                                                             "#ffad33",
@@ -304,7 +351,7 @@ class ExecutionView extends Component {
                                                 <span className="caption">Precision</span>
                                                     <ReactSpeedometer  
                                                         value={this.state.execution_results.precision} 
-                                                        maxValue={100} 
+                                                        maxValue={1} 
                                                         segments={5} 
                                                         segmentColors={[
                                                             "#ffad33",
@@ -323,7 +370,7 @@ class ExecutionView extends Component {
                                                 <span className="caption">F1-measure</span>
                                                     <ReactSpeedometer  
                                                         value={this.state.execution_results.f1_measure} 
-                                                        maxValue={100} 
+                                                        maxValue={1} 
                                                         segments={5} 
                                                         segmentColors={[
                                                             "#ffad33",
@@ -379,7 +426,7 @@ class ExecutionView extends Component {
                                         placeholder="Select Filetype" 
                                         name="export_filetype" 
                                         onChange={this.onChange}
-                                        disabled={false}
+                                        disabled={this.state.execution_status !== "Completed"}
                                         value={this.state.export_filetype}
                                     >
                                         <option value="" ></option>
@@ -387,14 +434,14 @@ class ExecutionView extends Component {
                                         <option value="RDF" >RDF</option>
                                         <option value="XML" >XML</option>
                                     </Form.Control>   
-                                    <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""}>Export</Button>
+                                    <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""} onClick={this.export}>Export</Button>
                                 </Form.Group>
                             </div>
                             
                             
                             
                             <div style={{float: 'right'}}>                                    	
-                                <Form.Group as={Row}   className="form-row">
+                                <Form.Group as={Row} className="form-row">
                                     <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Back</Button>
                                     <Link to="/">
                                         <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Start Over</Button>

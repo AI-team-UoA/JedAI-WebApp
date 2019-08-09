@@ -784,6 +784,14 @@ public class WorkflowManager {
 	public static void setBlock_cleaning(List<IBlockProcessing> block_cleaning) {
 		WorkflowManager.block_cleaning = block_cleaning;
 	}
+
+	public static EquivalenceCluster[] getEntityClusters() {
+		return entityClusters;
+	}
+
+	public static void setEntityClusters(EquivalenceCluster[] entityClusters) {
+		WorkflowManager.entityClusters = entityClusters;
+	}
 	
 	
 	
