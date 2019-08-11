@@ -6,21 +6,51 @@ import EntityProfileView from "./EntityProfileView"
 
 class Explorer extends Component {
 
+    
     constructor(...args) {
         super(...args);
         this.headers = []
-        this.pagination = <h1>Not Loaded</h1>
+        this.pagination = null
         this.maxPages = 0
         this.page = 1
 
         this.state = { 
             entities : [],
             headers :[]
-        }
+        }       
+        console.log("Constructor") 
+        this.updateView()
     }
     
+    updateView() {
+        console.log("updateView")
+        if (this.props.get_entities && this.state.entities.length === 0) {
+
+            axios.get(this.props.source+this.props.entity_id+"/explore/")
+                .then(res => {
+                	this.maxPages = res.data
+                	this.pagination = this.setPagination(this.page)
+                })
+                    
+            axios.get(this.props.source+this.props.entity_id+"/explore/" + this.page)
+                .then(res => {
+                	this.setState({
+	                    entities: res.data,
+	                    headers:  res.data[0].attributes
+                	})
+	            })  
+            
+        }
+        else if (!this.props.get_entities && this.state.entities.length !== 0){
+        	
+            this.setState({
+                entities: [],
+                headers:  []
+            })
+       }
+    }
  
-    // Form pagianation based on the requested page
+    // Form pagination based on the requested page
     setPagination(pageNumber){
         var displayed_pages = [];
         var  pagination 
@@ -107,40 +137,14 @@ class Explorer extends Component {
         }
     }
 
+    
+    // Get first data from the server
     componentDidUpdate() {
-    	if (this.props.get_entities && this.state.entities.length === 0) {
-            axios.get(this.props.source+this.props.entity_id+"/explore/")
-                .then(res => {
-                    this.maxPages = res.data
-                    this.pagination = this.setPagination(1)
-                })
-                
-            axios.get(this.props.source+this.props.entity_id+"/explore/" + this.page)
-                .then(
-                    res => {this.setState({
-                            entities: res.data,
-                            headers:  res.data[0].attributes
-                        })
-                    })
-                    
-            
-        }
-        else if (!this.props.get_entities && this.state.entities.length !== 0)
-       {
-        	
-        	console.log("EMPTY DATA")
-            this.setState({
-                entities: [],
-                headers:  []
-            })
-       }
+        this.updateView()
     }
 
-    render() {
-
-        // Get first data from the server
-        
-        
+    render() {    
+    	console.log(this.maxPages)
         return (
             <div>
                 <Jumbotron style={{backgroundColor:"white", border:"groove" }}>

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Blob } from 'react-blob'
-import {Jumbotron, Tabs, Tab, Form, Row, Col, Button, Spinner} from 'react-bootstrap';
+import {Jumbotron,Modal, Tabs, Tab, Form, Row, Col, Button, Spinner} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
 import {Link } from 'react-router-dom';
 import "../../../resources/static/css/main.css"
 import AlertModal from './workflowViews/utilities/AlertModal'
+import Explorer from './workflowViews/utilities/explorer/Explorer'
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 
@@ -16,6 +17,7 @@ class ExecutionView extends Component {
     constructor(...args) {
         super(...args);
         this.alertText = ""
+        this.explorer_get_entities = false;
         
         this.state = {
                 automatic_type: "Holistic",
@@ -42,6 +44,7 @@ class ExecutionView extends Component {
                 },
                 
                 alertShow: false,
+                show_explore_window : false
             }
         
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
@@ -67,6 +70,8 @@ class ExecutionView extends Component {
 
     handleAlertClose = () => this.setState({alertShow : false});
     handleAlerShow = () => this.setState({alertShow : true});
+    close_explore_window = () => this.setState({show_explore_window : false});
+    open_explore_window = () => this.setState({show_explore_window : true});
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
@@ -115,13 +120,24 @@ class ExecutionView extends Component {
             }
         });
     }
+    
+    
+    explore=(e) =>{
+    	if (this.state.show_explore_window)
+    		this.close_explore_window()
+    	else
+    		this.open_explore_window()
+
+    }
 
     
     
     // Execute the Workflow
     executeWorkFlow = (e) =>{
+    	
         this.setState({
-            execution_status: "Running"
+            execution_status: "Running",
+            show_explore_window: false
         })
         axios
             .get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
@@ -182,16 +198,17 @@ class ExecutionView extends Component {
                     </div>
                 break;
             case "Completed":
+                this.explorer_get_entities = true;
                 execution_status_view =
                     <div>
                         <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#00802b"}}><b>{this.state.execution_status}</b></span></h3>
                     </div>
                     
-                    // Execution Results
+               // Execution Results
                execution_stats = 
                     <Form.Group style={{position:"relative", left:"28%"}}>
                             <Row>
-                                <Col Col sm={3}>
+                                <Col sm={3}>
                                     <Row>
                                         <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Input Instances:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.input_instances}</Col>
@@ -257,7 +274,23 @@ class ExecutionView extends Component {
 
         
         return (
-            <div>
+        	<div>
+		      
+	        	<Modal show={this.state.show_explore_window} onHide={this.close_explore_window} size="xl">
+                	<Modal.Header closeButton>
+                    <Modal.Title>Explore</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body >
+                    	<Explorer source="/workflow/" entity_id={"3"} get_entities={this.explorer_get_entities}  />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.close_explore_window}>
+                        	Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+		        	
+		        	
                 <AlertModal title="Exception" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 <Jumbotron  className='jumbotron_2'>
                     <div className="container-fluid">
@@ -416,7 +449,7 @@ class ExecutionView extends Component {
                             <div style={{float:'left'}}>
                                 <Form.Group as={Row}  className="form-row">
                                     <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
-                                    <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Explore</Button>
+                                    <Button variant="secondary" style={{width:"100px", marginRight:"10px"}} disabled={this.state.execution_status !== "Completed"} onClick={this.explore}>Explore</Button>
                                     <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
                                 </Form.Group>
                                 <Form.Group as={Row}  className="form-row">
@@ -450,6 +483,9 @@ class ExecutionView extends Component {
                             </div>
                         </div>
                         <br/>
+                        
+                        
+	                   
 
                         
                     </div>

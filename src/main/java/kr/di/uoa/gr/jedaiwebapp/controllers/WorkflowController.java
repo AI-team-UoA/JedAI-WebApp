@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.JedaiOptions;
@@ -47,11 +49,11 @@ public class WorkflowController {
 	
 	@Autowired
 	private HttpServletRequest request;
-	@Autowired
-    private ApplicationContext applicationContext;
     
 	private final static int NO_OF_TRIALS = 100;
 	private Map<String, Object> methodsConfig;
+	private List<Pair<EntityProfileNode, EntityProfileNode>> detected_duplicates;
+	private int enities_per_page = 5;
 	
 	SSE_Manager sse_manager = new SSE_Manager();
 
@@ -362,10 +364,45 @@ public class WorkflowController {
 			ex.printStackTrace();
 		}
 	}
+	
+	
+	
+	/**
+     * Set the detected duplicate dataset
+     * 
+     * @return the number o pages
+     */
+	@GetMapping("/workflow/{id}/explore")
+	public int setExplore(){
+		detected_duplicates = WorkflowManager.getDetectedDuplicates();
+		return detected_duplicates.size()/enities_per_page;
+	}
+	
+	
+	
+	/**
+     * Calculate and return the instances for the requested page.
+     * The instances will be displayed in the Explore window
+     * 
+     * @return the instances for the requested page.
+     */
+	@GetMapping("/workflow/{id}/explore/{page}")
+	public List<Pair<EntityProfileNode, EntityProfileNode>> getExploreSubset(@PathVariable(value = "page") String page){
+		if (detected_duplicates == null) return null;
+		int int_page = Integer.parseInt(page);
+		int start = (int_page - 1) * enities_per_page;
+		int end = start + enities_per_page;
+		if (detected_duplicates.size() > 0) {
+			if (end > detected_duplicates.size())
+				end = detected_duplicates.size();
+			return detected_duplicates.subList(start, end);
+		}
+		else return null;
+	}
 
 	
 	
-	
+		
 	/**
      * The method is triggered when the used presses the "Execute Workflow" button.
      * Firstly set the parameters if the configuration type of any method is automatic. 
@@ -466,7 +503,7 @@ public class WorkflowController {
 	 *
 	 */
 	@GetMapping("/workflow")	
-	 public SseEmitter handle(HttpServletResponse response) {
+	public SseEmitter handle(HttpServletResponse response) {
 	    response.setHeader("Cache-Control", "no-store");
 
 	    SseEmitter emitter = new SseEmitter();

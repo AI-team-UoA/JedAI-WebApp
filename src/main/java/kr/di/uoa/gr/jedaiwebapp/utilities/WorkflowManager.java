@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.javatuples.Pair;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.datamodel.AbstractBlock;
@@ -19,7 +20,10 @@ import org.scify.jedai.utilities.ClustersPerformance;
 import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+
+import gnu.trove.list.TIntList;
 import gnu.trove.map.TObjectIntMap;
+import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 
@@ -375,11 +379,7 @@ public class WorkflowManager {
 			}
 			details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
 			 
-			
-			
-	    
-		    
-		
+					
 		    // Schema Clustering local optimization
 		    TObjectIntMap<String>[] scClusters = null;
 		    if (schema_clustering != null) {
@@ -396,8 +396,6 @@ public class WorkflowManager {
 		            scClusters = schema_clustering.getClusters(profilesD1, profilesD2);
 		        }
 		    }
-		    
-		    
 		    
 		    
 		    final List<AbstractBlock> blocks = new ArrayList<>();
@@ -483,9 +481,6 @@ public class WorkflowManager {
 		            index++;
 		        }
 		    }
-		    
-		    
-		    
 		    
 		
 		    // Block Cleaning methods local optimization	
@@ -684,6 +679,44 @@ public class WorkflowManager {
     
     
     
+	public static List<Pair<EntityProfileNode, EntityProfileNode>> getDetectedDuplicates(){
+		
+		List<Pair<EntityProfileNode, EntityProfileNode>> duplicates = new ArrayList<>();
+		
+		for (EquivalenceCluster ec : entityClusters) {
+			if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
+				
+				if (!ec.getEntityIdsD1().isEmpty()) { 
+					TIntList duplicate_list = ec.getEntityIdsD1();
+					if(duplicate_list.size() > 1 ) {
+						int id_1 = duplicate_list.get(0);
+						int id_2 = duplicate_list.get(1);
+						
+						EntityProfileNode entity_1 = new EntityProfileNode(WorkflowManager.profilesD1.get(id_1), id_1);
+						EntityProfileNode entity_2 = new EntityProfileNode(WorkflowManager.profilesD1.get(id_2), id_2);
+						
+						Pair<EntityProfileNode, EntityProfileNode> duplicate_pair = new Pair<EntityProfileNode, EntityProfileNode>(entity_1, entity_2);
+						duplicates.add(duplicate_pair);
+					}
+				}
+				
+			}
+			else {
+				if (!ec.getEntityIdsD1().isEmpty() && !ec.getEntityIdsD2().isEmpty()) {
+					//TODO: Ensure for this as well!
+					// Get the two entities and add them manually (there are always exactly two)
+					int id1 = ec.getEntityIdsD1().get(0);
+					int id2 = ec.getEntityIdsD2().get(0);
+					EntityProfileNode entity_1 = new EntityProfileNode(WorkflowManager.profilesD1.get(id1), id1);
+					EntityProfileNode entity_2 = new EntityProfileNode(WorkflowManager.profilesD2.get(id2), id2);
+					
+					Pair<EntityProfileNode, EntityProfileNode> duplicate_pair = new Pair<EntityProfileNode, EntityProfileNode>(entity_1, entity_2);
+					duplicates.add(duplicate_pair);					
+				}
+			}
+		}
+		return duplicates;
+	}
     
     
     
