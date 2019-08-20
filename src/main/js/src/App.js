@@ -31,11 +31,9 @@ class App extends Component {
                   <Modes />
                 </React.Fragment>
                 )}/>
-                <div >
                   <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
                   <Route exact path="/desktopmode" render={props=>(  <DesktopForms/> )}/>
                   <Route exact path="/workflow" render={props=>(  <ExecutionView/> )}/>
-                </div>  
           </div>
           <br />
           <br />
