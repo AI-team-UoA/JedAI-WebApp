@@ -63,6 +63,16 @@ class ProfileReader extends Component {
         
     }
 
+
+    // in case the dataread component change the state back to null
+    // in case the profileReader is the ground truth and the user changed
+    // an entity profile after had set the ground truth
+    componentDidUpdate(){
+        if (this.props.state === null && this.state.configurations !== null){
+            this.emptyConfiguration()
+        }
+    }
+
     // activated only by the filetype handler. 
     // it also cleans the configurations
     onChange = (e) => {
@@ -92,8 +102,9 @@ class ProfileReader extends Component {
         this.collapse_conf_flag = false;
         //tell explorer to empty your data
         this.explorer_get_entities = false
-        this.setState({source: conf_state.source, configurations: conf_state.configuration})
-        this.props.setEntity(this.state.entity_id, this.state)
+        var temp_state = {source: conf_state.source, configurations: conf_state.configuration, filetype: this.state.filetype} 
+        this.props.setEntity(this.state.entity_id, temp_state)
+        this.setState({source: conf_state.source, configurations: conf_state.configuration} )
         //tell explorer to fetch (probably new) data
         this.explorer_get_entities = true
         
