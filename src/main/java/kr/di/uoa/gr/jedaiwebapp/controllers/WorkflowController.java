@@ -64,6 +64,30 @@ public class WorkflowController {
 		this.methodsConfig = new HashMap<String, Object>();
 	}
 	
+	
+	
+	/**
+     * check the configurations of the data read step
+     *
+     * @return true if the configurations of data read ware set correctly 
+     */	
+	@GetMapping("/workflow/validate/{step}")	
+	public boolean validate_DataRead(@PathVariable(value = "step") String step) {
+		switch (step) {
+			case "dataread":
+				switch(WorkflowManager.er_mode) {
+					case JedaiOptions.DIRTY_ER:
+						return  WorkflowManager.profilesD1 != null && WorkflowManager.ground_truth != null;
+					case JedaiOptions.CLEAN_CLEAN_ER:
+						return  WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null && WorkflowManager.ground_truth != null;
+					default:
+						return false;
+				}
+			default:
+				return false;
+		}
+	}
+	
 
 	
 	
@@ -497,6 +521,7 @@ public class WorkflowController {
 		return anyAutomaticConfig();
 		
 	}
+	
 	
 	/**
 	 * Initialize the emitter which will be used in the SSE 

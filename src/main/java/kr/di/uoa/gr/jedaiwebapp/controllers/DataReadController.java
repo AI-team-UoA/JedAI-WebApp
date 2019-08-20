@@ -93,6 +93,8 @@ public class DataReadController {
 						EntityProfileNode entity_node = new EntityProfileNode(entity, i+1);
 						entityProfiles_1.add(entity_node);	
 					}	
+					duplicates = null;
+					WorkflowManager.ground_truth = null;
 					break;
 					
 				case "2":	
@@ -104,6 +106,8 @@ public class DataReadController {
 						EntityProfileNode entity_node = new EntityProfileNode(entity, i+1);
 						entityProfiles_2.add(entity_node);	
 					}
+					duplicates = null;
+					WorkflowManager.ground_truth = null;
 					break;
 					
 				case "3":
@@ -123,7 +127,6 @@ public class DataReadController {
 			}
 		}
 	}
-	
 	
 	
 	

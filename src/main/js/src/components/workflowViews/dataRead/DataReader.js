@@ -60,15 +60,18 @@ import axios from 'axios'
     setEntity = (entity_id, conf_state) => {
         switch(entity_id) {
             case "1":
-                this.setState({entity1_set: conf_state }, () => (this.props.submitState("data_reading", this.state)))
+                this.setState({entity1_set: conf_state, groundTruth_set: null }, () => (this.props.submitState("data_reading", this.state)))
+                this.alertText = "Ground-truth has not been set properly!"
                 break;
             case "2":
-                this.setState({entity2_set: conf_state}, () => (this.props.submitState("data_reading", this.state)))
+                this.setState({entity2_set: conf_state, groundTruth_set: null}, () => (this.props.submitState("data_reading", this.state)))
+                this.alertText = "Ground-truth has not been set properly!"
                 break;
             case "3":
                 this.setState({groundTruth_set: conf_state}, () => (this.props.submitState("data_reading", this.state)))
                 break;
             default:
+                this.alertText = "Entity profiles were not set properly!"
                 console.log("ERROR")
           }
     }
@@ -83,10 +86,19 @@ import axios from 'axios'
         if(this.state.er_mode === "dirty") isSet = this.state.entity1_set !==null && this.state.groundTruth_set !==null
         else if(this.state.er_mode === "clean") isSet = this.state.entity1_set !==null && this.state.entity2_set !== null && this.state.groundTruth_set !==null
         else isSet = false
-        if (isSet)
-            return true
+        if (isSet){
+            return axios
+                .get("/workflow/validate/dataread")
+                .then(res => {
+                    var validation_result = res.data
+                    if (!validation_result){
+                        this.alertText = "Entity profiles were not set properly!"
+                        this.handleAlerShow()
+                    }
+                    
+                    return validation_result})
+        }
         else{
-            
             this.handleAlerShow()
             return false
         }
