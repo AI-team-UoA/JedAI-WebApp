@@ -18,6 +18,7 @@ class ExecutionView extends Component {
         super(...args);
         this.alertText = ""
         this.explorer_get_entities = false;
+        window.scrollTo(0, 0)
         
         this.state = {
                 automatic_type: "Holistic",
