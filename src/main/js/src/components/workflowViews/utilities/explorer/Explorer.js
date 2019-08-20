@@ -33,11 +33,12 @@ class Explorer extends Component {
                 })
                     
             axios.get(this.props.source+this.props.entity_id+"/explore/" + this.page)
-                .then(res => {
-                	this.setState({
-	                    entities: res.data,
-	                    headers:  res.data[0].attributes
-                	})
+                .then(res => { if (res.data !== null){
+                        this.setState({
+                            entities: res.data,
+                            headers:  res.data[0].attributes
+                        })
+                    }
 	            })  
             
         }

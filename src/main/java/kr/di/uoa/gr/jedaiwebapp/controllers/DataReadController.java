@@ -141,11 +141,20 @@ public class DataReadController {
 		
 		switch(entity_id) {
 			case "1":
-				return this.entityProfiles_1.size()/enities_per_page;
+				if (this.entityProfiles_1 == null) 
+					return 0;
+				else
+					return this.entityProfiles_1.size()/enities_per_page;
 			case "2":
-				return this.entityProfiles_2.size()/enities_per_page;
+				if (this.entityProfiles_2 == null) 
+					return 0;
+				else
+					return this.entityProfiles_2.size()/enities_per_page;
 			case "3":
-				return this.duplicates.size()/enities_per_page;
+				if (this.duplicates == null) 
+					return 0;
+				else
+					return this.duplicates.size()/enities_per_page;
 			default:
 				return 0;
 		}
@@ -169,13 +178,22 @@ public class DataReadController {
 		
 		switch(entity_id) {
 			case "1":
-				return this.entityProfiles_1.subList(start, end);
+				if (this.entityProfiles_1 == null) 
+					return null;
+				else
+					return this.entityProfiles_1.subList(start, end);
 				
 			case "2":
-				return this.entityProfiles_2.subList(start, end);
+				if (this.entityProfiles_2 == null)
+					return null;
+				else
+					return this.entityProfiles_2.subList(start, end);
 			
 			case "3":
-				return this.duplicates.subList(start, end);
+				if (this.duplicates == null) 
+					return null;
+				else
+					return this.duplicates.subList(start, end);
 				
 			default:
 				return null;
