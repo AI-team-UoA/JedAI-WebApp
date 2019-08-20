@@ -18,12 +18,12 @@ class Explorer extends Component {
             entities : [],
             headers :[]
         }       
-        console.log("Constructor") 
+        
         this.updateView()
     }
     
     updateView() {
-        console.log("updateView")
+        
         if (this.props.get_entities && this.state.entities.length === 0) {
 
             axios.get(this.props.source+this.props.entity_id+"/explore/")
@@ -42,7 +42,8 @@ class Explorer extends Component {
             
         }
         else if (!this.props.get_entities && this.state.entities.length !== 0){
-        	
+        	this.maxPages = 0
+            this.page = 1
             this.setState({
                 entities: [],
                 headers:  []
@@ -144,7 +145,6 @@ class Explorer extends Component {
     }
 
     render() {    
-    	console.log(this.maxPages)
         return (
             <div>
                 <Jumbotron style={{backgroundColor:"white", border:"groove" }}>
