@@ -304,7 +304,7 @@ class BlockBuilding extends Component {
 
     //handle alert modal
     handleAlertClose = () => this.setState({alertShow : false});
-    handleAlerShow = () => this.setState({alertShow : true});
+    handleAlertShow = () => this.setState({alertShow : true});
 
 
     // Put selected methods into an array and return them back to the father compoenent
@@ -317,7 +317,7 @@ class BlockBuilding extends Component {
             }
         })
         if (selected_methods.length === 0) {
-            this.handleAlerShow()
+            this.handleAlertShow()
             return false
         }
         else{
@@ -328,6 +328,12 @@ class BlockBuilding extends Component {
             }).then(res => {
                 var success = res.data
                 this.props.submitState("block_building", selected_methods)
+                console.log(success)
+                if (!success){
+                    this.alertText = "Error while setting the Block Building methods.\nCheck the input parametrs"
+                    this.handleAlertShow()
+                }
+
                 return success
             })
         }
