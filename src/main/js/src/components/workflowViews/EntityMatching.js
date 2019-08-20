@@ -24,7 +24,7 @@ class EntityMatching extends Component {
                     },
                     {
                         label: "Similarity Threshold",
-                        value: 0.5
+                        value: "0.5"
                     }
                 ]
             },

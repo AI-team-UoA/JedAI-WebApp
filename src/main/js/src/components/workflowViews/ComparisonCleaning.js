@@ -27,11 +27,11 @@ class ComparisonCleaning extends Component {
                 parameters: [
                     {
                         label: "Inclusive Threshold",
-                        value: 0.5
+                        value: "0.5"
                     },
                     {
                         label: "Exclusive Threshold",
-                        value: 0.75
+                        value: "0.75"
                     }
                 ]
             },
@@ -39,11 +39,11 @@ class ComparisonCleaning extends Component {
                 parameters: [
                     {
                         label: "Weighting Scheme",
-                        value: 10
+                        value: "10"
                     },
                     {
                         label: "Invalid Parameter id",
-                        value: 1
+                        value: "1"
                     }
                 ]
             },

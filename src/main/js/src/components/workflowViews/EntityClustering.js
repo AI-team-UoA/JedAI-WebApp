@@ -16,7 +16,7 @@ class EntityClustering extends Component {
                 parameters: [
                     {
                         label: "Similarity Threshold",
-                        value: 0.5
+                        value: "0.5"
                     }
                 ]
             },
@@ -24,11 +24,11 @@ class EntityClustering extends Component {
                 parameters: [
                     {
                         label: "Similarity Threshold",
-                        value: 0.5
+                        value: "0.5"
                     },
                     {
                         label: "A-cap",
-                        value: 0.3
+                        value: "0.3"
                     }
                 ]
             },
@@ -36,19 +36,19 @@ class EntityClustering extends Component {
                 parameters: [
                     {
                         label: "Similarity Threshold",
-                        value: 0.5
+                        value: "0.5"
                     },
                     {
                         label: "Cluster Threshold",
-                        value: 0.001
+                        value: "0.001"
                     },
                     {
                         label: "Matrix Similarity Threshold",
-                        value: 0.00001
+                        value: "0.00001"
                     },
                     {
                         label: "Similarity Check Limit",
-                        value: 2
+                        value: "2"
                     }
                 ]
             }

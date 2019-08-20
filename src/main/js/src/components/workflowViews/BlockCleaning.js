@@ -21,7 +21,7 @@ class BlockCleaning extends Component {
                     [
                         {
                             label: "Purging Factor",
-                            value: 0.005
+                            value: "0.005"
                         }
                     ]
             },
@@ -30,7 +30,7 @@ class BlockCleaning extends Component {
                     [
                         {
                             label: "Smoothing Factor",
-                            value: 1.025
+                            value: "1.025"
                         }
                     ]
             },
@@ -39,7 +39,7 @@ class BlockCleaning extends Component {
                     [
                         {
                             label: "Filtering Ratio",
-                            value: 0.8
+                            value: "0.8"
                         }
                     ]
                 

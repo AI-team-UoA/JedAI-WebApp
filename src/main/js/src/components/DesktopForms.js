@@ -63,7 +63,7 @@ class DesktopForms extends Component {
                 },
                 {
                     label: "Similarity Threshold",
-                    value: 0.5
+                    value: "0.5"
                 }
             ]
         },
@@ -75,7 +75,7 @@ class DesktopForms extends Component {
             parameters  : [
                 {
                     label: "Similarity Threshold",
-                    value: 0.5
+                    value: "0.5"
                 }
             ]
         }
@@ -101,7 +101,7 @@ class DesktopForms extends Component {
                         parameters  : [
                             {
                                 label: "Similarity Threshold",
-                                value: 0.5
+                                value: "0.5"
                             }
                         ]
                     }

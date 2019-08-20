@@ -110,41 +110,41 @@ public class DynamicMethodConfiguration {
             case SUFFIX_ARRAYS:
                 // todo: make sure these are correct
                 return new SuffixArraysBlocking(
-                        (int) parameters.get(0).getValue(), // Maximum Suffix Frequency
-                        (int) parameters.get(1).getValue()  // Minimum Suffix Length
+                        Integer.parseInt((String)parameters.get(0).getValue()), // Maximum Suffix Frequency
+                        Integer.parseInt((String)parameters.get(1).getValue())  // Minimum Suffix Length
                 );
             case Q_GRAMS_BLOCKING:
                 return new QGramsBlocking(
-                        (int) parameters.get(0).getValue()
+                        Integer.parseInt((String)parameters.get(0).getValue())
                 );
             case SORTED_NEIGHBORHOOD:
                 return new SortedNeighborhoodBlocking(
-                        (int) parameters.get(0).getValue()
+                        Integer.parseInt((String)parameters.get(0).getValue())
                 );
             case EXTENDED_SUFFIX_ARRAYS:
                 // todo: make sure these are correct
                 return new ExtendedSuffixArraysBlocking(
-                        (int) parameters.get(0).getValue(), // Maximum Substring Frequency
-                        (int) parameters.get(1).getValue()  // Minimum Substring Length
+                        Integer.parseInt((String)parameters.get(0).getValue()), // Maximum Substring Frequency
+                        Integer.parseInt((String)parameters.get(1).getValue())  // Minimum Substring Length
                 );
             case EXTENDED_Q_GRAMS_BLOCKING:
                 return new ExtendedQGramsBlocking(
-                        (double) parameters.get(1).getValue(),
-                        (int) parameters.get(0).getValue()
+                		Double.parseDouble((String) parameters.get(1).getValue()),
+                        Integer.parseInt((String)parameters.get(0).getValue())
                 );
             case EXTENDED_SORTED_NEIGHBORHOOD:
                 return new ExtendedSortedNeighborhoodBlocking(
-                        (int) parameters.get(0).getValue()
+                        Integer.parseInt((String)parameters.get(0).getValue())
                 );
             case LSH_SUPERBIT_BLOCKING:
                 return new LSHSuperBitBlocking(
-                        (int) parameters.get(0).getValue(),
-                        (int) parameters.get(1).getValue()
+                        Integer.parseInt((String)parameters.get(0).getValue()),
+                        Integer.parseInt((String)parameters.get(1).getValue())
                 );
             case LSH_MINHASH_BLOCKING:
                 return new LSHMinHashBlocking(
-                        (int) parameters.get(0).getValue(),
-                        (int) parameters.get(1).getValue()
+                        Integer.parseInt((String)parameters.get(0).getValue()),
+                        Integer.parseInt((String)parameters.get(1).getValue())
                 );
             default:
                 return null;
@@ -167,17 +167,17 @@ public class DynamicMethodConfiguration {
         switch (methodName) {
             case JedaiOptions.BLOCK_FILTERING:
                 processingMethod = new BlockFiltering(
-                        (double) parameters.get(0).getValue()
+                		Double.parseDouble((String) parameters.get(0).getValue())
                 );
                 break;
             case JedaiOptions.SIZE_BASED_BLOCK_PURGING:
                 processingMethod = new SizeBasedBlockPurging(
-                        (double) parameters.get(0).getValue()
+                		Double.parseDouble((String) parameters.get(0).getValue())
                 );
                 break;
             case JedaiOptions.COMPARISON_BASED_BLOCK_PURGING:
                 processingMethod = new ComparisonsBasedBlockPurging(
-                        (double) parameters.get(0).getValue()
+                		Double.parseDouble((String) parameters.get(0).getValue())
                 );
                 break;
         }
@@ -239,15 +239,15 @@ public class DynamicMethodConfiguration {
 			
 			case JedaiOptions.CANOPY_CLUSTERING:
 				processingMethod = new CanopyClustering(
-						(double) parameters.get(0).getValue(), // Inclusive threshold
-						(double) parameters.get(1).getValue()  // Exclusive threshold
+						Double.parseDouble((String) parameters.get(0).getValue()), // Inclusive threshold
+						Double.parseDouble((String) parameters.get(1).getValue())  // Exclusive threshold 
 				);
 				break;
 			
 			case JedaiOptions.CANOPY_CLUSTERING_EXTENDED:
 				processingMethod = new ExtendedCanopyClustering(
-						(int) parameters.get(0).getValue(), // Inclusive threshold
-						(int) parameters.get(1).getValue()  // Exclusive threshold
+						Integer.parseInt((String)parameters.get(0).getValue()), // Inclusive threshold
+						Integer.parseInt((String)parameters.get(1).getValue())  // Exclusive threshold
 				);
 				break;
 		}
@@ -271,7 +271,7 @@ public class DynamicMethodConfiguration {
 		switch (emMethodName) {
 			
 			case JedaiOptions.GROUP_LINKAGE:
-				double simThr = (parameters != null) ? (double) parameters.get(2).getValue() : 0.5;
+				double simThr = (parameters != null) ?  Double.parseDouble((String) parameters.get(2).getValue()) : 0.5;
 				
 				rep = (parameters != null) ?
 						RepresentationModel.valueOf((String) parameters.get(0).getValue()) : RepresentationModel.TOKEN_UNIGRAM_GRAPHS;
@@ -310,43 +310,46 @@ public class DynamicMethodConfiguration {
 		switch (methodName) {
 			case JedaiOptions.CENTER_CLUSTERING:
 				ecMethod = new CenterClustering(
-				(double) parameters.get(0).getValue()
+						Double.parseDouble((String) parameters.get(0).getValue())
 				);
 				break;
 				
 			case JedaiOptions.CONNECTED_COMPONENTS_CLUSTERING:
 				ecMethod = new ConnectedComponentsClustering(
-						(double) parameters.get(0).getValue());
+						Double.parseDouble((String) parameters.get(0).getValue())
+				);
 				break;
 				
 			case JedaiOptions.CUT_CLUSTERING:
 				ecMethod = new CutClustering(
-					(double) parameters.get(1).getValue(),  // 1st parameter of CutClustering, but 2nd in JedAI-core
-					(double) parameters.get(0).getValue());
+					Double.parseDouble((String) parameters.get(1).getValue()),  // 1st parameter of CutClustering, but 2nd in JedAI-core
+					Double.parseDouble((String) parameters.get(0).getValue())
+				);
 				break;
 				
 			case JedaiOptions.MARKOV_CLUSTERING:
+				
 				ecMethod = new MarkovClustering(
-					(double) parameters.get(1).getValue(),  // Cluster Threshold
-					(double) parameters.get(2).getValue(),  // Matrix Similarity Threshold
-					(int) parameters.get(3).getValue(),     // Similarity Checks Limit
-					(double) parameters.get(0).getValue()   // Similarity Threshold
+					Double.parseDouble((String) parameters.get(1).getValue()) ,  // Cluster Threshold
+					Double.parseDouble((String) parameters.get(2).getValue()),  // Matrix Similarity Threshold
+					(int) Double.parseDouble((String) parameters.get(3).getValue()),     // Similarity Checks Limit
+					Double.parseDouble((String) parameters.get(0).getValue())   // Similarity Threshold
 				);
 				break;
 				
 			case JedaiOptions.MERGE_CENTER_CLUSTERING:
 				ecMethod = new MergeCenterClustering(
-						(double) parameters.get(0).getValue());
+						Double.parseDouble((String) parameters.get(0).getValue()));
 				break;
 				
 			case JedaiOptions.RICOCHET_SR_CLUSTERING:
 				ecMethod = new RicochetSRClustering(
-						(double) parameters.get(0).getValue());
+						Double.parseDouble((String) parameters.get(0).getValue()));
 				break;
 				
 			case JedaiOptions.UNIQUE_MAPPING_CLUSTERING:
 				ecMethod = new UniqueMappingClustering(
-						(double) parameters.get(0).getValue());
+						Double.parseDouble((String) parameters.get(0).getValue()));
 				break;
 				
 			default:

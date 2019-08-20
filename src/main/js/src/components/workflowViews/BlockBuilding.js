@@ -26,7 +26,7 @@ class BlockBuilding extends Component {
                     [
                         {
                             label: "Window Size",
-                            value: 4
+                            value: "4"
                         }
                     ]
                 
@@ -36,7 +36,7 @@ class BlockBuilding extends Component {
                     [   
                         {
                             label: "Window Size",
-                            value: 2
+                            value: "2"
                         }
                     ]
             },
@@ -45,7 +45,7 @@ class BlockBuilding extends Component {
                     [
                         {
                             label: "Q-Gram Size",
-                            value: 6
+                            value: "6"
                         }
                     ]
             },
@@ -54,11 +54,11 @@ class BlockBuilding extends Component {
                     [
                         {
                             label: "Q-Gram Size",
-                            value: 6
+                            value: "6"
                         },
                         {
                             label: "Combination Threshold",
-                            value: 0.95
+                            value: "0.95"
                         }
                     ]   
             },
@@ -67,11 +67,11 @@ class BlockBuilding extends Component {
                     [
                         {
                             label: "Minimum Suffix Lenght",
-                            value: 6
+                            value: "6"
                         },
                         {
                             label: "Maximum Suffix Frequency",
-                            value: 53
+                            value: "53"
                         }
                     ]
             },
@@ -80,11 +80,11 @@ class BlockBuilding extends Component {
                     [
                         {
                             label: "Minimum Substring Lenght",
-                            value: 6
+                            value: "6"
                         },
                         {
                             label: "Maximum Substring Frequency",
-                            value: 39
+                            value: "39"
                         }
                     ]
             },
@@ -93,11 +93,11 @@ class BlockBuilding extends Component {
                     [
                         {
                             label: "Band Size",
-                            value: 5
+                            value: "5"
                         },
                         {
                             label: "Number of Bands",
-                            value: 30
+                            value: "30"
                         }
                     ]
             },
@@ -106,11 +106,11 @@ class BlockBuilding extends Component {
                     [
                         {
                             label: "Band Size",
-                            value: 5
+                            value: "5"
                         },
                         {
                             label: "Number of Bands",
-                            value: 30
+                            value: "30"
                         }
                     ]
             }
@@ -328,7 +328,6 @@ class BlockBuilding extends Component {
             }).then(res => {
                 var success = res.data
                 this.props.submitState("block_building", selected_methods)
-                console.log(success)
                 if (!success){
                     this.alertText = "Error while setting the Block Building methods.\nCheck the input parametrs"
                     this.handleAlertShow()
