@@ -1,6 +1,8 @@
+
 import {Modal, Button} from 'react-bootstrap/';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react'
+import "../../../../../resources/static/css/main.css"
 
 // Open Alert window
 class AlertModal extends Component{
@@ -8,7 +10,7 @@ class AlertModal extends Component{
         return (
             <div>
             
-                <Modal show={this.props.show} onHide={this.props.handleClose}>
+                <Modal show={this.props.show} onHide={this.props.handleClose} >
                     <Modal.Header closeButton>
                         <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>
@@ -35,5 +37,4 @@ AlertModal.propTypes = {
 
 
 export default AlertModal;
-
 

@@ -321,7 +321,7 @@ class BlockBuilding extends Component {
             return false
         }
         else{
-            axios({
+            return axios({
                 url: '/workflow/set_configurations/blockbuilding',
                 method: 'POST',
                 data: selected_methods
