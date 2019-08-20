@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 	
-	@GetMapping("/*")	
+	@GetMapping(value={"/clustermode", "/desktopmode", "/workflow", "/error"})	
 	public String renderHome() {
-		
 		return "index";
 		
 	}

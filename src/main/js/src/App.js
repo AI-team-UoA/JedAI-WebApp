@@ -6,7 +6,8 @@ import Modes from './components/Modes'
 import ClusterForm from './components/ClusterForm'
 import DesktopForms from './components/DesktopForms'
 import ExecutionView from './components/ExecutionView'
- 
+import ErrorComponent from './components/ErrorComponent'
+
 
 
 
@@ -28,12 +29,13 @@ class App extends Component {
               <Header />
                 <Route exact path="/"  render={props=>(
                   <React.Fragment >
-                  <Modes />
+                    <Modes />
                 </React.Fragment>
                 )}/>
-                  <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
-                  <Route exact path="/desktopmode" render={props=>(  <DesktopForms/> )}/>
-                  <Route exact path="/workflow" render={props=>(  <ExecutionView/> )}/>
+                <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
+                <Route exact path="/desktopmode" render={props=>(  <DesktopForms/> )}/>
+                <Route exact path="/workflow" render={props=>(  <ExecutionView/> )}/>
+                <Route exact path="/*" render={props=>(  <ErrorComponent/> )}/>
           </div>
           <br />
           <br />
