@@ -17,8 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import gnu.trove.iterator.TIntIterator;
 import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
 import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
-import kr.di.uoa.gr.jedaiwebapp.utilities.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 import java.io.File;
 import java.io.IOException;

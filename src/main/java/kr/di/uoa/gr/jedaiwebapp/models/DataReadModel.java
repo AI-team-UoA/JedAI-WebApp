@@ -25,8 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.list.TIntList;
-import kr.di.uoa.gr.jedaiwebapp.utilities.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 public class DataReadModel {
 	private String filetype;

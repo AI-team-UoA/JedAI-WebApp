@@ -26,6 +26,7 @@ import gnu.trove.map.TObjectIntMap;
 import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 public class WorkflowManager {
 	

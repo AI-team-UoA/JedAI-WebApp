@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.utilities;
+package kr.di.uoa.gr.jedaiwebapp.utilities.configurations;
 
 import java.util.List;
 
