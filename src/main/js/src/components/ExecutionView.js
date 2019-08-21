@@ -144,11 +144,13 @@ class ExecutionView extends Component {
             .get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
             .then(res => {
             	
-                var data_stat = res.data.value0
-                var total_time = res.data.value1
-                var no_istamces = res.data.value2
+               
                 
                 if (res.data !== null){
+                    var data_stat = res.data.value0
+                    var total_time = res.data.value1
+                    var no_istamces = res.data.value2
+                    
                     var reuslts = {
                         recall: data_stat.recall,
                         f1_measure: data_stat.fmeasure,
@@ -298,7 +300,9 @@ class ExecutionView extends Component {
                         <br/>
                         <div style={{marginBottom:"5px"}}> 
                             <h1 style={{display:'inline', marginRight:"20px"}}>Workflow Execution</h1> 
-                            <span className="workflow-desc" >Press "Run algorithm" to run the algorithm. You can export the results to a CSV file with the "Export CSV" button.</span>
+                            <span className="workflow-desc" >   Press "Run algorithm" to run the algorithm. 
+                                                                You can export the results to a CSV file with the 
+                                                                "Export CSV" button.</span>
                         </div>
 
                         <br/>
@@ -449,13 +453,30 @@ class ExecutionView extends Component {
                         <div style={{marginBottom: '20px', paddingBottom:'20px'}}>
                             <div style={{float:'left'}}>
                                 <Form.Group as={Row}  className="form-row">
-                                    <Button variant="primary" style={{width:"150", marginRight:"10px"}} onClick={this.executeWorkFlow}>Execute Workflow</Button>
-                                    <Button variant="secondary" style={{width:"100px", marginRight:"10px"}} disabled={this.state.execution_status !== "Completed"} onClick={this.explore}>Explore</Button>
-                                    <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Show Plot</Button>
+                                    <Button variant="primary" 
+                                        style={{width:"180", marginRight:"10px"}} 
+                                        onClick={this.executeWorkFlow}
+                                        disabled={this.state.execution_status === "Running"}
+                                    >
+                                        <span className="fa fa-play-circle" style={{marginRight: "10px"}}/>
+                                        Execute Workflow
+                                    </Button>
+                                    <Button variant="secondary" 
+                                        style={{width:"100px", marginRight:"10px"}} 
+                                        disabled={this.state.execution_status !== "Completed"} 
+                                        onClick={this.explore}>
+                                            Explore
+                                        </Button>
+                                    <Button variant="secondary" 
+                                        style={{width: "100px", marginRight:"10px"}}
+                                        disabled={this.state.execution_status !== "Completed"}
+                                    >
+                                        Show Plot
+                                    </Button>
                                 </Form.Group>
                                 <Form.Group as={Row}  className="form-row">
                                     <Form.Control
-                                        style={{width:"260px", marginRight:"10px"}} 
+                                        style={{width:"290px", marginRight:"10px"}} 
                                         as="select" 
                                         placeholder="Select Filetype" 
                                         name="export_filetype" 
@@ -468,7 +489,13 @@ class ExecutionView extends Component {
                                         <option value="RDF" >RDF</option>
                                         <option value="XML" >XML</option>
                                     </Form.Control>   
-                                    <Button style={{width:"100px", marginRight:"10px"}} disabled={this.state.export_filetype === ""} onClick={this.export}>Export</Button>
+                                    <Button 
+                                        style={{width:"100px", marginRight:"10px"}} 
+                                        disabled={this.state.export_filetype === ""} 
+                                        onClick={this.export}
+                                    >
+                                        Export
+                                    </Button>
                                 </Form.Group>
                             </div>
                             
@@ -476,9 +503,20 @@ class ExecutionView extends Component {
                             
                             <div style={{float: 'right'}}>                                    	
                                 <Form.Group as={Row} className="form-row">
-                                    <Button variant="secondary" style={{width:"100px", marginRight:"10px"}}>Back</Button>
+                                    <Button variant="secondary" 
+                                        style={{width:"100px", marginRight:"10px"}}
+                                        disabled={this.state.execution_status !== "Running"}
+                                    >
+                                        <span className="fa fa-stop" style={{marginRight: "10px"}}/>
+                                        Stop
+                                    </Button>
                                     <Link to="/">
-                                        <Button variant="secondary" style={{width: "100px", marginRight:"10px"}}>Start Over</Button>
+                                        <Button variant="secondary" 
+                                            style={{width: "100px", marginRight:"10px"}}
+                                            disabled={this.state.execution_status === "Running"}
+                                        >
+                                            Start Over
+                                        </Button>
                                     </Link>
                                 </Form.Group>
                             </div>

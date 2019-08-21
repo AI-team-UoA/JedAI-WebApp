@@ -69,9 +69,9 @@ class DesktopForms extends Component {
         },
         
         entity_clustering: {
-            method_name: "CONNECTED_COMPONENTS_CLUSTERING",
+            method_name: "CENTER_CLUSTERING",
             configuration_type: "Default",
-            label: "Connected Components Clustering",
+            label: "Center Clustering",
             parameters  : [
                 {
                     label: "Similarity Threshold",
