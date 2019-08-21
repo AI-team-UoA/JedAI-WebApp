@@ -144,9 +144,8 @@ class ExecutionView extends Component {
             .get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
             .then(res => {
             	
-               
+                if (res.data !== null && res.data !== ""){
                 
-                if (res.data !== null){
                     var data_stat = res.data.value0
                     var total_time = res.data.value1
                     var no_istamces = res.data.value2
@@ -175,6 +174,11 @@ class ExecutionView extends Component {
                     })
                 }
             })
+    }
+
+
+    stop_execution = (e) => {
+        axios.get("/workflow/stop/")
     }
 
     render() {
@@ -506,6 +510,7 @@ class ExecutionView extends Component {
                                     <Button variant="secondary" 
                                         style={{width:"100px", marginRight:"10px"}}
                                         disabled={this.state.execution_status !== "Running"}
+                                        onClick={this.stop_execution}
                                     >
                                         <span className="fa fa-stop" style={{marginRight: "10px"}}/>
                                         Stop

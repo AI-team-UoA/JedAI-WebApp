@@ -206,6 +206,8 @@ public class WorkflowManager {
 	 * */
 	public static ClustersPerformance runWorkflow(boolean final_run)  {
 		try {
+			
+			
 			String event_name="execution_step";
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
 			eventPublisher = context.getBean(EventPublisher.class);
@@ -340,10 +342,14 @@ public class WorkflowManager {
 	        eventPublisher.publish("", event_name);
 	        return clp;
 		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			setErrorMessage(e.getMessage());
+			return null;
+		}
         catch(Exception e) {
         	e.printStackTrace();
-			String error = e.getMessage();
-			eventPublisher.publish(error, "exception");
+        	setErrorMessage(e.getMessage());
 			return null;
 		}
         
@@ -361,6 +367,8 @@ public class WorkflowManager {
 	public static ClustersPerformance runStepByStepWorkflow(Map<String, Object> methodsConfig, boolean random) {
 	
 		try {
+			
+			
 			double bestA = 0, time1, time2, originalComparisons;
 		    int bestIteration = 0, iterationsNum;
 		    BlocksPerformance blp;
@@ -519,10 +527,7 @@ public class WorkflowManager {
 		            index++;
 		        }
 		    }
-		    
-		    
-		
-		    
+
 		    // Comparison Cleaning local optimization
 		    eventPublisher.publish("Comparison Cleaning", event_name);
 		    time1 = System.currentTimeMillis();
@@ -667,19 +672,31 @@ public class WorkflowManager {
 		    eventPublisher.publish("", event_name);
 		    return clp;
 		}
-		
 		catch(Exception e) {
 			e.printStackTrace();
-			String error = e.getMessage();
-			eventPublisher.publish(error, "exception");
+			setErrorMessage(e.getMessage());
 			return null;
 		}
+	}
+	
+	
+	
+	/**
+     * send the error message to the front-end
+     *
+     */
+	public static void setErrorMessage(String error_msg) {
+		eventPublisher.publish(error_msg, "exception");
 	}
     
     
     
     
-    
+	/**
+     * Construct a list containing the detected duplicates
+     * 
+     * @return the list of the detected duplicates
+     */
 	public static List<Pair<EntityProfileNode, EntityProfileNode>> getDetectedDuplicates(){
 		
 		List<Pair<EntityProfileNode, EntityProfileNode>> duplicates = new ArrayList<>();

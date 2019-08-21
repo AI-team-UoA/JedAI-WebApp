@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,11 +37,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
-import kr.di.uoa.gr.jedaiwebapp.utilities.DynamicMethodConfiguration;
-import kr.di.uoa.gr.jedaiwebapp.utilities.JedaiOptions;
-import kr.di.uoa.gr.jedaiwebapp.utilities.MethodConfigurations;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.DynamicMethodConfiguration;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
 
 
 
@@ -52,13 +57,30 @@ public class WorkflowController {
 	private List<Pair<EntityProfileNode, EntityProfileNode>> detected_duplicates;
 	private int enities_per_page = 5;
 	
-	SSE_Manager sse_manager = new SSE_Manager();
-
-	
+	private SSE_Manager sse_manager;;
+	private ExecutorService exec ;
+	private static Future<ClustersPerformance> future_clp = null;
 	
 	WorkflowController(){
+		exec = Executors.newSingleThreadExecutor();
 		
+		sse_manager = new SSE_Manager();
 		this.methodsConfig = new HashMap<String, Object>();
+	}
+	
+	
+	/**
+	 * Initialize the emitter which will be used in the SSE 
+	 *
+	 */
+	@GetMapping("/workflow/sse")	
+	public SseEmitter getEmitter(HttpServletResponse response) {
+	    response.setHeader("Cache-Control", "no-store");
+
+	    SseEmitter emitter = new SseEmitter();
+	    sse_manager.setEmitter(emitter);
+	     
+	    return emitter;
 	}
 	
 	
@@ -435,6 +457,7 @@ public class WorkflowController {
 			@PathVariable(value = "automatic_type") String automatic_type,
 			@PathVariable(value = "search_type") String search_type) {
 		try {
+			
 			ClustersPerformance clp = null;
 			double start_time = System.currentTimeMillis();
 			
@@ -444,8 +467,6 @@ public class WorkflowController {
 			else
 				no_instances = WorkflowManager.profilesD1.size() + WorkflowManager.profilesD2.size();
 			
-			
-
 			if(this.anyAutomaticConfig()) {
 				
 				if(automatic_type.equals(JedaiOptions.AUTOCONFIG_HOLISTIC)) {				
@@ -461,7 +482,18 @@ public class WorkflowController {
 	
 	                    // Run a workflow and check its F-measure
 	                    
-	                    clp = WorkflowManager.runWorkflow(false);
+	                    // Execute Workflow in different thread in order to be stoppable
+	                    
+	                    future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(false);});
+	                    if(future_clp.isCancelled()) {
+	                    	System.out.println("Canceled 1");
+	                    	exec.shutdownNow();
+	                    	return null;
+	                    }
+	                    clp = future_clp.get();
+	                    
+	                    
+	                    
 	
 	                    // If there was a problem with this random workflow, skip this iteration
 	                    if (clp == null) {
@@ -482,28 +514,85 @@ public class WorkflowController {
 		                iterateHolisticRandom(bestIteration);
 		
 		                // Run the final workflow (whether there was an automatic configuration or not)
-		                clp =  WorkflowManager.runWorkflow(true);
+		                
+		                // Execute Workflow in different thread in order to be stoppable
+		                future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(true);});
+		                if(future_clp.isCancelled()) {
+	                    	System.out.println("Canceled 2");
+	                    	exec.shutdownNow();
+	                    	return null;
+	                    }
+	                    clp = future_clp.get();
+	                    	                    
+	                    exec.shutdownNow();
 		                return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
 		               
 	                }
 				}
 				else {
 					 // Step-by-step automatic configuration. Set random or grid depending on the selected search type.
-					clp =  WorkflowManager.runStepByStepWorkflow(methodsConfig, search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH));
+					
+					// Execute Workflow in different thread in order to be stoppable
+					future_clp =  exec.submit(
+							() -> {
+									return WorkflowManager.runStepByStepWorkflow(methodsConfig, search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH));
+								}
+							);
+					if(future_clp.isCancelled()) {
+                    	System.out.println("Canceled 3");
+                    	exec.shutdownNow();
+                    	return null;
+                    }
+                    clp = future_clp.get();
+                    
+                    exec.shutdownNow();
 					return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
 				}
 				
 			}
-			 // Run workflow without any automatic configuration
-	        clp = WorkflowManager.runWorkflow(true);
-	        return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
+			// Run workflow without any automatic configuration
+			
+			// Execute Workflow in different thread in order to be stoppable
+			future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(true);});
+			if(future_clp.isCancelled()) {
+            	System.out.println("Canceled 4");
+            	exec.shutdownNow();
+            	return null;
+            }
+            clp = future_clp.get();
+            
+	        
+            exec.shutdownNow();
+            return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
+		}
+		catch(InterruptedException|ExecutionException e ) {
+			e.printStackTrace();
+			WorkflowManager.setErrorMessage(e.getMessage());
+			System.out.println("Canceled 5");
+			exec.shutdownNow();
+			return null;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+			WorkflowManager.setErrorMessage(e.getMessage());
+			System.out.println("Canceled 6");
+			exec.shutdownNow();
 			return null;
 		}
 		
-	}	
+	}
+	
+	
+	/**
+	 *  
+	 * kill the thread that executes the workflow
+	 * */	
+	@GetMapping("/workflow/stop/")
+	public void stopExecution() {
+		
+		boolean res = future_clp.cancel(true);
+		System.out.println("shutting down ---> " + res + " isCancelled " + future_clp.isCancelled() + " isDone " + future_clp.isDone());
+	}
 			
 		
 	/**
@@ -515,25 +604,6 @@ public class WorkflowController {
 		return anyAutomaticConfig();
 		
 	}
-	
-	
-	/**
-	 * Initialize the emitter which will be used in the SSE 
-	 *
-	 */
-	@GetMapping("/workflow/sse")	
-	public SseEmitter handle(HttpServletResponse response) {
-	    response.setHeader("Cache-Control", "no-store");
-
-	    SseEmitter emitter = new SseEmitter();
-	    sse_manager.setEmitter(emitter);
-	     
-	    return emitter;
-		
-	}
-	
-	
-	
 	
 	
 	
