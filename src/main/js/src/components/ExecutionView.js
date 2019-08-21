@@ -50,7 +50,7 @@ class ExecutionView extends Component {
         
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
    
-        this.eventSource = new EventSource("/workflow") 
+        this.eventSource = new EventSource("/workflow/sse") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
         
         this.eventSource.addEventListener("workflow_details", (e) => {

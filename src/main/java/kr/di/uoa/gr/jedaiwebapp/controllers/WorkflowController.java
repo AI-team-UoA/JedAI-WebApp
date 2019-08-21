@@ -521,7 +521,7 @@ public class WorkflowController {
 	 * Initialize the emitter which will be used in the SSE 
 	 *
 	 */
-	@GetMapping("/workflow")	
+	@GetMapping("/workflow/sse")	
 	public SseEmitter handle(HttpServletResponse response) {
 	    response.setHeader("Cache-Control", "no-store");
 

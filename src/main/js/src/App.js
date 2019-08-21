@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom'; 
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'; 
 
 import Header from './components/layout/Headers'
 import Modes from './components/Modes'
@@ -26,16 +26,18 @@ class App extends Component {
         return (
           <Router>
             <div className="App">
-              <Header />
-                <Route exact path="/"  render={props=>(
-                  <React.Fragment >
-                    <Modes />
-                </React.Fragment>
-                )}/>
+            <Header />
+            <div>
+              <Switch>
+                <Route exact path="/"  render={props=>(<React.Fragment ><Modes /></React.Fragment>)}/>
                 <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
                 <Route exact path="/desktopmode" render={props=>(  <DesktopForms/> )}/>
                 <Route exact path="/workflow" render={props=>(  <ExecutionView/> )}/>
                 <Route exact path="/*" render={props=>(  <ErrorComponent/> )}/>
+              </Switch>
+            </div>
+                
+                
           </div>
           <br />
           <br />
