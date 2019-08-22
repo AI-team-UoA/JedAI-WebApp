@@ -723,6 +723,9 @@ class BlockBuilding extends Component {
                         </Jumbotron>
                     </div>
                 </Collapse>
+
+                <br/>
+                <br/>
                 
             </div>
         )

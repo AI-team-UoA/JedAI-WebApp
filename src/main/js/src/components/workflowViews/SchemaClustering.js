@@ -176,6 +176,9 @@ import axios from 'axios';
                         </Jumbotron>
                     </div>
                 </Collapse>
+
+                <br/>
+                <br/>
             </div>
         )
     }

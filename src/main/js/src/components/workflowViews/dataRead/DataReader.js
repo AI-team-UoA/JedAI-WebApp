@@ -158,6 +158,9 @@ import axios from 'axios'
                     <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.er_mode !== "clean"} type="entity" setEntity={this.setEntity} state={this.state.entity2_set}/> 
                     <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.er_mode === "" || disable_ground_truth} type="ground-truth" setEntity={this.setEntity} state={this.state.groundTruth_set} />   
                     
+                    <br/>
+                    <br/>
+                    
                 </div>
             </div>   
         )

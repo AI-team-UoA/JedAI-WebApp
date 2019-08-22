@@ -214,7 +214,7 @@ class ExecutionView extends Component {
                     
                // Execution Results
                execution_stats = 
-                    <Form.Group style={{position:"relative", left:"28%"}}>
+                    <Form.Group style={{marginLeft:"28%"}}>
                             <Row>
                                 <Col sm={3}>
                                     <Row>

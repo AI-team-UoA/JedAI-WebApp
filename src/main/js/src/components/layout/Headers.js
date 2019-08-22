@@ -6,12 +6,13 @@ class Headers extends Component {
     render() {
         return (
             <div style={{textAlign:'center'}}>
+                <br/>
                 <p>
                     <Link to="/">
                         <img src={jedai_logo}  /> 
                     </Link>
-                    
                 </p>
+                <br/>
             </div>
         );
     }

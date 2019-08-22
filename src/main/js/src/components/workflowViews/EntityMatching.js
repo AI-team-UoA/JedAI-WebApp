@@ -263,7 +263,8 @@ class EntityMatching extends Component {
                     </div>
                 </Collapse>
 
-
+                <br/>
+                <br/>
             </div>
         )
     }

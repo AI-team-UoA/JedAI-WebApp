@@ -97,10 +97,13 @@ class ConfirmConfiguration extends Component {
                 <ConfigurationsView  type="inline" title="Entity Matching" data={entity_matching}/>
                 <ConfigurationsView  type="inline" title="Entity Clustering" data={entity_clustering}/>
 
+                <br/>
+                <br/>
+                
                 <Link to="/workflow">
                     <Button style={{float: 'right'}} >Confirm</Button>
                 </Link>
-
+                
             </div>
         )
     }
