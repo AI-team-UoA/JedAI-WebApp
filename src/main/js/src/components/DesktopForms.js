@@ -124,7 +124,7 @@ class DesktopForms extends Component {
             
                 <Jumbotron  className='jumbotron_2'>
                     <div className="container-fluid">
-                        <div className='step-progress'>
+                        <div className="step-progress">
                             <StepZilla    
                                 steps={steps} 
                                 showSteps={true}

@@ -19,6 +19,7 @@
   padding-right: 0px;
   width:45%;
 }
+
 .jumbotron_parameters{
   background-color: white;
   border: groove;
@@ -30,6 +31,7 @@
   width: 50%;
   margin:auto;
 }
+
 
 
 .workflow-container {
@@ -102,9 +104,14 @@
     vertical-align: top;
     display: inline-block;
     text-align: center;
+    margin-right: 25px;
 }
 
 .caption {
   margin-bottom: 20px;
   display: block;
+}
+
+.btn {
+	
 }

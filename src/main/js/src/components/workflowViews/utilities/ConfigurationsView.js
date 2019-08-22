@@ -33,15 +33,15 @@ class ConfigurationsView extends Component {
                     return_stmnt = 
                             <Form.Row>
                                 <Col sm={title_col}>
-                                    <Form.Label style={{color:"#990000"}}><h5>{title+ ": "}</h5></Form.Label> 
+                                    <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
                                 </Col>
                                 <Col sm={empty_col}></Col>
                                 <Col sm={big_col}>
                                     <Table  striped bordered hover size="sm">
                                         <thead>
                                             <tr>
-                                                <th style={{color:"#990000"}}>Method</th>
-                                                {data.parameters.map((parameter, i) => (<th key={i} style={{color:"#990000"}}>{parameter.label}</th>))}
+                                                <th style={{color:"#4663b9"}}>Method</th>
+                                                {data.parameters.map((parameter, i) => (<th key={i} style={{color:"#4663b9"}}>{parameter.label}</th>))}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -58,14 +58,14 @@ class ConfigurationsView extends Component {
                     return_stmnt = 
                             <Form.Row>
                                 <Col sm={title_col}>
-                                    <Form.Label style={{color:"#990000"}}><h5>{title+ ": "}</h5></Form.Label> 
+                                    <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
                                 </Col>
                                 <Col sm={empty_col}></Col>
                                 <Col sm={value_col_2}>
                                     {data.label}
                                 </Col>
                                 <Col sm={value_col_2}>
-                                    <h5 style={{color:"#990000", marginRight:'100px'}}>Configuration:</h5> 
+                                    <h5 style={{color:"#4663b9", marginRight:'100px'}}>Configuration:</h5> 
                                 </Col>
                                 <Col sm={value_col_1}>
                                     {data.configuration_type}
@@ -77,7 +77,7 @@ class ConfigurationsView extends Component {
                 return_stmnt =
                         <Form.Row>
                             <Col sm={title_col}>
-                                <Form.Label style={{color:"#990000"}}><h5>{title+ ": "}</h5></Form.Label> 
+                                <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
                             </Col>
                             <Col sm={empty_col}></Col>
                             <Col sm={2}>
@@ -93,16 +93,16 @@ class ConfigurationsView extends Component {
             return_stmnt = 
                     <Form.Row>
                         <Col sm={title_col}>
-                            <Form.Label style={{color:"#990000"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
+                            <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
                         </Col>
                         <Col sm={empty_col}></Col>
                         <Col sm={big_col}>
                             <Table  striped bordered hover size="sm">
                                 <thead>
                                     <tr>
-                                        <th style={{color:"#990000"}}>Method</th>
-                                        <th style={{color:"#990000"}}>Configuration</th>
-                                        <th style={{color:"#990000"}}>Parameters</th>
+                                        <th style={{color:"#4663b9"}}>Method</th>
+                                        <th style={{color:"#4663b9"}}>Configuration</th>
+                                        <th style={{color:"#4663b9"}}>Parameters</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -138,7 +138,7 @@ class ConfigurationsView extends Component {
                 
                     <Form.Row>
                         <Col sm={title_col}>
-                            <Form.Label style={{color:"#990000"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
+                            <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
                         </Col>
                         <Col sm={empty_col}></Col>
                         <Col sm={big_col}>
@@ -153,7 +153,7 @@ class ConfigurationsView extends Component {
         }
         return(
             <div>
-                <div style={{margin:'auto', position:'relative', left:'12%'}}>
+                <div style={{margin:'auto', marginLeft: "10%"}}>
                     {return_stmnt}
                 </div>
                 <hr style={{ color: 'black', backgroundColor: 'black', height: '1', marginBottom:'5px' }}/>

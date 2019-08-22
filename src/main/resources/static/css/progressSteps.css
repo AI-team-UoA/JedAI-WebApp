@@ -34,16 +34,19 @@ ol.progtrckr {
   
   ol.progtrckr li.progtrckr-todo {
     color: #909090	;
+    font-size: 0.95vw;
     border-bottom: 4px solid #909090	;
   }
   
   ol.progtrckr li.progtrckr-doing {
     color: black;
+    font-size: 0.95vw;
     border-bottom: 4px solid #909090	;
   }
   
   ol.progtrckr li.progtrckr-done {
     color: black;
+    font-size: 0.95vw;
     border-bottom: 4px solid #5cb85c;
   }
   
