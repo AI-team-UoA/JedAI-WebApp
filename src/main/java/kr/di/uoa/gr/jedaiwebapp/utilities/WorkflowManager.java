@@ -835,6 +835,10 @@ public class WorkflowManager {
      *
      */
 	public static void setErrorMessage(String error_msg) {
+		if (eventPublisher == null) {
+			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
+			eventPublisher = context.getBean(EventPublisher.class);
+		}
 		eventPublisher.publish(error_msg, "exception");
 	}
     
