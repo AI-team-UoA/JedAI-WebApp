@@ -271,6 +271,7 @@ public class WorkflowController {
 	@PostMapping("/set_configurations/blockbuilding")	
 	public boolean setBlockBuilding(@RequestBody List<MethodModel> block_building) {
 		
+		if (block_building.size() == 0) return false;
 		try {
 			methodsConfig.put(JedaiOptions.BLOCK_BUILDING, block_building);
 			
@@ -460,6 +461,12 @@ public class WorkflowController {
 			@PathVariable(value = "automatic_type") String automatic_type,
 			@PathVariable(value = "search_type") String search_type) {
 		try {
+			
+			if (!congurationsSetCorrectly()) {
+				WorkflowManager.setErrorMessage("The configurations have not been set correctly!");
+				return null;
+			}
+			
 			iterrupt_execution.set(false);
 			ClustersPerformance clp = null;
 			double start_time = System.currentTimeMillis();
@@ -557,6 +564,30 @@ public class WorkflowController {
 			return null;
 		}
 		
+	}
+	
+	
+	/**
+	 *  
+	 * Check if the configurations of the workflow have been set correctly.
+	 * */	
+	public boolean congurationsSetCorrectly() {
+		if (WorkflowManager.er_mode == null) return false;
+		if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER)) {
+			return WorkflowManager.profilesD1 != null 
+					&& WorkflowManager.ground_truth != null
+					&& WorkflowManager.block_building != null && WorkflowManager.block_building.size() > 0
+					&& WorkflowManager.entity_matching != null
+					&& WorkflowManager.entity_clustering != null;
+		}
+		else {
+			return WorkflowManager.profilesD1 != null 
+					&& WorkflowManager.profilesD2 != null 
+					&& WorkflowManager.ground_truth != null
+					&& WorkflowManager.block_building != null && WorkflowManager.block_building.size() > 0
+					&& WorkflowManager.entity_matching != null
+					&& WorkflowManager.entity_clustering != null;
+		}
 	}
 	
 	
