@@ -4,6 +4,7 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.javatuples.Pair;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
@@ -204,7 +205,7 @@ public class WorkflowManager {
 	 * @param final_run true if this is the final run
 	 * @return  the Cluster Performance
 	 * */
-	public static ClustersPerformance runWorkflow(boolean final_run)  {
+	public static ClustersPerformance runWorkflow(boolean final_run, AtomicBoolean interrupted)  {
 		try {
 			
 			
@@ -227,6 +228,12 @@ public class WorkflowManager {
 				details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
 			}
 			
+			//the process was stopped by the user
+			if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}			
+			
 			// Run Schema Clustering
 			TObjectIntMap<String>[] clusters = null;
 	        if (schema_clustering != null) {
@@ -240,7 +247,12 @@ public class WorkflowManager {
 	            }
 	        }
 	        
-	        
+	        //the process was stopped by the user
+			if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}		
+	        	        
 	        // run Block Building
 	        double overheadStart;
 	        double overheadEnd;
@@ -251,6 +263,13 @@ public class WorkflowManager {
 	        
 	        List<AbstractBlock> blocks = new ArrayList<>();
 	        for (IBlockBuilding bb : block_building) {
+	        	
+	        	//the process was stopped by the user
+				if (interrupted.get()) {
+					eventPublisher.publish("", event_name);
+					return null;
+				}		
+	        	
 	            // Start time measurement
 	            overheadStart = System.currentTimeMillis();
 	
@@ -268,10 +287,6 @@ public class WorkflowManager {
 	                		overheadEnd - overheadStart, 
 	                		bb.getMethodConfiguration(), 
 	                		bb.getMethodName());
-	                
-	                // Save the performance of block building
-	                //TODO: Store the results in a Model 
-	                //this.addBlocksPerformance(bb.getMethodName(), totalTime, blp);
 	            }
 	        }
 	        
@@ -281,6 +296,13 @@ public class WorkflowManager {
 	        
 	        // Run Block Cleaning
 	        if (block_cleaning != null && !block_cleaning.isEmpty()) {
+	        	
+	        	//the process was stopped by the user
+				if (interrupted.get()) {
+					eventPublisher.publish("", event_name);
+					return null;
+				}		
+	        	
 	            if(final_run) 
 	    			eventPublisher.publish("Block Cleaning", event_name);
 	            
@@ -299,6 +321,12 @@ public class WorkflowManager {
 	        	if(final_run) 
 	    			eventPublisher.publish("Comparison Cleaning", event_name);
 	    		
+	        	//the process was stopped by the user
+				if (interrupted.get()) {
+					eventPublisher.publish("", event_name);
+					return null;
+				}		
+	        	
 	            blocks = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
 	
 	            if (blocks.isEmpty()) {
@@ -314,7 +342,13 @@ public class WorkflowManager {
 	                
 	        if(final_run) 
 				eventPublisher.publish("Entity Matching", event_name);
-			
+	        
+	        //the process was stopped by the user
+			if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}		
+	        
 	        if (er_mode.equals(JedaiOptions.DIRTY_ER)) 
 	            simPairs = entity_matching.executeComparisons(blocks, profilesD1);
 	        else 
@@ -326,7 +360,13 @@ public class WorkflowManager {
 				eventPublisher.publish("Entity Clustering", event_name);
 	        
 	        overheadStart = System.currentTimeMillis();
-	
+	        
+	        //the process was stopped by the user
+			if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}		
+	        
 	        entityClusters = entity_clustering.getDuplicates(simPairs);
 	
 	        // Print clustering performance
@@ -364,7 +404,7 @@ public class WorkflowManager {
      * @param random      If true, will use random search. Otherwise, grid.
      * @return ClustersPerformance of the workflow result
      */
-	public static ClustersPerformance runStepByStepWorkflow(Map<String, Object> methodsConfig, boolean random) {
+	public static ClustersPerformance runStepByStepWorkflow(Map<String, Object> methodsConfig, boolean random, AtomicBoolean interrupted) {
 	
 		try {
 			
@@ -387,8 +427,15 @@ public class WorkflowManager {
 			}
 			details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
 			 
-					
-		    // Schema Clustering local optimization
+			
+			
+			//the process was stopped by the user
+			if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}		
+			
+			// Schema Clustering local optimization
 		    TObjectIntMap<String>[] scClusters = null;
 		    if (schema_clustering != null) {
 	    		eventPublisher.publish("Schema Clustering", event_name);
@@ -405,6 +452,11 @@ public class WorkflowManager {
 		        }
 		    }
 		    
+		    //the process was stopped by the user
+			if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}		
 		    
 		    final List<AbstractBlock> blocks = new ArrayList<>();
 		    if (block_building != null && !block_building.isEmpty()) {	
@@ -413,11 +465,23 @@ public class WorkflowManager {
 		    	int index = 0;
 		    	for (IBlockBuilding bb : block_building) {
 		    		
+		    		//the process was stopped by the user
+					if (interrupted.get()) {
+						eventPublisher.publish("", event_name);
+						return null;
+					}		
+		    		
 		    		time1 = System.currentTimeMillis();
 		            if (bb_methods.get(index).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
 		            	
 		            	// Block Building local optimization
 		        	    eventPublisher.publish("Block Building Optimizations", event_name);
+		        	    
+		        	    //the process was stopped by the user
+		    			if (interrupted.get()) {
+		    				eventPublisher.publish("", event_name);
+		    				return null;
+		    			}		
 		        	    
 		                if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
 		                    originalComparisons = profilesD1.size() * profilesD1.size();
@@ -428,6 +492,13 @@ public class WorkflowManager {
 		                iterationsNum = random ? NO_OF_TRIALS : bb.getNumberOfGridConfigurations();
 		
 		                for (int j = 0; j < iterationsNum; j++) {
+		                	
+		                	//the process was stopped by the user
+		        			if (interrupted.get()) {
+		        				eventPublisher.publish("", event_name);
+		        				return null;
+		        			}		
+		        			
 		                    // Set next configuration
 		                    if (random) {
 		                        bb.setNextRandomConfiguration();
@@ -490,6 +561,11 @@ public class WorkflowManager {
 		        }
 		    }
 		    
+		    //the process was stopped by the user
+			if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}		
 		
 		    // Block Cleaning methods local optimization	
 		    List<AbstractBlock> cleanedBlocks = blocks;
@@ -497,6 +573,12 @@ public class WorkflowManager {
 		    	List<MethodModel> bp_methods = (List<MethodModel>) methodsConfig.get(JedaiOptions.BLOCK_CLEANING);
 		    	int index = 0;
 		        for (IBlockProcessing bp: block_cleaning) {	
+		        	
+		        	//the process was stopped by the user
+					if (interrupted.get()) {
+						eventPublisher.publish("", event_name);
+						return null;
+					}		
 		           
 		        	// Start time measurement
 		            time1 = System.currentTimeMillis();
@@ -505,7 +587,14 @@ public class WorkflowManager {
 		            if (bp_methods.get(index).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
 		                // Optimize the method
 		            	eventPublisher.publish("Block Cleaning Optimizations", event_name);
+		            	//the process was stopped by the user
+		    				
 		                optimizeBlockProcessing(bp, blocks, random);
+		                
+		                if (interrupted.get()) {
+		    				eventPublisher.publish("", event_name);
+		    				return null;
+		    			}	
 		            }
 		
 		            // Process blocks with this method
@@ -527,6 +616,11 @@ public class WorkflowManager {
 		            index++;
 		        }
 		    }
+		    
+		    if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}	
 
 		    // Comparison Cleaning local optimization
 		    time1 = System.currentTimeMillis();
@@ -536,9 +630,20 @@ public class WorkflowManager {
 		    	eventPublisher.publish("Comparison Cleaning Optimizations", event_name);
 		        optimizeBlockProcessing(comparison_cleaning, cleanedBlocks, random);
 		    }	
+		    
+		    if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}	
+		    
 		    eventPublisher.publish("Comparison Cleaning", event_name);
 		    finalBlocks = comparison_cleaning.refineBlocks(cleanedBlocks);
 		    time2 = System.currentTimeMillis();
+		    
+		    if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}	
 	
 		    blp = new BlocksPerformance(finalBlocks, ground_truth);
 		    blp.setStatistics();
@@ -591,15 +696,29 @@ public class WorkflowManager {
 		                    bestIteration = j;
 		                    bestFMeasure = fMeasure;
 		                }
+		                
+		                if (interrupted.get()) {
+		    				eventPublisher.publish("", event_name);
+		    				return null;
+		    			}	
 		            }
 		            details_manager.print_Sentence("\nBest Iteration", bestIteration);
 		            details_manager.print_Sentence("Best FMeasure", bestFMeasure);
 		
 		            time1 = System.currentTimeMillis();
 		
+		            if (interrupted.get()) {
+	    				eventPublisher.publish("", event_name);
+	    				return null;
+	    			}	
 		            // Set the best iteration's parameters to the methods that should be automatically configured
 		            if (matchingAutomatic) 
 		            	entity_matching.setNumberedRandomConfiguration(bestIteration);
+		            
+		            if (interrupted.get()) {
+	    				eventPublisher.publish("", event_name);
+	    				return null;
+	    			}	
 		            
 		            if (clusteringAutomatic) 
 		            	entity_clustering.setNumberedRandomConfiguration(bestIteration);
@@ -636,27 +755,56 @@ public class WorkflowManager {
 		                        bestFMeasure = fMeasure;
 		                    }
 		                }
+		                if (interrupted.get()) {
+		    				eventPublisher.publish("", event_name);
+		    				return null;
+		    			}	
 		            }
 		            eventPublisher.publish("\nBest Inner Iteration", String.valueOf(bestInnerIteration));
 		            eventPublisher.publish("Best Outer Iteration", String.valueOf(bestOuterIteration));
 		            eventPublisher.publish("Best FMeasure", String.valueOf(bestFMeasure));
+		            
+		            if (interrupted.get()) {
+	    				eventPublisher.publish("", event_name);
+	    				return null;
+	    			}	
 		
 		            // Set the best iteration's parameters to the methods that should be automatically configured
 		            if (matchingAutomatic) 
 		                entity_matching.setNumberedGridConfiguration(bestOuterIteration);
+		            
+		            if (interrupted.get()) {
+	    				eventPublisher.publish("", event_name);
+	    				return null;
+	    			}	
 		            
 		            if (clusteringAutomatic) 
 		            	entity_clustering.setNumberedGridConfiguration(bestInnerIteration);
 		        }
 		    }
 		    
-			
+		    if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}	
+		    
 		    // Run entity matching with final configuration
 		    eventPublisher.publish("Entity Matching", event_name);
 		    final SimilarityPairs sims = entity_matching.executeComparisons(finalBlocks, profilesD1, profilesD2);
 		
+		    if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}	
+		    
 		    // Run entity clustering with final configuration
 		    eventPublisher.publish("Entity Clustering", event_name);
+		    
+		    if (interrupted.get()) {
+				eventPublisher.publish("", event_name);
+				return null;
+			}	
+		    
 		    entityClusters = entity_clustering.getDuplicates(sims);
 		
 		    time2 = System.currentTimeMillis();

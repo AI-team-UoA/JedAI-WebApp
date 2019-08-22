@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,9 +61,11 @@ public class WorkflowController {
 	private SSE_Manager sse_manager;;
 	private ExecutorService exec ;
 	private static Future<ClustersPerformance> future_clp = null;
+	private static AtomicBoolean iterrupt_execution;
 	
 	WorkflowController(){
 		exec = Executors.newSingleThreadExecutor();
+		iterrupt_execution = new AtomicBoolean(false);
 		
 		sse_manager = new SSE_Manager();
 		this.methodsConfig = new HashMap<String, Object>();
@@ -457,7 +460,7 @@ public class WorkflowController {
 			@PathVariable(value = "automatic_type") String automatic_type,
 			@PathVariable(value = "search_type") String search_type) {
 		try {
-			
+			iterrupt_execution.set(false);
 			ClustersPerformance clp = null;
 			double start_time = System.currentTimeMillis();
 			
@@ -484,15 +487,9 @@ public class WorkflowController {
 	                    
 	                    // Execute Workflow in different thread in order to be stoppable
 	                    
-	                    future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(false);});
-	                    if(future_clp.isCancelled()) {
-	                    	System.out.println("Canceled 1");
-	                    	exec.shutdownNow();
-	                    	return null;
-	                    }
+	                    future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(false, iterrupt_execution);});
 	                    clp = future_clp.get();
-	                    
-	                    
+	        			if (clp == null && iterrupt_execution.get()) return null;
 	                    
 	
 	                    // If there was a problem with this random workflow, skip this iteration
@@ -516,15 +513,10 @@ public class WorkflowController {
 		                // Run the final workflow (whether there was an automatic configuration or not)
 		                
 		                // Execute Workflow in different thread in order to be stoppable
-		                future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(true);});
-		                if(future_clp.isCancelled()) {
-	                    	System.out.println("Canceled 2");
-	                    	exec.shutdownNow();
-	                    	return null;
-	                    }
-	                    clp = future_clp.get();
+		                future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);});
+		                clp = future_clp.get();
+		    			if (clp == null) return null;
 	                    	                    
-	                    exec.shutdownNow();
 		                return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
 		               
 	                }
@@ -535,17 +527,12 @@ public class WorkflowController {
 					// Execute Workflow in different thread in order to be stoppable
 					future_clp =  exec.submit(
 							() -> {
-									return WorkflowManager.runStepByStepWorkflow(methodsConfig, search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH));
+									return WorkflowManager.runStepByStepWorkflow(methodsConfig, search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH), iterrupt_execution);
 								}
 							);
-					if(future_clp.isCancelled()) {
-                    	System.out.println("Canceled 3");
-                    	exec.shutdownNow();
-                    	return null;
-                    }
-                    clp = future_clp.get();
-                    
-                    exec.shutdownNow();
+					clp = future_clp.get();
+					if (clp == null) return null;
+                   
 					return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
 				}
 				
@@ -553,30 +540,20 @@ public class WorkflowController {
 			// Run workflow without any automatic configuration
 			
 			// Execute Workflow in different thread in order to be stoppable
-			future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(true);});
-			if(future_clp.isCancelled()) {
-            	System.out.println("Canceled 4");
-            	exec.shutdownNow();
-            	return null;
-            }
-            clp = future_clp.get();
-            
-	        
-            exec.shutdownNow();
+			future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);});
+			clp = future_clp.get();
+			if (clp == null) return null;
+			
             return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
 		}
 		catch(InterruptedException|ExecutionException e ) {
 			e.printStackTrace();
 			WorkflowManager.setErrorMessage(e.getMessage());
-			System.out.println("Canceled 5");
-			exec.shutdownNow();
 			return null;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			WorkflowManager.setErrorMessage(e.getMessage());
-			System.out.println("Canceled 6");
-			exec.shutdownNow();
+			WorkflowManager.setErrorMessage(e.getMessage());	
 			return null;
 		}
 		
@@ -589,9 +566,7 @@ public class WorkflowController {
 	 * */	
 	@GetMapping("/workflow/stop/")
 	public void stopExecution() {
-		
-		boolean res = future_clp.cancel(true);
-		System.out.println("shutting down ---> " + res + " isCancelled " + future_clp.isCancelled() + " isDone " + future_clp.isDone());
+		iterrupt_execution.set(true);
 	}
 			
 		

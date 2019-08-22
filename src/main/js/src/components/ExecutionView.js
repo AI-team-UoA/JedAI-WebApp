@@ -143,7 +143,7 @@ class ExecutionView extends Component {
         axios
             .get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
             .then(res => {
-            	
+            	console.log(res.data)
                 if (res.data !== null && res.data !== ""){
                 
                     var data_stat = res.data.value0
@@ -178,6 +178,7 @@ class ExecutionView extends Component {
 
 
     stop_execution = (e) => {
+        this.setState({execution_step: "Stopping"})
         axios.get("/workflow/stop/")
     }
 
