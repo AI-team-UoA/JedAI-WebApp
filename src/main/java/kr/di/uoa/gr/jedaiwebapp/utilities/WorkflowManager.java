@@ -368,7 +368,6 @@ public class WorkflowManager {
 	
 		try {
 			
-			
 			double bestA = 0, time1, time2, originalComparisons;
 		    int bestIteration = 0, iterationsNum;
 		    BlocksPerformance blp;
@@ -495,7 +494,6 @@ public class WorkflowManager {
 		    // Block Cleaning methods local optimization	
 		    List<AbstractBlock> cleanedBlocks = blocks;
 		    if (block_cleaning != null && !block_cleaning.isEmpty()) {
-		    	 eventPublisher.publish("Block Cleaning", event_name);
 		    	List<MethodModel> bp_methods = (List<MethodModel>) methodsConfig.get(JedaiOptions.BLOCK_CLEANING);
 		    	int index = 0;
 		        for (IBlockProcessing bp: block_cleaning) {	
@@ -506,10 +504,12 @@ public class WorkflowManager {
 		            // Check if we should configure this method automatically
 		            if (bp_methods.get(index).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
 		                // Optimize the method
+		            	eventPublisher.publish("Block Cleaning Optimizations", event_name);
 		                optimizeBlockProcessing(bp, blocks, random);
 		            }
 		
 		            // Process blocks with this method
+		            eventPublisher.publish("Block Cleaning", event_name);
 		            cleanedBlocks = bp.refineBlocks(blocks);
 		
 		            // Measure milliseconds it took to optimize & run method
@@ -529,13 +529,14 @@ public class WorkflowManager {
 		    }
 
 		    // Comparison Cleaning local optimization
-		    eventPublisher.publish("Comparison Cleaning", event_name);
 		    time1 = System.currentTimeMillis();
 		    List<AbstractBlock> finalBlocks;
 		    MethodModel cc_method = (MethodModel) methodsConfig.get(JedaiOptions.COMPARISON_CLEANING);
 		    if (cc_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
+		    	eventPublisher.publish("Comparison Cleaning Optimizations", event_name);
 		        optimizeBlockProcessing(comparison_cleaning, cleanedBlocks, random);
 		    }	
+		    eventPublisher.publish("Comparison Cleaning", event_name);
 		    finalBlocks = comparison_cleaning.refineBlocks(cleanedBlocks);
 		    time2 = System.currentTimeMillis();
 	
