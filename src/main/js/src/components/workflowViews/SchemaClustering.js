@@ -71,7 +71,26 @@ import axios from 'axios';
                 $splice: [[parameter_index, 1, updated_state]]
         });
         
-        this.setState({parameters: newData})
+        this.setState({parameters: newData}, () => {
+            //if user changed the representation model, the set the appropriate values in similarity measure
+            var updated_state_2
+            var newData_2
+            if (parameter_index === 0){
+                if (value.endsWith("_TF_IDF")){
+                    updated_state_2 = update(this.state.parameters[1], {value: {$set: "COSINE_SIMILARITY"}}); 
+                    newData_2 = update(this.state.parameters, {$splice: [[1, 1, updated_state_2]]});
+                }
+                else if (value.endsWith("_GRAPHS")){
+                    updated_state_2 = update(this.state.parameters[1], {value: {$set: "GRAPH_VALUE_SIMILARITY"}}); 
+                    newData_2 = update(this.state.parameters, {$splice: [[1, 1, updated_state_2]]});
+                }
+                else{
+                    updated_state_2 = update(this.state.parameters[1], {value: {$set: "JACCARD_SIMILARITY"}}); 
+                    newData_2 = update(this.state.parameters, {$splice: [[1, 1, updated_state_2]]});
+                }
+                this.setState({parameters: newData_2})
+            }
+        })
 
     }
 
@@ -80,6 +99,143 @@ import axios from 'axios';
         var empty_col = 1
         var first_col = 4
         var second_col = 5
+
+        var representationModel_window = 
+            <Form.Row>
+                <Col sm={empty_col} />
+                <Col sm={first_col}>
+                    <Form.Label >Representation Model</Form.Label> 
+                </Col>
+                <Col sm={second_col}>
+                    <Form.Group>
+                        <Form.Control 
+                            as="select" 
+                            name="select" 
+                            value={this.state.parameters[0].value}
+                            onChange={e => this.changeParameters(e, 0)}
+                        >
+                            <option value="CHARACTER_BIGRAMS" >CHARACTER_BIGRAMS</option>
+                            <option value="CHARACTER_BIGRAMS_TF_IDF" >CHARACTER_BIGRAMS_TF_IDF</option>
+                            <option value="CHARACTER_BIGRAM_GRAPHS" >CHARACTER_BIGRAM_GRAPHS</option>
+
+                            <option value="CHARACTER_TRIGRAMS" >CHARACTER_TRIGRAMS</option>
+                            <option value="CHARACTER_TRIGRAMS_TF_IDF" >CHARACTER_TRIGRAMS_TF_IDF</option>
+                            <option value="CHARACTER_TRIGRAM_GRAPHS" >CHARACTER_TRIGRAM_GRAPHS</option>
+
+                            <option value="CHARACTER_FOURGRAMS" >CHARACTER_FOURGRAMS</option>
+                            <option value="CHARACTER_FOURGRAMS_TF_IDF" >CHARACTER_FOURGRAMS_TF_IDF</option>
+                            <option value="CHARACTER_FOURGRAM_GRAPHS" >CHARACTER_FOURGRAM_GRAPHS</option>
+
+                            <option value="TOKEN_UNIGRAMS" >TOKEN_UNIGRAMS</option>
+                            <option value="TOKEN_UNIGRAMS_TF_IDF" >TOKEN_UNIGRAMS_TF_IDF</option>
+                            <option value="TOKEN_UNIGRAM_GRAPHS" >TOKEN_UNIGRAM_GRAPHS</option>
+
+                            <option value="TOKEN_BIGRAMS" >TOKEN_BIGRAMS</option>
+                            <option value="TOKEN_BIGRAMS_TF_IDF" >TOKEN_BIGRAMS_TF_IDF</option>
+                            <option value="TOKEN_BIGRAM_GRAPHS" >TOKEN_BIGRAM_GRAPHS</option>
+
+                            <option value="TOKEN_TRIGRAMS" >TOKEN_TRIGRAMS</option>
+                            <option value="TOKEN_TRIGRAMS_TF_IDF" >TOKEN_TRIGRAMS_TF_IDF</option>
+                            <option value="TOKEN_TRIGRAM_GRAPHS" >TOKEN_TRIGRAM_GRAPHS</option>
+
+                        </Form.Control>
+                    </Form.Group>
+                </Col>
+            </Form.Row>
+
+
+        // set the options of the similarity measures according the 
+        // selected representation model
+        var similaritymeasure_window
+        switch(this.state.parameters[0].value){
+            case "CHARACTER_BIGRAMS":
+            case "CHARACTER_TRIGRAMS":
+            case "CHARACTER_FOURGRAMS":
+            case "TOKEN_UNIGRAMS":
+            case "TOKEN_BIGRAMS":
+            case "TOKEN_TRIGRAMS":
+                    similaritymeasure_window = 
+                    <Form.Row>
+                        <Col sm={empty_col} />
+                        <Col sm={first_col}>
+                            <Form.Label>Similarity Measure</Form.Label> 
+                        </Col>
+                        <Col sm={second_col}>
+                            <Form.Group>
+                                <Form.Control 
+                                    as="select"
+                                    name="select" 
+                                    value={this.state.parameters[1].value}
+                                    onChange={e => this.changeParameters(e, 1)}
+                                >
+                                    <option value="COSINE_SIMILARITY" >COSINE_SIMILARITY</option>
+                                    <option value="ENHANCED_JACCARD_SIMILARITY" >ENHANCED_JACCARD_SIMILARITY</option>
+                                    <option value="GENERALIZED_JACCARD_SIMILARITY" >GENERALIZED_JACCARD_SIMILARITY</option>
+                                    <option value="JACCARD_SIMILARITY" >JACCARD_SIMILARITY</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
+                    break;
+            case "CHARACTER_BIGRAM_GRAPHS":
+            case "CHARACTER_TRIGRAM_GRAPHS":
+            case "CHARACTER_FOURGRAM_GRAPHS":
+            case "TOKEN_UNIGRAM_GRAPHS":
+            case "TOKEN_BIGRAM_GRAPHS":
+            case "TOKEN_TRIGRAM_GRAPHS":
+                    similaritymeasure_window = 
+                    <Form.Row>
+                        <Col sm={empty_col} />
+                        <Col sm={first_col}>
+                            <Form.Label>Similarity Measure</Form.Label> 
+                        </Col>
+                        <Col sm={second_col}>
+                            <Form.Group>
+                                <Form.Control 
+                                    as="select"
+                                    name="select" 
+                                    value={this.state.parameters[1].value}
+                                    onChange={e => this.changeParameters(e, 1)}
+                                >
+                                    <option value="GRAPH_CONTAINMENT_SIMILARITY" >GRAPH_CONTAINMENT_SIMILARITY</option>
+                                    <option value="GRAPH_NORMALIZED_VALUE_SIMILARITY" >GRAPH_NORMALIZED_VALUE_SIMILARITY</option>
+                                    <option value="GRAPH_OVERALL_SIMILARITY" >GRAPH_OVERALL_SIMILARITY</option>
+                                    <option value="GRAPH_VALUE_SIMILARITY" >GRAPH_VALUE_SIMILARITY</option>
+                               </Form.Control>
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
+                    break;
+            case "CHARACTER_BIGRAMS_TF_IDF":
+            case "CHARACTER_TRIGRAMS_TF_IDF":
+            case "CHARACTER_FOURGRAMS_TF_IDF":
+            case "TOKEN_UNIGRAMS_TF_IDF":
+            case "TOKEN_BIGRAMS_TF_IDF":
+            case "TOKEN_TRIGRAMS_TF_IDF":
+                    similaritymeasure_window = 
+                    <Form.Row>
+                        <Col sm={empty_col} />
+                        <Col sm={first_col}>
+                            <Form.Label>Similarity Measure</Form.Label> 
+                        </Col>
+                        <Col sm={second_col}>
+                            <Form.Group>
+                                <Form.Control 
+                                    as="select"
+                                    name="select" 
+                                    value={this.state.parameters[1].value}
+                                    onChange={e => this.changeParameters(e, 1)}
+                                >
+                                    <option value="ARCS_SIMILARITY" >ARCS_SIMILARITY</option>
+                                    <option value="COSINE_SIMILARITY" >COSINE_SIMILARITY</option>
+                                    <option value="GENERALIZED_JACCARD_SIMILARITY" >GENERALIZED_JACCARD_SIMILARITY</option>
+                                    <option value="SIGMA_SIMILARITY" >SIGMA_SIMILARITY</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
+                    break;
+        }
 
         return (
             <div>
@@ -109,69 +265,10 @@ import axios from 'axios';
                                     <p>Please configure the method's parameters below</p>
                                 </div>
                                 <br/>
-                                <Form.Row>
-                                    <Col sm={empty_col} />
-                                    <Col sm={first_col}>
-                                        <Form.Label >Representation Model</Form.Label> 
-                                    </Col>
-                                    <Col sm={second_col}>
-                                        <Form.Group>
-                                            <Form.Control 
-                                                as="select" 
-                                                name="representation_model" 
-                                                value={this.state.parameters[0].value}
-                                                onChange={e => this.changeParameters(e, 0)}
-                                            >
-                                                <option value="CHARACTER_BIGRAMS" >CHARACTER_BIGRAMS</option>
-                                                <option value="CHARACTER_BIGRAMS_TF_IDF" >CHARACTER_BIGRAMS_TF_IDF</option>
-                                                <option value="CHARACTER_BIGRAM_GRAPHS" >CHARACTER_BIGRAM_GRAPHS</option>
-
-                                                <option value="CHARACTER_TRIGRAMS" >CHARACTER_TRIGRAMS</option>
-                                                <option value="CHARACTER_TRIGRAMS_TF_IDF" >CHARACTER_TRIGRAMS_TF_IDF</option>
-                                                <option value="CHARACTER_TRIGRAM_GRAPHS" >CHARACTER_TRIGRAM_GRAPHS</option>
-
-                                                <option value="CHARACTER_FOURGRAMS" >CHARACTER_FOURGRAMS</option>
-                                                <option value="CHARACTER_FOURGRAMS_TF_IDF" >CHARACTER_FOURGRAMS_TF_IDF</option>
-                                                <option value="CHARACTER_FOURGRAM_GRAPHS" >CHARACTER_FOURGRAM_GRAPHS</option>
-
-                                                <option value="TOKEN_UNIGRAMS" >TOKEN_UNIGRAMS</option>
-                                                <option value="TOKEN_UNIGRAMS_TF_IDF" >TOKEN_UNIGRAMS_TF_IDF</option>
-                                                <option value="TOKEN_UNIGRAM_GRAPHS" >TOKEN_UNIGRAM_GRAPHS</option>
-
-                                                <option value="TOKEN_BIGRAMS" >TOKEN_BIGRAMS</option>
-                                                <option value="TOKEN_BIGRAMS_TF_IDF" >TOKEN_BIGRAMS_TF_IDF</option>
-                                                <option value="TOKEN_BIGRAM_GRAPHS" >TOKEN_BIGRAM_GRAPHS</option>
-
-                                                <option value="TOKEN_TRIGRAMS" >TOKEN_TRIGRAMS</option>
-                                                <option value="TOKEN_TRIGRAMS_TF_IDF" >TOKEN_TRIGRAMS_TF_IDF</option>
-                                                <option value="TOKEN_TRIGRAM_GRAPHS" >TOKEN_TRIGRAM_GRAPHS</option>
-
-                                            </Form.Control>
-                                        </Form.Group>
-                                    </Col>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Col sm={empty_col} />
-                                    <Col sm={first_col}>
-                                        <Form.Label >Similarity Measure</Form.Label> 
-                                    </Col>
-                                    <Col sm={second_col}>
-                                        <Form.Group>
-                                            <Form.Control 
-                                                as="select"
-                                                name="similarity_measure" 
-                                                value={this.state.parameters[1].value}
-                                                onChange={e => this.changeParameters(e, 1)}
-                                            >
-                                                <option value="GRAPH_CONTAINMENT_SIMILARITY" >GRAPH_CONTAINMENT_SIMILARITY</option>
-                                                <option value="GRAPH_NORMALIZED_VALUE_SIMILARITY" >GRAPH_NORMALIZED_VALUE_SIMILARITY</option>
-                                                <option value="GRAPH_OVERALL_SIMILARITY" >GRAPH_OVERALL_SIMILARITY</option>
-                                                <option value="GRAPH_VALUE_SIMILARITY" >GRAPH_VALUE_SIMILARITY</option>
-                                               
-                                            </Form.Control>
-                                        </Form.Group>
-                                    </Col>
-                                </Form.Row>
+                                <div>
+                                    {representationModel_window}
+                                    {similaritymeasure_window}
+                                </div>
                             </div>  
                         </Jumbotron>
                     </div>
