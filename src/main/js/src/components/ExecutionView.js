@@ -216,7 +216,7 @@ class ExecutionView extends Component {
                execution_stats = 
                     <Form.Group style={{marginLeft:"28%"}}>
                             <Row>
-                                <Col sm={3}>
+                                <Col sm={4}>
                                     <Row>
                                         <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Input Instances:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.input_instances}</Col>
@@ -230,7 +230,7 @@ class ExecutionView extends Component {
                                         <Col sm={1}>{this.state.execution_results.total_time}</Col>
                                     </Row>
                                 </Col>
-                                <Col Col sm={3}>
+                                <Col Col sm={4}>
                                     <Row>
                                         <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Number of Clusters:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.no_clusters}</Col>
