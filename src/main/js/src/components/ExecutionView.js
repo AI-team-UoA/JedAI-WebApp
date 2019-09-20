@@ -124,6 +124,7 @@ class ExecutionView extends Component {
     
     
     explore=(e) =>{
+        this.forceUpdate()
     	if (this.state.show_explore_window)
     		this.close_explore_window()
     	else
@@ -143,9 +144,9 @@ class ExecutionView extends Component {
         axios
             .get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
             .then(res => {
-            	console.log(res.data)
+            	
                 if (res.data !== null && res.data !== ""){
-                
+                    this.explorer_get_entities = true;
                     var data_stat = res.data.value0
                     var total_time = res.data.value1
                     var no_istamces = res.data.value2
@@ -163,10 +164,12 @@ class ExecutionView extends Component {
                         detected_duplicates : data_stat.detectedDuplicates,
                         total_matches: data_stat.totalMatches
                     }
+                    
                     this.setState({
                         execution_results: reuslts,
                         execution_status: "Completed"
                     })
+                    
                 }
                 else{
                     this.setState({
@@ -206,7 +209,7 @@ class ExecutionView extends Component {
                     </div>
                 break;
             case "Completed":
-                this.explorer_get_entities = true;
+                
                 execution_status_view =
                     <div>
                         <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#00802b"}}><b>{this.state.execution_status}</b></span></h3>
@@ -230,7 +233,7 @@ class ExecutionView extends Component {
                                         <Col sm={1}>{this.state.execution_results.total_time}</Col>
                                     </Row>
                                 </Col>
-                                <Col Col sm={4}>
+                                <Col sm={4}>
                                     <Row>
                                         <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Number of Clusters:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.no_clusters}</Col>
@@ -278,26 +281,26 @@ class ExecutionView extends Component {
 	        		</div>
                 </div>
         }
-        
 
-        
+        var explorer =  <Explorer source="/workflow/" entity_id={"3"} get_entities={this.explorer_get_entities}  />
+       
+                    
         return (
         	<div>
 		      
-	        	<Modal show={this.state.show_explore_window} onHide={this.close_explore_window} size="xl">
-                	<Modal.Header closeButton>
+                <Modal show={this.state.show_explore_window} onHide={this.close_explore_window} size="xl">
+                    <Modal.Header closeButton>
                     <Modal.Title>Explore</Modal.Title>
                     </Modal.Header>
                     <Modal.Body >
-                    	<Explorer source="/workflow/" entity_id={"3"} get_entities={this.explorer_get_entities}  />
+                    {explorer}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="primary" onClick={this.close_explore_window}>
-                        	Close
+                            Close
                         </Button>
                     </Modal.Footer>
                 </Modal>
-		        	
 		        	
                 <AlertModal title="Exception" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 <Jumbotron  className='jumbotron_2'>

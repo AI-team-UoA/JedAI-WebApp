@@ -145,6 +145,11 @@ class Explorer extends Component {
         this.updateView()
     }
 
+    componentDidMount(){
+        this.updateView()
+    }
+
+
     render() {    
         return (
             <div>
