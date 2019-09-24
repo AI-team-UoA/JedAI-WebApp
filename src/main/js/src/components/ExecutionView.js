@@ -152,9 +152,9 @@ class ExecutionView extends Component {
                     var no_istamces = res.data.value2
                     
                     var reuslts = {
-                        recall: data_stat.recall,
-                        f1_measure: data_stat.fmeasure,
-                        precision: data_stat.precision,
+                        recall: parseFloat(data_stat.recall).toFixed(2),
+                        f1_measure: parseFloat(data_stat.fmeasure).toFixed(2),
+                        precision: parseFloat(data_stat.precision).toFixed(2),
 
                         input_instances: no_istamces,
                         existing_duplicates: data_stat.existingDuplicates,
@@ -219,7 +219,7 @@ class ExecutionView extends Component {
                execution_stats = 
                     <Form.Group style={{marginLeft:"28%"}}>
                             <Row>
-                                <Col sm={4}>
+                                <Col sm={5}>
                                     <Row>
                                         <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Input Instances:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.input_instances}</Col>
@@ -233,7 +233,7 @@ class ExecutionView extends Component {
                                         <Col sm={1}>{this.state.execution_results.total_time}</Col>
                                     </Row>
                                 </Col>
-                                <Col sm={4}>
+                                <Col sm={5}>
                                     <Row>
                                         <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Number of Clusters:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.no_clusters}</Col>
