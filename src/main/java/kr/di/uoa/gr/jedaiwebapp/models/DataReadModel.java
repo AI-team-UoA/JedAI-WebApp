@@ -50,8 +50,6 @@ public class DataReadModel {
 			this.filepath = source;
 			this.url = null;
 		}
-		this.configurations = configurations;
-		
 	}
 		
 	
