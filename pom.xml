@@ -12,7 +12,7 @@
 	<artifactId>JedAI-WebApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>JedAI-WebApp</name>
-	<description>Demo project for Spring Boot</description>
+	<description></description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -23,6 +23,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -31,14 +32,17 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web-services</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-core</artifactId>
@@ -50,11 +54,14 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
@@ -77,12 +84,6 @@
 			<groupId>gr.scify</groupId>
 		    <artifactId>jedai</artifactId>
 		    <version>1.3</version>
-		    <exclusions>
-		        <exclusion>
-		            <groupId>org.slf4j.impl</groupId>
-		            <artifactId>Log4jLoggerFactory</artifactId>
-		        </exclusion>
-		    </exclusions>
 		</dependency>
 		
 		<dependency>
@@ -166,6 +167,7 @@
 					</execution>
 				</executions>
 			</plugin>
+      
 		</plugins>
 	</build>
 

@@ -207,7 +207,7 @@ public class WorkflowManager {
 	 * */
 	public static ClustersPerformance runWorkflow(boolean final_run, AtomicBoolean interrupted)  {
 		try {
-			
+			System.out.println("runWorkflow Run Workflow");
 			
 			String event_name="execution_step";
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);

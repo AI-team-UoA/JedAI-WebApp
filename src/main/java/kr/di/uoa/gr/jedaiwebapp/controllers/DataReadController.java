@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import gnu.trove.iterator.TIntIterator;
-import kr.di.uoa.gr.jedaiwebapp.models.DataReadModel;
 import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
+import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
@@ -36,7 +36,7 @@ public class DataReadController {
 	
 	@Autowired
     private HttpServletRequest request;
-	private Map<String, DataReadModel> dataRead_map;
+	private Map<String, Reader> dataRead_map;
 	private List<EntityProfileNode> entityProfiles_1;
 	private List<EntityProfileNode> entityProfiles_2;
 	private List<Pair<EntityProfileNode,EntityProfileNode>> duplicates;
@@ -49,9 +49,7 @@ public class DataReadController {
 	 * 
 	 * */
 	DataReadController(){
-		
-		
-		dataRead_map = new HashMap<String, DataReadModel>();
+		dataRead_map = new HashMap<String, Reader>();
 	}
 	
 	
@@ -80,7 +78,7 @@ public class DataReadController {
 			if (dataRead_map.containsKey(entity_id))
 				dataRead_map.remove(entity_id);
 			try {
-				DataReadModel entity_profile = new DataReadModel(filetype, source, configurations);
+				Reader entity_profile = new Reader(filetype, source, configurations);
 				dataRead_map.put(entity_id, entity_profile);
 				
 				switch(entity_id) {

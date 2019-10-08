@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.models;
+package kr.di.uoa.gr.jedaiwebapp.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.list.TIntList;
-import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
-public class DataReadModel {
+public class Reader {
 	private String filetype;
 	private String filepath;
 	private String url;
@@ -40,7 +40,8 @@ public class DataReadModel {
 	 * Constructor
 	 * 
 	 */
-	public DataReadModel(String filetype, String source, MultiValueMap<String, Object> configurations) throws Exception{
+	public Reader(String filetype, String source, MultiValueMap<String, Object> configurations) throws Exception{
+		this.configurations = configurations;
 		this.filetype = filetype;
 		if (filetype.equals("Database")) {
 			this.url = source;
@@ -202,7 +203,6 @@ public class DataReadModel {
         AbstractDuplicatePropagation dp = null;
         IGroundTruthReader gtReader = null;
         
-
         // If there are no parameters, we cannot initialize the reader
         if (configurations.isEmpty())
             return null;
