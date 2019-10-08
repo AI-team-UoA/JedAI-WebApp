@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
@@ -35,6 +37,9 @@ public class ExecutionController {
 	private static Future<ClustersPerformance> future_clp = null;
 	private Map<String, Object> methodsConfig = WorkflowController.methodsConfig;
 	private SSE_Manager sse_manager;
+	private List<Pair<EntityProfileNode, EntityProfileNode>> detected_duplicates;
+	private int enities_per_page = 5;
+	
 	
 	ExecutionController(){
 		exec = Executors.newSingleThreadExecutor();
@@ -350,6 +355,37 @@ public class ExecutionController {
         }
     }
     
-    
+	/**
+     * Set the detected duplicate dataset
+     * 
+     * @return the number o pages
+     */
+	@GetMapping("/workflow/{id}/explore")
+	public int setExplore(){
+		detected_duplicates = WorkflowManager.getDetectedDuplicates();
+		return detected_duplicates.size()/enities_per_page;
+	}
+	
+	
+	
+	/**
+     * Calculate and return the instances for the requested page.
+     * The instances will be displayed in the Explore window
+     * 
+     * @return the instances for the requested page.
+     */
+	@GetMapping("/workflow/{id}/explore/{page}")
+	public List<Pair<EntityProfileNode, EntityProfileNode>> getExploreSubset(@PathVariable(value = "page") String page){
+		if (detected_duplicates == null) return null;
+		int int_page = Integer.parseInt(page);
+		int start = (int_page - 1) * enities_per_page;
+		int end = start + enities_per_page;
+		if (detected_duplicates.size() > 0) {
+			if (end > detected_duplicates.size())
+				end = detected_duplicates.size();
+			return detected_duplicates.subList(start, end);
+		}
+		else return null;
+	}
     
 }

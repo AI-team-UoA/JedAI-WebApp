@@ -41,14 +41,10 @@ public class WorkflowController {
 	
 	@Autowired
 	private HttpServletRequest request;
-	static Map<String, Object> methodsConfig;
-	private List<Pair<EntityProfileNode, EntityProfileNode>> detected_duplicates;
-	private int enities_per_page = 5;
-	
+	static Map<String, Object> methodsConfig;	
 	
 	
 	WorkflowController(){
-		
 		WorkflowController.methodsConfig = new HashMap<String, Object>();
 	}
 		
@@ -123,8 +119,6 @@ public class WorkflowController {
 	}
 	
 	
-	
-	
 	/**
      * Handle POST request and set the comparison cleaning method
      *
@@ -193,8 +187,6 @@ public class WorkflowController {
 	
 	
 	
-	
-	
 	/**
      * Handle POST request and set the entity clustering method
      *
@@ -253,7 +245,6 @@ public class WorkflowController {
 	
 	            WorkflowManager.block_building.add(blockBuildingMethod);
 	        }
-	        
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -287,8 +278,7 @@ public class WorkflowController {
 	             else 
 	            	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
 	                		method.getLabel(), method.getParameters());
-	            
-	
+
 	            WorkflowManager.block_cleaning.add(blockCleaning_method);
 	        }
 		}
@@ -312,7 +302,6 @@ public class WorkflowController {
 	public void exportResults(@PathVariable(value = "filetype") String filetype,
 			HttpServletResponse response) {
 		try {
-			
 			// construct file
 			String export_path = null;
 			String export_dir =  request.getServletContext().getRealPath("/exports");
@@ -330,8 +319,6 @@ public class WorkflowController {
 	            	response.setContentType("application/xml");
 	                break;        
 	        }
-	        
-	        
 	        File export_file = new File(export_path);
 	        if (!export_file.exists()) 
 	        	export_file.createNewFile();
@@ -373,38 +360,5 @@ public class WorkflowController {
 	}
 	
 	
-	
-	/**
-     * Set the detected duplicate dataset
-     * 
-     * @return the number o pages
-     */
-	@GetMapping("/workflow/{id}/explore")
-	public int setExplore(){
-		detected_duplicates = WorkflowManager.getDetectedDuplicates();
-		return detected_duplicates.size()/enities_per_page;
-	}
-	
-	
-	
-	/**
-     * Calculate and return the instances for the requested page.
-     * The instances will be displayed in the Explore window
-     * 
-     * @return the instances for the requested page.
-     */
-	@GetMapping("/workflow/{id}/explore/{page}")
-	public List<Pair<EntityProfileNode, EntityProfileNode>> getExploreSubset(@PathVariable(value = "page") String page){
-		if (detected_duplicates == null) return null;
-		int int_page = Integer.parseInt(page);
-		int start = (int_page - 1) * enities_per_page;
-		int end = start + enities_per_page;
-		if (detected_duplicates.size() > 0) {
-			if (end > detected_duplicates.size())
-				end = detected_duplicates.size();
-			return detected_duplicates.subList(start, end);
-		}
-		else return null;
-	}
 
 }
