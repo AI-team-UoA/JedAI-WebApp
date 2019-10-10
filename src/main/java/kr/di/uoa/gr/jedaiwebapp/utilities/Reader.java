@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.list.TIntList;
-import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 public class Reader {
@@ -129,7 +129,7 @@ public class Reader {
         ObjectMapper mapper = new ObjectMapper();
         int[] excluded = mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
         String[] excluded_str = new String[excluded.length];
-        for(int i =0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
+        for(int i=0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
         
         dbReader.setTable(table);
         dbReader.setUser(username);

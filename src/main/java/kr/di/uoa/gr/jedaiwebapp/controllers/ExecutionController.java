@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
-import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
@@ -76,13 +76,11 @@ public class ExecutionController {
 			@PathVariable(value = "automatic_type") String automatic_type,
 			@PathVariable(value = "search_type") String search_type) {
 		try {
-			System.out.println("1runWorkflow Run Workflow");
 			
 			if (!congurationsSetCorrectly()) {
 				WorkflowManager.setErrorMessage("The configurations have not been set correctly!");
 				return null;
 			}
-			System.out.println("2runWorkflow Run Workflow");
 			iterrupt_execution.set(false);
 			ClustersPerformance clp = null;
 			double start_time = System.currentTimeMillis();

@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import ConfigurationsView from './utilities/ConfigurationsView'
 import {Link } from 'react-router-dom';
 import {Button} from 'react-bootstrap/'
-
+import axios from 'axios';
 
 class ConfirmConfiguration extends Component {
 
 
+    storeWorkflow = () => axios.get("/workflow/store")
     render() {
         window.scrollTo(0, 0)
 
@@ -73,7 +74,6 @@ class ConfirmConfiguration extends Component {
         }
 
 
-
         return (
             <div>
                 <br/>
@@ -101,7 +101,7 @@ class ConfirmConfiguration extends Component {
                 <br/>
                 
                 <Link to="/workflow">
-                    <Button style={{float: 'right'}} >Confirm</Button>
+                    <Button style={{float: 'right'}} onClick={this.storeWorkflow} >Confirm</Button>
                 </Link>
                 
             </div>

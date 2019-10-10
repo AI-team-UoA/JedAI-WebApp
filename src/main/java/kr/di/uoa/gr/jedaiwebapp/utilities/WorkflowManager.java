@@ -24,9 +24,9 @@ import org.springframework.context.annotation.Bean;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.map.TObjectIntMap;
-import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
-import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 public class WorkflowManager {
@@ -206,9 +206,7 @@ public class WorkflowManager {
 	 * @return  the Cluster Performance
 	 * */
 	public static ClustersPerformance runWorkflow(boolean final_run, AtomicBoolean interrupted)  {
-		try {
-			System.out.println("runWorkflow Run Workflow");
-			
+		try {			
 			String event_name="execution_step";
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
 			eventPublisher = context.getBean(EventPublisher.class);

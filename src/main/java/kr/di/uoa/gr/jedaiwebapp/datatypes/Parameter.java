@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.models;
+package kr.di.uoa.gr.jedaiwebapp.datatypes;
 
 public class Parameter {
 		private String label;

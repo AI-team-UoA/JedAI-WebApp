@@ -2,31 +2,92 @@ package kr.di.uoa.gr.jedaiwebapp.models;
 
 import java.util.Map;
 
-import javax.persistence.*;
-
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="Dataset")
 public class Dataset {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(updatable = false, nullable = false, unique = true)
 	private int id;
+	
 	private String type;
+	private String source;
+	private String filetype;
+	private String entity_id;
+	private char separator;
+	private int first_row;
+	private int[] excluded_attr;
+	private int id_index;
+	private String tableName;
+	private String dbUsername;
+	private String dbPassword;
+	private boolean ssl;
 	
-	@ElementCollection
-	private Map<String, String> configurations;
 	
-	public Dataset() {
-		super();
+	public Dataset() {}
+	
+	public Dataset(int id, Map<String, Object> datasetConf) {
+		this.id = id; // TODO this must be set automatically
+
+		if (datasetConf.containsKey("type"))
+			this.type = (String) datasetConf.get("type");
+		else this.type = null;
+		
+		if (datasetConf.containsKey("source"))
+			this.source = (String) datasetConf.get("source");
+		else this.source = null;
+
+		if (datasetConf.containsKey("filetype"))
+			this.filetype = (String) datasetConf.get("filetype");
+		else this.filetype = null;
+		
+		if (datasetConf.containsKey("entity_id"))
+			this.entity_id = (String) datasetConf.get("entity_id");
+		else this.entity_id = null;
+		
+		if (datasetConf.containsKey("separator"))
+			this.separator = (char) datasetConf.get("separator");
+		else this.separator = '-';
+		
+		if (datasetConf.containsKey("first_row"))
+			this.first_row = (int) datasetConf.get("first_row");
+		else this.first_row = -1;
+		
+		if (datasetConf.containsKey("excluded_attr"))
+			this.excluded_attr = (int[]) datasetConf.get("excluded_attr");
+		else this.excluded_attr = null;
+		
+		if (datasetConf.containsKey("id_index"))
+			this.id_index = (int) datasetConf.get("id_index");
+		else this.id_index = -1;
+		
+		if (datasetConf.containsKey("table"))
+			this.tableName = (String) datasetConf.get("table");
+		else this.tableName = null;
+		
+		if (datasetConf.containsKey("username"))
+			this.dbUsername = (String) datasetConf.get("username");
+		else this.dbUsername = null;
+		
+		if (datasetConf.containsKey("password"))
+			this.dbPassword = (String) datasetConf.get("password");
+		else this.dbPassword = null;
+		
+		if (datasetConf.containsKey("ssl"))
+			this.ssl = (boolean) datasetConf.get("ssl");
+		else this.ssl = false;
+			
 	}
-	
-	public Dataset(int id, String type, Map<String, String> configurations) {
-		this.id = id;
-		this.type = type;
-		this.configurations = configurations;
-	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -43,14 +104,93 @@ public class Dataset {
 		this.type = type;
 	}
 
-	public Map<String, String> getConfigurations() {
-		return configurations;
+	public String getSource() {
+		return source;
 	}
 
-	public void setConfigurations(Map<String, String> configurations) {
-		this.configurations = configurations;
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getFiletype() {
+		return filetype;
+	}
+
+	public void setFiletype(String filetype) {
+		this.filetype = filetype;
+	}
+
+	public String getEntity_id() {
+		return entity_id;
+	}
+
+	public void setEntity_id(String entity_id) {
+		this.entity_id = entity_id;
+	}
+
+	public char getSeparator() {
+		return separator;
+	}
+
+	public void setSeparator(char separator) {
+		this.separator = separator;
+	}
+
+	public int getFirst_row() {
+		return first_row;
+	}
+
+	public void setFirst_row(int first_row) {
+		this.first_row = first_row;
+	}
+
+	public int[] getExcluded_attr() {
+		return excluded_attr;
+	}
+
+	public void setExcluded_attr(int[] excluded_attr) {
+		this.excluded_attr = excluded_attr;
+	}
+
+	public int getId_index() {
+		return id_index;
+	}
+
+	public void setId_index(int id_index) {
+		this.id_index = id_index;
+	}
+
+	public String getTableName() {
+		return tableName;
+	}
+
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+
+	public String getDbUsername() {
+		return dbUsername;
+	}
+
+	public void setDbUsername(String dbUsername) {
+		this.dbUsername = dbUsername;
+	}
+
+	public String getDbPassword() {
+		return dbPassword;
+	}
+
+	public void setDbPassword(String dbPassword) {
+		this.dbPassword = dbPassword;
+	}
+
+	public boolean isSsl() {
+		return ssl;
+	}
+
+	public void setSsl(boolean ssl) {
+		this.ssl = ssl;
 	}
 	
 	
-
 }

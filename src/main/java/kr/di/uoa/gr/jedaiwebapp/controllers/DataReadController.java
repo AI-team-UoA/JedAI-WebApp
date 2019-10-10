@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import gnu.trove.iterator.TIntIterator;
-import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
@@ -117,6 +119,111 @@ public class DataReadController {
 					this.duplicates = entity_profile.getDuplicates_GroundTruth();
 					break;
 				}
+				
+				// adding dataset to the Dataset table 
+				Map<String, Object> datasetConf = new HashMap<String, Object>();
+				
+				datasetConf.put("source", source);
+				datasetConf.put("filetype", filetype);
+				datasetConf.put("entity_id", entity_id);
+				
+				if(entity_id == "2") 
+					datasetConf.put("type", "gt");
+				else 
+					datasetConf.put("type", "d");
+				
+				if(configurations.containsKey("separator")){
+					String strValue = ((String) configurations.getFirst("separator")).replace("\"", "");
+					if(strValue.length() > 0){ 
+						String value = strValue;
+						datasetConf.put("separator", value);   
+					}
+					else
+						datasetConf.put("separator", '-');
+				}
+				else datasetConf.put("separator", '-');
+
+				if(configurations.containsKey("first_row")){
+					String strValue = ((String) configurations.getFirst("first_row")).replace("\"", "");
+					if(strValue.length() > 0){ 
+						int value = Integer.parseInt(strValue); //TODO change type in schema and bean
+						datasetConf.put("first_row", value);
+					}
+					else
+						datasetConf.put("first_row", -1);
+				}
+				else datasetConf.put("first_row", -1);
+
+		
+				if(configurations.containsKey("excluded_attr")){
+					String strValue = ((String) configurations.getFirst("excluded_attr")).replace("\"", "");
+					if(strValue.length() > 0){ 
+						ObjectMapper mapper = new ObjectMapper();
+				        int[] value = mapper.readValue(strValue, int[].class);
+						datasetConf.put("excluded_attr", value);
+					}
+					else
+						datasetConf.put("excluded_attr", null);
+				}
+				else datasetConf.put("excluded_attr", null);
+
+				if(configurations.containsKey("id_index")){
+					String strValue = ((String) configurations.getFirst("id_index")).replace("\"", "");
+					if(strValue.length() > 0){ 
+						int value = Integer.parseInt(strValue);
+						datasetConf.put("id_index", value);
+					}
+					else
+						datasetConf.put("id_index", -1);
+				}
+				else datasetConf.put("id_index", -1);
+
+				if(configurations.containsKey("table")){
+					String strValue = ((String) configurations.getFirst("table")).replace("\"", "");
+					if(strValue.length() > 0){ 
+						String value = strValue;
+						datasetConf.put("table", value);
+					}
+					else
+						datasetConf.put("table", null);
+				}
+				else datasetConf.put("table", null);
+
+				if(configurations.containsKey("username")){
+					String strValue = ((String) configurations.getFirst("username")).replace("\"", "");
+					if(strValue.length() > 0){ 
+						String value = strValue;
+						datasetConf.put("username", value);
+					}
+					else
+						datasetConf.put("username", null);
+				}
+				else datasetConf.put("username", null);
+
+				if(configurations.containsKey("password")){
+					String strValue = ((String) configurations.getFirst("password")).replace("\"", "");
+					if(strValue.length() > 0){ 
+						String value = strValue;
+						datasetConf.put("password", value);
+					}
+					else
+						datasetConf.put("password", null);
+				}
+				else datasetConf.put("password", null);
+
+				if(configurations.containsKey("ssl")){
+					String strValue = ((String) configurations.getFirst("ssl")).replace("\"", "");
+					if(strValue.length() > 0){ 
+						boolean value = Boolean.parseBoolean((strValue));
+						datasetConf.put("ssl", value);
+					}
+					else
+						datasetConf.put("ssl", false);
+				}
+				else datasetConf.put("ssl", false);
+
+				WorkflowController.datasetsConfig.add(datasetConf);
+						
 				return source;
 			}
 			catch(Exception e) {

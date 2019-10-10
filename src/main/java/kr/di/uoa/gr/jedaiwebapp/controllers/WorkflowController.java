@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,8 +28,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.di.uoa.gr.jedaiwebapp.models.EntityProfileNode;
-import kr.di.uoa.gr.jedaiwebapp.models.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
+import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
+import kr.di.uoa.gr.jedaiwebapp.models.DatasetRepository;
+import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
+import kr.di.uoa.gr.jedaiwebapp.models.MethodConfigurationRepository;
+import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
@@ -39,13 +47,26 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
 @RequestMapping("/workflow/**")
 public class WorkflowController {
 	
+	
+	static Map<String, Object> methodsConfig;	
+	static List<Map<String, Object>> datasetsConfig = new ArrayList<Map<String, Object>>();
+	private WorkflowConfiguration workflowConfiguration;
+	private Random idGenerator = new Random();
+	
+	@Autowired
+	private DatasetRepository datasetRepository;
+	
+	@Autowired
+	private MethodConfigurationRepository methodConfigurationRepository;
+	
 	@Autowired
 	private HttpServletRequest request;
-	static Map<String, Object> methodsConfig;	
+	
 	
 	
 	WorkflowController(){
 		WorkflowController.methodsConfig = new HashMap<String, Object>();
+		workflowConfiguration = new WorkflowConfiguration();
 	}
 		
 	
@@ -59,8 +80,10 @@ public class WorkflowController {
 
 		switch(WorkflowManager.er_mode) {
 			case JedaiOptions.DIRTY_ER:
+				workflowConfiguration.setErMode(JedaiOptions.DIRTY_ER);
 				return  WorkflowManager.profilesD1 != null && WorkflowManager.ground_truth != null;
 			case JedaiOptions.CLEAN_CLEAN_ER:
+				workflowConfiguration.setErMode(JedaiOptions.CLEAN_CLEAN_ER);
 				return  WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null && WorkflowManager.ground_truth != null;
 			default:
 				return false;
@@ -97,25 +120,45 @@ public class WorkflowController {
 	@PostMapping("/workflow/set_configurations/schemaclustering")	
 	public boolean setSchemaClustering(@RequestBody MethodModel schema_clustering) {
 		try {
+			
 			methodsConfig.put(JedaiOptions.SCHEMA_CLUSTERING, schema_clustering);
+			if (!schema_clustering.getLabel().equals(JedaiOptions.NO_SCHEMA_CLUSTERING)) {
+				
+				if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
+					WorkflowManager.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
+				else
+					WorkflowManager.schema_clustering = DynamicMethodConfiguration.configureSchemaClusteringMethod(
+							schema_clustering.getLabel(),
+							schema_clustering.getParameters());
+		                    
+				
+				System.out.println("SC: " + WorkflowManager.schema_clustering);
+			}
 			
-			if (schema_clustering.getLabel().equals(JedaiOptions.NO_SCHEMA_CLUSTERING)) return true;
+			MethodConfiguration sc = new MethodConfiguration();
+			sc.setId(this.idGenerator.nextInt());
+			sc.setMethod(JedaiOptions.SCHEMA_CLUSTERING);
+			sc.setLabel(schema_clustering.getLabel());
+			String[] parametersArr = new String[schema_clustering.getParameters().size()];
+			int i = 0;
+			for (Parameter p : schema_clustering.getParameters()) {
+				parametersArr[i] = p.getLabel() + "|" + p.getValue().toString();
+				i++;
+			}
+			sc.setParametersAr(parametersArr);
+			sc.setParameters(sc.getParametersAr().toString());
+			sc.setConfigurationType(schema_clustering.getConfiguration_type());
 			
-			if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
-				WorkflowManager.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
-			else
-				WorkflowManager.schema_clustering = DynamicMethodConfiguration.configureSchemaClusteringMethod(
-						schema_clustering.getLabel(),
-						schema_clustering.getParameters());
-	                    
+			workflowConfiguration.setSchemaClustering(sc.getId());
+			methodConfigurationRepository.insert(sc);
 			
-			System.out.println("SC: " + WorkflowManager.schema_clustering);
+			return true;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		return WorkflowManager.schema_clustering != null;
+		
 	}
 	
 	
@@ -357,6 +400,19 @@ public class WorkflowController {
 		catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	
+	@GetMapping("/workflow/store")
+	public void storeWorkflow() {
+		for (Map<String, Object> datasetConfig : datasetsConfig) {
+			Dataset dt = new Dataset(idGenerator.nextInt(), datasetConfig);
+			System.out.println(dt.getId());
+			datasetRepository.insert(dt);
+		}
+		
+		//WorkflowConfiguration
+		System.out.println(methodsConfig);
 	}
 	
 	
