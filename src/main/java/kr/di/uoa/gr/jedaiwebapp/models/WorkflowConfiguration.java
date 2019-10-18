@@ -26,6 +26,8 @@ public class WorkflowConfiguration {
 	private int comparisonCleaning;
 	private int entityMatching;
 	private int entityClustering;
+	
+	
 	public int getId() {
 		return id;
 	}
