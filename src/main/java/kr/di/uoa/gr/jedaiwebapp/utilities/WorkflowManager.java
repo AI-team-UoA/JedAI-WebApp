@@ -4,6 +4,7 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.javatuples.Pair;
@@ -27,12 +28,14 @@ import gnu.trove.map.TObjectIntMap;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 public class WorkflowManager {
 	
 	private final static int NO_OF_TRIALS = 100;
 	
+	public static int workflowConfigurationsID = -1;
 	public static  String er_mode = null;
 	public static List<EntityProfile> profilesD1 = null;
 	public static List<EntityProfile> profilesD2 = null;
@@ -108,11 +111,11 @@ public class WorkflowManager {
      * @param currentMethod Method to process the blocks with
      * @return Processed list of blocks
      */
-    private static List<AbstractBlock> runBlockProcessing(AbstractDuplicatePropagation duProp, boolean finalRun,
+    private static Pair<List<AbstractBlock>, BlocksPerformance> runBlockProcessing(AbstractDuplicatePropagation duProp, boolean finalRun,
                                                    List<AbstractBlock> blocks, IBlockProcessing currentMethod) {
         double overheadStart;
         double overheadEnd;
-        BlocksPerformance blp;
+        BlocksPerformance blp = null;
         overheadStart = System.currentTimeMillis();
 
         if (!blocks.isEmpty()) {
@@ -130,7 +133,7 @@ public class WorkflowManager {
             }
         }
 
-        return blocks;
+        return new Pair<List<AbstractBlock>, BlocksPerformance>(blocks, blp);
     }
     
     
@@ -203,10 +206,14 @@ public class WorkflowManager {
 	 * Run a workflow with the given methods and return its ClustersPerformance
 	 *
 	 * @param final_run true if this is the final run
-	 * @return  the Cluster Performance
+	 * @return  the Cluster Performance and the performances of each step
 	 * */
-	public static ClustersPerformance runWorkflow(boolean final_run, AtomicBoolean interrupted)  {
-		try {			
+	public static Pair<ClustersPerformance, List<Pair<String, BlocksPerformance>>>
+	runWorkflow(boolean final_run, AtomicBoolean interrupted)  {
+		try {	
+					
+			List<Pair<String, BlocksPerformance>> performances = new ArrayList<>();
+			
 			String event_name="execution_step";
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
 			eventPublisher = context.getBean(EventPublisher.class);
@@ -285,7 +292,9 @@ public class WorkflowManager {
 	                		overheadEnd - overheadStart, 
 	                		bb.getMethodConfiguration(), 
 	                		bb.getMethodName());
+	                performances.add(new Pair<String, BlocksPerformance>(bb.getMethodName(), blp));
 	            }
+	            
 	        }
 	        
 	        if(final_run)
@@ -306,8 +315,16 @@ public class WorkflowManager {
 	            
 	            // Execute the methods
 	            for (IBlockProcessing currentMethod : block_cleaning) {
-	                blocks = runBlockProcessing(ground_truth, final_run, blocks, currentMethod);
-	
+	            	
+	            	overheadStart = System.currentTimeMillis();
+	            	
+	                Pair<List<AbstractBlock>, BlocksPerformance> p = runBlockProcessing(ground_truth, final_run, blocks, currentMethod);
+	                blocks = p.getValue0();
+	                if (final_run)
+	                	performances.add(new Pair<>(currentMethod.getMethodName(), p.getValue1()));
+	                
+		            
+		            
 	                if (blocks.isEmpty()) {
 	                    return null;
 	                }
@@ -325,8 +342,11 @@ public class WorkflowManager {
 					return null;
 				}		
 	        	
-	            blocks = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
-	
+				Pair<List<AbstractBlock>, BlocksPerformance> p = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
+				blocks = p.getValue0();
+				if (final_run)
+                	performances.add(new Pair<>(comparison_cleaning.getMethodName(), p.getValue1()));
+				
 	            if (blocks.isEmpty()) {
 	                return null;
 	            }
@@ -378,7 +398,9 @@ public class WorkflowManager {
 	        			entity_clustering.getMethodConfiguration());
 	
 	        eventPublisher.publish("", event_name);
-	        return clp;
+	        
+	        
+	        return new Pair<>(clp, performances);
 		}
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -394,7 +416,7 @@ public class WorkflowManager {
 	}
 	
 	
-	
+	// TODO return performances from runStepByStepWorkflow
 	
 	/**
      * Run a step by step workflow, using random or grid search based on the given parameter.
