@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
 import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
@@ -36,6 +35,7 @@ import kr.di.uoa.gr.jedaiwebapp.models.DatasetRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
+import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
@@ -51,7 +51,7 @@ public class WorkflowController {
 	static Map<String, Object> methodsConfig;	
 	static List<Map<String, Object>> datasetsConfig = new ArrayList<Map<String, Object>>();
 	private WorkflowConfiguration workflowConfiguration;
-	private Random idGenerator = new Random();
+	private Random idGenerator;
 	
 	@Autowired
 	private DatasetRepository datasetRepository;
@@ -60,13 +60,19 @@ public class WorkflowController {
 	private MethodConfigurationRepository methodConfigurationRepository;
 	
 	@Autowired
+	private WorkflowConfigurationRepository workflowConfigurationRepository;
+	
+	@Autowired
 	private HttpServletRequest request;
 	
 	
 	
 	WorkflowController(){
+		idGenerator = new Random();
 		WorkflowController.methodsConfig = new HashMap<String, Object>();
 		workflowConfiguration = new WorkflowConfiguration();
+		workflowConfiguration.setId(idGenerator.nextInt());
+		
 	}
 		
 	
@@ -135,6 +141,7 @@ public class WorkflowController {
 				System.out.println("SC: " + WorkflowManager.schema_clustering);
 			}
 			
+			// Adding method to DB
 			MethodConfiguration sc = new MethodConfiguration();
 			sc.setId(this.idGenerator.nextInt());
 			sc.setMethod(JedaiOptions.SCHEMA_CLUSTERING);
@@ -174,27 +181,43 @@ public class WorkflowController {
 		try {
 			methodsConfig.put(JedaiOptions.COMPARISON_CLEANING, comparison_cleaning);
 			
-			//TODO WARNING
-			if (comparison_cleaning.getLabel().equals(JedaiOptions.NO_CLEANING)) return true;
-			
 			if (comparison_cleaning != null) {
-				if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
-	                
-					WorkflowManager.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
-	             else 
-	                
-	            	 WorkflowManager.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
+				if (!comparison_cleaning.getLabel().equals(JedaiOptions.NO_CLEANING)) {
+					if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
+							WorkflowManager.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
+					else 
+						WorkflowManager.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
 	            			comparison_cleaning.getLabel(),
 	            			comparison_cleaning.getParameters() );
-	        }
+				}
+			
+				// Adding method to DB
+				MethodConfiguration cc = new MethodConfiguration();
+				cc.setId(this.idGenerator.nextInt());
+				cc.setMethod(JedaiOptions.COMPARISON_CLEANING);
+				cc.setLabel(comparison_cleaning.getLabel());
+				String[] parametersArr = new String[comparison_cleaning.getParameters().size()];
+				int i = 0;
+				for (Parameter p : comparison_cleaning.getParameters()) {
+					parametersArr[i] = p.getLabel() + "|" + p.getValue().toString();
+					i++;
+				}
+				cc.setParametersAr(parametersArr);
+				cc.setParameters(cc.getParametersAr().toString());
+				cc.setConfigurationType(comparison_cleaning.getConfiguration_type());
+				
+				workflowConfiguration.setComparisonCleaning(cc.getId());
+				methodConfigurationRepository.insert(cc);
+				
+			}
+			return true;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 			
-		System.out.println("CC: " + WorkflowManager.comparison_cleaning);
-		return WorkflowManager.comparison_cleaning != null;
+		
 	}
 	
 	
@@ -218,6 +241,24 @@ public class WorkflowController {
 	                    .configureEntityMatchingMethod(entity_matching.getLabel(), entity_matching.getParameters());
 	        
 			System.out.println("EM: " + WorkflowManager.entity_matching);
+			
+			// Adding method to DB
+			MethodConfiguration em = new MethodConfiguration();
+			em.setId(this.idGenerator.nextInt());
+			em.setMethod(JedaiOptions.ENTITY_MATHCING);
+			em.setLabel(entity_matching.getLabel());
+			String[] parametersArr = new String[entity_matching.getParameters().size()];
+			int i = 0;
+			for (Parameter p : entity_matching.getParameters()) {
+				parametersArr[i] = p.getLabel() + "|" + p.getValue().toString();
+				i++;
+			}
+			em.setParametersAr(parametersArr);
+			em.setParameters(em.getParametersAr().toString());
+			em.setConfigurationType(entity_matching.getConfiguration_type());
+			
+			workflowConfiguration.setEntityMatching(em.getId());
+			methodConfigurationRepository.insert(em);
 			
 		}
 		catch(Exception e) {
@@ -249,6 +290,24 @@ public class WorkflowController {
 	        
 			System.out.println("EC: " + WorkflowManager.entity_clustering);
 			
+			// Adding method to DB
+			MethodConfiguration ec = new MethodConfiguration();
+			ec.setId(this.idGenerator.nextInt());
+			ec.setMethod(JedaiOptions.ENTITY_CLUSTERING);
+			ec.setLabel(entity_clustering.getLabel());
+			String[] parametersArr = new String[entity_clustering.getParameters().size()];
+			int i = 0;
+			for (Parameter p : entity_clustering.getParameters()) {
+				parametersArr[i] = p.getLabel() + "|" + p.getValue().toString();
+				i++;
+			}
+			ec.setParametersAr(parametersArr);
+			ec.setParameters(ec.getParametersAr().toString());
+			ec.setConfigurationType(entity_clustering.getConfiguration_type());
+			
+			workflowConfiguration.setEntityClustering(ec.getId());
+			methodConfigurationRepository.insert(ec);
+			
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -271,9 +330,10 @@ public class WorkflowController {
 		
 		if (block_building.size() == 0) return false;
 		try {
+			int[] blockBuildingIDs = new int[block_building.size()];
 			methodsConfig.put(JedaiOptions.BLOCK_BUILDING, block_building);
-			
 			WorkflowManager.block_building = new ArrayList<>();
+			int inedx = 0;
 	        for (MethodModel method : block_building) {
 	
 	        	BlockBuildingMethod blockBuilding_method = MethodConfigurations.blockBuildingMethods.get(method.getLabel());
@@ -285,9 +345,27 @@ public class WorkflowController {
 	             else 
 	            	 blockBuildingMethod = DynamicMethodConfiguration.configureBlockBuildingMethod(blockBuilding_method, method.getParameters());
 	            
-	
 	            WorkflowManager.block_building.add(blockBuildingMethod);
+	            
+	            // Adding method to DB
+				MethodConfiguration bb = new MethodConfiguration();
+				bb.setId(this.idGenerator.nextInt());
+				bb.setMethod(JedaiOptions.BLOCK_BUILDING);
+				bb.setLabel(method.getLabel());
+				String[] parametersArr = new String[method.getParameters().size()];
+				int i = 0;
+				for (Parameter p : method.getParameters()) {
+					parametersArr[i] = p.getLabel() + "|" + p.getValue().toString();
+					i++;
+				}
+				bb.setParametersAr(parametersArr);
+				bb.setParameters(bb.getParametersAr().toString());
+				bb.setConfigurationType(method.getConfiguration_type());
+				methodConfigurationRepository.insert(bb);
+				blockBuildingIDs[inedx] = bb.getId();
+				inedx++;				
 	        }
+	        workflowConfiguration.setBlockBuilding(blockBuildingIDs);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -308,29 +386,54 @@ public class WorkflowController {
 	public boolean setBlockCleaning(@RequestBody List<MethodModel> block_cleaning) {
 		
 		try {
+			
 			methodsConfig.put(JedaiOptions.BLOCK_CLEANING, block_cleaning);
-			
-			if(block_cleaning.size() == 0) return true;
-			
-			WorkflowManager.block_cleaning = new ArrayList<>();
-	        for (MethodModel method : block_cleaning) {
-	          
-	            IBlockProcessing blockCleaning_method;
-	            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-	            	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
-	             else 
-	            	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
-	                		method.getLabel(), method.getParameters());
-
-	            WorkflowManager.block_cleaning.add(blockCleaning_method);
-	        }
+			if(block_cleaning.size() != 0) {
+				int[] blockCleaningIDs = new int[block_cleaning.size()];
+				WorkflowManager.block_cleaning = new ArrayList<>();
+				int index = 0;
+		        for (MethodModel method : block_cleaning) {
+		          
+		            IBlockProcessing blockCleaning_method;
+		            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+		            	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
+		             else 
+		            	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
+		                		method.getLabel(), method.getParameters());
+	
+		            WorkflowManager.block_cleaning.add(blockCleaning_method);
+		            
+		            // Adding method to DB
+					MethodConfiguration bc = new MethodConfiguration();
+					bc.setId(this.idGenerator.nextInt());
+					bc.setMethod(JedaiOptions.BLOCK_CLEANING);
+					bc.setLabel(method.getLabel());
+					String[] parametersArr = new String[method.getParameters().size()];
+					int i = 0;
+					for (Parameter p : method.getParameters()) {
+						parametersArr[i] = p.getLabel() + "|" + p.getValue().toString();
+						i++;
+					}
+					bc.setParametersAr(parametersArr);
+					bc.setParameters(bc.getParametersAr().toString());
+					bc.setConfigurationType(method.getConfiguration_type());
+					methodConfigurationRepository.insert(bc);
+					blockCleaningIDs[index] = bc.getId();
+					index++;				
+		            
+		        }
+		        
+		        workflowConfiguration.setBlockBuilding(blockCleaningIDs);
+		        return true;
+			}
+			else return true;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 				
-		return WorkflowManager.block_cleaning != null;
+		
 	}
 	
 	
@@ -407,12 +510,21 @@ public class WorkflowController {
 	public void storeWorkflow() {
 		for (Map<String, Object> datasetConfig : datasetsConfig) {
 			Dataset dt = new Dataset(idGenerator.nextInt(), datasetConfig);
-			System.out.println(dt.getId());
 			datasetRepository.insert(dt);
+			String entityID = dt.getEntity_id();
+			switch (entityID) {
+				case "1": 
+					workflowConfiguration.setDatasetID1(dt.getId());
+				case "2": 
+					workflowConfiguration.setDatasetID2(dt.getId());
+				case "3": 
+					workflowConfiguration.setGtID(dt.getId());
+			}
 		}
 		
-		//WorkflowConfiguration
-		System.out.println(methodsConfig);
+		workflowConfigurationRepository.insert(workflowConfiguration);
+		
+		WorkflowManager.workflowConfigurationsID = workflowConfiguration.getId();
 	}
 	
 	

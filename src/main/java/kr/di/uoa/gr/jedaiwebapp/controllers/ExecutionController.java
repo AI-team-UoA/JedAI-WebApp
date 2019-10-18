@@ -2,6 +2,7 @@ package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
+import org.scify.jedai.utilities.BlocksPerformance;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
@@ -34,7 +37,6 @@ public class ExecutionController {
 	private final static int NO_OF_TRIALS = 100;
 	private ExecutorService exec ;
 	private static AtomicBoolean iterrupt_execution;
-	private static Future<ClustersPerformance> future_clp = null;
 	private Map<String, Object> methodsConfig = WorkflowController.methodsConfig;
 	private SSE_Manager sse_manager;
 	private List<Pair<EntityProfileNode, EntityProfileNode>> detected_duplicates;
@@ -77,12 +79,24 @@ public class ExecutionController {
 			@PathVariable(value = "search_type") String search_type) {
 		try {
 			
+			
 			if (!congurationsSetCorrectly()) {
 				WorkflowManager.setErrorMessage("The configurations have not been set correctly!");
 				return null;
 			}
+			
+			
+			WorkflowResults workflowResults = new WorkflowResults();
+			workflowResults.setId((new Random()).nextInt());
+			workflowResults.setWorkflowID(WorkflowManager.workflowConfigurationsID);
+			
+			
 			iterrupt_execution.set(false);
+			
+			Future<Pair<ClustersPerformance, List<Pair<String, BlocksPerformance>>>> future_performances = null;
+			Pair<ClustersPerformance, List<Pair<String, BlocksPerformance>>> performances = null;
 			ClustersPerformance clp = null;
+			List<Pair<String, BlocksPerformance>> blocksMethodsPerformances = null;
 			double start_time = System.currentTimeMillis();
 			
 			int no_instances = 0;
@@ -108,8 +122,9 @@ public class ExecutionController {
 	                    
 	                    // Execute Workflow in different thread in order to be stoppable
 	                    
-	                    future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(false, iterrupt_execution);});
-	                    clp = future_clp.get();
+	                    future_performances =  exec.submit(() -> {return WorkflowManager.runWorkflow(false, iterrupt_execution);});
+	                    performances = future_performances.get();
+	                    clp = performances.getValue0();
 	        			if (clp == null && iterrupt_execution.get()) return null;
 	                    
 	
@@ -118,6 +133,7 @@ public class ExecutionController {
 	                        continue;
 	                    }
 	
+	                    
 	                    // Keep this iteration if it has the best F-measure so far
 	                    double fMeasure = clp.getFMeasure();
 	                    if (bestFMeasure < fMeasure) {
@@ -134,8 +150,9 @@ public class ExecutionController {
 		                // Run the final workflow (whether there was an automatic configuration or not)
 		                
 		                // Execute Workflow in different thread in order to be stoppable
-		                future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);});
-		                clp = future_clp.get();
+		                future_performances =  exec.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);});
+		                performances = future_performances.get();
+		                clp = performances.getValue0();
 		    			if (clp == null) return null;
 	                    	                    
 		                return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
@@ -143,8 +160,11 @@ public class ExecutionController {
 	                }
 				}
 				else {
-					 // Step-by-step automatic configuration. Set random or grid depending on the selected search type.
 					
+					// TODO Return performances fromrunStepByStepWorkflow
+					
+					
+					 // Step-by-step automatic configuration. Set random or grid depending on the selected search type.
 					// Execute Workflow in different thread in order to be stoppable
 					future_clp =  exec.submit(
 							() -> {
@@ -161,8 +181,14 @@ public class ExecutionController {
 			// Run workflow without any automatic configuration
 			
 			// Execute Workflow in different thread in order to be stoppable
-			future_clp =  exec.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);});
-			clp = future_clp.get();
+			future_performances =  exec.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);});
+			performances = future_performances.get();
+			
+			clp = performances.getValue0();
+			blocksMethodsPerformances = performances.getValue1();
+			
+			// TODO add Perfomances to DB
+			
 			if (clp == null) return null;
 			
             return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
