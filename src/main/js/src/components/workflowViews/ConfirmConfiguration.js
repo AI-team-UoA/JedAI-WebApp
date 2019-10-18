@@ -9,6 +9,8 @@ class ConfirmConfiguration extends Component {
 
 
     storeWorkflow = () => axios.get("/workflow/store")
+
+
     render() {
         window.scrollTo(0, 0)
 
