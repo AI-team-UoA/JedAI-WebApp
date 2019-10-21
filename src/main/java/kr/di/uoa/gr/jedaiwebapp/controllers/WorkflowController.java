@@ -14,7 +14,6 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.javatuples.Pair;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.datawriter.ClustersPerformanceWriter;
@@ -70,9 +69,6 @@ public class WorkflowController {
 	WorkflowController(){
 		idGenerator = new Random();
 		WorkflowController.methodsConfig = new HashMap<String, Object>();
-		workflowConfiguration = new WorkflowConfiguration();
-		workflowConfiguration.setId(idGenerator.nextInt());
-		
 	}
 		
 	
@@ -83,7 +79,9 @@ public class WorkflowController {
      */	
 	@GetMapping("/workflow/validate/dataread")	
 	public boolean validate_DataRead() {
-
+		workflowConfiguration = new WorkflowConfiguration();
+		workflowConfiguration.setId(idGenerator.nextInt());
+		
 		switch(WorkflowManager.er_mode) {
 			case JedaiOptions.DIRTY_ER:
 				workflowConfiguration.setErMode(JedaiOptions.DIRTY_ER);
