@@ -6,33 +6,69 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
-@Table(name="WorkflowResults")
+@Table(name="workflow_results")
 public class WorkflowResults {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(updatable = false, nullable = false, unique = true)
+	@Column(updatable = false, nullable = false, unique = true, name="id")	
 	private int id;
-	
+		
+	@Column (name = "workflowid")
 	private int workflowID;
+	
+	@Column (name = "input_instances")
 	private int inputInstances;
+	
+	@Column (name = "clusters")
 	private int clusters;
-	private double time;
+	
+	@Column (name = "time")
+	private double[] time;
+	
+	@Column (name = "method_names")
 	private String methodNames;
+	
+	@Transient
 	private String[] methodNamesAr;
+	
+	@Column (name = "recall")
 	private double[] recall;
+	
+	@Column (name = "precision")
 	private double[] precision;
+	
+	@Column (name = "fmeasure")
 	private double[] fmeasure;
 	
+	
+	
+	public WorkflowResults(int id, int workflowID, int inputInstances, int clustes, double[] time, String[] methodNamesAr,
+			String methodNames, double[] recall, double[] precision, double[] fmeasure){
+		this.setId(id);
+		this.setWorkflowID(workflowID);
+		this.setInputInstances(inputInstances);
+		this.setClusters(clustes);
+		this.setTime(time);
+		this.setMethodNames(methodNames);
+		this.setMethodNamesAr(methodNamesAr);
+		this.setRecall(recall);
+		this.setPrecision(precision);
+		this.setFmeasure(fmeasure);
+			
+	}
 	
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 	public int getWorkflowID() {
 		return workflowID;
 	}
@@ -51,10 +87,10 @@ public class WorkflowResults {
 	public void setClusters(int clusters) {
 		this.clusters = clusters;
 	}
-	public double getTime() {
+	public double[] getTime() {
 		return time;
 	}
-	public void setTime(double time) {
+	public void setTime(double[] time) {
 		this.time = time;
 	}
 	public String getMethodNames() {

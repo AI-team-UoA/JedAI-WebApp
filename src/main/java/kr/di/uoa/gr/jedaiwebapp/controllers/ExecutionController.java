@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
+import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResultsRepository;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
@@ -41,6 +42,9 @@ public class ExecutionController {
 	private SSE_Manager sse_manager;
 	private List<Pair<EntityProfileNode, EntityProfileNode>> detected_duplicates;
 	private int enities_per_page = 5;
+	
+	@Autowired
+	WorkflowResultsRepository workflowResultsRepository;
 	
 	
 	ExecutionController(){
@@ -62,6 +66,41 @@ public class ExecutionController {
 	     
 	    return emitter;
 	}
+	
+	
+	public int storeWorkflowResults(int no_instances, double totalTime, ClustersPerformance clp, 
+			List<Triplet<String, BlocksPerformance, Double>> performances) {
+		
+		double[] time = new double[performances.size()+1];
+		double[] recall = new double[performances.size()+1];
+		double[] precision = new double[performances.size()+1];
+		double[] fmeasure = new double[performances.size()+1];
+		String[] methodNamesAr = new String[performances.size()+1];
+		
+		time[0] = totalTime;
+		recall[0] = clp.getRecall();
+		precision[0] = clp.getPrecision();
+		fmeasure[0] = clp.getFMeasure();
+		methodNamesAr[0] = "Total";
+		
+		int i = 1;
+		for (Triplet<String, BlocksPerformance, Double> t: performances) {
+			BlocksPerformance performance = t.getValue1();
+			methodNamesAr[i] = t.getValue0();
+			time[i] = t.getValue2();
+			recall[i] = performance.getPc();
+			precision[i] = performance.getPq();
+			fmeasure[i] = performance.getFMeasure();
+			
+			i++;			
+		}
+		
+		WorkflowResults workflowResults = new WorkflowResults( (new Random()).nextInt(), WorkflowManager.workflowConfigurationsID,
+				no_instances, clp.getEntityClusters(), time, methodNamesAr, methodNamesAr.toString(), recall, precision, fmeasure);
+		
+		return workflowResultsRepository.insert(workflowResults);
+		
+	}
 		
 	
 	/**
@@ -79,25 +118,12 @@ public class ExecutionController {
 			@PathVariable(value = "search_type") String search_type) {
 		try {
 			
-			
 			if (!congurationsSetCorrectly()) {
 				WorkflowManager.setErrorMessage("The configurations have not been set correctly!");
 				return null;
-			}
-			
-			
-			WorkflowResults workflowResults = new WorkflowResults();
-			workflowResults.setId((new Random()).nextInt());
-			workflowResults.setWorkflowID(WorkflowManager.workflowConfigurationsID);
-			
+			}			
 			
 			iterrupt_execution.set(false);
-			
-			Future<Pair<ClustersPerformance, List<Pair<String, BlocksPerformance>>>> future_performances = null;
-			Pair<ClustersPerformance, List<Pair<String, BlocksPerformance>>> performances = null;
-			ClustersPerformance clp = null;
-			List<Pair<String, BlocksPerformance>> blocksMethodsPerformances = null;
-			double start_time = System.currentTimeMillis();
 			
 			int no_instances = 0;
 			if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER))
@@ -105,93 +131,102 @@ public class ExecutionController {
 			else
 				no_instances = WorkflowManager.profilesD1.size() + WorkflowManager.profilesD2.size();
 			
+			Pair<ClustersPerformance, List<Triplet<String, BlocksPerformance, Double>>> performances = null;
+			ClustersPerformance clp = null;
+			List<Triplet<String, BlocksPerformance, Double>> blocksMethodsPerformances = null;
+			
+			double start_time = System.currentTimeMillis();
+			
 			if(this.anyAutomaticConfig()) {
-				
 				if(automatic_type.equals(JedaiOptions.AUTOCONFIG_HOLISTIC)) {				
+					
 					// Holistic random configuration (holistic grid is not supported at this time)
 	                int bestIteration = 0;
 	                double bestFMeasure = 0;
-	
 	                for (int j = 0; j < NO_OF_TRIALS; j++) {
 	                    int finalJ = j;
 	                    
 	                    // Set the next automatic random configuration
-	                    iterateHolisticRandom( null);
+	                    iterateHolisticRandom(null);
 	
-	                    // Run a workflow and check its F-measure
-	                    
+	                    // Run a workflow and check its F-measure    
 	                    // Execute Workflow in different thread in order to be stoppable
-	                    
-	                    future_performances =  exec.submit(() -> {return WorkflowManager.runWorkflow(false, iterrupt_execution);});
-	                    performances = future_performances.get();
+	                    performances =  exec
+	                    		.submit(() -> {return WorkflowManager.runWorkflow(false, iterrupt_execution);})
+	                    		.get();
+	                   
 	                    clp = performances.getValue0();
-	        			if (clp == null && iterrupt_execution.get()) return null;
-	                    
-	
-	                    // If there was a problem with this random workflow, skip this iteration
-	                    if (clp == null) {
-	                        continue;
-	                    }
-	
-	                    
+	        			if (clp == null || iterrupt_execution.get()) return null;
+	                    	                    
 	                    // Keep this iteration if it has the best F-measure so far
 	                    double fMeasure = clp.getFMeasure();
 	                    if (bestFMeasure < fMeasure) {
 	                        bestIteration = j;
 	                        bestFMeasure = fMeasure;
 	                    }
-	                    
-		                System.out.println("Best Iteration\t:\t" + bestIteration);
-		                System.out.println("Best FMeasure\t:\t" + bestFMeasure);
-		
-		                // Before running the workflow, we should configure the methods using the best iteration's parameters
-		                iterateHolisticRandom(bestIteration);
-		
-		                // Run the final workflow (whether there was an automatic configuration or not)
-		                
-		                // Execute Workflow in different thread in order to be stoppable
-		                future_performances =  exec.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);});
-		                performances = future_performances.get();
-		                clp = performances.getValue0();
-		    			if (clp == null) return null;
-	                    	                    
-		                return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
-		               
 	                }
+                    
+	                System.out.println("Best Iteration\t:\t" + bestIteration);
+	                System.out.println("Best FMeasure\t:\t" + bestFMeasure);
+	
+	                // Before running the workflow, we should configure the methods using the best iteration's parameters
+	                iterateHolisticRandom(bestIteration);
+	
+	                // Run the final workflow (whether there was an automatic configuration or not)
+	                // Execute Workflow in different thread in order to be stoppable
+	                performances =  exec
+	                		.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);})
+	                		.get();
+	                
+	                double totalTime = System.currentTimeMillis() - start_time;
+	                clp = performances.getValue0();
+	                blocksMethodsPerformances = performances.getValue1();
+	    			
+	                if (clp == null || iterrupt_execution.get()) return null;
+                    	   
+	                // Store workflow results to H2 DB
+	    			storeWorkflowResults(no_instances, totalTime, clp, blocksMethodsPerformances);
+	    			
+	                return new Triplet<ClustersPerformance , Double, Integer>(clp, totalTime, no_instances);
+	               
 				}
 				else {
 					
-					// TODO Return performances fromrunStepByStepWorkflow
-					
-					
+
 					 // Step-by-step automatic configuration. Set random or grid depending on the selected search type.
 					// Execute Workflow in different thread in order to be stoppable
-					future_clp =  exec.submit(
-							() -> {
-									return WorkflowManager.runStepByStepWorkflow(methodsConfig, search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH), iterrupt_execution);
-								}
-							);
-					clp = future_clp.get();
-					if (clp == null) return null;
-                   
-					return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
+					performances =  exec
+							.submit(() -> { return WorkflowManager.runStepByStepWorkflow(methodsConfig, 
+									search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH), iterrupt_execution);}
+							)
+							.get();
+					double totalTime = System.currentTimeMillis() - start_time;
+					clp = performances.getValue0();
+					
+					if (clp == null || iterrupt_execution.get()) return null;
+					
+					// Store workflow results to H2 DB
+					storeWorkflowResults(no_instances, totalTime, clp, blocksMethodsPerformances);
+					
+					return new Triplet<ClustersPerformance , Double, Integer>(clp, totalTime, no_instances);
 				}
 				
 			}
 			// Run workflow without any automatic configuration
-			
 			// Execute Workflow in different thread in order to be stoppable
-			future_performances =  exec.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);});
-			performances = future_performances.get();
-			
+			performances =  exec
+					.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);})
+					.get();
+			double totalTime = System.currentTimeMillis() - start_time;
 			clp = performances.getValue0();
 			blocksMethodsPerformances = performances.getValue1();
 			
-			// TODO add Perfomances to DB
+			if (clp == null || iterrupt_execution.get()) return null;
 			
-			if (clp == null) return null;
-			
-            return new Triplet<ClustersPerformance , Double, Integer>(clp, System.currentTimeMillis() - start_time, no_instances);
+			// Store workflow results to H2 DB
+			storeWorkflowResults(no_instances, totalTime, clp, blocksMethodsPerformances);
+            
+			return new Triplet<ClustersPerformance , Double, Integer>(clp, totalTime, no_instances);
 		}
 		catch(InterruptedException|ExecutionException e ) {
 			e.printStackTrace();

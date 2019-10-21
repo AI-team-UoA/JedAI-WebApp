@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.javatuples.Pair;
+import org.javatuples.Triplet;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.datamodel.AbstractBlock;
@@ -111,7 +112,7 @@ public class WorkflowManager {
      * @param currentMethod Method to process the blocks with
      * @return Processed list of blocks
      */
-    private static Pair<List<AbstractBlock>, BlocksPerformance> runBlockProcessing(AbstractDuplicatePropagation duProp, boolean finalRun,
+    private static Triplet<List<AbstractBlock>, BlocksPerformance, Double> runBlockProcessing(AbstractDuplicatePropagation duProp, boolean finalRun,
                                                    List<AbstractBlock> blocks, IBlockProcessing currentMethod) {
         double overheadStart;
         double overheadEnd;
@@ -128,12 +129,10 @@ public class WorkflowManager {
                 blp.setStatistics();
                 details_manager.print_BlockBuildingPerformance(blp, overheadEnd - overheadStart, currentMethod.getMethodConfiguration(),  currentMethod.getMethodName());
                 
-                // Save the performance of block processing
-                //TODO: this.addBlocksPerformance(currentMethod.getMethodName(), totalTime, blp);
             }
+            return new Triplet<>(blocks, blp, overheadEnd - overheadStart);
         }
-
-        return new Pair<List<AbstractBlock>, BlocksPerformance>(blocks, blp);
+        return new Triplet<>(blocks, null, 0.0);
     }
     
     
@@ -208,11 +207,11 @@ public class WorkflowManager {
 	 * @param final_run true if this is the final run
 	 * @return  the Cluster Performance and the performances of each step
 	 * */
-	public static Pair<ClustersPerformance, List<Pair<String, BlocksPerformance>>>
+	public static Pair<ClustersPerformance, List<Triplet<String, BlocksPerformance, Double>>>
 	runWorkflow(boolean final_run, AtomicBoolean interrupted)  {
 		try {	
 					
-			List<Pair<String, BlocksPerformance>> performances = new ArrayList<>();
+			List<Triplet<String, BlocksPerformance, Double>> performances = new ArrayList<>();
 			
 			String event_name="execution_step";
 			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
@@ -292,9 +291,8 @@ public class WorkflowManager {
 	                		overheadEnd - overheadStart, 
 	                		bb.getMethodConfiguration(), 
 	                		bb.getMethodName());
-	                performances.add(new Pair<String, BlocksPerformance>(bb.getMethodName(), blp));
+	                performances.add(new Triplet<>(bb.getMethodName(), blp, overheadEnd - overheadStart));
 	            }
-	            
 	        }
 	        
 	        if(final_run)
@@ -318,12 +316,10 @@ public class WorkflowManager {
 	            	
 	            	overheadStart = System.currentTimeMillis();
 	            	
-	                Pair<List<AbstractBlock>, BlocksPerformance> p = runBlockProcessing(ground_truth, final_run, blocks, currentMethod);
+	                Triplet<List<AbstractBlock>, BlocksPerformance, Double> p = runBlockProcessing(ground_truth, final_run, blocks, currentMethod);
 	                blocks = p.getValue0();
 	                if (final_run)
-	                	performances.add(new Pair<>(currentMethod.getMethodName(), p.getValue1()));
-	                
-		            
+	                	performances.add(new Triplet<>(currentMethod.getMethodName(), p.getValue1(), p.getValue2()));
 		            
 	                if (blocks.isEmpty()) {
 	                    return null;
@@ -342,10 +338,10 @@ public class WorkflowManager {
 					return null;
 				}		
 	        	
-				Pair<List<AbstractBlock>, BlocksPerformance> p = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
+				Triplet<List<AbstractBlock>, BlocksPerformance, Double> p = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
 				blocks = p.getValue0();
 				if (final_run)
-                	performances.add(new Pair<>(comparison_cleaning.getMethodName(), p.getValue1()));
+                	performances.add(new Triplet<>(comparison_cleaning.getMethodName(), p.getValue1(), p.getValue2()));
 				
 	            if (blocks.isEmpty()) {
 	                return null;
@@ -424,13 +420,15 @@ public class WorkflowManager {
      * @param random      If true, will use random search. Otherwise, grid.
      * @return ClustersPerformance of the workflow result
      */
-	public static ClustersPerformance runStepByStepWorkflow(Map<String, Object> methodsConfig, boolean random, AtomicBoolean interrupted) {
+	public static Pair<ClustersPerformance, List<Triplet<String, BlocksPerformance, Double>>> 
+	runStepByStepWorkflow(Map<String, Object> methodsConfig, boolean random, AtomicBoolean interrupted) {
 	
 		try {
 			
 			double bestA = 0, time1, time2, originalComparisons;
 		    int bestIteration = 0, iterationsNum;
 		    BlocksPerformance blp;
+		    List<Triplet<String, BlocksPerformance, Double>> performances = new ArrayList<>();
 		    
 		    
 			String event_name="execution_step";
@@ -459,10 +457,6 @@ public class WorkflowManager {
 		    TObjectIntMap<String>[] scClusters = null;
 		    if (schema_clustering != null) {
 	    		eventPublisher.publish("Schema Clustering", event_name);
-		
-		        // Optimize schema clustering
-		        // if (model.getSchemaClusteringConfigType().equals(JedaiOptions.AUTOMATIC_CONFIG)) { }
-		        // TODO: optimize together with block building (and enable the option in the GUI)
 		
 		        // Run Schema Clustering 
 		        if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
@@ -574,8 +568,7 @@ public class WorkflowManager {
 	                		bb.getMethodConfiguration(), 
 	                		bb.getMethodName());
 		            
-		            
-		            //TODO: this.addBlocksPerformance(bb.getMethodName(), totalTimeMillis, blp);
+		            performances.add(new Triplet<>(bb.getMethodName(), blp, time2 - time1));
 		
 		            index++;
 		        }
@@ -630,8 +623,9 @@ public class WorkflowManager {
 		            		time2 - time1, 
 	                		bp.getMethodConfiguration(), 
 	                		bp.getMethodName());
-		            //TODO: this.addBlocksPerformance(bp.getMethodName(), totalTimeMillis, blp);
-		
+		            
+		            performances.add(new Triplet<>(bp.getMethodName(), blp, time2 - time1));
+		            
 		            // Increment index
 		            index++;
 		        }
@@ -671,7 +665,7 @@ public class WorkflowManager {
 	        		time2 - time1, 
 	        		comparison_cleaning.getMethodConfiguration(), 
 	        		comparison_cleaning.getMethodName());
-		    // TODO: this.addBlocksPerformance(comparisonCleaningMethod.getMethodName(), totalTimeMillis, blp);
+		    performances.add(new Triplet<>(comparison_cleaning.getMethodName(), blp, time2 - time1));
 		
 		    
 		    
@@ -839,7 +833,7 @@ public class WorkflowManager {
 	    			entity_clustering.getMethodConfiguration());
 		    
 		    eventPublisher.publish("", event_name);
-		    return clp;
+		    return new Pair<>(clp, performances);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
