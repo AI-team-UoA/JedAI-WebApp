@@ -8,23 +8,42 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="WorkflowConfiguration")
+@Table(name="workflow_configuration")
 public class WorkflowConfiguration {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(updatable = false, nullable = false, unique = true)
+	@Column(updatable = false, nullable = false, unique = true, name="id")
 	private int id;
 	
+	@Column(name="er_mode")
 	private String erMode;
+	
+	@Column(name="datasetid1")
 	private int datasetID1;
+	
+	@Column(name="datasetid2")
 	private int datasetID2;
+	
+	@Column(name="gtid")
 	private int gtID;
+	
+	@Column(name="schema_clustering")
 	private int schemaClustering;
+	
+	@Column(name="block_building")
 	private int[] blockBuilding;
+	
+	@Column(name="block_cleaning")
 	private int[] blockCleaning;
+	
+	@Column(name="comparison_cleaning")
 	private int comparisonCleaning;
+	
+	@Column(name="entity_matching")
 	private int entityMatching;
+	
+	@Column(name="entity_clustering")
 	private int entityClustering;
 	
 	

@@ -11,25 +11,48 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Dataset")
+@Table(name="dataset")
 public class Dataset {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(updatable = false, nullable = false, unique = true)
+	@Column(updatable = false, nullable = false, unique = true, name="id")
 	private int id;
 	
+	@Column(name="type")
 	private String type;
+	
+	@Column(name="source")
 	private String source;
+	
+	@Column(name="filetype")
 	private String filetype;
+	
+	@Column(name="entity_id")
 	private String entity_id;
+	
+	@Column(name="separator")
 	private char separator;
+	
+	@Column(name="first_row")
 	private int first_row;
+	
+	@Column(name="excluded_attr")
 	private int[] excluded_attr;
+	
+	@Column(name="id_index")
 	private int id_index;
+	
+	@Column(name="table_name")
 	private String tableName;
+	
+	@Column(name="db_username")
 	private String dbUsername;
+	
+	@Column(name="db_password")
 	private String dbPassword;
+	
+	@Column(name="ssl")
 	private boolean ssl;
 	
 	

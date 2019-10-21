@@ -9,20 +9,27 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name="MethodConfiguration")
+@Table(name="method_configuration")
 public class MethodConfiguration {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(updatable = false, nullable = false, unique = true)
+	@Column(updatable = false, nullable = false, unique = true, name="id")
 	private int id;
 	
+	@Column(name="method")
 	private String method;
+
+	@Column(name="label")
 	private String label;
+
+	@Column(name="configuration_type")
 	private String configurationType;
 	
 	@Transient
 	private String[] parametersAr;
+
+	@Column(name="parameters")
 	private String parameters;
 	
 	
