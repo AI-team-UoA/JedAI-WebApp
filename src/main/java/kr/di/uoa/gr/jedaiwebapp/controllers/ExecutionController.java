@@ -47,7 +47,6 @@ public class ExecutionController {
 	@Autowired
 	WorkflowResultsRepository workflowResultsRepository;
 	
-	
 	ExecutionController(){
 		exec = Executors.newSingleThreadExecutor();
 		iterrupt_execution = new AtomicBoolean(false);
@@ -76,44 +75,37 @@ public class ExecutionController {
 		double[] recall = new double[performances.size()+1];
 		double[] precision = new double[performances.size()+1];
 		double[] fmeasure = new double[performances.size()+1];
-		String[] methodNamesAr = new String[performances.size()+1];
-		
-		List<String> l = new ArrayList<String>();
+		List<String> methodNames = new ArrayList<String>();
 		
 		time[0] = totalTime;
 		recall[0] = clp.getRecall();
 		precision[0] = clp.getPrecision();
-		fmeasure[0] = clp.getFMeasure();
-		methodNamesAr[0] = "Total";
-		
-		l.add("Total");
+		fmeasure[0] = clp.getFMeasure();		
+		methodNames.add("Total");
 		
 		int i = 1;
 		for (Triplet<String, BlocksPerformance, Double> t: performances) {
 			BlocksPerformance performance = t.getValue1();
-			methodNamesAr[i] = t.getValue0();
+			methodNames.add(t.getValue0());
 			time[i] = t.getValue2();
 			recall[i] = performance.getPc();
 			precision[i] = performance.getPq();
 			fmeasure[i] = performance.getFMeasure();
-			l.add(methodNamesAr[i]);
 			i++;			
 		}
 		
-		System.out.println(l.size());
-		
 		WorkflowResults workflowResults = new WorkflowResults( WorkflowManager.workflowConfigurationsID,
-				no_instances, clp.getEntityClusters(), time, l, methodNamesAr.toString(), recall, precision, fmeasure);
+				no_instances, clp.getEntityClusters(), time, methodNames, recall, precision, fmeasure);
 		workflowResultsRepository.save(workflowResults);
 	 
 		
 	}
 	
 	@GetMapping("/workflow/workbench/")
-	public void getWotkflows() {
-		System.out.println("Workbench Tab request");
+	public Iterable<WorkflowResults> getWotkflows() {
 		
-		
+		Iterable<WorkflowResults> wfrI = workflowResultsRepository.findAll();
+		return wfrI	;
 	}
 	
     
