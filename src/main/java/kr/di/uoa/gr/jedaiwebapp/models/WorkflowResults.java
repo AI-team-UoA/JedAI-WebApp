@@ -1,6 +1,10 @@
 package kr.di.uoa.gr.jedaiwebapp.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,7 +17,7 @@ import javax.persistence.Transient;
 public class WorkflowResults {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(updatable = false, nullable = false, unique = true, name="id")	
 	private int id;
 		
@@ -32,8 +36,9 @@ public class WorkflowResults {
 	@Column (name = "method_names")
 	private String methodNames;
 	
-	@Transient
-	private String[] methodNamesAr;
+	@ElementCollection
+	@Column (name = "method_names_ar")
+	private List<String> methodNamesAr;
 	
 	@Column (name = "recall")
 	private double[] recall;
@@ -45,10 +50,13 @@ public class WorkflowResults {
 	private double[] fmeasure;
 	
 	
+	public WorkflowResults() {
+		
+	}
 	
-	public WorkflowResults(int id, int workflowID, int inputInstances, int clustes, double[] time, String[] methodNamesAr,
+	public WorkflowResults(int workflowID, int inputInstances, int clustes, double[] time, List<String> methodNamesAr,
 			String methodNames, double[] recall, double[] precision, double[] fmeasure){
-		this.setId(id);
+
 		this.setWorkflowID(workflowID);
 		this.setInputInstances(inputInstances);
 		this.setClusters(clustes);
@@ -99,10 +107,10 @@ public class WorkflowResults {
 	public void setMethodNames(String methodNames) {
 		this.methodNames = methodNames;
 	}
-	public String[] getMethodNamesAr() {
+	public List<String> getMethodNamesAr() {
 		return methodNamesAr;
 	}
-	public void setMethodNamesAr(String[] methodNamesAr) {
+	public void setMethodNamesAr(List<String> methodNamesAr) {
 		this.methodNamesAr = methodNamesAr;
 	}
 	public double[] getRecall() {

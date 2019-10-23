@@ -35,8 +35,7 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 public class WorkflowManager {
 	
 	private final static int NO_OF_TRIALS = 100;
-	
-	public static int workflowConfigurationsID = -1;
+
 	public static  String er_mode = null;
 	public static List<EntityProfile> profilesD1 = null;
 	public static List<EntityProfile> profilesD2 = null;
@@ -53,11 +52,10 @@ public class WorkflowManager {
 	
 	private static EventPublisher eventPublisher;
 	private static WorkflowDetailsManager details_manager ;
+
+	public static int workflowConfigurationsID = -1;
 	
 
-
-	
-	
 	@Bean
 	EventPublisher publisherBean () {
         return new EventPublisher();
@@ -68,6 +66,18 @@ public class WorkflowManager {
 		return new SSE_Manager();
 	}
 	
+	public static void clean() {
+		
+		workflowConfigurationsID = -1;
+		schema_clustering = null;
+		comparison_cleaning = null;
+		entity_matching = null;
+		entity_clustering = null;
+		block_building = null;
+		block_cleaning = null;
+		entityClusters = null;
+		
+	}
 	
 	  /**
      * Run a block building method and return its blocks

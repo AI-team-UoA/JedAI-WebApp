@@ -1,5 +1,6 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -68,7 +69,7 @@ public class ExecutionController {
 	}
 	
 	
-	public int storeWorkflowResults(int no_instances, double totalTime, ClustersPerformance clp, 
+	public void storeWorkflowResults(int no_instances, double totalTime, ClustersPerformance clp, 
 			List<Triplet<String, BlocksPerformance, Double>> performances) {
 		
 		double[] time = new double[performances.size()+1];
@@ -77,11 +78,15 @@ public class ExecutionController {
 		double[] fmeasure = new double[performances.size()+1];
 		String[] methodNamesAr = new String[performances.size()+1];
 		
+		List<String> l = new ArrayList<String>();
+		
 		time[0] = totalTime;
 		recall[0] = clp.getRecall();
 		precision[0] = clp.getPrecision();
 		fmeasure[0] = clp.getFMeasure();
 		methodNamesAr[0] = "Total";
+		
+		l.add("Total");
 		
 		int i = 1;
 		for (Triplet<String, BlocksPerformance, Double> t: performances) {
@@ -91,17 +96,137 @@ public class ExecutionController {
 			recall[i] = performance.getPc();
 			precision[i] = performance.getPq();
 			fmeasure[i] = performance.getFMeasure();
-			
+			l.add(methodNamesAr[i]);
 			i++;			
 		}
 		
-		WorkflowResults workflowResults = new WorkflowResults( (new Random()).nextInt(), WorkflowManager.workflowConfigurationsID,
-				no_instances, clp.getEntityClusters(), time, methodNamesAr, methodNamesAr.toString(), recall, precision, fmeasure);
+		System.out.println(l.size());
 		
-		return workflowResultsRepository.insert(workflowResults);
+		WorkflowResults workflowResults = new WorkflowResults( WorkflowManager.workflowConfigurationsID,
+				no_instances, clp.getEntityClusters(), time, l, methodNamesAr.toString(), recall, precision, fmeasure);
+		workflowResultsRepository.save(workflowResults);
+	 
 		
 	}
+	
+	@GetMapping("/workflow/workbench/")
+	public void getWotkflows() {
+		System.out.println("Workbench Tab request");
 		
+		
+	}
+	
+    
+	/**
+     * Set the detected duplicate dataset
+     * 
+     * @return the number o pages
+     */
+	@GetMapping("/workflow/{id}/explore")
+	public int setExplore(){
+		detected_duplicates = WorkflowManager.getDetectedDuplicates();
+		return detected_duplicates.size()/enities_per_page;
+	}
+	
+	
+	
+	/**
+     * Calculate and return the instances for the requested page.
+     * The instances will be displayed in the Explore window
+     * 
+     * @return the instances for the requested page.
+     */
+	@GetMapping("/workflow/{id}/explore/{page}")
+	public List<Pair<EntityProfileNode, EntityProfileNode>> getExploreSubset(@PathVariable(value = "page") String page){
+		if (detected_duplicates == null) return null;
+		int int_page = Integer.parseInt(page);
+		int start = (int_page - 1) * enities_per_page;
+		int end = start + enities_per_page;
+		if (detected_duplicates.size() > 0) {
+			if (end > detected_duplicates.size())
+				end = detected_duplicates.size();
+			return detected_duplicates.subList(start, end);
+		}
+		else return null;
+	}	
+	
+	
+	/**
+	 *  
+	 * Check if the configurations of the workflow have been set correctly.
+	 * */	
+	public boolean congurationsSetCorrectly() {
+		if (WorkflowManager.er_mode == null) return false;
+		if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER)) {
+			return WorkflowManager.profilesD1 != null 
+					&& WorkflowManager.ground_truth != null
+					&& WorkflowManager.block_building != null && WorkflowManager.block_building.size() > 0
+					&& WorkflowManager.entity_matching != null
+					&& WorkflowManager.entity_clustering != null;
+		}
+		else {
+			return WorkflowManager.profilesD1 != null 
+					&& WorkflowManager.profilesD2 != null 
+					&& WorkflowManager.ground_truth != null
+					&& WorkflowManager.block_building != null && WorkflowManager.block_building.size() > 0
+					&& WorkflowManager.entity_matching != null
+					&& WorkflowManager.entity_clustering != null;
+		}
+	}
+	
+	/**
+	 *  
+	 * kill the thread that executes the workflow
+	 * */	
+	@GetMapping("/workflow/stop/")
+	public void stopExecution() {
+		iterrupt_execution.set(true);
+	}
+			
+		
+	/**
+	 *  
+	 * @return true if any configurations has been set to automatic
+	 * */	
+	@GetMapping("/workflow/automatic_conf/")
+	public boolean getAutomaticIsSet() {
+		return anyAutomaticConfig();
+		
+	}
+	
+	
+	
+	
+	/**
+	 * Check if any automatic configuration has been set
+	 * 
+	 * @return true if any configurations has been set to automatic
+	 * */
+	public boolean anyAutomaticConfig() {
+		
+		boolean automatic_conf = false;
+		
+		if (this.methodsConfig == null)
+			this.methodsConfig = WorkflowController.methodsConfig;
+		
+		 for (String key : methodsConfig.keySet())  {
+			 Object value = methodsConfig.get(key);
+			 if (value instanceof MethodModel ) {
+				 String conf = ((MethodModel) value).getConfiguration_type();
+				 automatic_conf = automatic_conf || conf.equals(JedaiOptions.AUTOMATIC_CONFIG);
+						 
+			 }
+			 else if (value instanceof List ) {
+				 for (MethodModel method : (List<MethodModel>) value) {
+					 String conf = method.getConfiguration_type();
+					 automatic_conf = automatic_conf || conf.equals(JedaiOptions.AUTOMATIC_CONFIG);					 
+				 }
+			 }
+		 }
+		
+		 return automatic_conf;	
+	}
+	
 	
 	/**
      * The method is triggered when the used presses the "Execute Workflow" button.
@@ -242,86 +367,6 @@ public class ExecutionController {
 	}
 	
 	
-	
-	/**
-	 *  
-	 * Check if the configurations of the workflow have been set correctly.
-	 * */	
-	public boolean congurationsSetCorrectly() {
-		if (WorkflowManager.er_mode == null) return false;
-		if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER)) {
-			return WorkflowManager.profilesD1 != null 
-					&& WorkflowManager.ground_truth != null
-					&& WorkflowManager.block_building != null && WorkflowManager.block_building.size() > 0
-					&& WorkflowManager.entity_matching != null
-					&& WorkflowManager.entity_clustering != null;
-		}
-		else {
-			return WorkflowManager.profilesD1 != null 
-					&& WorkflowManager.profilesD2 != null 
-					&& WorkflowManager.ground_truth != null
-					&& WorkflowManager.block_building != null && WorkflowManager.block_building.size() > 0
-					&& WorkflowManager.entity_matching != null
-					&& WorkflowManager.entity_clustering != null;
-		}
-	}
-	
-	/**
-	 *  
-	 * kill the thread that executes the workflow
-	 * */	
-	@GetMapping("/workflow/stop/")
-	public void stopExecution() {
-		iterrupt_execution.set(true);
-	}
-			
-		
-	/**
-	 *  
-	 * @return true if any configurations has been set to automatic
-	 * */	
-	@GetMapping("/workflow/automatic_conf/")
-	public boolean getAutomaticIsSet() {
-		return anyAutomaticConfig();
-		
-	}
-	
-	
-	
-	
-	/**
-	 * Check if any automatic configuration has been set
-	 * 
-	 * @return true if any configurations has been set to automatic
-	 * */
-	public boolean anyAutomaticConfig() {
-		
-		boolean automatic_conf = false;
-		
-		if (this.methodsConfig == null)
-			this.methodsConfig = WorkflowController.methodsConfig;
-		
-		 for (String key : methodsConfig.keySet())  {
-			 Object value = methodsConfig.get(key);
-			 if (value instanceof MethodModel ) {
-				 String conf = ((MethodModel) value).getConfiguration_type();
-				 automatic_conf = automatic_conf || conf.equals(JedaiOptions.AUTOMATIC_CONFIG);
-						 
-			 }
-			 else if (value instanceof List ) {
-				 for (MethodModel method : (List<MethodModel>) value) {
-					 String conf = method.getConfiguration_type();
-					 automatic_conf = automatic_conf || conf.equals(JedaiOptions.AUTOMATIC_CONFIG);					 
-				 }
-			 }
-		 }
-		
-		 return automatic_conf;	
-	}
-	
-	
-	
-	
 	/**
      * When bestIteration is null, set the next random configuration for each method in the workflow that should be
      * automatically configured. If it is set, set these methods to that configuration.
@@ -413,38 +458,6 @@ public class ExecutionController {
             	WorkflowManager.entity_clustering.setNumberedRandomConfiguration(bestIteration);
         }
     }
-    
-	/**
-     * Set the detected duplicate dataset
-     * 
-     * @return the number o pages
-     */
-	@GetMapping("/workflow/{id}/explore")
-	public int setExplore(){
-		detected_duplicates = WorkflowManager.getDetectedDuplicates();
-		return detected_duplicates.size()/enities_per_page;
-	}
-	
-	
-	
-	/**
-     * Calculate and return the instances for the requested page.
-     * The instances will be displayed in the Explore window
-     * 
-     * @return the instances for the requested page.
-     */
-	@GetMapping("/workflow/{id}/explore/{page}")
-	public List<Pair<EntityProfileNode, EntityProfileNode>> getExploreSubset(@PathVariable(value = "page") String page){
-		if (detected_duplicates == null) return null;
-		int int_page = Integer.parseInt(page);
-		int start = (int_page - 1) * enities_per_page;
-		int end = start + enities_per_page;
-		if (detected_duplicates.size() > 0) {
-			if (end > detected_duplicates.size())
-				end = detected_duplicates.size();
-			return detected_duplicates.subList(start, end);
-		}
-		else return null;
-	}
+
     
 }

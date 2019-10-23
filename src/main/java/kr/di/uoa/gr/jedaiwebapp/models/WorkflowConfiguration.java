@@ -46,6 +46,7 @@ public class WorkflowConfiguration {
 	@Column(name="entity_clustering")
 	private int entityClustering;
 	
+	public WorkflowConfiguration(){}
 	
 	public int getId() {
 		return id;

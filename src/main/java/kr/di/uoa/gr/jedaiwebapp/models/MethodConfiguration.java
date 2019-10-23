@@ -1,6 +1,9 @@
 package kr.di.uoa.gr.jedaiwebapp.models;
 
+import java.util.List;
+
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,19 +29,11 @@ public class MethodConfiguration {
 	@Column(name="configuration_type")
 	private String configurationType;
 	
-	@Transient
-	private String[] parametersAr;
-
+	@ElementCollection
 	@Column(name="parameters")
-	private String parameters;
+	private List<String> parameters;
 	
-	
-	public String[] getParametersAr() {
-		return parametersAr;
-	}
-	public void setParametersAr(String[] parametersAr) {
-		this.parametersAr = parametersAr;
-	}
+	public MethodConfiguration(){}
 	
 	public int getId() {
 		return id;
@@ -64,10 +59,10 @@ public class MethodConfiguration {
 	public void setConfigurationType(String configurationType) {
 		this.configurationType = configurationType;
 	}
-	public String getParameters() {
+	public List<String> getParameters() {
 		return parameters;
 	}
-	public void setParameters(String parameters) {
+	public void setParameters(List<String> parameters) {
 		this.parameters = parameters;
 	}
 	

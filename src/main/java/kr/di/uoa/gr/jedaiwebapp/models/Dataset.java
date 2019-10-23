@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -37,6 +36,7 @@ public class Dataset {
 	@Column(name="first_row")
 	private int first_row;
 	
+	
 	@Column(name="excluded_attr")
 	private int[] excluded_attr;
 	
@@ -58,9 +58,8 @@ public class Dataset {
 	
 	public Dataset() {}
 	
-	public Dataset(int id, Map<String, Object> datasetConf) {
-		this.id = id; // TODO this must be set automatically
-
+	public Dataset(Map<String, Object> datasetConf) {
+		
 		if (datasetConf.containsKey("type"))
 			this.type = (String) datasetConf.get("type");
 		else this.type = null;
