@@ -151,10 +151,19 @@ class ExecutionView extends Component {
                     var total_time = res.data.value1
                     var no_istamces = res.data.value2
                     
+                    if (data_stat.recall > 0 ) data_stat.recall = parseFloat(data_stat.recall).toFixed(2)
+                    else data_stat.recall = parseFloat(0.00)
+
+                    if (data_stat.fmeasure > 0 ) data_stat.fmeasure = parseFloat(data_stat.fmeasure).toFixed(2)
+                    else data_stat.fmeasure = parseFloat(0.00)
+
+                    if (data_stat.precision > 0 ) data_stat.precision = parseFloat(data_stat.precision).toFixed(2)
+                    else data_stat.precision = parseFloat(0.00)
+                    
                     var reuslts = {
-                        recall: parseFloat(data_stat.recall).toFixed(2),
-                        f1_measure: parseFloat(data_stat.fmeasure).toFixed(2),
-                        precision: parseFloat(data_stat.precision).toFixed(2),
+                        recall: data_stat.recall,
+                        f1_measure: data_stat.fmeasure,
+                        precision: data_stat.precision,
 
                         input_instances: no_istamces,
                         existing_duplicates: data_stat.existingDuplicates,
