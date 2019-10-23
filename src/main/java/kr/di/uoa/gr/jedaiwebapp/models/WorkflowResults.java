@@ -33,12 +33,9 @@ public class WorkflowResults {
 	@Column (name = "time")
 	private double[] time;
 	
-	@Column (name = "method_names")
-	private String methodNames;
-	
 	@ElementCollection
-	@Column (name = "method_names_ar")
-	private List<String> methodNamesAr;
+	@Column (name = "method_names")
+	private List<String> methodNames;
 	
 	@Column (name = "recall")
 	private double[] recall;
@@ -54,19 +51,17 @@ public class WorkflowResults {
 		
 	}
 	
-	public WorkflowResults(int workflowID, int inputInstances, int clustes, double[] time, List<String> methodNamesAr,
-			String methodNames, double[] recall, double[] precision, double[] fmeasure){
+	public WorkflowResults(int workflowID, int inputInstances, int clustes, double[] times, List<String> methodNames,
+			double[] recall, double[] precision, double[] fmeasure){
 
 		this.setWorkflowID(workflowID);
 		this.setInputInstances(inputInstances);
 		this.setClusters(clustes);
-		this.setTime(time);
+		this.setTime(times);
 		this.setMethodNames(methodNames);
-		this.setMethodNamesAr(methodNamesAr);
 		this.setRecall(recall);
 		this.setPrecision(precision);
 		this.setFmeasure(fmeasure);
-			
 	}
 	
 	public int getId() {
@@ -101,17 +96,11 @@ public class WorkflowResults {
 	public void setTime(double[] time) {
 		this.time = time;
 	}
-	public String getMethodNames() {
+	public List<String> getMethodNames() {
 		return methodNames;
 	}
-	public void setMethodNames(String methodNames) {
+	public void setMethodNames(List<String> methodNames) {
 		this.methodNames = methodNames;
-	}
-	public List<String> getMethodNamesAr() {
-		return methodNamesAr;
-	}
-	public void setMethodNamesAr(List<String> methodNamesAr) {
-		this.methodNamesAr = methodNamesAr;
 	}
 	public double[] getRecall() {
 		return recall;

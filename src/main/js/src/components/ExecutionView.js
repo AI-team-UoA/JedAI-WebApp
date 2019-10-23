@@ -43,12 +43,17 @@ class ExecutionView extends Component {
                     detected_duplicates : 0,
                     total_matches: 0
                 },
+                workbench_data: [],
                 
                 alertShow: false,
                 show_explore_window : false
             }
         
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
+        axios.get("/workflow/workbench/").then(res => {
+            console.log(res.data)
+            this.setState({workbench_data: res.data})
+        })
    
         this.eventSource = new EventSource("/workflow/sse") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))

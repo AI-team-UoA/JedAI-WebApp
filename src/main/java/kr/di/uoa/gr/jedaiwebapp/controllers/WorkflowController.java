@@ -130,7 +130,6 @@ public class WorkflowController {
 							schema_clustering.getLabel(),
 							schema_clustering.getParameters());
 		                    
-				
 				System.out.println("SC: " + WorkflowManager.schema_clustering);
 			}	
 			// Adding method to DB
