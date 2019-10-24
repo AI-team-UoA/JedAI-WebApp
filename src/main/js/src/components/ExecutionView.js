@@ -8,6 +8,7 @@ import AlertModal from './workflowViews/utilities/AlertModal'
 import Explorer from './workflowViews/utilities/explorer/Explorer'
 import axios from 'axios';
 import { saveAs } from 'file-saver';
+import Workbench from './Workbench'
 
 
 
@@ -463,7 +464,7 @@ class ExecutionView extends Component {
                             </Tab>
                             <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
                                 <br/>
-                                <h1>Workbench</h1>
+                                <Workbench />
                             </Tab>
                         </Tabs>
 
