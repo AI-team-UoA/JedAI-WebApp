@@ -197,8 +197,6 @@ public class WorkflowController {
 			e.printStackTrace();
 			return false;
 		}
-			
-		
 	}
 	
 	
@@ -394,8 +392,6 @@ public class WorkflowController {
 			e.printStackTrace();
 			return false;
 		}
-				
-		
 	}
 	
 	
@@ -451,8 +447,7 @@ public class WorkflowController {
 	                		export_path);
 	                break;
 	        }
-			
-			
+					
 	       	// Insert the stream to the response
 			response.setHeader(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"" + export_file.getName() + "\"");
 		    // get your file as InputStream
@@ -485,8 +480,9 @@ public class WorkflowController {
 		}
 		
 		workflowConfigurationRepository.save(workflowConfiguration);
-		
 		WorkflowManager.workflowConfigurationsID = workflowConfiguration.getId();
+		
+		
 	}
 	
 	
