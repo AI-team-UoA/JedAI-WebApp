@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResultsRepository;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
@@ -45,7 +46,10 @@ public class ExecutionController {
 	private int enities_per_page = 5;
 	
 	@Autowired
-	WorkflowResultsRepository workflowResultsRepository;
+	private WorkflowResultsRepository workflowResultsRepository;
+	
+	@Autowired
+	private WorkflowConfigurationRepository workflowConfigurationRepository;
 	
 	ExecutionController(){
 		exec = Executors.newSingleThreadExecutor();
@@ -66,6 +70,9 @@ public class ExecutionController {
 	     
 	    return emitter;
 	}
+	
+	@GetMapping("/workflow/id")
+	public int getWorkflowID() {return WorkflowManager.workflowConfigurationsID;}
 	
 	
 	public void storeWorkflowResults(int no_instances, double totalTime, ClustersPerformance clp, 
@@ -100,6 +107,20 @@ public class ExecutionController {
 	 
 		
 	}
+	
+	@GetMapping("/workflow/workbench/delete/{id}")
+	public boolean deleteWotkflows(@PathVariable(value = "id") int wrofkfowResultID) {
+		try {
+			
+			WorkflowResults wr = workflowResultsRepository.findById(wrofkfowResultID);
+			int wfID = wr.getWorkflowID();
+			workflowResultsRepository.delete(wr);
+			workflowConfigurationRepository.deleteById(wfID);
+			return true;
+		}
+		catch (Exception e) { return false;}
+	}
+	
 	
 	@GetMapping("/workflow/workbench/")
 	public Iterable<WorkflowResults> getWotkflows() {

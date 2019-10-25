@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import ConfigurationsView from './utilities/ConfigurationsView'
-import {Link } from 'react-router-dom';
+import {Link, withRouter } from 'react-router-dom';
 import {Button} from 'react-bootstrap/'
 import axios from 'axios';
 
 class ConfirmConfiguration extends Component {
 
 
-    storeWorkflow = () => axios.get("/workflow/store")
+    storeWorkflow = () => axios.get("/workflow/store").then(r => this.props.history.push("/workflow"))
 
 
     render() {
@@ -102,9 +102,8 @@ class ConfirmConfiguration extends Component {
                 <br/>
                 <br/>
                 
-                <Link to="/workflow">
-                    <Button style={{float: 'right'}} onClick={this.storeWorkflow} >Confirm</Button>
-                </Link>
+                <Button style={{float: 'right'}} onClick={this.storeWorkflow} >Confirm</Button>
+                
                 
             </div>
         )
@@ -115,4 +114,4 @@ ConfirmConfiguration.propTypes = {
     state: PropTypes.object.isRequired
   }
 
-export default ConfirmConfiguration
+export default withRouter(ConfirmConfiguration)

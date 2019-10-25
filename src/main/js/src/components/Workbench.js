@@ -1,65 +1,65 @@
 import React, { Component } from 'react'
 import {Table, Button, Collapse} from 'react-bootstrap';
-
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
 class Workbench extends Component {
 
     constructor(...args) {
         super(...args);
 
-        this.data = [
-            {   
-                id: 1,
-                inputInstances: 10,
-                clusters: 10,
-                times: [1,2,3,4,5,6],
-                methodNmaes: ["m1", "m2", "m3", "m4", "m5", "m6"],
-                recall: [11, 22, 33, 44, 32, 12],
-                f1measure: [11, 12, 13, 14, 15, 19],
-                precision: [111, 222, 333, 444, 213, 321]
-            }
-            ,
-            {
-                id: 2,
-                inputInstances: 20,
-                clusters: 20,
-                times: [1,2,3,4],
-                methodNmaes: ["m21", "m22", "m23", "m24"],
-                recall: [21, 22, 23, 24],
-                f1measure: [21, 22, 23, 24],
-                precision: [211, 222, 233, 244]
-            },
-            {
-                id: 3,
-                inputInstances: 30,
-                clusters: 30,
-                times: [1,2,3,4],
-                methodNmaes: ["m31", "m32", "m33", "m34"],
-                recall: [31, 32, 33, 34],
-                f1measure: [31, 32, 33, 34],
-                precision: [311, 322, 333, 344]
-            }
-            ,{
-                id: 4,
-                inputInstances: 40,
-                clusters: 40,
-                times: [1,2,3,4],
-                methodNmaes: ["m41", "m42", "m43", "m44"],
-                recall: [41, 42, 43, 44],
-                f1measure: [41, 42, 43, 44],
-                precision: [411, 422, 433, 444]
-            }
-         
-        ]
-
-        var collapse_rows = new Array(this.data.length).fill(false)
+        var collapse_rows = new Array(this.props.data.length).fill(false)
         this.state = { 
-            collapse_rows: collapse_rows
+            collapse_rows: collapse_rows,
+            data : [
+                {
+                    id: 1,
+                   	methodNames : ["ma1", "ma2", "ma2", "ma2"],
+                   	recall : [0.1, 0.2, 0.2, 0.2],
+                   	fmeasure: [0.1, 0.2, 0.2, 0.2],
+                   	precision: [0.1, 0.2, 0.2, 0.2],
+                   	time :[0.1, 0.2, 0.2, 0.2],
+                   	clusters: 202,
+                   	inputInstances: 202
+                },
+                {
+                    id: 1,
+                   	methodNames : ["ma1", "ma2", "ma2", "ma2"],
+                   	recall : [0.1, 0.2, 0.2, 0.2],
+                   	fmeasure: [0.1, 0.2, 0.2, 0.2],
+                   	precision: [0.1, 0.2, 0.2, 0.2],
+                   	time :[0.1, 0.2, 0.2, 0.2],
+                   	clusters: 202,
+                   	inputInstances: 202
+                }
+            ]
         }
         
+       this.setData()
     }
 
-    
+    componentDidMount = () => this.setData()
+    componentDidUpdate = () => this.setData()
+
+    setData = () => {
+        if (this.props.data.length != this.state.data.length) {
+            var collapse_rows = new Array(this.props.data.length).fill(false)
+            this.setState({
+                data: this.props.data,
+                collapse_rows: collapse_rows
+            })
+        }
+    }
+
+    deleteWorkflow = (e, id) => {
+        axios
+        .get("/workflow/workbench/delete/" + id)
+        .then(res => { 
+            console.log(res)
+            this.props.getDataFunc()
+            this.setData()
+        })
+    }
 
     collapseRows = (e, indexName) => {
         
@@ -85,11 +85,11 @@ class Workbench extends Component {
                             <span className="fa fa-bars"/>
                         </Button>
                     </td>
-                    <td>{d.methodNmaes[0]}</td>
-                    <td>{d.recall[0]}</td>
-                    <td>{d.f1measure[0]}</td>
-                    <td>{d.precision[0]}</td>
-                    <td>{d.times[0]}</td>
+                    <td>{d.methodNames[0]}</td>
+                    <td>{parseFloat(d.recall[0]).toFixed(2)}</td>
+                    <td>{parseFloat(d.fmeasure[0]).toFixed(2)}</td>
+                    <td>{parseFloat(d.precision[0]).toFixed(2)}</td>
+                    <td> {parseFloat(d.time[0]).toFixed(2)}</td>
                 </tr>
         rows.push(row)
  
@@ -100,27 +100,27 @@ class Workbench extends Component {
                     <td/>
                     <td>
                         <Collapse in={this.state.collapse_rows[index]} >
-                            <div>{d.methodNmaes[i]}</div>
+                            <div>{d.methodNames[i]}</div>
                         </Collapse>
                     </td>
                     <td>
                         <Collapse in={this.state.collapse_rows[index]} >
-                            <div>{d.f1measure[i]}</div>
+                            <div>{parseFloat(d.recall[i]).toFixed(2)}</div>
                         </Collapse>
                     </td>
                     <td>
                         <Collapse in={this.state.collapse_rows[index]} >
-                            <div>{d.f1measure[i]}</div>
+                            <div>{parseFloat(d.fmeasure[i]).toFixed(2)}</div>
                         </Collapse>
                     </td>
                     <td>
                         <Collapse in={this.state.collapse_rows[index]} >
-                            <div>{d.precision[i]}</div>
+                            <div>{parseFloat(d.precision[i]).toFixed(2)}</div>
                         </Collapse>
                     </td>
                     <td>
                         <Collapse in={this.state.collapse_rows[index]} >
-                            <div>{d.times[i]}</div>
+                            <div>{parseFloat(d.time[i]).toFixed(2)}</div>
                         </Collapse>
                     </td>
                 </tr>
@@ -128,15 +128,15 @@ class Workbench extends Component {
         }
 
         var table =
-            <Table striped bordered hover size="sm">
+            <Table striped bordered size="sm" >
                 <thead>
                     <tr>
                         <th>&nbsp;</th>
-                        <th>Method</th>
-                        <th>Recall</th>
-                        <th>F1 Measure</th>
-                        <th>Precision</th>
-                        <th>Time</th>
+                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}} >Method</th>
+                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Recall</th>
+                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>F1 Measure</th>
+                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Precision</th>
+                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Time</th>
                     </tr>                        
                 </thead>
                 <tbody>
@@ -150,15 +150,29 @@ class Workbench extends Component {
 
 
     formTable = () =>{
+       
         const rows = []
-        this.data.forEach( (d, index) => {
-            var inner_table = this.formInnerTable(d, d.methodNmaes.length, index)
+        this.state.data.forEach( (d, index) => {
+            var inner_table = this.formInnerTable(d, d.methodNames.length, index)
             var row =
                 <tr key={index}>
-                    <td style={{textAlign:"center", margin:"auto"}}>{d.id}</td>
-                    <td style={{textAlign:"center", margin:"auto"}}>{inner_table}</td>
-                    <td style={{textAlign:"center", margin:"auto"}}>{d.inputInstances}</td>
-                    <td style={{textAlign:"center", margin:"auto"}}>{d.clusters}</td>
+                    <td style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>{d.workflowID}</td>
+                    <td style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>{inner_table}</td>
+                    <td style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>{d.inputInstances}</td>
+                    <td style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>{d.clusters}</td>
+                    <td style={{textAlign:"center", verticalAlign:"middle"}} size="sm">
+                        <div style={{display: "inline-block"}}>
+                            <Button style={{marginRight:"5px", float:"left"}} variant="danger" size="sm" onClick={e => this.deleteWorkflow(e, d.id)} >
+                                <span  className="fa fa-trash"/>
+                            </Button>
+                            <Button style={{marginRight:"5px", float:"center"}} variant="info" size="sm" >
+                                <span className="fa fa-eye"/>
+                            </Button>
+                            <Button style={{marginRight:"5px", float:"right"}} variant="primary" size="sm" >
+                                <span className="fa fa-play-circle"/>
+                            </Button>
+                        </div>
+                    </td>
                 </tr>   
             rows.push(row)
         })
@@ -166,10 +180,11 @@ class Workbench extends Component {
                 <Table bordered hover size="sm">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Performance</th>
-                            <th>Input Instancies</th>
-                            <th>Clusters</th>                           
+                            <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>ID</th>
+                            <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Performance</th>
+                            <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Input Instancies</th>
+                            <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Clusters</th>   
+                            <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Actions</th>                           
                         </tr>
                     </thead>
                     <tbody>
@@ -193,4 +208,12 @@ class Workbench extends Component {
         )
     }
 }
+
+
+Workbench.propTypes = {
+    data: PropTypes.array.isRequired,
+    getDataFunc: PropTypes.func.isRequired
+}
+
+
 export default Workbench
