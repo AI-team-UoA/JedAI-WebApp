@@ -267,11 +267,11 @@ public class WorkflowManager {
 				return null;
 			}		
 	        	        
-	        // run Block Building
-	        double overheadStart;
+			double overheadStart;
 	        double overheadEnd;
 	        BlocksPerformance blp;
 	
+	        // run Block Building
 	        if(final_run) 
 				eventPublisher.publish("Block Building", event_name);
 	        
@@ -373,11 +373,18 @@ public class WorkflowManager {
 				return null;
 			}		
 	        
+			overheadStart = System.currentTimeMillis();
+			
 	        if (er_mode.equals(JedaiOptions.DIRTY_ER)) 
 	            simPairs = entity_matching.executeComparisons(blocks, profilesD1);
 	        else 
 	            simPairs = entity_matching.executeComparisons(blocks, profilesD1, profilesD2);
 	        
+	        overheadEnd = System.currentTimeMillis();
+	        if(final_run) {
+	        	String msg = "Entity Matching\nMethod: " + entity_matching.getMethodName() +"\nTotal Time: ";
+	        	details_manager.print_Sentence(msg, overheadEnd - overheadStart);
+	        }
 	
 	        // Run Entity Clustering
 	        if(final_run) 
