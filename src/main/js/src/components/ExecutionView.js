@@ -22,6 +22,9 @@ class ExecutionView extends Component {
         window.scrollTo(0, 0)
         
         this.state = {
+
+                workflowID : -1,
+
                 automatic_type: "Holistic",
                 search_type: "Random Search",
                 export_filetype: "",
@@ -51,10 +54,8 @@ class ExecutionView extends Component {
             }
         
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
-        axios.get("/workflow/workbench/").then(res => {
-            console.log(res.data)
-            this.setState({workbench_data: res.data})
-        })
+        axios.get("/workflow/id").then(res => this.setState({ workflowID: res.data}))
+        this.getWorkbenchData()
    
         this.eventSource = new EventSource("/workflow/sse") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
@@ -65,7 +66,6 @@ class ExecutionView extends Component {
         })
 
         this.eventSource.addEventListener("exception", (e) => {
-        	console.log(e)
             this.alertText = e.data
             this.handleAlerShow()
             this.setState({
@@ -74,6 +74,11 @@ class ExecutionView extends Component {
             )
         })
     }
+
+    getWorkbenchData = () => 
+        axios.get("/workflow/workbench/")
+        .then(res => this.setState({workbench_data: res.data}))
+    
 
     handleAlertClose = () => this.setState({alertShow : false});
     handleAlerShow = () => this.setState({alertShow : true});
@@ -105,12 +110,10 @@ class ExecutionView extends Component {
         .get("/workflow/export/"+this.state.export_filetype, { responseType:"blob" })
         .then(response => {
         	
-            console.log("Response", response);
             this.setState({ execution_status: "Completed" });
             
             //extract file name from Content-Disposition header
             var filename=this.extractFileName(response.headers['content-disposition']);
-            console.log("File name",filename);
             saveAs(response.data, filename);
             
         }).catch(function (error) {
@@ -135,14 +138,11 @@ class ExecutionView extends Component {
     		this.close_explore_window()
     	else
     		this.open_explore_window()
-
     }
+    
 
-    
-    
     // Execute the Workflow
     executeWorkFlow = (e) =>{
-    	
         this.setState({
             execution_status: "Running",
             show_explore_window: false
@@ -184,6 +184,7 @@ class ExecutionView extends Component {
                         execution_results: reuslts,
                         execution_status: "Completed"
                     })
+                    this.getWorkbenchData()
                     
                 }
                 else{
@@ -194,14 +195,13 @@ class ExecutionView extends Component {
             })
     }
 
-
     stop_execution = (e) => {
         this.setState({execution_step: "Stopping"})
         axios.get("/workflow/stop/")
     }
 
-    render() {
 
+    render() {
         var radio_col = 1.8
         var empty_col = 1
         var speedometer_col = 2.5
@@ -278,16 +278,12 @@ class ExecutionView extends Component {
                         <h3 style={{display:"inline"}}>Status</h3>  {this.state.execution_status}
                     </div>
           }
-        
-         
-            
 
 
         // Workflow Step msg
         var execution_msg
         if (this.state.execution_step !== "" &&  this.state.execution_status === "Running"){
-            execution_msg = 
-        		
+            execution_msg = 		
         		<div  style={{marginTop:"20px"}}>
         			<Spinner  style={{color:"#0073e6"}} animation="grow" />
 	        		<div style={{marginLeft:"10px", display:"inline"}}>
@@ -338,6 +334,14 @@ class ExecutionView extends Component {
                                 <div className="Tab_container">
                                     <br/>
                                     <Form>
+                                        <Form.Group as={Row}  className="form-row" >
+                                            <Col  sm={radio_col}  style={{display: "inline-block"}}>
+                                                <Form.Label as="legend"><h5>Workflow ID: {this.state.workflowID}</h5> </Form.Label>
+                                                <Button style={{marginLeft:"5px"}} variant="info" size="sm" >
+                                                    <span className="fa fa-eye"/>
+                                                </Button>
+                                            </Col>
+                                        </Form.Group>
                                         <Form.Group as={Row}  className="form-row" >
                                             <Col  sm={radio_col}>
                                                 <Form.Label as="legend"><h5>Automatic Configuration Type</h5> </Form.Label>
@@ -464,7 +468,7 @@ class ExecutionView extends Component {
                             </Tab>
                             <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
                                 <br/>
-                                <Workbench />
+                                <Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} />
                             </Tab>
                         </Tabs>
 
@@ -546,11 +550,7 @@ class ExecutionView extends Component {
                             </div>
                         </div>
                         <br/>
-                        
-                        
-	                   
-
-                        
+                          
                     </div>
                 </Jumbotron>
             </div>
