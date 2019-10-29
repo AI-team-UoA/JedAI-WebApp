@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Blob } from 'react-blob'
-import {Jumbotron,Modal, Tabs, Tab, Form, Row, Col, Button, Spinner} from 'react-bootstrap';
+import {Jumbotron,Modal, Tabs, Tab, Form, Row, Col, Button, Spinner, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
 import {Link } from 'react-router-dom';
 import "../../../resources/static/css/main.css"
@@ -337,9 +337,18 @@ class ExecutionView extends Component {
                                         <Form.Group as={Row}  className="form-row" >
                                             <Col  sm={radio_col}  style={{display: "inline-block"}}>
                                                 <Form.Label as="legend"><h5>Workflow ID: {this.state.workflowID}</h5> </Form.Label>
-                                                <Button style={{marginLeft:"5px"}} variant="info" size="sm" >
-                                                    <span className="fa fa-eye"/>
-                                                </Button>
+
+                                                <OverlayTrigger
+                                                    placement='top'
+                                                    overlay={
+                                                        <Tooltip id='tooltip-top' >
+                                                            Preview
+                                                        </Tooltip>}
+                                                    >
+                                                    <Button style={{marginLeft:"5px"}} variant="info" size="sm" >
+                                                        <span className="fa fa-eye"/>
+                                                    </Button>
+                                                </OverlayTrigger>
                                             </Col>
                                         </Form.Group>
                                         <Form.Group as={Row}  className="form-row" >

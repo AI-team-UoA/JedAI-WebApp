@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Table, Button, Collapse} from 'react-bootstrap';
+import {Table, Button, Collapse, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
@@ -162,15 +162,42 @@ class Workbench extends Component {
                     <td style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>{d.clusters}</td>
                     <td style={{textAlign:"center", verticalAlign:"middle"}} size="sm">
                         <div style={{display: "inline-block"}}>
-                            <Button style={{marginRight:"5px", float:"left"}} variant="danger" size="sm" onClick={e => this.deleteWorkflow(e, d.id)} >
-                                <span  className="fa fa-trash"/>
-                            </Button>
-                            <Button style={{marginRight:"5px", float:"center"}} variant="info" size="sm" >
-                                <span className="fa fa-eye"/>
-                            </Button>
-                            <Button style={{marginRight:"5px", float:"right"}} variant="primary" size="sm" >
-                                <span className="fa fa-play-circle"/>
-                            </Button>
+
+                            <OverlayTrigger
+                                placement='top'
+                                overlay={
+                                    <Tooltip id='tooltip-top' >
+                                        Delete
+                                    </Tooltip>}
+                                >
+                                <Button style={{marginRight:"5px", float:"left"}} variant="danger" size="sm" onClick={e => this.deleteWorkflow(e, d.id)} >
+                                    <span  className="fa fa-trash"/>
+                                </Button>
+                            </OverlayTrigger>
+                            
+                            <OverlayTrigger
+                                placement='top'
+                                overlay={
+                                    <Tooltip id='tooltip-top' >
+                                        Preview
+                                    </Tooltip>}
+                            >
+                                <Button style={{marginRight:"5px", float:"center"}} variant="info" size="sm" >
+                                    <span className="fa fa-eye"/>
+                                </Button>
+                            </OverlayTrigger>
+                            
+                            <OverlayTrigger
+                                placement='top'
+                                overlay={
+                                    <Tooltip id='tooltip-top' >
+                                        Execute
+                                    </Tooltip>}
+                            >
+                                <Button style={{marginRight:"5px", float:"right"}} variant="primary" size="sm" >
+                                    <span className="fa fa-play-circle"/>
+                                </Button>
+                            </OverlayTrigger>
                         </div>
                     </td>
                 </tr>   
