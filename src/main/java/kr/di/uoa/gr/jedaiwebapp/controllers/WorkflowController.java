@@ -47,7 +47,7 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
 public class WorkflowController {
 	
 	
-	static Map<String, Object> methodsConfig;	
+	Map<String, Object> methodsConfig;	
 	static List<Map<String, Object>> datasetsConfig = new ArrayList<Map<String, Object>>();
 	private WorkflowConfiguration workflowConfiguration;
 	
@@ -64,8 +64,12 @@ public class WorkflowController {
 	private HttpServletRequest request;
 	
 	WorkflowController(){
-		WorkflowController.methodsConfig = new HashMap<String, Object>();
+		methodsConfig = new HashMap<String, Object>();
 	}
+	
+
+	@GetMapping("/workflow/get_configurations")
+	public Map<String, Object> getWotkflowConfigurations(){	return methodsConfig; }
 	
 	
 	/**
@@ -77,6 +81,24 @@ public class WorkflowController {
 	public boolean validate_DataRead() {
 		workflowConfiguration = new WorkflowConfiguration();
 		WorkflowManager.clean();
+		
+		
+		methodsConfig.put("mode", WorkflowManager.er_mode); 
+		for (Map<String, Object> datasetConfig : datasetsConfig) {
+			Dataset dt = new Dataset(datasetConfig);
+			String entityID = dt.getEntity_id();
+			switch (entityID) {
+				case "1": 
+					methodsConfig.put("d1", dt);
+					break;
+				case "2": 
+					methodsConfig.put("d2", dt);
+					break;
+				case "3": 
+					methodsConfig.put("gt", dt)
+					break;
+			}
+		}			
 		
 		switch(WorkflowManager.er_mode) {
 			case JedaiOptions.DIRTY_ER:

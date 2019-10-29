@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class WorkflowConfiguration {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(updatable = false, nullable = false, unique = true, name="id")
 	private int id;
 	
