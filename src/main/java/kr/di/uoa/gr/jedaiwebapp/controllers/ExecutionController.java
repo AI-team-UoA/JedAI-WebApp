@@ -1,14 +1,15 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,6 +26,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
+import kr.di.uoa.gr.jedaiwebapp.models.DatasetRepository;
+import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
+import kr.di.uoa.gr.jedaiwebapp.models.MethodConfigurationRepository;
+import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResultsRepository;
@@ -40,7 +46,7 @@ public class ExecutionController {
 	private final static int NO_OF_TRIALS = 100;
 	private ExecutorService exec ;
 	private static AtomicBoolean iterrupt_execution;
-	private Map<String, Object> methodsConfig = WorkflowController.methodsConfig;
+	private Map<String, Object> methodsConfig;
 	private SSE_Manager sse_manager;
 	private List<Pair<EntityProfileNode, EntityProfileNode>> detected_duplicates;
 	private int enities_per_page = 5;
@@ -51,10 +57,17 @@ public class ExecutionController {
 	@Autowired
 	private WorkflowConfigurationRepository workflowConfigurationRepository;
 	
+	@Autowired
+	private DatasetRepository datasetRepository;
+	
+	@Autowired
+	private MethodConfigurationRepository methodConfigurationRepository;
+	
 	ExecutionController(){
 		exec = Executors.newSingleThreadExecutor();
 		iterrupt_execution = new AtomicBoolean(false);
 		sse_manager = new SSE_Manager();
+		methodsConfig = getWotkflowConfigurations(WorkflowManager.workflowConfigurationsID);
 	}
 	
 	/**
@@ -109,16 +122,92 @@ public class ExecutionController {
 	}
 	
 	@GetMapping("/workflow/workbench/delete/{id}")
-	public boolean deleteWotkflows(@PathVariable(value = "id") int wrofkfowResultID) {
+	public boolean deleteWotkflow(@PathVariable(value = "id") int wrofkfowResultID) {
 		try {
-			
 			WorkflowResults wr = workflowResultsRepository.findById(wrofkfowResultID);
 			int wfID = wr.getWorkflowID();
 			workflowResultsRepository.delete(wr);
 			workflowConfigurationRepository.deleteById(wfID);
 			return true;
 		}
-		catch (Exception e) { return false;}
+		catch (Exception e) { 
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	@GetMapping("/workflow/workbench/get_configurations/{id}")
+	public Map<String, Object> getWotkflowConfigurationsFromResultsID(@PathVariable(value = "id") int wrofkfowResultID) {
+	
+		WorkflowResults wr = workflowResultsRepository.findById(wrofkfowResultID);
+		int wfID = wr.getWorkflowID();
+		return getWotkflowConfigurations(wfID);		
+	}
+	
+		
+	public Map<String, Object> getWotkflowConfigurations(@PathVariable(value = "id") int wfID) {
+		try{
+			if (wfID == -1) return null;
+			
+			Map<String, Object> configurations = new HashMap<>();
+			WorkflowConfiguration wc = workflowConfigurationRepository.findById(wfID);
+				
+			String erMode = wc.getErMode();
+			configurations.put("mode", erMode);
+			
+			int datasetID1 = wc.getDatasetID1();
+			Dataset d1 = datasetRepository.findById(datasetID1);
+			configurations.put("d1", d1);			
+			
+			if (erMode.equals(JedaiOptions.CLEAN_CLEAN_ER)){
+				int datasetID2 = wc.getDatasetID2();
+				Dataset d2 = datasetRepository.findById(datasetID2);
+				configurations.put("d2", d2);			
+			}
+				
+			int gtID = wc.getGtID();
+			Dataset gt= datasetRepository.findById(gtID);
+			configurations.put("gt", gt);
+			
+			int scID = wc.getSchemaClustering();
+			MethodConfiguration sc = methodConfigurationRepository.findById(scID);
+			configurations.put(JedaiOptions.SCHEMA_CLUSTERING, new MethodModel(sc));
+			
+						
+			List<Integer> bbIDs =  Arrays.stream(wc.getBlockBuilding()).boxed().collect(Collectors.toList());
+			Iterable<MethodConfiguration> bb = methodConfigurationRepository.findAllById(bbIDs);
+			List<MethodModel> bbmm = new ArrayList<>();
+			for (MethodConfiguration mc : bb) 
+				bbmm.add(new MethodModel(mc));
+			configurations.put(JedaiOptions.BLOCK_BUILDING, bbmm);
+			
+			List<Integer> bcIDs =  Arrays.stream(wc.getBlockCleaning()).boxed().collect(Collectors.toList());
+			Iterable<MethodConfiguration> bc = methodConfigurationRepository.findAllById(bcIDs);
+			List<MethodModel> bcmm = new ArrayList<>();
+			for (MethodConfiguration mc : bc) 
+				bcmm.add(new MethodModel(mc));
+			configurations.put(JedaiOptions.BLOCK_CLEANING, bcmm);
+			
+			int ccID = wc.getComparisonCleaning();
+			MethodConfiguration cc = methodConfigurationRepository.findById(ccID);
+			configurations.put(JedaiOptions.COMPARISON_CLEANING, new MethodModel(cc));
+			
+			int emID = wc.getEntityMatching();
+			MethodConfiguration em = methodConfigurationRepository.findById(emID);
+			configurations.put(JedaiOptions.ENTITY_MATHCING, new MethodModel(em));
+			
+			int ecID = wc.getEntityClustering();
+			MethodConfiguration ec = methodConfigurationRepository.findById(ecID);
+			configurations.put(JedaiOptions.ENTITY_CLUSTERING, new MethodModel(ec));
+			
+			
+			return configurations;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	
@@ -192,9 +281,7 @@ public class ExecutionController {
 	 * kill the thread that executes the workflow
 	 * */	
 	@GetMapping("/workflow/stop/")
-	public void stopExecution() {
-		iterrupt_execution.set(true);
-	}
+	public void stopExecution() { iterrupt_execution.set(true);	}
 			
 		
 	/**
@@ -202,12 +289,8 @@ public class ExecutionController {
 	 * @return true if any configurations has been set to automatic
 	 * */	
 	@GetMapping("/workflow/automatic_conf/")
-	public boolean getAutomaticIsSet() {
-		return anyAutomaticConfig();
+	public boolean getAutomaticIsSet() { return anyAutomaticConfig(); }
 		
-	}
-	
-	
 	
 	
 	/**
@@ -220,7 +303,7 @@ public class ExecutionController {
 		boolean automatic_conf = false;
 		
 		if (this.methodsConfig == null)
-			this.methodsConfig = WorkflowController.methodsConfig;
+			this.methodsConfig = getWotkflowConfigurations(WorkflowManager.workflowConfigurationsID);
 		
 		 for (String key : methodsConfig.keySet())  {
 			 Object value = methodsConfig.get(key);
@@ -330,7 +413,6 @@ public class ExecutionController {
 				}
 				else {
 					
-
 					 // Step-by-step automatic configuration. Set random or grid depending on the selected search type.
 					// Execute Workflow in different thread in order to be stoppable
 					performances =  exec
@@ -451,9 +533,7 @@ public class ExecutionController {
 	            else 
 	            	WorkflowManager.comparison_cleaning.setNumberedRandomConfiguration(bestIteration);
             
-	        
-        
-        
+
         // Check if entity matching parameters should be set automatically
         if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATHCING)).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
             if (bestIteration == null) 

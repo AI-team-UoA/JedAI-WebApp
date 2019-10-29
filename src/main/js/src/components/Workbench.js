@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Table, Button, Collapse, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {Table, Button, Collapse, OverlayTrigger, Tooltip, Modal} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
@@ -11,6 +11,7 @@ class Workbench extends Component {
         var collapse_rows = new Array(this.props.data.length).fill(false)
         this.state = { 
             collapse_rows: collapse_rows,
+            show_configuration_modal : false,
             data : [
                 {
                     id: 1,
@@ -35,7 +36,7 @@ class Workbench extends Component {
             ]
         }
         
-       this.setData()
+      this.setData()
     }
 
     componentDidMount = () => this.setData()
@@ -53,12 +54,28 @@ class Workbench extends Component {
 
     deleteWorkflow = (e, id) => {
         axios
-        .get("/workflow/workbench/delete/" + id)
-        .then(res => { 
-            console.log(res)
-            this.props.getDataFunc()
-            this.setData()
-        })
+            .get("/workflow/workbench/delete/" + id)
+            .then(res => { 
+                console.log(res)
+                this.props.getDataFunc()
+                this.setData()
+            })
+    }
+
+    close_configuration_modal = () => this.setState({show_configuration_modal : false});
+    open_configuration_modal = () => this.setState({show_configuration_modal : true});
+
+    previewWorkflow = (e, id) => {
+
+        var wf_data = null
+        axios
+            .get("/workflow/workbench/get_configurations/" + id)
+            .then(res => {
+                wf_data = res.data
+                console.log(wf_data)
+            })
+        
+        this.open_configuration_modal()
     }
 
     collapseRows = (e, indexName) => {
@@ -182,7 +199,7 @@ class Workbench extends Component {
                                         Preview
                                     </Tooltip>}
                             >
-                                <Button style={{marginRight:"5px", float:"center"}} variant="info" size="sm" >
+                                <Button style={{marginRight:"5px", float:"center"}} variant="info" size="sm" onClick={e => this.previewWorkflow(e, d.id)}>
                                     <span className="fa fa-eye"/>
                                 </Button>
                             </OverlayTrigger>
@@ -230,6 +247,22 @@ class Workbench extends Component {
 
         return (
             <div>
+
+                <Modal show={this.state.show_configuration_modal} onHide={this.close_configuration_modal} size="xl">
+                    <Modal.Header closeButton>
+                    <Modal.Title>Configurations</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body >
+                    Configurations Modal
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.close_configuration_modal}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+
                 {table}
             </div>
         )
