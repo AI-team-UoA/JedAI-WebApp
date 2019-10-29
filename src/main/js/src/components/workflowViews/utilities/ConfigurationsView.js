@@ -1,172 +1,108 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import {Form, Col, Table, Row } from 'react-bootstrap/'
+import ConfigurationView from './ConfigurationView'
 
 class ConfigurationsView extends Component {
 
-    confLabels = new Map([
-        ['filename', 'Filename'],
-        ['first_row', 'First Row'],
-        ['seperator', 'Seperator'],
-        ['id_index', 'ID index'],
-        ['excluded_attr', 'Excluded attirbutes'],
-
-        ['url', 'DB URL'],
-        ['table', 'Table'],
-        ['username', 'Username'],
-        ['ssl', 'SSL']
-      ]);
-
-
+          
     render() {
-        var title_col = 2
-        var empty_col = 1
-        var value_col_1 = 1
-        var value_col_2 = 2
-        var big_col = 6
-        const {data, title, type} = this.props
-        var return_stmnt = null
+       
+        window.scrollTo(0, 0)
 
-        if(type === "inline"){
-            if (data.configuration_type !== ""){
-                if(data.configuration_type === "Manual"){
-                    return_stmnt = 
-                            <Form.Row>
-                                <Col sm={title_col}>
-                                    <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
-                                </Col>
-                                <Col sm={empty_col}></Col>
-                                <Col sm={big_col}>
-                                    <Table  striped bordered hover size="sm">
-                                        <thead>
-                                            <tr>
-                                                <th style={{color:"#4663b9"}}>Method</th>
-                                                {data.parameters.map((parameter, i) => (<th key={i} style={{color:"#4663b9"}}>{parameter.label}</th>))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr> 
-                                                {data.label}
-                                                {data.parameters.map((parameter, i) => (<td key={i} >{parameter.value}</td>))} 
-                                             </tr>
-                                        </tbody>
-                                    </Table>
-                                </Col>
-                            </Form.Row>
-                }
-                else {
-                    return_stmnt = 
-                            <Form.Row>
-                                <Col sm={title_col}>
-                                    <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
-                                </Col>
-                                <Col sm={empty_col}></Col>
-                                <Col sm={value_col_2}>
-                                    {data.label}
-                                </Col>
-                                <Col sm={value_col_2}>
-                                    <h5 style={{color:"#4663b9", marginRight:'100px'}}>Configuration:</h5> 
-                                </Col>
-                                <Col sm={value_col_1}>
-                                    {data.configuration_type}
-                                </Col>
-                            </Form.Row>
-                }
+        const state = this.props.state
+
+        //Data Reading Configurations
+        var er_label = state.data_reading.er_mode ==="dirty" ? "Dirty Entity Resolution" : "Clean-Clean Entity Resolution"
+        var er_mode = {label: er_label, configuration_type: ""}
+
+        var entity_1 = 
+            {
+                source: state.data_reading.entity1_set.filetype,
+                conf: state.data_reading.entity1_set.configurations
             }
-            else            
-                return_stmnt =
-                        <Form.Row>
-                            <Col sm={title_col}>
-                                <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
-                            </Col>
-                            <Col sm={empty_col}></Col>
-                            <Col sm={2}>
-                                {data.label}
-                            </Col>
-                        </Form.Row>
+        var entity_2 = null
+        if (state.data_reading.entity2_set !== null)
+            entity_2 = 
+                {
+                    source: state.data_reading.entity2_set.filetype,
+                    conf: state.data_reading.entity2_set.configurations
+                }
+        var ground_truth =
+        {
+            source: state.data_reading.groundTruth_set.filetype,
+            conf: state.data_reading.groundTruth_set.configurations
+        }
 
+        //Single Selected methods configurations
+        var shcema_clustering = null;
+        if (state.schema_clustering !== null){
+            shcema_clustering = {
+                label: state.schema_clustering.label,
+                configuration_type: state.schema_clustering.configuration_type,
+                parameters: state.schema_clustering.parameters
+            }
+        }
+
+        var comparison_cleaning = null;
+        if (state.comparison_cleaning !== null){
+            comparison_cleaning = {
+                label: state.comparison_cleaning.label,
+                configuration_type: state.comparison_cleaning.configuration_type,
+                parameters: state.comparison_cleaning.parameters
+            }
+        }
+
+        var entity_matching = null;
+        if (state.entity_matching !== null){
+            entity_matching = {
+                label: state.entity_matching.label,
+                configuration_type: state.entity_matching.configuration_type,
+                parameters: state.entity_matching.parameters
+            }
+        }
+
+        var entity_clustering = null;
+        if (state.entity_clustering !== null){
+            entity_clustering = {
+                label: state.entity_clustering.label,
+                configuration_type: state.entity_clustering.configuration_type,
+                parameters: state.entity_clustering.parameters
+            }
         }
 
 
-        else if (type === "array"){
-            
-            return_stmnt = 
-                    <Form.Row>
-                        <Col sm={title_col}>
-                            <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
-                        </Col>
-                        <Col sm={empty_col}></Col>
-                        <Col sm={big_col}>
-                            <Table  striped bordered hover size="sm">
-                                <thead>
-                                    <tr>
-                                        <th style={{color:"#4663b9"}}>Method</th>
-                                        <th style={{color:"#4663b9"}}>Configuration</th>
-                                        <th style={{color:"#4663b9"}}>Parameters</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((method, i) => (
-                                        <tr key={i}> 
-                                            <td>{method.label}</td>
-                                            <td>{method.configuration_type}</td>
-                                            <td>
-                                                {method.parameters.map((parameter, j) => (
-                                                    <Row key={j}>
-                                                        <Col>
-                                                            {parameter.label}
-                                                        </Col>
-                                                        <Col>
-                                                            {parameter.value}
-                                                        </Col>
-                                                    </Row>
-                                                ))}
-                                                
-                                            </td>
-                                            
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        </Col>
-                    </Form.Row>                
-        }
-
-        else if (type === "file"){
-            var keys = Object.keys(data.conf);
-            return_stmnt =
-                
-                    <Form.Row>
-                        <Col sm={title_col}>
-                            <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
-                        </Col>
-                        <Col sm={empty_col}></Col>
-                        <Col sm={big_col}>
-                            <Form.Control as="select" multiple>
-                                <option key="filetype">Source: {data.source}</option>
-                                {keys.map((key) => (
-                                    <option key={key}>{this.confLabels.get(key) + ": " + data.conf[key]}</option>
-                                ))}
-                            </Form.Control>
-                        </Col>
-                    </Form.Row>         
-        }
-        return(
+        return (
             <div>
-                <div style={{margin:'auto', marginLeft: "10%"}}>
-                    {return_stmnt}
+                <br/>
+                <div style={{marginBottom:"5px"}}> 
+                    <h1 style={{display:'inline', marginRight:"20px"}}>Confirm Configurations</h1> 
+                    <span className="workflow-desc" >Confirm the selected values and press the "Next" button to go to the results page.</span>
                 </div>
-                <hr style={{ color: 'black', backgroundColor: 'black', height: '1', marginBottom:'5px' }}/>
+
+                <br/>
+                <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                <br/>
+
+                <ConfigurationView  type="inline" title="ER Type" data={er_mode}/>
+                <ConfigurationView  type="file" title="Dataset 1 Parameters" data={entity_1}/>
+                {entity_2 !== null ? <ConfigurationView  type="file" title="Dataset 2 Parameters" data={entity_2}/> : <div />}
+                <ConfigurationView  type="file" title="Ground Truth Parameters" data={ground_truth}/>
+                <ConfigurationView  type="inline" title="Schema Clustering" data={shcema_clustering}/>
+                <ConfigurationView  type="array" title="Block Building" data={state.block_building}/>
+                {state.block_cleaning.length !== 0 ? <ConfigurationView  type="array" title="Block Cleaning" data={state.block_cleaning}/> : <div />}
+                <ConfigurationView  type="inline" title="Comparison Cleaning" data={comparison_cleaning}/>
+                <ConfigurationView  type="inline" title="Entity Matching" data={entity_matching}/>
+                <ConfigurationView  type="inline" title="Entity Clustering" data={entity_clustering}/>
+
+                <br/>
+                <br/>
             </div>
         )
     }
 }
 
 ConfigurationsView.propTypes = {
-    title: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
-
+    state: PropTypes.object.isRequired
   }
 
-export default ConfigurationsView
-
+export default ConfigurationsView 
