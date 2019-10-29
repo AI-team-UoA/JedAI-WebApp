@@ -14,9 +14,12 @@ import javax.persistence.Table;
 public class Dataset {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(updatable = false, nullable = false, unique = true, name="id")
 	private int id;
+	
+	@Column(name="filename")
+	private String filename;
 	
 	@Column(name="type")
 	private String type;
@@ -63,6 +66,10 @@ public class Dataset {
 		if (datasetConf.containsKey("type"))
 			this.type = (String) datasetConf.get("type");
 		else this.type = null;
+		
+		if (datasetConf.containsKey("filename"))
+			this.filename = (String) datasetConf.get("filename");
+		else this.filename = null;
 		
 		if (datasetConf.containsKey("source"))
 			this.source = (String) datasetConf.get("source");
@@ -212,6 +219,14 @@ public class Dataset {
 
 	public void setSsl(boolean ssl) {
 		this.ssl = ssl;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 	
 	

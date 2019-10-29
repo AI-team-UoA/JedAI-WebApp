@@ -123,9 +123,15 @@ public class DataReadController {
 				// adding dataset to the Dataset table 
 				Map<String, Object> datasetConf = new HashMap<String, Object>();
 				
+				
 				datasetConf.put("source", source);
 				datasetConf.put("filetype", filetype);
 				datasetConf.put("entity_id", entity_id);
+				
+				if (!filetype.equals("Database"))
+					datasetConf.put("filename", StringUtils.cleanPath(file.getOriginalFilename()));
+				else
+					datasetConf.put("filename", null);
 				
 				if(entity_id == "2") 
 					datasetConf.put("type", "gt");
