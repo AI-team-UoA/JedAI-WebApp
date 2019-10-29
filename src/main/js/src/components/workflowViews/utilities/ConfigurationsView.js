@@ -4,105 +4,130 @@ import ConfigurationView from './ConfigurationView'
 
 class ConfigurationsView extends Component {
 
-          
+
+    getDatasetConfigurations = (conf) => {
+        var msg = null
+        switch(conf.filetype) {
+            case "CSV":
+                msg = "\nFile: " +  conf.filename  +"\nAtributes in firts row: " + conf.first_row + "\nSeperator: " + conf.separator + "\nID index: "+ conf.id_index
+                break;
+            case "Database":
+                msg = "\nURL: " +  conf.url  +"\nTable: " + conf.table + "\nUsername: " + conf.username + "\nSSL: "+ conf.ssl
+                break;
+            case "RDF":
+                msg = "\nFile: " +  conf.filename  
+                break;
+            case "XML":
+                msg = "\nFile: " +  conf.filename  
+                break;
+            case "Serialized":
+                msg = "\nFile: " +  conf.filename  
+                break;
+            default:
+                msg = ""
+        }
+        return msg
+    }
+     
     render() {
-       
+      
         window.scrollTo(0, 0)
+        if (this.props.state != null) {
+            const state = this.props.state
+            console.log(state)
 
-        const state = this.props.state
+            //Data Reading Configurations
+            var er_label = state.mode
+            var er_mode = {label: er_label, configuration_type: ""}
 
-        //Data Reading Configurations
-        var er_label = state.data_reading.er_mode ==="dirty" ? "Dirty Entity Resolution" : "Clean-Clean Entity Resolution"
-        var er_mode = {label: er_label, configuration_type: ""}
-
-        var entity_1 = 
-            {
-                source: state.data_reading.entity1_set.filetype,
-                conf: state.data_reading.entity1_set.configurations
-            }
-        var entity_2 = null
-        if (state.data_reading.entity2_set !== null)
-            entity_2 = 
+            var entity_1 = 
                 {
-                    source: state.data_reading.entity2_set.filetype,
-                    conf: state.data_reading.entity2_set.configurations
+                    source: state.d1.filetype,
+                    conf: this.getDatasetConfigurations(state.d1)
                 }
-        var ground_truth =
-        {
-            source: state.data_reading.groundTruth_set.filetype,
-            conf: state.data_reading.groundTruth_set.configurations
-        }
-
-        //Single Selected methods configurations
-        var shcema_clustering = null;
-        if (state.schema_clustering !== null){
-            shcema_clustering = {
-                label: state.schema_clustering.label,
-                configuration_type: state.schema_clustering.configuration_type,
-                parameters: state.schema_clustering.parameters
+            var entity_2 = null
+            if (state.hasOwnProperty("d2"))
+                entity_2 = 
+                    {
+                        source: state.d2.filetype,
+                        conf: this.getDatasetConfigurations(state.d2)
+                    }
+            var ground_truth =
+            {
+                source: state.gt.filetype,
+                conf: this.getDatasetConfigurations(state.gt)
             }
-        }
 
-        var comparison_cleaning = null;
-        if (state.comparison_cleaning !== null){
-            comparison_cleaning = {
-                label: state.comparison_cleaning.label,
-                configuration_type: state.comparison_cleaning.configuration_type,
-                parameters: state.comparison_cleaning.parameters
+            //Single Selected methods configurations
+            var schema_clustering = null;
+            if (state['Schema Clustering' ] !== null){
+                schema_clustering = {
+                    label: state['Schema Clustering' ].label,
+                    configuration_type: state['Schema Clustering' ].configuration_type,
+                    parameters: state['Schema Clustering' ].parameters
+                }
             }
-        }
 
-        var entity_matching = null;
-        if (state.entity_matching !== null){
-            entity_matching = {
-                label: state.entity_matching.label,
-                configuration_type: state.entity_matching.configuration_type,
-                parameters: state.entity_matching.parameters
+            var comparison_cleaning = null;
+            if (state['Comparison Cleaning' ] !== null){
+                comparison_cleaning = {
+                    label: state['Comparison Cleaning' ].label,
+                    configuration_type: state['Comparison Cleaning' ].configuration_type,
+                    parameters: state['Comparison Cleaning' ].parameters
+                }
             }
-        }
 
-        var entity_clustering = null;
-        if (state.entity_clustering !== null){
-            entity_clustering = {
-                label: state.entity_clustering.label,
-                configuration_type: state.entity_clustering.configuration_type,
-                parameters: state.entity_clustering.parameters
+            var entity_matching = null;
+            if (state['Entity Matching' ] !== null){
+                entity_matching = {
+                    label: state['Entity Matching' ].label,
+                    configuration_type: state['Entity Matching' ].configuration_type,
+                    parameters: state['Entity Matching' ].parameters
+                }
             }
-        }
 
+            var entity_clustering = null;
+            if (state['Entity Clustering' ] !== null){
+                entity_clustering = {
+                    label: state['Entity Clustering' ].label,
+                    configuration_type: state['Entity Clustering' ].configuration_type,
+                    parameters: state['Entity Clustering' ].parameters
+                }
+            }     
+            
+            return (
+                <div>
+                    <br/>
+                    <div style={{marginBottom:"5px"}}> 
+                        <h1 style={{display:'inline', marginRight:"20px"}}>Confirm Configurations</h1> 
+                        <span className="workflow-desc" >Confirm the selected values and press the "Next" button to go to the results page.</span>
+                    </div>
 
-        return (
-            <div>
-                <br/>
-                <div style={{marginBottom:"5px"}}> 
-                    <h1 style={{display:'inline', marginRight:"20px"}}>Confirm Configurations</h1> 
-                    <span className="workflow-desc" >Confirm the selected values and press the "Next" button to go to the results page.</span>
+                    <br/>
+                    <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                    <br/>
+
+                    <ConfigurationView  type="inline" title="ER Type" data={er_mode}/>
+                    <ConfigurationView  type="file" title="Dataset 1 Parameters" data={entity_1}/>
+                    {entity_2 !== null ? <ConfigurationView  type="file" title="Dataset 2 Parameters" data={entity_2}/> : <div />}
+                    <ConfigurationView  type="file" title="Ground Truth Parameters" data={ground_truth}/>
+                    <ConfigurationView  type="inline" title="Schema Clustering" data={schema_clustering}/>
+                    <ConfigurationView  type="array" title="Block Building" data={state['Block Building' ]}/>
+                    {state.hasOwnProperty("Block Cleaning") ? <ConfigurationView  type="array" title="Block Cleaning" data={state['Block Cleaning' ]}/> : <div />}
+                    <ConfigurationView  type="inline" title="Comparison Cleaning" data={comparison_cleaning}/>
+                    <ConfigurationView  type="inline" title="Entity Matching" data={entity_matching}/>
+                    <ConfigurationView  type="inline" title="Entity Clustering" data={entity_clustering}/>
+
+                    <br/>
+                    <br/>
                 </div>
-
-                <br/>
-                <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
-                <br/>
-
-                <ConfigurationView  type="inline" title="ER Type" data={er_mode}/>
-                <ConfigurationView  type="file" title="Dataset 1 Parameters" data={entity_1}/>
-                {entity_2 !== null ? <ConfigurationView  type="file" title="Dataset 2 Parameters" data={entity_2}/> : <div />}
-                <ConfigurationView  type="file" title="Ground Truth Parameters" data={ground_truth}/>
-                <ConfigurationView  type="inline" title="Schema Clustering" data={shcema_clustering}/>
-                <ConfigurationView  type="array" title="Block Building" data={state.block_building}/>
-                {state.block_cleaning.length !== 0 ? <ConfigurationView  type="array" title="Block Cleaning" data={state.block_cleaning}/> : <div />}
-                <ConfigurationView  type="inline" title="Comparison Cleaning" data={comparison_cleaning}/>
-                <ConfigurationView  type="inline" title="Entity Matching" data={entity_matching}/>
-                <ConfigurationView  type="inline" title="Entity Clustering" data={entity_clustering}/>
-
-                <br/>
-                <br/>
-            </div>
-        )
+            )
+        }
+        else 
+        return(<div/>)
     }
 }
 
-ConfigurationsView.propTypes = {
-    state: PropTypes.object.isRequired
-  }
+
 
 export default ConfigurationsView 

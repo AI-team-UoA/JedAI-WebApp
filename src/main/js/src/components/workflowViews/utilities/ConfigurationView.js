@@ -132,7 +132,7 @@ class ConfigurationView extends Component {
                     </Form.Row>                
         }
 
-        else if (type === "file"){
+        else if (type === "file"){ // TODO needs changes here
             var keys = Object.keys(data.conf);
             return_stmnt =
                 
@@ -141,7 +141,7 @@ class ConfigurationView extends Component {
                             <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
                         </Col>
                         <Col sm={empty_col}></Col>
-                        <Col sm={big_col}>
+                        <Col sm={big_col}>  
                             <Form.Control as="select" multiple>
                                 <option key="filetype">Source: {data.source}</option>
                                 {keys.map((key) => (
