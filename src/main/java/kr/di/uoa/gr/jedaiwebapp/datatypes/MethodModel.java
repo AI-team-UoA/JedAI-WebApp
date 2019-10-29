@@ -1,6 +1,9 @@
 package kr.di.uoa.gr.jedaiwebapp.datatypes;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
 
 public class MethodModel {
 	
@@ -9,6 +12,20 @@ public class MethodModel {
 	private String configuration_type;
 	private List<Parameter> parameters;
 	
+	
+	public MethodModel() {}
+	
+	public MethodModel(MethodConfiguration mc) {
+		this.method_name = mc.getMethod();
+		this.label = mc.getLabel();
+		this.configuration_type = mc.getConfigurationType();
+		List<String> parameters = mc.getParameters();
+		this.parameters = new ArrayList<>();
+		for (String p : parameters) 
+			this.parameters.add(new Parameter(p));
+		
+		System.out.println(this.parameters);
+	}
 	
 
 	public String getLabel() {

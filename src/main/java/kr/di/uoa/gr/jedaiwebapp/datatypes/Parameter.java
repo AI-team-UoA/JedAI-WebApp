@@ -4,6 +4,14 @@ public class Parameter {
 		private String label;
 		private Object value;
 		
+		public Parameter() {}
+		
+		public Parameter(String p) {
+			String[] str = p.split("|");
+			this.label = str[0];
+			this.value = str[1];
+		}
+		
 		public String getLabel() {
 			return label;
 		}
