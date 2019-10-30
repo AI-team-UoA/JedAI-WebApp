@@ -71,44 +71,43 @@ class ExecutionView extends Component {
             this.alertText = e.data
             this.handleAlerShow()
             this.setState({
-            		execution_step: "",
-            		execution_status: "Failed"}
+                execution_step: "",
+                execution_status: "Failed"}
             )
         })
+    }
+
+    setNewWorkflow = (e, id) => {
+        console.log("--->", id)
     }
 
     getWorkbenchData = () => 
         axios.get("/workflow/workbench/")
         .then(res => this.setState({workbench_data: res.data}))
     
-
     handleAlertClose = () => this.setState({alertShow : false});
     handleAlerShow = () => this.setState({alertShow : true});
     close_explore_window = () => this.setState({show_explore_window : false});
     open_explore_window = () => this.setState({show_explore_window : true});
-
     close_configuration_modal = () => this.setState({show_configuration_modal : false});
     open_configuration_modal = () => this.setState({show_configuration_modal : true});
 
     previewWorkflow = (e) => {
         var wf_data = null
         axios
-            .get("/workflow/workbench/get_configurations/" + this.state.workflowID)
-            .then(res => {
-                wf_data = res.data
-                if (wf_data != ""){
-                    this.setState(
-                        {workflow_configurations: wf_data},
-                        () => {this.open_configuration_modal()})
-                }
-            })
-           
+        .get("/workflow/get_configurations/" + this.state.workflowID)
+        .then(res => {
+            wf_data = res.data
+            if (wf_data != ""){
+                this.setState(
+                    {workflow_configurations: wf_data},
+                    () => {this.open_configuration_modal()})
+            }
+        })
     }
-
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
-    
     // get filename from header
     extractFileName = (contentDispositionValue) => {
          var filename = "";
@@ -161,7 +160,6 @@ class ExecutionView extends Component {
     		this.open_explore_window()
     }
     
-
     // Execute the Workflow
     executeWorkFlow = (e) =>{
         this.setState({
@@ -169,51 +167,51 @@ class ExecutionView extends Component {
             show_explore_window: false
         })
         axios
-            .get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
-            .then(res => {
-            	
-                if (res.data !== null && res.data !== ""){
-                    this.explorer_get_entities = true;
-                    var data_stat = res.data.value0
-                    var total_time = res.data.value1
-                    var no_istamces = res.data.value2
-                    
-                    if (data_stat.recall > 0 ) data_stat.recall = parseFloat(data_stat.recall).toFixed(2)
-                    else data_stat.recall = parseFloat(0.00)
+        .get("/workflow/execution/automatic_type/"+this.state.automatic_type + "/search_type/"+this.state.search_type)
+        .then(res => {
+            
+            if (res.data !== null && res.data !== ""){
+                this.explorer_get_entities = true;
+                var data_stat = res.data.value0
+                var total_time = res.data.value1
+                var no_istamces = res.data.value2
+                
+                if (data_stat.recall > 0 ) data_stat.recall = parseFloat(data_stat.recall).toFixed(2)
+                else data_stat.recall = parseFloat(0.00)
 
-                    if (data_stat.fmeasure > 0 ) data_stat.fmeasure = parseFloat(data_stat.fmeasure).toFixed(2)
-                    else data_stat.fmeasure = parseFloat(0.00)
+                if (data_stat.fmeasure > 0 ) data_stat.fmeasure = parseFloat(data_stat.fmeasure).toFixed(2)
+                else data_stat.fmeasure = parseFloat(0.00)
 
-                    if (data_stat.precision > 0 ) data_stat.precision = parseFloat(data_stat.precision).toFixed(2)
-                    else data_stat.precision = parseFloat(0.00)
-                    
-                    var reuslts = {
-                        recall: data_stat.recall,
-                        f1_measure: data_stat.fmeasure,
-                        precision: data_stat.precision,
+                if (data_stat.precision > 0 ) data_stat.precision = parseFloat(data_stat.precision).toFixed(2)
+                else data_stat.precision = parseFloat(0.00)
+                
+                var reuslts = {
+                    recall: data_stat.recall,
+                    f1_measure: data_stat.fmeasure,
+                    precision: data_stat.precision,
 
-                        input_instances: no_istamces,
-                        existing_duplicates: data_stat.existingDuplicates,
-                        total_time : total_time,
+                    input_instances: no_istamces,
+                    existing_duplicates: data_stat.existingDuplicates,
+                    total_time : total_time,
 
-                        no_clusters : data_stat.entityClusters,
-                        detected_duplicates : data_stat.detectedDuplicates,
-                        total_matches: data_stat.totalMatches
-                    }
-                    
-                    this.setState({
-                        execution_results: reuslts,
-                        execution_status: "Completed"
-                    })
-                    this.getWorkbenchData()
-                    
+                    no_clusters : data_stat.entityClusters,
+                    detected_duplicates : data_stat.detectedDuplicates,
+                    total_matches: data_stat.totalMatches
                 }
-                else{
-                    this.setState({
-                        execution_status: "Failed"
-                    })
-                }
-            })
+                
+                this.setState({
+                    execution_results: reuslts,
+                    execution_status: "Completed"
+                })
+                this.getWorkbenchData()
+                
+            }
+            else{
+                this.setState({
+                    execution_status: "Failed"
+                })
+            }
+        })
     }
 
     stop_execution = (e) => {
@@ -511,7 +509,7 @@ class ExecutionView extends Component {
                             </Tab>
                             <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
                                 <br/>
-                                <Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} />
+                                <Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} setNewWorkflow={this.setNewWorkflow} />
                             </Tab>
                         </Tabs>
 

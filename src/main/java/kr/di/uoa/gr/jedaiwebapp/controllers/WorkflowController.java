@@ -143,17 +143,9 @@ public class WorkflowController {
 		try {
 			
 			methodsConfig.put(JedaiOptions.SCHEMA_CLUSTERING, schema_clustering);
-			if (!schema_clustering.getLabel().equals(JedaiOptions.NO_SCHEMA_CLUSTERING)) {
-				
-				if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
-					WorkflowManager.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
-				else
-					WorkflowManager.schema_clustering = DynamicMethodConfiguration.configureSchemaClusteringMethod(
-							schema_clustering.getLabel(),
-							schema_clustering.getParameters());
-		                    
-				System.out.println("SC: " + WorkflowManager.schema_clustering);
-			}	
+			
+			WorkflowManager.setSchemaClustering(schema_clustering);
+			
 			// Adding method to DB
 			MethodConfiguration sc = new MethodConfiguration();
 			sc.setMethod(JedaiOptions.SCHEMA_CLUSTERING);
@@ -190,15 +182,9 @@ public class WorkflowController {
 			methodsConfig.put(JedaiOptions.COMPARISON_CLEANING, comparison_cleaning);
 			
 			if (comparison_cleaning != null) {
-				if (!comparison_cleaning.getLabel().equals(JedaiOptions.NO_CLEANING)) {
-					if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
-							WorkflowManager.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
-					else 
-						WorkflowManager.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
-	            			comparison_cleaning.getLabel(),
-	            			comparison_cleaning.getParameters() );
-				}
-			
+				
+				WorkflowManager.setComparisonCleaning(comparison_cleaning);
+				
 				// Adding method to DB
 				MethodConfiguration cc = new MethodConfiguration();
 				cc.setMethod(JedaiOptions.COMPARISON_CLEANING);
@@ -233,16 +219,7 @@ public class WorkflowController {
 		
 		try {
 			methodsConfig.put(JedaiOptions.ENTITY_MATHCING, entity_matching);
-			
-			if(!entity_matching.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
-				WorkflowManager.entity_matching = DynamicMethodConfiguration
-	                    .configureEntityMatchingMethod(entity_matching.getLabel(), null);
-	         else 
-	        	 WorkflowManager.entity_matching = DynamicMethodConfiguration
-	                    .configureEntityMatchingMethod(entity_matching.getLabel(), entity_matching.getParameters());
-	        
-			System.out.println("EM: " + WorkflowManager.entity_matching);
-			
+			WorkflowManager.setEntityMatching(entity_matching);			
 			// Adding method to DB
 			MethodConfiguration em = new MethodConfiguration();
 			em.setMethod(JedaiOptions.ENTITY_MATHCING);
@@ -279,12 +256,7 @@ public class WorkflowController {
 		try {
 			methodsConfig.put(JedaiOptions.ENTITY_CLUSTERING, entity_clustering);
 			
-			if(!entity_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-				WorkflowManager.entity_clustering = MethodConfigurations.getEntityClusteringMethod(entity_clustering.getLabel());
-	         else 
-	        	 WorkflowManager.entity_clustering = DynamicMethodConfiguration.configureEntityClusteringMethod(entity_clustering.getLabel(), entity_clustering.getParameters());
-	        
-			System.out.println("EC: " + WorkflowManager.entity_clustering);
+			WorkflowManager.setEntityClustering(entity_clustering);
 			
 			// Adding method to DB
 			MethodConfiguration ec = new MethodConfiguration();
@@ -327,16 +299,7 @@ public class WorkflowController {
 			int inedx = 0;
 	        for (MethodModel method : block_building) {
 	
-	        	BlockBuildingMethod blockBuilding_method = MethodConfigurations.blockBuildingMethods.get(method.getLabel());
-	           
-	            IBlockBuilding blockBuildingMethod;
-	            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-	                
-	                blockBuildingMethod = BlockBuildingMethod.getDefaultConfiguration(blockBuilding_method);
-	             else 
-	            	 blockBuildingMethod = DynamicMethodConfiguration.configureBlockBuildingMethod(blockBuilding_method, method.getParameters());
-	            
-	            WorkflowManager.block_building.add(blockBuildingMethod);
+	        	WorkflowManager.addBlockBuildingMethod(method);
 	            
 	            // Adding method to DB
 				MethodConfiguration bb = new MethodConfiguration();
@@ -381,14 +344,7 @@ public class WorkflowController {
 				int index = 0;
 		        for (MethodModel method : block_cleaning) {
 		          
-		            IBlockProcessing blockCleaning_method;
-		            if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-		            	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
-		             else 
-		            	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
-		                		method.getLabel(), method.getParameters());
-	
-		            WorkflowManager.block_cleaning.add(blockCleaning_method);
+		           WorkflowManager.addBlockCleaningMethod(method);
 		            
 		            // Adding method to DB
 					MethodConfiguration bc = new MethodConfiguration();

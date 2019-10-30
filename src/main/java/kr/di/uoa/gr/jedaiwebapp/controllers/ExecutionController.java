@@ -70,6 +70,7 @@ public class ExecutionController {
 		methodsConfig = getWotkflowConfigurations(WorkflowManager.workflowConfigurationsID);
 	}
 	
+	
 	/**
 	 * Initialize the emitter which will be used in the SSE 
 	 *
@@ -88,56 +89,7 @@ public class ExecutionController {
 	public int getWorkflowID() {return WorkflowManager.workflowConfigurationsID;}
 	
 	
-	public void storeWorkflowResults(int no_instances, double totalTime, ClustersPerformance clp, 
-			List<Triplet<String, BlocksPerformance, Double>> performances) {
-		
-		double[] time = new double[performances.size()+1];
-		double[] recall = new double[performances.size()+1];
-		double[] precision = new double[performances.size()+1];
-		double[] fmeasure = new double[performances.size()+1];
-		List<String> methodNames = new ArrayList<String>();
-		
-		time[0] = totalTime;
-		recall[0] = clp.getRecall();
-		precision[0] = clp.getPrecision();
-		fmeasure[0] = clp.getFMeasure();		
-		methodNames.add("Total");
-		
-		int i = 1;
-		for (Triplet<String, BlocksPerformance, Double> t: performances) {
-			BlocksPerformance performance = t.getValue1();
-			methodNames.add(t.getValue0());
-			time[i] = t.getValue2();
-			recall[i] = performance.getPc();
-			precision[i] = performance.getPq();
-			fmeasure[i] = performance.getFMeasure();
-			i++;			
-		}
-		
-		WorkflowResults workflowResults = new WorkflowResults( WorkflowManager.workflowConfigurationsID,
-				no_instances, clp.getEntityClusters(), time, methodNames, recall, precision, fmeasure);
-		workflowResultsRepository.save(workflowResults);
-	 
-		
-	}
-	
-	@GetMapping("/workflow/workbench/delete/{id}")
-	public boolean deleteWotkflowResult(@PathVariable(value = "id") int wrofkfowResultID) {
-		try {
-			WorkflowResults wr = workflowResultsRepository.findById(wrofkfowResultID);
-			int wfID = wr.getWorkflowID();
-			workflowResultsRepository.delete(wr);
-			workflowConfigurationRepository.deleteById(wfID);
-			return true;
-		}
-		catch (Exception e) { 
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	
-	@GetMapping("/workflow/workbench/get_configurations/{id}")		
+	@GetMapping("/workflow/get_configurations/{id}")		
 	public Map<String, Object> getWotkflowConfigurations(@PathVariable(value = "id") int wfID) {
 		try{
 			if (wfID == -1) return null;
@@ -207,12 +159,42 @@ public class ExecutionController {
 	}
 	
 	
-	@GetMapping("/workflow/workbench/")
-	public Iterable<WorkflowResults> getWotkflows() {
+	
+	public void storeWorkflowResults(int no_instances, double totalTime, ClustersPerformance clp, 
+			List<Triplet<String, BlocksPerformance, Double>> performances) {
 		
-		Iterable<WorkflowResults> wfrI = workflowResultsRepository.findAll();
-		return wfrI	;
+		double[] time = new double[performances.size()+1];
+		double[] recall = new double[performances.size()+1];
+		double[] precision = new double[performances.size()+1];
+		double[] fmeasure = new double[performances.size()+1];
+		List<String> methodNames = new ArrayList<String>();
+		
+		time[0] = totalTime;
+		recall[0] = clp.getRecall();
+		precision[0] = clp.getPrecision();
+		fmeasure[0] = clp.getFMeasure();		
+		methodNames.add("Total");
+		
+		int i = 1;
+		for (Triplet<String, BlocksPerformance, Double> t: performances) {
+			BlocksPerformance performance = t.getValue1();
+			methodNames.add(t.getValue0());
+			time[i] = t.getValue2();
+			recall[i] = performance.getPc();
+			precision[i] = performance.getPq();
+			fmeasure[i] = performance.getFMeasure();
+			i++;			
+		}
+		
+		WorkflowResults workflowResults = new WorkflowResults( WorkflowManager.workflowConfigurationsID,
+				no_instances, clp.getEntityClusters(), time, methodNames, recall, precision, fmeasure);
+		workflowResultsRepository.save(workflowResults);
+		
+		// TODO update if already exist
+		// workflowResultsRepository.findByWorkflowId(WorkflowManager.workflowConfigurationsID);
 	}
+	
+	
 	
     
 	/**

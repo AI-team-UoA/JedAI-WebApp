@@ -70,7 +70,7 @@ class Workbench extends Component {
 
         var wf_data = null
         axios
-            .get("/workflow/workbench/get_configurations/" + id)
+            .get("/workflow/get_configurations/" + id)
             .then(res => {
                 wf_data = res.data
                 if (wf_data != ""){
@@ -214,7 +214,7 @@ class Workbench extends Component {
                                         Execute
                                     </Tooltip>}
                             >
-                                <Button style={{marginRight:"5px", float:"right"}} variant="primary" size="sm" >
+                                <Button style={{marginRight:"5px", float:"right"}} variant="primary" size="sm"  onClick={e => this.props.setNewWorkflow(e, d.workflowID)}>
                                     <span className="fa fa-play-circle"/>
                                 </Button>
                             </OverlayTrigger>
@@ -274,7 +274,8 @@ class Workbench extends Component {
 
 Workbench.propTypes = {
     data: PropTypes.array.isRequired,
-    getDataFunc: PropTypes.func.isRequired
+    getDataFunc: PropTypes.func.isRequired,
+    setNewWorkflow: PropTypes.func.isRequired
 }
 
 

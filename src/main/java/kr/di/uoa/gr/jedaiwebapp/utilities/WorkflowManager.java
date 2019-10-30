@@ -21,8 +21,10 @@ import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.BlocksPerformance;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
+import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.map.TObjectIntMap;
@@ -30,7 +32,9 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
 
 public class WorkflowManager {
 	
@@ -79,6 +83,79 @@ public class WorkflowManager {
 		
 	}
 	
+	public static void setSchemaClustering(MethodModel schema_clustering) {
+		if (!schema_clustering.getLabel().equals(JedaiOptions.NO_SCHEMA_CLUSTERING)) {
+			
+			if(!schema_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 			
+				WorkflowManager.schema_clustering = MethodConfigurations.getSchemaClusteringMethodByName(schema_clustering.getLabel());
+			else
+				WorkflowManager.schema_clustering = DynamicMethodConfiguration.configureSchemaClusteringMethod(
+						schema_clustering.getLabel(),
+						schema_clustering.getParameters());
+	                    
+			System.out.println("SC: " + WorkflowManager.schema_clustering);
+		}	
+	}
+	
+	public static void setComparisonCleaning(MethodModel comparison_cleaning) {
+		
+		if (!comparison_cleaning.getLabel().equals(JedaiOptions.NO_CLEANING)) {
+			if(!comparison_cleaning.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
+					WorkflowManager.comparison_cleaning = MethodConfigurations.getMethodByName(comparison_cleaning.getLabel());
+			else 
+				WorkflowManager.comparison_cleaning = DynamicMethodConfiguration.configureComparisonCleaningMethod(
+        			comparison_cleaning.getLabel(),
+        			comparison_cleaning.getParameters() );
+		
+		}
+	}
+	
+	public static void setEntityMatching(MethodModel entity_matching) {
+		if(!entity_matching.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
+			WorkflowManager.entity_matching = DynamicMethodConfiguration
+                    .configureEntityMatchingMethod(entity_matching.getLabel(), null);
+         else 
+        	 WorkflowManager.entity_matching = DynamicMethodConfiguration
+                    .configureEntityMatchingMethod(entity_matching.getLabel(), entity_matching.getParameters());
+        
+		System.out.println("EM: " + WorkflowManager.entity_matching);
+	}
+	
+	public static void setEntityClustering(MethodModel entity_clustering) {
+		if(!entity_clustering.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+			WorkflowManager.entity_clustering = MethodConfigurations.getEntityClusteringMethod(entity_clustering.getLabel());
+         else 
+        	 WorkflowManager.entity_clustering = DynamicMethodConfiguration.configureEntityClusteringMethod(entity_clustering.getLabel(), entity_clustering.getParameters());
+        
+		System.out.println("EC: " + WorkflowManager.entity_clustering);
+	}
+	
+	public static void addBlockBuildingMethod(MethodModel method) {
+
+    	BlockBuildingMethod blockBuilding_method = MethodConfigurations.blockBuildingMethods.get(method.getLabel());
+       
+        IBlockBuilding blockBuildingMethod;
+        if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+            
+            blockBuildingMethod = BlockBuildingMethod.getDefaultConfiguration(blockBuilding_method);
+         else 
+        	 blockBuildingMethod = DynamicMethodConfiguration.configureBlockBuildingMethod(blockBuilding_method, method.getParameters());
+        
+        WorkflowManager.block_building.add(blockBuildingMethod);
+	}
+	
+	public static void addBlockCleaningMethod(MethodModel method) {
+		 IBlockProcessing blockCleaning_method;
+         if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+         	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
+          else 
+         	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
+             		method.getLabel(), method.getParameters());
+
+         WorkflowManager.block_cleaning.add(blockCleaning_method);
+	}
+	
+	
 	  /**
      * Run a block building method and return its blocks
      *
@@ -123,7 +200,7 @@ public class WorkflowManager {
      * @return Processed list of blocks
      */
     private static Triplet<List<AbstractBlock>, BlocksPerformance, Double> runBlockProcessing(AbstractDuplicatePropagation duProp, boolean finalRun,
-                                                   List<AbstractBlock> blocks, IBlockProcessing currentMethod) {
+                    List<AbstractBlock> blocks, IBlockProcessing currentMethod) {
         double overheadStart;
         double overheadEnd;
         BlocksPerformance blp = null;
@@ -922,24 +999,7 @@ public class WorkflowManager {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-	
-	
+   
 	public static String getEr_mode() {
 		return er_mode;
 	}

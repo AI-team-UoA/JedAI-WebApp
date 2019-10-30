@@ -9,7 +9,7 @@ class ConfigurationView extends Component {
         var empty_col = 1
         var value_col_1 = 1
         var value_col_2 = 2
-        var big_col = 6
+        var big_col = 8
         const {data, title, type} = this.props
         var return_stmnt = null
 
