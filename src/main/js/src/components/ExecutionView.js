@@ -9,7 +9,7 @@ import Explorer from './workflowViews/utilities/explorer/Explorer'
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import Workbench from './Workbench'
-
+import ConfigurationView from './workflowViews/utilities/ConfigurationsView'
 
 
 
@@ -50,7 +50,9 @@ class ExecutionView extends Component {
                 workbench_data: [],
                 
                 alertShow: false,
-                show_explore_window : false
+                show_explore_window : false,
+                show_configuration_modal: false,
+                workflow_configurations: {}
             }
         
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
@@ -84,6 +86,23 @@ class ExecutionView extends Component {
     handleAlerShow = () => this.setState({alertShow : true});
     close_explore_window = () => this.setState({show_explore_window : false});
     open_explore_window = () => this.setState({show_explore_window : true});
+
+    close_configuration_modal = () => this.setState({show_configuration_modal : false});
+    open_configuration_modal = () => this.setState({show_configuration_modal : true});
+
+    previewWorkflow = (e) => {
+        console.log("preview")
+        var wf_data = null
+        axios
+            .get("/workflow/workbench/get_configurations/" + this.state.workflowID)
+            .then(res => {
+                wf_data = res.data
+                this.setState(
+                    {workflow_configurations: wf_data},
+                    () => {this.open_configuration_modal()})
+            })
+    }
+
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
 
@@ -298,7 +317,20 @@ class ExecutionView extends Component {
                     
         return (
         	<div>
-		      
+		      <Modal className="grey-modal" show={this.state.show_configuration_modal} onHide={this.close_configuration_modal} size="xl">
+                    <Modal.Header closeButton>
+                    <Modal.Title>Configurations of Workflow {this.state.workflowID}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body >
+                        <ConfigurationView state={this.state.workflow_configurations} />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.close_configuration_modal}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
                 <Modal show={this.state.show_explore_window} onHide={this.close_explore_window} size="xl">
                     <Modal.Header closeButton>
                     <Modal.Title>Explore</Modal.Title>
@@ -345,7 +377,7 @@ class ExecutionView extends Component {
                                                             Preview
                                                         </Tooltip>}
                                                     >
-                                                    <Button style={{marginLeft:"5px"}} variant="info" size="sm" >
+                                                    <Button style={{marginLeft:"5px"}} variant="info" size="sm" onClick={e => this.previewWorkflow()} >
                                                         <span className="fa fa-eye"/>
                                                     </Button>
                                                 </OverlayTrigger>

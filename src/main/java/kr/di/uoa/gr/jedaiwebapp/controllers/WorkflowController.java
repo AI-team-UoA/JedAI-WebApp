@@ -95,7 +95,7 @@ public class WorkflowController {
 					methodsConfig.put("d2", dt);
 					break;
 				case "3": 
-					methodsConfig.put("gt", dt)
+					methodsConfig.put("gt", dt);
 					break;
 			}
 		}			

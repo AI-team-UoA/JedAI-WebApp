@@ -122,7 +122,7 @@ public class ExecutionController {
 	}
 	
 	@GetMapping("/workflow/workbench/delete/{id}")
-	public boolean deleteWotkflow(@PathVariable(value = "id") int wrofkfowResultID) {
+	public boolean deleteWotkflowResult(@PathVariable(value = "id") int wrofkfowResultID) {
 		try {
 			WorkflowResults wr = workflowResultsRepository.findById(wrofkfowResultID);
 			int wfID = wr.getWorkflowID();
@@ -137,22 +137,17 @@ public class ExecutionController {
 	}
 	
 	
-	@GetMapping("/workflow/workbench/get_configurations/{id}")
-	public Map<String, Object> getWotkflowConfigurationsFromResultsID(@PathVariable(value = "id") int wrofkfowResultID) {
-	
-		WorkflowResults wr = workflowResultsRepository.findById(wrofkfowResultID);
-		int wfID = wr.getWorkflowID();
-		return getWotkflowConfigurations(wfID);		
-	}
-	
-		
+	@GetMapping("/workflow/workbench/get_configurations/{id}")		
 	public Map<String, Object> getWotkflowConfigurations(@PathVariable(value = "id") int wfID) {
 		try{
+			System.out.println("1");
 			if (wfID == -1) return null;
-			
+System.out.println("1");
 			Map<String, Object> configurations = new HashMap<>();
 			WorkflowConfiguration wc = workflowConfigurationRepository.findById(wfID);
-				
+			
+			configurations.put("id", wfID);
+			
 			String erMode = wc.getErMode();
 			configurations.put("mode", erMode);
 			
@@ -182,12 +177,15 @@ public class ExecutionController {
 				bbmm.add(new MethodModel(mc));
 			configurations.put(JedaiOptions.BLOCK_BUILDING, bbmm);
 			
-			List<Integer> bcIDs =  Arrays.stream(wc.getBlockCleaning()).boxed().collect(Collectors.toList());
-			Iterable<MethodConfiguration> bc = methodConfigurationRepository.findAllById(bcIDs);
-			List<MethodModel> bcmm = new ArrayList<>();
-			for (MethodConfiguration mc : bc) 
-				bcmm.add(new MethodModel(mc));
-			configurations.put(JedaiOptions.BLOCK_CLEANING, bcmm);
+			try {
+				List<Integer> bcIDs =  Arrays.stream(wc.getBlockCleaning()).boxed().collect(Collectors.toList());
+				Iterable<MethodConfiguration> bc = methodConfigurationRepository.findAllById(bcIDs);
+				List<MethodModel> bcmm = new ArrayList<>();
+				for (MethodConfiguration mc : bc) 
+					bcmm.add(new MethodModel(mc));
+				configurations.put(JedaiOptions.BLOCK_CLEANING, bcmm);
+			}
+			catch(Exception ignore) {}
 			
 			int ccID = wc.getComparisonCleaning();
 			MethodConfiguration cc = methodConfigurationRepository.findById(ccID);
