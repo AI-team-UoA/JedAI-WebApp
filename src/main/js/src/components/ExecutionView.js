@@ -91,16 +91,18 @@ class ExecutionView extends Component {
     open_configuration_modal = () => this.setState({show_configuration_modal : true});
 
     previewWorkflow = (e) => {
-        console.log("preview")
         var wf_data = null
         axios
             .get("/workflow/workbench/get_configurations/" + this.state.workflowID)
             .then(res => {
                 wf_data = res.data
-                this.setState(
-                    {workflow_configurations: wf_data},
-                    () => {this.open_configuration_modal()})
+                if (wf_data != ""){
+                    this.setState(
+                        {workflow_configurations: wf_data},
+                        () => {this.open_configuration_modal()})
+                }
             })
+           
     }
 
 

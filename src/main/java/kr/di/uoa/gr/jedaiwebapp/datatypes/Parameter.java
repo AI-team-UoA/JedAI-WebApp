@@ -7,7 +7,7 @@ public class Parameter {
 		public Parameter() {}
 		
 		public Parameter(String p) {
-			String[] str = p.split("|");
+			String[] str = p.split("\\|");
 			this.label = str[0];
 			this.value = str[1];
 		}

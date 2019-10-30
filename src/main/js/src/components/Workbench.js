@@ -73,10 +73,12 @@ class Workbench extends Component {
             .get("/workflow/workbench/get_configurations/" + id)
             .then(res => {
                 wf_data = res.data
-                this.setState(
-                    {workflow_configurations: wf_data},
-                    () => {this.open_configuration_modal()})
-            })
+                if (wf_data != ""){
+                    this.setState(
+                        {workflow_configurations: wf_data},
+                        () => {this.open_configuration_modal()})
+                }
+            })   
     }
 
     collapseRows = (e, indexName) => {
