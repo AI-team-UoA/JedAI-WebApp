@@ -49,9 +49,9 @@ class DesktopForms extends Component {
         },
         
         entity_matching:  {
-            method_name: "GROUP_LINKAGE",
+            method_name: "PROFILE_MATCHER",
             configuration_type: "Default",
-            label: "Group Linkage",
+            label: "Profile Matcher",
             parameters: [
                 {
                     label: "Representation Model",
@@ -60,10 +60,6 @@ class DesktopForms extends Component {
                 {
                     label: "Similarity Measure",
                     value: "GRAPH_VALUE_SIMILARITY"
-                },
-                {
-                    label: "Similarity Threshold",
-                    value: "0.5"
                 }
             ]
         },
