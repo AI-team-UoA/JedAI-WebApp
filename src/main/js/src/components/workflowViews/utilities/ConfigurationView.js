@@ -4,20 +4,6 @@ import {Form, Col, Table, Row } from 'react-bootstrap/'
 
 class ConfigurationView extends Component {
 
-    confLabels = new Map([
-        ['filename', 'Filename'],
-        ['first_row', 'First Row'],
-        ['seperator', 'Seperator'],
-        ['id_index', 'ID index'],
-        ['excluded_attr', 'Excluded attirbutes'],
-
-        ['url', 'DB URL'],
-        ['table', 'Table'],
-        ['username', 'Username'],
-        ['ssl', 'SSL']
-      ]);
-
-
     render() {
         var title_col = 2
         var empty_col = 1
@@ -132,10 +118,10 @@ class ConfigurationView extends Component {
                     </Form.Row>                
         }
 
-        else if (type === "file"){ // TODO needs changes here
+        else if (type === "file"){ 
+            
             var keys = Object.keys(data.conf);
-            return_stmnt =
-                
+            return_stmnt = 
                     <Form.Row>
                         <Col sm={title_col}>
                             <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
@@ -145,7 +131,7 @@ class ConfigurationView extends Component {
                             <Form.Control as="select" multiple>
                                 <option key="filetype">Source: {data.source}</option>
                                 {keys.map((key) => (
-                                    <option key={key}>{this.confLabels.get(key) + ": " + data.conf[key]}</option>
+                                    <option key={key}>{key + ": " + data.conf[key]}</option>
                                 ))}
                             </Form.Control>
                         </Col>

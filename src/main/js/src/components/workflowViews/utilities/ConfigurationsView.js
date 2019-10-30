@@ -5,28 +5,42 @@ import ConfigurationView from './ConfigurationView'
 class ConfigurationsView extends Component {
 
 
-    getDatasetConfigurations = (conf) => {
-        var msg = null
-        switch(conf.filetype) {
+    getDatasetConfigurations = (data) => {
+        var conf 
+        switch(data.filetype) {
             case "CSV":
-                msg = "\nFile: " +  conf.filename  +"\nAtributes in firts row: " + conf.first_row + "\nSeperator: " + conf.separator + "\nID index: "+ conf.id_index
+                conf ={
+                    'Filename': data.filename,
+                    'First Row': data.first_row,
+                    'Separator': data.separator,
+                    'ID index': data.id_index
+                }
                 break;
             case "Database":
-                msg = "\nURL: " +  conf.url  +"\nTable: " + conf.table + "\nUsername: " + conf.username + "\nSSL: "+ conf.ssl
+                conf ={
+                    'URL': data.url,
+                    'Table': data.table,
+                    'Username': data.dbUsername,
+                    'SSL': data.ssl
+                }
                 break;
             case "RDF":
-                msg = "\nFile: " +  conf.filename  
+                conf ={
+                    'Filename': data.filename
+                }
                 break;
             case "XML":
-                msg = "\nFile: " +  conf.filename  
+                conf ={
+                    'Filename': data.filename
+                }
                 break;
             case "Serialized":
-                msg = "\nFile: " +  conf.filename  
-                break;
-            default:
-                msg = ""
+                conf ={
+                    'Filename': data.filename
+                }
+                break;                   
         }
-        return msg
+        return conf
     }
      
     render() {
@@ -34,7 +48,6 @@ class ConfigurationsView extends Component {
         window.scrollTo(0, 0)
         if (this.props.state != null) {
             const state = this.props.state
-            console.log(state)
 
             //Data Reading Configurations
             var er_label = state.mode
@@ -94,19 +107,8 @@ class ConfigurationsView extends Component {
                     parameters: state['Entity Clustering' ].parameters
                 }
             }     
-            
             return (
                 <div>
-                    <br/>
-                    <div style={{marginBottom:"5px"}}> 
-                        <h1 style={{display:'inline', marginRight:"20px"}}>Confirm Configurations</h1> 
-                        <span className="workflow-desc" >Confirm the selected values and press the "Next" button to go to the results page.</span>
-                    </div>
-
-                    <br/>
-                    <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
-                    <br/>
-
                     <ConfigurationView  type="inline" title="ER Type" data={er_mode}/>
                     <ConfigurationView  type="file" title="Dataset 1 Parameters" data={entity_1}/>
                     {entity_2 !== null ? <ConfigurationView  type="file" title="Dataset 2 Parameters" data={entity_2}/> : <div />}

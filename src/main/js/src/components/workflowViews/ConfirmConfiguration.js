@@ -39,6 +39,16 @@ class ConfirmConfiguration extends Component {
         window.scrollTo(0, 0)
         return (
             <div>
+                <br/>
+                <div style={{marginBottom:"5px"}}> 
+                    <h1 style={{display:'inline', marginRight:"20px"}}>Confirm Configurations</h1> 
+                    <span className="workflow-desc" >Confirm the selected values and press the "Next" button to go to the results page.</span>
+                </div>
+
+                <br/>
+                <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                <br/>
+
                 <ConfigurationsView state={this.state.data} />
                 <br/>
                 <br/>
