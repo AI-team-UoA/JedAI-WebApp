@@ -75,7 +75,6 @@ class ConfigurationView extends Component {
 
 
         else if (type === "array"){
-            
             return_stmnt = 
                     <Form.Row>
                         <Col sm={title_col}>
@@ -98,7 +97,7 @@ class ConfigurationView extends Component {
                                             <td>{method.configuration_type}</td>
                                             <td>
                                                 {method.parameters.map((parameter, j) => (
-                                                    <Row key={j}>
+                                                    <Row key={j} >
                                                         <Col>
                                                             {parameter.label}
                                                         </Col>

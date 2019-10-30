@@ -140,9 +140,7 @@ public class ExecutionController {
 	@GetMapping("/workflow/workbench/get_configurations/{id}")		
 	public Map<String, Object> getWotkflowConfigurations(@PathVariable(value = "id") int wfID) {
 		try{
-			System.out.println("1");
 			if (wfID == -1) return null;
-System.out.println("1");
 			Map<String, Object> configurations = new HashMap<>();
 			WorkflowConfiguration wc = workflowConfigurationRepository.findById(wfID);
 			

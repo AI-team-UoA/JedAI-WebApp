@@ -126,7 +126,7 @@ class ConfigurationsView extends Component {
             )
         }
         else 
-        return(<div/>)
+            return(<div/>)
     }
 }
 
