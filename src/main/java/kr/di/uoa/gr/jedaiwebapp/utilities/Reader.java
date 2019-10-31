@@ -23,16 +23,25 @@ import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gnu.trove.iterator.TIntIterator;
 import gnu.trove.list.TIntList;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
+import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 public class Reader {
 	private String filetype;
 	private String filepath;
 	private String url;
-	private MultiValueMap<String, Object> configurations;
+	
+	private boolean first_row;
+	private char separator;
+	private int id_index;
+	private int[] excluded;
+	private String table;
+	private String username;
+	private String password;
+	private boolean ssl;
+	
 	
 	
 	
@@ -41,14 +50,63 @@ public class Reader {
 	 * 
 	 */
 	public Reader(String filetype, String source, MultiValueMap<String, Object> configurations) throws Exception{
-		this.configurations = configurations;
+		
 		this.filetype = filetype;
-		if (filetype.equals("Database")) {
+		ObjectMapper mapper = new ObjectMapper();
+		switch (filetype) {
+		case "Database":
 			this.url = source;
 			this.filepath = null;
-		}
-		else {
+			
+			this.table =  ((String) configurations.getFirst("table")).replace("\"", "");
+			this.username = ((String)  configurations.getFirst("username")).replace("\"", "");
+	        this.password =  ((String) configurations.getFirst("password")).replace("\"", "");  
+	        this.ssl =  Boolean.parseBoolean(((String) configurations.getFirst("ssl")).replace("\"", ""));
+	        excluded = mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
+	        break;
+	        
+		case "CSV":
+			this.first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
+			this.separator = ((String) configurations.getFirst("separator")).charAt(1);
+			this.id_index = Integer.parseInt(((String) configurations.getFirst("id_index")).replace("\"", ""));
+			
+		case "RDF":
+		case "XML":
+			excluded = mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
+			
+		default:
 			this.filepath = source;
+			this.url = null;
+		}
+	}
+	
+	
+	public Reader(Dataset dt) throws Exception{
+		
+		this.filetype = dt.getFiletype();
+		switch (filetype) {
+		case "Database":
+			this.url = dt.getSource();
+			this.filepath = null;
+			
+			this.table =  dt.getTableName();
+			this.username = dt.getDbUsername();
+	        this.password =  dt.getDbPassword();  
+	        this.ssl =  dt.isSsl();
+	        excluded = dt.getExcluded_attr();
+	        break;
+	        
+		case "CSV":
+			this.first_row = dt.getFirst_row();
+			this.separator = dt.getSeparator();
+			this.id_index = dt.getId_index();
+			
+		case "RDF":
+		case "XML":
+			excluded = dt.getExcluded_attr();
+			
+		default:
+			this.filepath = dt.getSource();
 			this.url = null;
 		}
 	}
@@ -96,17 +154,9 @@ public class Reader {
 	public IEntityReader CSVReader() throws Exception{
 			
         EntityCSVReader csvReader = new EntityCSVReader(filepath);
-        boolean first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
-        char separator = ((String)this.configurations.getFirst("separator")).charAt(1);
-        int id_index = Integer.parseInt(((String) configurations.getFirst("id_index")).replace("\"", ""));
-        
-        ObjectMapper mapper = new ObjectMapper();
-        int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
-        
         csvReader.setAttributeNamesInFirstRow(first_row);
         csvReader.setSeparator(separator);
         csvReader.setIdIndex(id_index);
-        
         csvReader.setAttributesToExclude(excluded);
         
         return csvReader;
@@ -121,13 +171,6 @@ public class Reader {
 	public IEntityReader DBReader() throws Exception{
 		
         EntityDBReader dbReader = new EntityDBReader(this.url);
-        String table =  ((String)this.configurations.getFirst("table")).replace("\"", "");
-        String username = ((String)  this.configurations.getFirst("username")).replace("\"", "");
-        String password =  ((String) this.configurations.getFirst("password")).replace("\"", "");  
-        boolean ssl =  Boolean.parseBoolean(((String) this.configurations.getFirst("ssl")).replace("\"", ""));
-        
-        ObjectMapper mapper = new ObjectMapper();
-        int[] excluded = mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
         String[] excluded_str = new String[excluded.length];
         for(int i=0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
         
@@ -149,8 +192,6 @@ public class Reader {
 	public IEntityReader RDFReader() throws Exception {
 		
 		EntityRDFReader rdfReader = new EntityRDFReader(filepath);
-		ObjectMapper mapper = new ObjectMapper();
-        int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
         String[] excluded_str = new String[excluded.length];
         for(int i =0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
         
@@ -168,8 +209,6 @@ public class Reader {
 	public IEntityReader XMLReader() throws Exception{
 			
 		EntityXMLreader xmlReader = new EntityXMLreader(filepath);
-		ObjectMapper mapper = new ObjectMapper();
-        int[] excluded= mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
         String[] excluded_str = new String[excluded.length];
         for(int i =0; i<excluded_str.length; i++) excluded_str[i] = String.valueOf(excluded[i]);
         
@@ -203,30 +242,20 @@ public class Reader {
         AbstractDuplicatePropagation dp = null;
         IGroundTruthReader gtReader = null;
         
-        // If there are no parameters, we cannot initialize the reader
-        if (configurations.isEmpty())
-            return null;
-
         switch (filetype) {
             case JedaiOptions.CSV:
-                // Get parameters              
-                boolean first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
-                char separator = ((String)this.configurations.getFirst("separator")).charAt(1);
-               
-                // Initialize the reader
+             
                 GtCSVReader csvReader = new GtCSVReader(filepath);
                 csvReader.setIgnoreFirstRow(first_row);
                 csvReader.setSeparator(separator);
-
                 gtReader = csvReader;
                 break;
-                
+               
             case JedaiOptions.RDF:
                 gtReader = new GtRDFReader(filepath);
                 break;
                 
             case JedaiOptions.SERIALIZED:
-
                 gtReader = new GtSerializationReader(filepath);
                 break;
         }
@@ -308,13 +337,4 @@ public class Reader {
 		this.filepath = filepath;
 	}
 
-
-	public MultiValueMap<String, Object> getConfigurations() {
-		return configurations;
-	}
-
-
-	public void setConfigurations(MultiValueMap<String, Object> configurations) {
-		this.configurations = configurations;
-	}
 }
