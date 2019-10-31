@@ -34,6 +34,7 @@ import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResultsRepository;
+import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
@@ -85,10 +86,19 @@ public class ExecutionController {
 	    return emitter;
 	}
 	
+	/**
+	 * 
+	 * @return the ID of the current workflow
+	 */
 	@GetMapping("/workflow/id")
 	public int getWorkflowID() {return WorkflowManager.workflowConfigurationsID;}
 	
 	
+	/**
+	 * 
+	 * @param wfID workflow ID
+	 * @return a map containing the configurations of a requested workflow
+	 */
 	@GetMapping("/workflow/get_configurations/{id}")		
 	public Map<String, Object> getWotkflowConfigurations(@PathVariable(value = "id") int wfID) {
 		try{
@@ -159,7 +169,65 @@ public class ExecutionController {
 	}
 	
 	
+	/**
+	 * Set to WorkflowManager the requested workflow
+	 *  
+	 * @param wfID workflow ID
+	 * @return the results of the requested workflow
+	 */
+	@GetMapping("/workflow/set_workflow/{id}")
+	public WorkflowResults setWorkflow(@PathVariable(value = "id") int wfID) {
+		try {
+			Map<String, Object> wfConfig = getWotkflowConfigurations(wfID);
+			WorkflowManager.workflowConfigurationsID = wfID;
+			String erMode = (String) wfConfig.get("mode");
+			
+			Reader reader1 = new Reader((Dataset) wfConfig.get("d1"));
+			WorkflowManager.profilesD1 = reader1.read();
+			if(erMode.equals(JedaiOptions.CLEAN_CLEAN_ER)) {
+				Reader reader2 = new Reader((Dataset) wfConfig.get("d2"));
+				WorkflowManager.profilesD2 = reader2.read();
+			}
+			Reader gtReader = new Reader((Dataset) wfConfig.get("gt"));
+			WorkflowManager.ground_truth = gtReader.read_GroundTruth(WorkflowManager.er_mode,
+					WorkflowManager.profilesD1,
+					WorkflowManager.profilesD2);
+			
+			WorkflowManager.setSchemaClustering((MethodModel) wfConfig.get(JedaiOptions.SCHEMA_CLUSTERING));
+			
+			List<MethodModel> bb = (List<MethodModel>) wfConfig.get(JedaiOptions.BLOCK_BUILDING);
+			for (MethodModel m : bb) WorkflowManager.addBlockBuildingMethod(m);
+			
+			if (wfConfig.containsKey(JedaiOptions.BLOCK_CLEANING)){
+				List<MethodModel> bc = (List<MethodModel>) wfConfig.get(JedaiOptions.BLOCK_CLEANING);
+				for (MethodModel m : bc) WorkflowManager.addBlockCleaningMethod(m);
+			}
+			
+			WorkflowManager.setComparisonCleaning((MethodModel) wfConfig.get(JedaiOptions.COMPARISON_CLEANING));
+			WorkflowManager.setEntityMatching((MethodModel) wfConfig.get(JedaiOptions.ENTITY_MATHCING));
+			WorkflowManager.setEntityClustering((MethodModel) wfConfig.get(JedaiOptions.ENTITY_CLUSTERING));
+			
+			WorkflowResults results = workflowResultsRepository.findByworkflowID(WorkflowManager.workflowConfigurationsID);
+			
+			return results;						
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			WorkflowManager.setErrorMessage(e.getMessage());
+			return null;
+		}
+		
+	}
 	
+	
+	/**
+	 * Store the results of an executed workflow into the DB
+	 * 
+	 * @param no_instances input instances
+	 * @param totalTime total execution time
+	 * @param clp total workflow performance
+	 * @param performances the performances of each method
+	 */
 	public void storeWorkflowResults(int no_instances, double totalTime, ClustersPerformance clp, 
 			List<Triplet<String, BlocksPerformance, Double>> performances) {
 		
@@ -187,7 +255,8 @@ public class ExecutionController {
 		}
 		
 		WorkflowResults workflowResults = new WorkflowResults( WorkflowManager.workflowConfigurationsID,
-				no_instances, clp.getEntityClusters(), time, methodNames, recall, precision, fmeasure);
+				no_instances, clp.getEntityClusters(), time, methodNames, recall, precision, fmeasure,
+				clp.getExistingDuplicates(), clp.getDetectedDuplicates(), clp.getTotalMatches());
 		workflowResultsRepository.save(workflowResults);
 		
 		// TODO update if already exist

@@ -46,13 +46,22 @@ public class WorkflowResults {
 	@Column (name = "fmeasure")
 	private double[] fmeasure;
 	
+	@Column (name = "existing_duplicates")
+	private double existingDuplicates;
+	
+	@Column (name = "detected_duplicates")
+	private double detectedDuplicates;
+	
+	@Column (name = "total_matches")
+	private double totalMatches;
+	
 	
 	public WorkflowResults() {
 		
 	}
 	
 	public WorkflowResults(int workflowID, int inputInstances, int clustes, double[] times, List<String> methodNames,
-			double[] recall, double[] precision, double[] fmeasure){
+			double[] recall, double[] precision, double[] fmeasure, double existingDuplicates, double detectedDuplicates, double totalMatches){
 
 		this.setWorkflowID(workflowID);
 		this.setInputInstances(inputInstances);
@@ -62,6 +71,9 @@ public class WorkflowResults {
 		this.setRecall(recall);
 		this.setPrecision(precision);
 		this.setFmeasure(fmeasure);
+		this.setExistingDuplicates(existingDuplicates);
+		this.setDetectedDuplicates(detectedDuplicates);
+		this.setTotalMatches(totalMatches);
 	}
 	
 	public int getId() {
@@ -119,6 +131,30 @@ public class WorkflowResults {
 	}
 	public void setFmeasure(double[] fmeasure) {
 		this.fmeasure = fmeasure;
+	}
+
+	public double getExistingDuplicates() {
+		return existingDuplicates;
+	}
+
+	public void setExistingDuplicates(double existingDuplicates) {
+		this.existingDuplicates = existingDuplicates;
+	}
+
+	public double getDetectedDuplicates() {
+		return detectedDuplicates;
+	}
+
+	public void setDetectedDuplicates(double detectedDuplicates) {
+		this.detectedDuplicates = detectedDuplicates;
+	}
+
+	public double getTotalMatches() {
+		return totalMatches;
+	}
+
+	public void setTotalMatches(double totalMatches) {
+		this.totalMatches = totalMatches;
 	}
 	
 }

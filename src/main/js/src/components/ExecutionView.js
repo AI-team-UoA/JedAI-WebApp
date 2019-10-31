@@ -17,54 +17,79 @@ class ExecutionView extends Component {
    
     constructor(...args) {
         super(...args);
+        this.state = {
+            workflowID : -1,
+            automatic_type: "Holistic",
+            search_type: "Random Search",
+            export_filetype: "",
+            automatic_conf: false,
+
+            details_msg: "", 
+            execution_step: "",
+            execution_status : "Not Run",
+
+            execution_results:{
+                recall: 0,
+                f1_measure: 0,
+                precision: 0,
+
+                input_instances: 0,
+                existing_duplicates: 0,
+                total_time : 0,
+
+                no_clusters : 0,
+                detected_duplicates : 0,
+                total_matches: 0
+            },
+            workbench_data: [],
+            
+            alertShow: false,
+            show_explore_window : false,
+            show_configuration_modal: false,
+            workflow_configurations: {},
+            tabkey: "result"
+        }
+        this.init("")        
+    }
+
+    init = (state) =>{
+        window.scrollTo(0, 0)
         this.alertText = ""
         this.explorer_get_entities = false;
-        window.scrollTo(0, 0)
-        
-        this.state = {
 
-                workflowID : -1,
+        if (state != ""){
+            this.explorer_get_entities = true;
+            var results = {
+                recall: parseFloat(state.recall[0]).toFixed(2),
+                f1_measure: parseFloat(state.fmeasure[0]).toFixed(2),
+                precision: parseFloat(state.precision[0]).toFixed(2),
 
-                automatic_type: "Holistic",
-                search_type: "Random Search",
-                export_filetype: "",
-                automatic_conf: false,
+                input_instances: state.inputInstances,
+                existing_duplicates: state.existingDuplicates,
+                total_time : parseFloat(state.time[0]).toFixed(2),
 
+                no_clusters : state.clusters,
+                detected_duplicates : state.detectedDuplicates,
+                total_matches: state.totalMatches
+            }
+            console.log(state)
+            this.setState({
+                workflowID : state.workflowID,
                 details_msg: "", 
                 execution_step: "",
-                execution_status : "Not Run",
+                execution_status : "Completed",
+                execution_results : results,
+                tabkey: "result"
+            })
 
-                execution_results:{
-                    recall: 0,
-                    f1_measure: 0,
-                    precision: 0,
-
-                    input_instances: 0,
-                    existing_duplicates: 0,
-                    total_time : 0,
-
-                    no_clusters : 0,
-                    detected_duplicates : 0,
-                    total_matches: 0
-                },
-                workbench_data: [],
-                
-                alertShow: false,
-                show_explore_window : false,
-                show_configuration_modal: false,
-                workflow_configurations: {}
-            }
-        
+        }
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
-        axios.get("/workflow/id").then(res => this.setState({ workflowID: res.data}))
         this.getWorkbenchData()
-   
         this.eventSource = new EventSource("/workflow/sse") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
-        
         this.eventSource.addEventListener("workflow_details", (e) => {
-        	var msg = this.state.details_msg + "\n" + e.data 
-        	this.setState({details_msg: msg})
+            var msg = this.state.details_msg + "\n" + e.data 
+            this.setState({details_msg: msg})
         })
 
         this.eventSource.addEventListener("exception", (e) => {
@@ -75,10 +100,15 @@ class ExecutionView extends Component {
                 execution_status: "Failed"}
             )
         })
+        axios.get("/workflow/id").then(res => this.setState({ workflowID: res.data}))
     }
 
+
     setNewWorkflow = (e, id) => {
-        console.log("--->", id)
+        axios.get("/workflow/set_workflow/"+id)
+        .then(res => {
+            this.init(res.data) 
+        })
     }
 
     getWorkbenchData = () => 
@@ -107,6 +137,8 @@ class ExecutionView extends Component {
     }
 
     onChange = (e) => this.setState({[e.target.name]: e.target.value}) 
+
+    changeTab = (key) => this.setState({tabkey: key})
 
     // get filename from header
     extractFileName = (contentDispositionValue) => {
@@ -361,7 +393,7 @@ class ExecutionView extends Component {
                         <br/>
 
                         
-                        <Tabs defaultActiveKey="result" className="Jumbotron_Tabs">
+                        <Tabs activeKey={this.state.tabkey} onSelect={this.changeTab} defaultActiveKey="result" className="Jumbotron_Tabs">
                             <Tab eventKey="result" title="Results" className="Jumbotron_Tab">
                                 <div className="Tab_container">
                                     <br/>
@@ -451,25 +483,6 @@ class ExecutionView extends Component {
                                                    
                                                 </div>
                                             </Col>
-                                            
-                                            <Col  sm={speedometer_col}>
-                                                <div className="caption_item">
-                                                <span className="caption">Precision</span>
-                                                    <ReactSpeedometer  
-                                                        value={this.state.execution_results.precision} 
-                                                        maxValue={1} 
-                                                        segments={5} 
-                                                        segmentColors={[
-                                                            "#ffad33",
-                                                            "#ffad33",
-                                                            "#a3be8c",
-                                                            "#a3be8c",
-                                                            "#61d161"
-                                                        ]}
-                                                    />
-                                                   
-                                                </div>
-                                            </Col>
 
                                             <Col  sm={speedometer_col}>
                                                 <div className="caption_item">
@@ -487,6 +500,25 @@ class ExecutionView extends Component {
                                                         ]}
                                                     />
                                                     
+                                                </div>
+                                            </Col>
+                                            
+                                            <Col  sm={speedometer_col}>
+                                                <div className="caption_item">
+                                                <span className="caption">Precision</span>
+                                                    <ReactSpeedometer  
+                                                        value={this.state.execution_results.precision} 
+                                                        maxValue={1} 
+                                                        segments={5} 
+                                                        segmentColors={[
+                                                            "#ffad33",
+                                                            "#ffad33",
+                                                            "#a3be8c",
+                                                            "#a3be8c",
+                                                            "#61d161"
+                                                        ]}
+                                                    />
+                                                   
                                                 </div>
                                             </Col>
                                         </Form.Group>
