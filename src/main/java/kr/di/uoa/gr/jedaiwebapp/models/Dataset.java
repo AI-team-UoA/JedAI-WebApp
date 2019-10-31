@@ -37,8 +37,7 @@ public class Dataset {
 	private char separator;
 	
 	@Column(name="first_row")
-	private int first_row;
-	
+	private boolean first_row;
 	
 	@Column(name="excluded_attr")
 	private int[] excluded_attr;
@@ -88,8 +87,8 @@ public class Dataset {
 		else this.separator = '-';
 		
 		if (datasetConf.containsKey("first_row"))
-			this.first_row = (int) datasetConf.get("first_row");
-		else this.first_row = -1;
+			this.first_row = (boolean) datasetConf.get("first_row");
+		else this.first_row = false;
 		
 		if (datasetConf.containsKey("excluded_attr"))
 			this.excluded_attr = (int[]) datasetConf.get("excluded_attr");
@@ -165,11 +164,11 @@ public class Dataset {
 		this.separator = separator;
 	}
 
-	public int getFirst_row() {
+	public boolean getFirst_row() {
 		return first_row;
 	}
 
-	public void setFirst_row(int first_row) {
+	public void setFirst_row(boolean first_row) {
 		this.first_row = first_row;
 	}
 

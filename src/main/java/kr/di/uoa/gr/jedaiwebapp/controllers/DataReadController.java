@@ -69,7 +69,6 @@ public class DataReadController {
 			@RequestParam(value="file", required=false) MultipartFile file,
 			@RequestParam MultiValueMap<String, Object> configurations) {
 		
-		
 		String filetype = (String) configurations.getFirst("filetype");
 		String source =  filetype.equals("Database") ? (String) configurations.getFirst("url"): UploadFile(file);
 		if (source == null || source.equals("")){
@@ -150,15 +149,10 @@ public class DataReadController {
 				else datasetConf.put("separator", '-');
 
 				if(configurations.containsKey("first_row")){
-					String strValue = ((String) configurations.getFirst("first_row")).replace("\"", "");
-					if(strValue.length() > 0){ 
-						int value = Integer.parseInt(strValue); //TODO change type in schema and bean
-						datasetConf.put("first_row", value);
-					}
-					else
-						datasetConf.put("first_row", -1);
+					boolean first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
+					datasetConf.put("first_row", first_row);
 				}
-				else datasetConf.put("first_row", -1);
+				else datasetConf.put("first_row", false);
 
 		
 				if(configurations.containsKey("excluded_attr")){
