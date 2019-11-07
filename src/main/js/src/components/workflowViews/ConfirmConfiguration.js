@@ -32,7 +32,7 @@ class ConfirmConfiguration extends Component {
         })
     }
    
-    storeWorkflow = () => axios.get("/workflow/store").then(r => this.props.history.push("/workflow"))
+    storeWorkflow = () => axios.get("/workflow/store").then(r => {if (r.data === true) this.props.history.push("/workflow")})
 
 
     render() {
