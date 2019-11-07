@@ -4,7 +4,6 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.javatuples.Pair;
@@ -24,14 +23,12 @@ import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
 import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.map.TObjectIntMap;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
-import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
@@ -131,6 +128,8 @@ public class WorkflowManager {
 	}
 	
 	public static void addBlockBuildingMethod(MethodModel method) {
+		
+		if(WorkflowManager.block_building == null) WorkflowManager.block_building = new ArrayList<IBlockBuilding>();
 
     	BlockBuildingMethod blockBuilding_method = MethodConfigurations.blockBuildingMethods.get(method.getLabel());
        
@@ -145,9 +144,11 @@ public class WorkflowManager {
 	}
 	
 	public static void addBlockCleaningMethod(MethodModel method) {
-		 IBlockProcessing blockCleaning_method;
-         if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
-         	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
+		if(WorkflowManager.block_cleaning == null) WorkflowManager.block_cleaning = new ArrayList<IBlockProcessing>();
+		
+		IBlockProcessing blockCleaning_method;
+        if (!method.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 
+        	blockCleaning_method = MethodConfigurations.getMethodByName(method.getLabel());
           else 
          	 blockCleaning_method = DynamicMethodConfiguration.configureBlockCleaningMethod(
              		method.getLabel(), method.getParameters());
