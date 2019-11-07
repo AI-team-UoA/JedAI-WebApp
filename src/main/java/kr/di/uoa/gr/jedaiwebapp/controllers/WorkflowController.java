@@ -9,16 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.scify.jedai.blockbuilding.IBlockBuilding;
-import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.datawriter.ClustersPerformanceWriter;
-import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,15 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
 import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
-import kr.di.uoa.gr.jedaiwebapp.models.DatasetRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
-import kr.di.uoa.gr.jedaiwebapp.models.MethodConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
-import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfigurationRepository;
+import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
-import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
-import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
 
 
 
@@ -46,22 +40,16 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
 @RequestMapping("/workflow/**")
 public class WorkflowController {
 	
-	
 	Map<String, Object> methodsConfig;	
 	static List<Map<String, Object>> datasetsConfig = new ArrayList<Map<String, Object>>();
 	private WorkflowConfiguration workflowConfiguration;
 	
 	@Autowired
-	private DatasetRepository datasetRepository;
-	
-	@Autowired
-	private MethodConfigurationRepository methodConfigurationRepository;
-	
-	@Autowired
-	private WorkflowConfigurationRepository workflowConfigurationRepository;
-	
-	@Autowired
 	private HttpServletRequest request;
+	
+	@Autowired
+	private DatabaseManager dbm;
+
 	
 	WorkflowController(){
 		methodsConfig = new HashMap<String, Object>();
@@ -81,7 +69,6 @@ public class WorkflowController {
 	public boolean validate_DataRead() {
 		workflowConfiguration = new WorkflowConfiguration();
 		WorkflowManager.clean();
-		
 		
 		methodsConfig.put("mode", WorkflowManager.er_mode); 
 		for (Map<String, Object> datasetConfig : datasetsConfig) {
@@ -156,8 +143,8 @@ public class WorkflowController {
 
 			sc.setParameters(parameters);
 			sc.setConfigurationType(schema_clustering.getConfiguration_type());
-			methodConfigurationRepository.save(sc);
-			
+			dbm.storeOrUpdateMC(sc);
+
 			workflowConfiguration.setSchemaClustering(sc.getId());
 			
 			return true;
@@ -195,7 +182,7 @@ public class WorkflowController {
 
 				cc.setParameters(parameters);
 				cc.setConfigurationType(comparison_cleaning.getConfiguration_type());
-				methodConfigurationRepository.save(cc);
+				dbm.storeOrUpdateMC(cc);
 				
 				workflowConfiguration.setComparisonCleaning(cc.getId());				
 			}
@@ -230,7 +217,7 @@ public class WorkflowController {
 
 			em.setParameters(parameters);
 			em.setConfigurationType(entity_matching.getConfiguration_type());
-			methodConfigurationRepository.save(em);
+			dbm.storeOrUpdateMC(em);
 			
 			workflowConfiguration.setEntityMatching(em.getId());			
 		}
@@ -268,7 +255,7 @@ public class WorkflowController {
 
 			ec.setParameters(parameters);
 			ec.setConfigurationType(entity_clustering.getConfiguration_type());
-			methodConfigurationRepository.save(ec);
+			dbm.storeOrUpdateMC(ec);
 			
 			workflowConfiguration.setEntityClustering(ec.getId());			
 		}
@@ -311,7 +298,7 @@ public class WorkflowController {
 
 				bb.setParameters(parameters);
 				bb.setConfigurationType(method.getConfiguration_type());
-				methodConfigurationRepository.save(bb);
+				dbm.storeOrUpdateMC(bb);
 				blockBuildingIDs[inedx] = bb.getId();
 				inedx++;				
 	        }
@@ -356,7 +343,7 @@ public class WorkflowController {
 
 					bc.setParameters(parameters);
 					bc.setConfigurationType(method.getConfiguration_type());
-					methodConfigurationRepository.save(bc);
+					dbm.storeOrUpdateMC(bc);
 					blockCleaningIDs[index] = bc.getId();
 					index++;				
 		            
@@ -442,25 +429,30 @@ public class WorkflowController {
 	
 	
 	@GetMapping("/workflow/store")
-	public void storeWorkflow() {
-		for (Map<String, Object> datasetConfig : datasetsConfig) {
-			Dataset dt = new Dataset(datasetConfig);
-			datasetRepository.save(dt);
-			String entityID = dt.getEntity_id();
-			switch (entityID) {
-				case "1": 
-					workflowConfiguration.setDatasetID1(dt.getId());
-				case "2": 
-					workflowConfiguration.setDatasetID2(dt.getId());
-				case "3": 
-					workflowConfiguration.setGtID(dt.getId());
+	public boolean storeWorkflow() {
+		try {
+			for (Map<String, Object> datasetConfig : datasetsConfig) {
+				Dataset dt = new Dataset(datasetConfig);
+				dbm.storeOrUpdateDataset(dt);
+				String entityID = dt.getEntity_id();
+				switch (entityID) {
+					case "1": 
+						workflowConfiguration.setDatasetID1(dt.getId());
+					case "2": 
+						workflowConfiguration.setDatasetID2(dt.getId());
+					case "3": 
+						workflowConfiguration.setGtID(dt.getId());
+				}
 			}
+			
+			dbm.storeOrUpdateWC(workflowConfiguration);
+			WorkflowManager.workflowConfigurationsID = workflowConfiguration.getId();
+			return true;
 		}
-		
-		workflowConfigurationRepository.save(workflowConfiguration);
-		WorkflowManager.workflowConfigurationsID = workflowConfiguration.getId();
-		
-		
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	

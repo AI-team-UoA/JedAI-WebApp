@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
-import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResultsRepository;
+import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
 
 
 @RestController
@@ -16,19 +15,17 @@ import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResultsRepository;
 public class WorkbenchController {
 	
 	@Autowired
-	private WorkflowResultsRepository workflowResultsRepository;
-	
-	@Autowired
-	private WorkflowConfigurationRepository workflowConfigurationRepository;
-		
-	
+	private DatabaseManager dbm;
+
+
 	@GetMapping("/workflow/workbench/delete/{id}")
 	public boolean deleteWotkflowResult(@PathVariable(value = "id") int wrofkfowResultID) {
 		try {
-			WorkflowResults wr = workflowResultsRepository.findById(wrofkfowResultID);
+			WorkflowResults wr = dbm.findWRByID(wrofkfowResultID);
 			int wfID = wr.getWorkflowID();
-			workflowResultsRepository.delete(wr);
-			workflowConfigurationRepository.deleteById(wfID);
+			dbm.deleteWR(wr);
+			dbm.deleteWCByID(wfID);
+			
 			return true;
 		}
 		catch (Exception e) { 
@@ -39,10 +36,6 @@ public class WorkbenchController {
 		
 	
 	@GetMapping("/workflow/workbench/")
-	public Iterable<WorkflowResults> getWotkflows() {
-		
-		Iterable<WorkflowResults> wfrI = workflowResultsRepository.findAll();
-		return wfrI	;
-	}
+	public Iterable<WorkflowResults> getWotkflows() {return dbm.findAllWR();}
 
 }
