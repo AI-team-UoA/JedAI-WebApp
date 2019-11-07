@@ -1,6 +1,5 @@
 package kr.di.uoa.gr.jedaiwebapp.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -74,6 +73,22 @@ public class WorkflowResults {
 		this.setExistingDuplicates(existingDuplicates);
 		this.setDetectedDuplicates(detectedDuplicates);
 		this.setTotalMatches(totalMatches);
+	}
+	
+	public void update(int workflowID, int inputInstances, int clustes, double[] times, List<String> methodNames,
+			double[] recall, double[] precision, double[] fmeasure, double existingDuplicates, double detectedDuplicates, double totalMatches) {
+		
+		this.setWorkflowID(workflowID);
+		this.setInputInstances(inputInstances);
+		this.setClusters(clustes);
+		this.setTime(times);
+		this.setMethodNames(methodNames);
+		this.setRecall(recall);
+		this.setPrecision(precision);
+		this.setFmeasure(fmeasure);
+		this.setExistingDuplicates(existingDuplicates);
+		this.setDetectedDuplicates(detectedDuplicates);
+		this.setTotalMatches(totalMatches);		
 	}
 	
 	public int getId() {
