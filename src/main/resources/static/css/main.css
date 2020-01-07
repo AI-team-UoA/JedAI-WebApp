@@ -112,6 +112,11 @@
   display: block;
 }
 
+.grey-modal .modal-content {
+  background-color: #E8E8E8;
+  border: groove;
+}
+
 .btn {
 	
 }

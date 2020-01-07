@@ -12,7 +12,7 @@
 	<artifactId>JedAI-WebApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>JedAI-WebApp</name>
-	<description>Demo project for Spring Boot</description>
+	<description></description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -23,23 +23,27 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-
-		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web-services</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-core</artifactId>
@@ -51,11 +55,19 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		
+		
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
@@ -77,11 +89,23 @@
 		<dependency>
 			<groupId>gr.scify</groupId>
 		    <artifactId>jedai</artifactId>
-		    <version>1.3</version>
+		    <version>1.3</version>			   
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>runtime</scope>
+		</dependency>
+			
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		
 		
-				
+		
+		
 	</dependencies>
 
 	<build>
@@ -151,6 +175,7 @@
 					</execution>
 				</executions>
 			</plugin>
+      
 		</plugins>
 	</build>
 

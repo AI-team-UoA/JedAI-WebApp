@@ -45,7 +45,7 @@ import org.scify.jedai.utilities.enumerations.RepresentationModel;
 import org.scify.jedai.utilities.enumerations.SimilarityMetric;
 import org.scify.jedai.utilities.enumerations.WeightingScheme;
 
-import kr.di.uoa.gr.jedaiwebapp.models.Parameter;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
 
 public class DynamicMethodConfiguration {
 	

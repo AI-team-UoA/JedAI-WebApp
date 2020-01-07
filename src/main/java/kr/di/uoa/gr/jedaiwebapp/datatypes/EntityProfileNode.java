@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.models;
+package kr.di.uoa.gr.jedaiwebapp.datatypes;
 
 import org.scify.jedai.datamodel.EntityProfile;
 
