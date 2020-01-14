@@ -18,14 +18,14 @@ JedAI-WebApp is a GUI developed with Spring (boot+ MVC) and ReactJS that facilit
 * Data Exploration
 * Automatic configuration of the algorithms' parameters. User can specify the values of the parameters or he can leave them to the system to detect which parameters produce the best results. The detection of the ideal parameters is performed by Grid Search or by Random Search.
 * Detailed Results and display of the logs
-* Exportation of the data and results.
+* Exploration of the data and results.
 
  Furthermore, it facilitates the benchmarking of different workflows or configurations over a particular dataset through the workbench window, which summarizes the outcome of all runs and maintains details about the performance and the configuration of every step.
  
 ## How to Run
 ### Installing JedAI-Core Maven repository
 In order to run JedAI-WebApp needs Java 8, maven 3.6 and NPM 6.9.0.
-Furthermore, it requires the jedai-core to have been installed as a maven dependancy. Download and Install JedAI from its [repository]([https://github.com/scify/JedAIToolkit](https://github.com/scify/JedAIToolkit)) and then create the maven dependency as following: 
+Furthermore, it requires the jedai-core to have been installed as a maven dependency. Download and Install JedAI from its [repository]([https://github.com/scify/JedAIToolkit](https://github.com/scify/JedAIToolkit)) and then create the maven dependency as following: 
 
 	mvn install:install-file \
 	   -Dfile=<path-to-jedai-core-1.3.jar> \
@@ -49,7 +49,14 @@ Then start JedAI-WebApp by executing
 and visit 	[http://localhost:8080/](http://localhost:8080/)
 
 ## Preview
+### Configuring and executing workflow
 
 <p  align="center">
 <img  src="https://github.com/GiorgosMandi/JedAI-WebApp/blob/master/images/jedai.gif">
+</p>
+
+### Workbench
+
+<p  align="center">
+<img  src="https://github.com/GiorgosMandi/JedAI-WebApp/blob/master/images/workbench.gif">
 </p>
