@@ -40,7 +40,7 @@ public class ExecutionController {
 	private static AtomicBoolean iterrupt_execution;
 	private Map<String, Object> methodsConfig;
 	private SSE_Manager sse_manager;
-	private List<Pair<EntityProfileNode, EntityProfileNode>> detected_duplicates;
+	private List<List<EntityProfileNode>> detected_duplicates;
 	private int enities_per_page = 5;
 
 	@Autowired
@@ -171,7 +171,7 @@ public class ExecutionController {
      * @return the instances for the requested page.
      */
 	@GetMapping("/workflow/{id}/explore/{page}")
-	public List<Pair<EntityProfileNode, EntityProfileNode>> getExploreSubset(@PathVariable(value = "page") String page){
+	public List<List<EntityProfileNode>> getExploreSubset(@PathVariable(value = "page") String page){
 		if (detected_duplicates == null) return null;
 		int int_page = Integer.parseInt(page);
 		int start = (int_page - 1) * enities_per_page;

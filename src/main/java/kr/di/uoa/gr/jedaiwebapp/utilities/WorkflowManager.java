@@ -959,9 +959,9 @@ public class WorkflowManager {
      * 
      * @return the list of the detected duplicates
      */
-	public static List<Pair<EntityProfileNode, EntityProfileNode>> getDetectedDuplicates(){
+	public static List<List<EntityProfileNode>> getDetectedDuplicates(){
 		
-		List<Pair<EntityProfileNode, EntityProfileNode>> duplicates = new ArrayList<>();
+		List<List<EntityProfileNode>> duplicates = new ArrayList<>();
 		
 		for (EquivalenceCluster ec : entityClusters) {
 			if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
@@ -969,29 +969,32 @@ public class WorkflowManager {
 				if (!ec.getEntityIdsD1().isEmpty()) { 
 					TIntList duplicate_list = ec.getEntityIdsD1();
 					if(duplicate_list.size() > 1 ) {
-						int id_1 = duplicate_list.get(0);
-						int id_2 = duplicate_list.get(1);
-						
-						EntityProfileNode entity_1 = new EntityProfileNode(WorkflowManager.profilesD1.get(id_1), id_1);
-						EntityProfileNode entity_2 = new EntityProfileNode(WorkflowManager.profilesD1.get(id_2), id_2);
-						
-						Pair<EntityProfileNode, EntityProfileNode> duplicate_pair = new Pair<EntityProfileNode, EntityProfileNode>(entity_1, entity_2);
-						duplicates.add(duplicate_pair);
+						List<EntityProfileNode> entity_duplicates = new ArrayList<>();
+						for (int i = 0; i < duplicate_list.size(); i++){
+							int id = duplicate_list.get(i);
+							entity_duplicates.add(new EntityProfileNode(WorkflowManager.profilesD1.get(id), id));
+						}
+
+						duplicates.add(entity_duplicates);		
 					}
 				}
 				
 			}
 			else {
 				if (!ec.getEntityIdsD1().isEmpty() && !ec.getEntityIdsD2().isEmpty()) {
-					//TODO: Ensure for this as well!
-					// Get the two entities and add them manually (there are always exactly two)
-					int id1 = ec.getEntityIdsD1().get(0);
-					int id2 = ec.getEntityIdsD2().get(0);
-					EntityProfileNode entity_1 = new EntityProfileNode(WorkflowManager.profilesD1.get(id1), id1);
-					EntityProfileNode entity_2 = new EntityProfileNode(WorkflowManager.profilesD2.get(id2), id2);
+					TIntList ids_1 = ec.getEntityIdsD1();
+					TIntList ids_2 = ec.getEntityIdsD2();
+					List<EntityProfileNode> entity_duplicates = new ArrayList<>();
+					for (int i = 0; i < ids_1.size(); i++){
+						int id = ids_1.get(i);
+						entity_duplicates.add(new EntityProfileNode(WorkflowManager.profilesD1.get(id), id));
+					}
+					for (int i = 0; i < ids_2.size(); i++){
+						int id = ids_2.get(i);
+						entity_duplicates.add(new EntityProfileNode(WorkflowManager.profilesD1.get(id), id));
+					}
 					
-					Pair<EntityProfileNode, EntityProfileNode> duplicate_pair = new Pair<EntityProfileNode, EntityProfileNode>(entity_1, entity_2);
-					duplicates.add(duplicate_pair);					
+					if (entity_duplicates.size() > 1 ) duplicates.add(entity_duplicates);					
 				}
 			}
 		}
