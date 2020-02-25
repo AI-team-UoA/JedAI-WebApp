@@ -122,7 +122,7 @@ class Configurations extends Component {
                         <Collapse in={this.collapse_flag } >
                             <div style={{width:'75%', margin:'auto'}}>
                                 <Alert variant="danger" >
-                                    The input files could not read successfully!
+                                    Could not read successfully the input file!
                                 </Alert>
                             </div>
                         </Collapse>

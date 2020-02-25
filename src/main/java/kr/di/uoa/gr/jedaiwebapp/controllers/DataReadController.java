@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import gnu.trove.list.TIntList;
 import gnu.trove.iterator.TIntIterator;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
@@ -41,7 +41,7 @@ public class DataReadController {
 	private Map<String, Reader> dataRead_map;
 	private List<EntityProfileNode> entityProfiles_1;
 	private List<EntityProfileNode> entityProfiles_2;
-	private List<Pair<EntityProfileNode,EntityProfileNode>> duplicates;
+	private List<List<EntityProfileNode>> duplicates;
 	
 	private int enities_per_page = 5;
 	
