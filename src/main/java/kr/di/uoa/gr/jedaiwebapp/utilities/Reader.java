@@ -281,9 +281,9 @@ public class Reader {
     public List<List<EntityProfileNode>> getDuplicates_GroundTruth(){
 	    
 	    List<List<EntityProfileNode>> duplicates = new ArrayList<>();
-	    for (EquivalenceCluster ec : WorkflowManager.ground_truth.getRealEquivalenceClusters()) {
-			if(WorkflowManager.er_mode.contentEquals(JedaiOptions.DIRTY_ER)){		
-				if (!ec.getEntityIdsD1().isEmpty()) { 
+		if(WorkflowManager.er_mode.contentEquals(JedaiOptions.DIRTY_ER)){		
+			 for (EquivalenceCluster ec : WorkflowManager.ground_truth.getRealEquivalenceClusters()) {
+				 if (!ec.getEntityIdsD1().isEmpty()) { 
 					TIntList duplicate_list = ec.getEntityIdsD1();
 					List<EntityProfileNode> entity_duplicates = new ArrayList<>();
 					for (int i = 0; i < duplicate_list.size(); i++){
@@ -294,7 +294,9 @@ public class Reader {
 					if (entity_duplicates.size() > 1 )  duplicates.add(entity_duplicates);		
 				}
 			}
-			else {
+		}
+		else {
+			for (EquivalenceCluster ec : WorkflowManager.ground_truth.getRealEquivalenceClusters()) {
 				if (!ec.getEntityIdsD1().isEmpty() && !ec.getEntityIdsD2().isEmpty()) {
 					TIntList ids_1 = ec.getEntityIdsD1();
 					TIntList ids_2 = ec.getEntityIdsD2();
@@ -305,7 +307,7 @@ public class Reader {
 					}
 					for (int i = 0; i < ids_2.size(); i++){
 						int id = ids_2.get(i);
-						entity_duplicates.add(new EntityProfileNode(WorkflowManager.profilesD1.get(id), id));
+						entity_duplicates.add(new EntityProfileNode(WorkflowManager.profilesD2.get(id), id));
 					}
 					
 					if (entity_duplicates.size() > 1 ) duplicates.add(entity_duplicates);					
