@@ -215,10 +215,10 @@ public class WorkflowManager {
                 // Print blocks performance
                 blp = new BlocksPerformance(blocks, duProp);
                 blp.setStatistics();
-                details_manager.print_BlockBuildingPerformance(blp, overheadEnd - overheadStart, currentMethod.getMethodConfiguration(),  currentMethod.getMethodName());
+                details_manager.print_BlockBuildingPerformance(blp, (overheadEnd - overheadStart)/1000, currentMethod.getMethodConfiguration(),  currentMethod.getMethodName());
                 
             }
-            return new Triplet<>(blocks, blp, overheadEnd - overheadStart);
+            return new Triplet<>(blocks, blp, (overheadEnd - overheadStart)/1000);
         }
         return new Triplet<>(blocks, null, 0.0);
     }
@@ -376,10 +376,10 @@ public class WorkflowManager {
 	            if (final_run) {
 	                // print block Building performance
 	                details_manager.print_BlockBuildingPerformance(blp, 
-	                		overheadEnd - overheadStart, 
+	                		(overheadEnd - overheadStart)/1000, 
 	                		bb.getMethodConfiguration(), 
 	                		bb.getMethodName());
-	                performances.add(new Triplet<>(bb.getMethodName(), blp, overheadEnd - overheadStart));
+	                performances.add(new Triplet<>(bb.getMethodName(), blp, (overheadEnd - overheadStart)/1000));
 	            }
 	        }
 	        
@@ -461,7 +461,7 @@ public class WorkflowManager {
 	        overheadEnd = System.currentTimeMillis();
 	        if(final_run) {
 	        	String msg = "Entity Matching\nMethod: " + entity_matching.getMethodName() +"\nTotal Time: ";
-	        	details_manager.print_Sentence(msg, overheadEnd - overheadStart);
+	        	details_manager.print_Sentence(msg, (overheadEnd - overheadStart)/1000);
 	        }
 	
 	        // Run Entity Clustering
@@ -484,7 +484,7 @@ public class WorkflowManager {
 	        clp.setStatistics();        
 	        if (final_run)
 	        	details_manager.print_ClustersPerformance(clp, 
-	        			overheadEnd - overheadStart, 
+	        			(overheadEnd - overheadStart)/1000, 
 	        			entity_clustering.getMethodName(), 
 	        			entity_clustering.getMethodConfiguration());
 	
@@ -963,7 +963,7 @@ public class WorkflowManager {
 		
 		List<List<EntityProfileNode>> duplicates = new ArrayList<>();
 		
-		for (EquivalenceCluster ec : entityClusters) {
+		for (EquivalenceCluster ec : ground_truth.getDetectedEquivalenceClusters()) {
 			if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
 				
 				if (!ec.getEntityIdsD1().isEmpty()) { 

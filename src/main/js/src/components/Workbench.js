@@ -156,7 +156,7 @@ class Workbench extends Component {
                         <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Recall</th>
                         <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>F1 Measure</th>
                         <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Precision</th>
-                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Time</th>
+                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Time (sec)</th>
                     </tr>                        
                 </thead>
                 <tbody>

@@ -271,7 +271,7 @@ class ExecutionView extends Component {
             case "Downloading":
                 execution_status_view =
                     <div>
-                        <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#0073e6"}}><b>{this.state.execution_status}</b></span></h3>
+                        <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#4663b9"}}><b>{this.state.execution_status}</b></span></h3>
                     </div>
                 break;
             case "Completed":
@@ -287,29 +287,29 @@ class ExecutionView extends Component {
                             <Row>
                                 <Col sm={5}>
                                     <Row>
-                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Input Instances:</h4> </Col>
+                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Input Instances:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.input_instances}</Col>
                                     </Row>
                                     <Row>
-                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Existing Duplicates:</h4> </Col>
+                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Existing Duplicates:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.existing_duplicates}</Col>
                                     </Row>
                                     <Row>
-                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Total execution time:</h4> </Col>
+                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Total execution time (sec):</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.total_time}</Col>
                                     </Row>
                                 </Col>
                                 <Col sm={5}>
                                     <Row>
-                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Number of Clusters:</h4> </Col>
+                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Number of Clusters:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.no_clusters}</Col>
                                     </Row>
                                     <Row>
-                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Detected Duplicates:</h4> </Col>
+                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Detected Duplicates:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.detected_duplicates}</Col>
                                     </Row>
                                     <Row>
-                                        <Col sm={8}><h4 style={{color:"#0073e6"}} className="form-row" >Total Matches:</h4> </Col>
+                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Total Matches:</h4> </Col>
                                         <Col sm={1}>{this.state.execution_results.total_matches}</Col>
                                     </Row>
                                 </Col>
@@ -467,9 +467,28 @@ class ExecutionView extends Component {
 
                                             <Col  sm={speedometer_col}>
                                                 <div className="caption_item">
-                                                <span className="caption">Recall</span>
+                                                <span className="caption"><b>Recall</b></span>
                                                     <ReactSpeedometer  
                                                         value={this.state.execution_results.recall} 
+                                                        maxValue={1} 
+                                                        segments={5} 
+                                                        segmentColors={[
+                                                            "#ffad33",
+                                                            "#ffad33",
+                                                            "#a3be8c",
+                                                            "#a3be8c",
+                                                            "#61d161"
+                                                        ]}
+                                                    />
+                                                   
+                                                </div>
+                                            </Col>
+                                            
+                                            <Col  sm={speedometer_col}>
+                                                <div className="caption_item">
+                                                <span className="caption"><b>Precision</b></span>
+                                                    <ReactSpeedometer  
+                                                        value={this.state.execution_results.precision} 
                                                         maxValue={1} 
                                                         segments={5} 
                                                         segmentColors={[
@@ -486,7 +505,7 @@ class ExecutionView extends Component {
 
                                             <Col  sm={speedometer_col}>
                                                 <div className="caption_item">
-                                                <span className="caption">F1-measure</span>
+                                                <span className="caption"><b>F1-measure</b></span>
                                                     <ReactSpeedometer  
                                                         value={this.state.execution_results.f1_measure} 
                                                         maxValue={1} 
@@ -500,25 +519,6 @@ class ExecutionView extends Component {
                                                         ]}
                                                     />
                                                     
-                                                </div>
-                                            </Col>
-                                            
-                                            <Col  sm={speedometer_col}>
-                                                <div className="caption_item">
-                                                <span className="caption">Precision</span>
-                                                    <ReactSpeedometer  
-                                                        value={this.state.execution_results.precision} 
-                                                        maxValue={1} 
-                                                        segments={5} 
-                                                        segmentColors={[
-                                                            "#ffad33",
-                                                            "#ffad33",
-                                                            "#a3be8c",
-                                                            "#a3be8c",
-                                                            "#61d161"
-                                                        ]}
-                                                    />
-                                                   
                                                 </div>
                                             </Col>
                                         </Form.Group>

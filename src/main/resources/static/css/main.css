@@ -41,7 +41,7 @@
 
 
 .workflow-desc {
-   font-size: 82%; 
+   font-size: 90%; 
    display:inline-block;
    width: 400px;
    border-bottom: 3px outset red;
@@ -110,6 +110,7 @@
 .caption {
   margin-bottom: 20px;
   display: block;
+  color: #4663b9;
 }
 
 .grey-modal .modal-content {
