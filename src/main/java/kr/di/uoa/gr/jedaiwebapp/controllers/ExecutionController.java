@@ -331,7 +331,7 @@ public class ExecutionController {
 	                		.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);})
 	                		.get();
 	                
-	                double totalTime = System.currentTimeMillis() - start_time;
+	                double totalTime = (System.currentTimeMillis() - start_time)/ 1000;
 	                clp = performances.getValue0();
 	                blocksMethodsPerformances = performances.getValue1();
 	    			
@@ -369,7 +369,7 @@ public class ExecutionController {
 			performances =  exec
 					.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);})
 					.get();
-			double totalTime = System.currentTimeMillis() - start_time;
+			double totalTime = (System.currentTimeMillis() - start_time)/1000;
 			clp = performances.getValue0();
 			blocksMethodsPerformances = performances.getValue1();
 			
