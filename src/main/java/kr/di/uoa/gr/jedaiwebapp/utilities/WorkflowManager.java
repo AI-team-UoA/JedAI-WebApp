@@ -991,7 +991,7 @@ public class WorkflowManager {
 					}
 					for (int i = 0; i < ids_2.size(); i++){
 						int id = ids_2.get(i);
-						entity_duplicates.add(new EntityProfileNode(WorkflowManager.profilesD1.get(id), id));
+						entity_duplicates.add(new EntityProfileNode(WorkflowManager.profilesD2.get(id), id));
 					}
 					
 					if (entity_duplicates.size() > 1 ) duplicates.add(entity_duplicates);					
