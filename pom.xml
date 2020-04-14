@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>kr.di.uoa.gr</groupId>
 	<artifactId>JedAI-WebApp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>JedAI-WebApp</name>
 	<description></description>
 
@@ -86,11 +86,19 @@
 		    <version>1.2</version>
 		</dependency>
 		
-		<dependency>
+		<!-- <dependency>
 			<groupId>gr.scify</groupId>
 		    <artifactId>jedai</artifactId>
 		    <version>1.3</version>			   
+		</dependency> 
+		-->
+		<!-- https://mvnrepository.com/artifact/org.scify/jedai-core -->
+		 <dependency>
+		    <groupId>org.scify</groupId>
+		    <artifactId>jedai-core</artifactId>
+		    <version>3.0</version>
 		</dependency>
+		
 		
 		<dependency>
 		    <groupId>com.h2database</groupId>
@@ -111,31 +119,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.3</version>
-				<executions>
-					<execution>
-						<id>generate-docs</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>html</backend>
-							<doctype>book</doctype>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework.restdocs</groupId>
-						<artifactId>spring-restdocs-asciidoctor</artifactId>
-						<version>${spring-restdocs.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
@@ -155,7 +138,7 @@
 						</goals>
 						<configuration>
 							<nodeVersion>v10.11.0</nodeVersion>
-							<npmVersion>6.4.1</npmVersion>
+							<npmVersion>6.9.0</npmVersion>
 						</configuration>
 					</execution>
 					<execution>

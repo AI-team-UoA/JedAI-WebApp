@@ -46,6 +46,7 @@ import org.scify.jedai.utilities.enumerations.SimilarityMetric;
 import org.scify.jedai.utilities.enumerations.WeightingScheme;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
+import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 
 public class DynamicMethodConfiguration {
 	
@@ -278,15 +279,21 @@ public class DynamicMethodConfiguration {
 				simMetric = (parameters != null) ?
 						SimilarityMetric.valueOf((String) parameters.get(1).getValue()) : SimilarityMetric.GRAPH_VALUE_SIMILARITY;
 				
-				return new GroupLinkage(simThr, rep, simMetric);
-			
+				if(WorkflowManager.er_mode == JedaiOptions.DIRTY_ER)
+					return new GroupLinkage(simThr, WorkflowManager.profilesD1, rep, simMetric);
+				else
+					return new GroupLinkage(simThr, WorkflowManager.profilesD1, WorkflowManager.profilesD2, rep, simMetric);
+				
 			case JedaiOptions.PROFILE_MATCHER:
 				rep = (parameters != null) ?
 						RepresentationModel.valueOf((String) parameters.get(0).getValue()) : RepresentationModel.TOKEN_UNIGRAM_GRAPHS;
 				simMetric = (parameters != null) ?
 						SimilarityMetric.valueOf((String) parameters.get(1).getValue()) : SimilarityMetric.GRAPH_VALUE_SIMILARITY;
 				
-				return new ProfileMatcher(rep, simMetric);
+				if(WorkflowManager.er_mode == JedaiOptions.DIRTY_ER)
+					return new ProfileMatcher(WorkflowManager.profilesD1, rep, simMetric);
+				else
+					return new ProfileMatcher(WorkflowManager.profilesD1, WorkflowManager.profilesD2, rep, simMetric);
 			
 			default:
 				

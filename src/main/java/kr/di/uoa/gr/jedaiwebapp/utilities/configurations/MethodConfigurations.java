@@ -5,6 +5,8 @@ import org.scify.jedai.schemaclustering.HolisticAttributeClustering;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.enumerations.*;
 
+import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -151,7 +153,7 @@ public class MethodConfigurations {
                 processingMethod = new SizeBasedBlockPurging();
                 break;
             case JedaiOptions.COMPARISON_BASED_BLOCK_PURGING:
-                processingMethod = new ComparisonsBasedBlockPurging();
+                processingMethod = new ComparisonsBasedBlockPurging(WorkflowManager.er_mode == JedaiOptions.CLEAN_CLEAN_ER);
                 break;
             // Below: Comparison Cleaning methods
             case JedaiOptions.COMPARISON_PROPAGATION:
