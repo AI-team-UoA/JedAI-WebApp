@@ -34,7 +34,7 @@ public class Dataset {
 	private String entity_id;
 	
 	@Column(name="separator")
-	private char separator;
+	private String separator;
 	
 	@Column(name="first_row")
 	private boolean first_row;
@@ -83,8 +83,8 @@ public class Dataset {
 		else this.entity_id = null;
 		
 		if (datasetConf.containsKey("separator"))
-			this.separator = (char) datasetConf.get("separator");
-		else this.separator = '-';
+			this.separator = ((String) datasetConf.get("separator"));
+		else this.separator = "-";
 		
 		if (datasetConf.containsKey("first_row"))
 			this.first_row = (boolean) datasetConf.get("first_row");
@@ -156,11 +156,11 @@ public class Dataset {
 		this.entity_id = entity_id;
 	}
 
-	public char getSeparator() {
+	public String getSeparator() {
 		return separator;
 	}
 
-	public void setSeparator(char separator) {
+	public void setSeparator(String separator) {
 		this.separator = separator;
 	}
 

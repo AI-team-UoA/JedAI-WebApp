@@ -34,7 +34,7 @@ public class Reader {
 	private String url;
 	
 	private boolean first_row;
-	private char separator;
+	private String separator;
 	private int id_index;
 	private int[] excluded;
 	private String table;
@@ -67,7 +67,7 @@ public class Reader {
 	        
 		case "CSV":
 			this.first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
-			this.separator = ((String) configurations.getFirst("separator")).charAt(1);
+			this.separator = ((String) configurations.getFirst("separator"));
 			this.id_index = Integer.parseInt(((String) configurations.getFirst("id_index")).replace("\"", ""));
 			
 		case "RDF":
