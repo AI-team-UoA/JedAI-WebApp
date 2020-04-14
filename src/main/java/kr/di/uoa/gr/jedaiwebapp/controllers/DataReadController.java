@@ -144,9 +144,9 @@ public class DataReadController {
 						datasetConf.put("separator", value);   
 					}
 					else
-						datasetConf.put("separator", '-');
+						datasetConf.put("separator", "-");
 				}
-				else datasetConf.put("separator", '-');
+				else datasetConf.put("separator", "-");
 
 				if(configurations.containsKey("first_row")){
 					boolean first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));

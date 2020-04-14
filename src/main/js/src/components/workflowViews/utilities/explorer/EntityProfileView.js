@@ -35,12 +35,11 @@ class EntityProfileView extends Component {
             // multiple columns of explorations
             const columns = this.props.entity.map( entity =>
                 (
-                    <div style={{width:"30%", display:"inline-block", marginRight: "1%"}}>
+                    <div style={{width:"45%", display:"inline-block", marginRight: "1%"}}>
                         <span style={{display:"inline", float:"left"}}>
                             <h5 style={{display:"inline"}} >Entity ID:</h5> {entity.id} 
-                        </span>
-                        <span style={{float:"right"}}>
-                            <h5 style={{display:"inline"}}>Entity URL:</h5> {entity.profile.entityUrl} 
+                            <br/>
+                            <h5 style={{display:"inline", maxWidth:"200px"}}>Entity URL:</h5> {entity.profile.entityUrl} 
                         </span>
                         
                         <br/>
