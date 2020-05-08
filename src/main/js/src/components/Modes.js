@@ -12,7 +12,7 @@ class Modes extends Component {
                     <header><h3>Execute JedAI </h3></header>
                     <br/>
                     <div style={{textAlign:'center'}}>
-                        <Link to="/desktopmode">
+                        <Link to="/selectworkflow">
                             <Button variant="primary" style={btnStyle}>Desktop Mode</Button>
                         </Link>
                         <br/>

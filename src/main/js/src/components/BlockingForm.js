@@ -13,7 +13,7 @@ import '../../../resources/static/css/progressSteps.css'
 import '../../../resources/static/css/main.css'
 
 
-class DesktopForms extends Component {
+class BlockingForm extends Component {
 
     // Default states of the workflow stages
     state = {
@@ -139,4 +139,4 @@ class DesktopForms extends Component {
 }
 
 
-export default DesktopForms
+export default BlockingForm

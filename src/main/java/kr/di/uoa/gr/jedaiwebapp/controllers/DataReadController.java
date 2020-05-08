@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.javatuples.Pair;
+import org.scify.jedai.datamodel.Attribute;
 import org.scify.jedai.datamodel.EntityProfile;
 import org.scify.jedai.datamodel.EquivalenceCluster;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.util.StringUtils;
 
@@ -339,4 +342,13 @@ public class DataReadController {
         return filepath;
 	}
 	
+	@GetMapping("/desktopmode/dataread/headers")
+	public Set<String> getHeaders() {
+		Set<String> headers = new HashSet<String>();
+		for (EntityProfileNode en : entityProfiles_1)
+			for (Attribute attr : en.getProfile().getAttributes())
+				headers.add(attr.getName());
+		return headers;
+	}
+		
 }
