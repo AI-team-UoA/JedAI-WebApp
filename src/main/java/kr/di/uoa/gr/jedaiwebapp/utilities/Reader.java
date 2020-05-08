@@ -3,7 +3,6 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.javatuples.Pair;
 import org.scify.jedai.datamodel.EntityProfile;
 import org.scify.jedai.datamodel.EquivalenceCluster;
 import org.scify.jedai.datareader.entityreader.EntityCSVReader;
