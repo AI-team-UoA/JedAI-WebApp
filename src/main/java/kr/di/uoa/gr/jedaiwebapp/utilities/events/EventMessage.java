@@ -9,7 +9,11 @@ import org.springframework.context.ApplicationEvent;
  * */
 public class EventMessage  extends ApplicationEvent{
 	
-	private String message;
+	/**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private String message;
 	private String event_name;
 	
 	

@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.scify.jedai.datawriter.ClustersPerformanceWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
