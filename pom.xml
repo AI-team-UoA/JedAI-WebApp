@@ -84,7 +84,18 @@
 		    <groupId>org.javatuples</groupId>
 		    <artifactId>javatuples</artifactId>
 		    <version>1.2</version>
+		</dependency>	
+		
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>runtime</scope>
 		</dependency>
+			
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>	
 		
 		<!-- <dependency>
 			<groupId>gr.scify</groupId>
@@ -96,25 +107,19 @@
 		 <dependency>
 		    <groupId>org.scify</groupId>
 		    <artifactId>jedai-core</artifactId>
-		    <version>3.0</version>
+		    <version>3.01-SNAPSHOT </version>
 		</dependency>
-		
-		
-		<dependency>
-		    <groupId>com.h2database</groupId>
-		    <artifactId>h2</artifactId>
-		    <scope>runtime</scope>
-		</dependency>
-			
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		
-		
-		
-		
+	
 	</dependencies>
+	
+	
+	<repositories>
+	    <repository>
+	      <id>jedai-repo</id>
+	      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+	    </repository>
+  	</repositories>
+  
 
 	<build>
 		<plugins>

@@ -155,7 +155,7 @@ public class Reader {
 			
         EntityCSVReader csvReader = new EntityCSVReader(filepath);
         csvReader.setAttributeNamesInFirstRow(first_row);
-        csvReader.setSeparator(separator);
+        csvReader.setSeparator(separator.charAt(1));
         csvReader.setIdIndex(id_index);
         csvReader.setAttributesToExclude(excluded);
         
