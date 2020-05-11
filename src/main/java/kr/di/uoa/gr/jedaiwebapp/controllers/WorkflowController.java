@@ -194,7 +194,7 @@ public class WorkflowController {
 	
 	
 	/**
-     * Handle POST request and set the entity mathcing method
+     * Handle POST request and set the entity matching method
      *
      * @param entity_matching the method and its configurations that the user has selected
      * @return whether it was set successfully 
@@ -203,11 +203,11 @@ public class WorkflowController {
 	public boolean setEntityMatching(@RequestBody MethodModel entity_matching) {
 		
 		try {
-			methodsConfig.put(JedaiOptions.ENTITY_MATHCING, entity_matching);
+			methodsConfig.put(JedaiOptions.ENTITY_MATCHING, entity_matching);
 			WorkflowManager.setEntityMatching(entity_matching);			
 			// Adding method to DB
 			MethodConfiguration em = new MethodConfiguration();
-			em.setMethod(JedaiOptions.ENTITY_MATHCING);
+			em.setMethod(JedaiOptions.ENTITY_MATCHING);
 			em.setLabel(entity_matching.getLabel());
 			List<String> parameters = new ArrayList<>();
 			for (Parameter p : entity_matching.getParameters()) 
@@ -309,7 +309,13 @@ public class WorkflowController {
 		        
 		return WorkflowManager.block_building != null;
 	}
-	
+
+
+	@PostMapping("/workflow/set_configurations/similarityjoin")
+	public boolean setSimilarityJoinMethod(@RequestBody MethodModel joinMethod){
+		System.out.println("controller");
+		return true;
+	}
 	
 	/**
      * Handle POST request and set the Block Cleaning methods

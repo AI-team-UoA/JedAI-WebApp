@@ -76,7 +76,7 @@ public class DatabaseManager {
 	 * @param wfID workflow ID
 	 * @return a map containing the configurations of a requested workflow
 	 */
-	public Map<String, Object> getWotkflowConfigurations(int wfID) {
+	public Map<String, Object> getWorkflowConfigurations(int wfID) {
 		
 		if (wfID == -1) return null;
 		Map<String, Object> configurations = new HashMap<>();
@@ -129,7 +129,7 @@ public class DatabaseManager {
 		
 		int emID = wc.getEntityMatching();
 		MethodConfiguration em = findMCbyID(emID);
-		configurations.put(JedaiOptions.ENTITY_MATHCING, new MethodModel(em));
+		configurations.put(JedaiOptions.ENTITY_MATCHING, new MethodModel(em));
 		
 		int ecID = wc.getEntityClustering();
 		MethodConfiguration ec = findMCbyID(ecID);

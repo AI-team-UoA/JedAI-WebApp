@@ -307,7 +307,7 @@ class BlockBuilding extends Component {
     handleAlertShow = () => this.setState({alertShow : true});
 
 
-    // Put selected methods into an array and return them back to the father compoenent
+    // Put selected methods into an array and return them back to the father component
     // User is required to select a method, otherwise she can not pass this step
     isValidated(){
         var selected_methods = []
@@ -329,7 +329,7 @@ class BlockBuilding extends Component {
                 var success = res.data
                 this.props.submitState("block_building", selected_methods)
                 if (!success){
-                    this.alertText = "Error while setting the Block Building methods.\nCheck the input parametrs"
+                    this.alertText = "Error while setting the Block Building methods.\nCheck the input parameters"
                     this.handleAlertShow()
                 }
 

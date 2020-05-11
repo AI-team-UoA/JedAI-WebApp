@@ -37,21 +37,21 @@ public class ExecutionController {
 	
 	private final static int NO_OF_TRIALS = 100;
 	private ExecutorService exec ;
-	private static AtomicBoolean iterrupt_execution;
+	private static AtomicBoolean interrupt_execution;
 	private Map<String, Object> methodsConfig;
 	private SSE_Manager sse_manager;
 	private List<List<EntityProfileNode>> detected_duplicates;
-	private int enities_per_page = 5;
+	private int entities_per_page = 5;
 
 	@Autowired
 	private DatabaseManager dbm;
 	
 	ExecutionController(){
 		exec = Executors.newSingleThreadExecutor();
-		iterrupt_execution = new AtomicBoolean(false);
+		interrupt_execution = new AtomicBoolean(false);
 		sse_manager = new SSE_Manager();
 		if (WorkflowManager.workflowConfigurationsID != -1 )
-			methodsConfig = getWotkflowConfigurations(WorkflowManager.workflowConfigurationsID);	
+			methodsConfig = getWorkflowConfigurations(WorkflowManager.workflowConfigurationsID);	
 	}
 	
 	
@@ -85,10 +85,10 @@ public class ExecutionController {
 	 * @return a map containing the configurations of a requested workflow
 	 */
 	@GetMapping("/workflow/get_configurations/{id}")		
-	public Map<String, Object> getWotkflowConfigurations(@PathVariable(value = "id") int wfID) {
+	public Map<String, Object> getWorkflowConfigurations(@PathVariable(value = "id") int wfID) {
 		try {
 			if (dbm.existsWC(wfID))
-				return dbm.getWotkflowConfigurations(wfID);
+				return dbm.getWorkflowConfigurations(wfID);
 			else
 				return null;
 		}
@@ -109,7 +109,7 @@ public class ExecutionController {
 	public WorkflowResults setWorkflow(@PathVariable(value = "id") int wfID) {
 		try {
 			WorkflowManager.clean();
-			Map<String, Object> wfConfig = dbm.getWotkflowConfigurations(wfID);
+			Map<String, Object> wfConfig = dbm.getWorkflowConfigurations(wfID);
 			WorkflowManager.workflowConfigurationsID = wfID;
 			String erMode = (String) wfConfig.get("mode");
 			
@@ -135,7 +135,7 @@ public class ExecutionController {
 			}
 			
 			WorkflowManager.setComparisonCleaning((MethodModel) wfConfig.get(JedaiOptions.COMPARISON_CLEANING));
-			WorkflowManager.setEntityMatching((MethodModel) wfConfig.get(JedaiOptions.ENTITY_MATHCING));
+			WorkflowManager.setEntityMatching((MethodModel) wfConfig.get(JedaiOptions.ENTITY_MATCHING));
 			WorkflowManager.setEntityClustering((MethodModel) wfConfig.get(JedaiOptions.ENTITY_CLUSTERING));
 			
 			WorkflowResults results = dbm.findWRByWCID(wfID);
@@ -159,7 +159,7 @@ public class ExecutionController {
 	@GetMapping("/workflow/{id}/explore")
 	public int setExplore(){
 		detected_duplicates = WorkflowManager.getDetectedDuplicates();
-		return detected_duplicates.size()/enities_per_page;
+		return detected_duplicates.size()/entities_per_page;
 	}
 	
 	
@@ -174,8 +174,8 @@ public class ExecutionController {
 	public List<List<EntityProfileNode>> getExploreSubset(@PathVariable(value = "page") String page){
 		if (detected_duplicates == null) return null;
 		int int_page = Integer.parseInt(page);
-		int start = (int_page - 1) * enities_per_page;
-		int end = start + enities_per_page;
+		int start = (int_page - 1) * entities_per_page;
+		int end = start + entities_per_page;
 		if (detected_duplicates.size() > 0) {
 			if (end > detected_duplicates.size())
 				end = detected_duplicates.size();
@@ -213,7 +213,7 @@ public class ExecutionController {
 	 * kill the thread that executes the workflow
 	 * */	
 	@GetMapping("/workflow/stop/")
-	public void stopExecution() { iterrupt_execution.set(true);	}
+	public void stopExecution() { interrupt_execution.set(true);	}
 			
 		
 	/**
@@ -235,7 +235,7 @@ public class ExecutionController {
 		boolean automatic_conf = false;
 		
 		if (this.methodsConfig == null)
-			this.methodsConfig = getWotkflowConfigurations(WorkflowManager.workflowConfigurationsID);
+			this.methodsConfig = getWorkflowConfigurations(WorkflowManager.workflowConfigurationsID);
 		
 		 for (String key : methodsConfig.keySet())  {
 			 Object value = methodsConfig.get(key);
@@ -276,7 +276,7 @@ public class ExecutionController {
 				return null;
 			}			
 			
-			iterrupt_execution.set(false);
+			interrupt_execution.set(false);
 			
 			int no_instances = 0;
 			if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER))
@@ -305,11 +305,11 @@ public class ExecutionController {
 	                    // Run a workflow and check its F-measure    
 	                    // Execute Workflow in different thread in order to be stoppable
 	                    performances =  exec
-	                    		.submit(() -> {return WorkflowManager.runWorkflow(false, iterrupt_execution);})
+	                    		.submit(() -> {return WorkflowManager.runWorkflow(false, interrupt_execution);})
 	                    		.get();
 	                   
 	                    clp = performances.getValue0();
-	        			if (clp == null || iterrupt_execution.get()) return null;
+	        			if (clp == null || interrupt_execution.get()) return null;
 	                    	                    
 	                    // Keep this iteration if it has the best F-measure so far
 	                    double fMeasure = clp.getFMeasure();
@@ -328,14 +328,14 @@ public class ExecutionController {
 	                // Run the final workflow (whether there was an automatic configuration or not)
 	                // Execute Workflow in different thread in order to be stoppable
 	                performances =  exec
-	                		.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);})
+	                		.submit(() -> {return WorkflowManager.runWorkflow(true, interrupt_execution);})
 	                		.get();
 	                
 	                double totalTime = (System.currentTimeMillis() - start_time)/ 1000;
 	                clp = performances.getValue0();
 	                blocksMethodsPerformances = performances.getValue1();
 	    			
-	                if (clp == null || iterrupt_execution.get()) return null;
+	                if (clp == null || interrupt_execution.get()) return null;
                     	   
 	                // Store workflow results to H2 DB
 	                dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, blocksMethodsPerformances);
@@ -349,13 +349,13 @@ public class ExecutionController {
 					// Execute Workflow in different thread in order to be stoppable
 					performances =  exec
 							.submit(() -> { return WorkflowManager.runStepByStepWorkflow(methodsConfig, 
-									search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH), iterrupt_execution);}
+									search_type.equals(JedaiOptions.AUTOCONFIG_RANDOMSEARCH), interrupt_execution);}
 							)
 							.get();
 					double totalTime = System.currentTimeMillis() - start_time;
 					clp = performances.getValue0();
 					
-					if (clp == null || iterrupt_execution.get()) return null;
+					if (clp == null || interrupt_execution.get()) return null;
 					
 					// Store workflow results to H2 DB
 					dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, blocksMethodsPerformances);
@@ -367,13 +367,13 @@ public class ExecutionController {
 			// Run workflow without any automatic configuration
 			// Execute Workflow in different thread in order to be stoppable
 			performances =  exec
-					.submit(() -> {return WorkflowManager.runWorkflow(true, iterrupt_execution);})
+					.submit(() -> {return WorkflowManager.runWorkflow(true, interrupt_execution);})
 					.get();
 			double totalTime = (System.currentTimeMillis() - start_time)/1000;
 			clp = performances.getValue0();
 			blocksMethodsPerformances = performances.getValue1();
 			
-			if (clp == null || iterrupt_execution.get()) return null;
+			if (clp == null || interrupt_execution.get()) return null;
 			
 			// Store workflow results to H2 DB
 			dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, blocksMethodsPerformances);
@@ -467,7 +467,7 @@ public class ExecutionController {
             
 
         // Check if entity matching parameters should be set automatically
-        if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATHCING)).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
+        if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATCHING)).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
             if (bestIteration == null) 
             	WorkflowManager.entity_matching.setNextRandomConfiguration();
             else 
