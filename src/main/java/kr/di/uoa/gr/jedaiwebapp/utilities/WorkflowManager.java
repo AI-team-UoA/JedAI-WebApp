@@ -18,6 +18,7 @@ import org.scify.jedai.datamodel.SimilarityPairs;
 import org.scify.jedai.entityclustering.IEntityClustering;
 import org.scify.jedai.entitymatching.IEntityMatching;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
+import org.scify.jedai.similarityjoins.ISimilarityJoin;
 import org.scify.jedai.utilities.BlocksPerformance;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
@@ -26,10 +27,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 
 import gnu.trove.list.TIntList;
-import gnu.trove.map.TObjectIntMap;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
@@ -44,6 +45,7 @@ public class WorkflowManager {
 	public static AbstractDuplicatePropagation ground_truth = null;
 
 	public static ISchemaClustering schema_clustering = null;
+	public static ISimilarityJoin similarity_join_method = null;
 	public static IBlockProcessing comparison_cleaning = null;
 	public static IEntityMatching entity_matching = null;
 	public static IEntityClustering entity_clustering = null;
@@ -80,6 +82,18 @@ public class WorkflowManager {
 		entityClusters = null;
 		
 	}
+
+	/**
+	 * check if execution was interrupted
+	 */
+	public static boolean interrupt(AtomicBoolean interrupted){
+		//the process was stopped by the user
+		if (interrupted.get()) {
+			eventPublisher.publish("", "execution_step");
+			return true;
+		}
+		else return false;
+	}
 	
 	public static void setSchemaClustering(MethodModel schema_clustering) {
 		if (!schema_clustering.getLabel().equals(JedaiOptions.NO_SCHEMA_CLUSTERING)) {
@@ -95,6 +109,14 @@ public class WorkflowManager {
 		}	
 	}
 	
+
+	public static void setSimilarityJoinMethod(SimilarityMethodModel similarity_join) {
+		
+		WorkflowManager.similarity_join_method = DynamicMethodConfiguration.configureSimilarityJoinMethod(similarity_join);
+
+		System.out.println("SJ: " + WorkflowManager.similarity_join_method);
+	}
+
 	public static void setComparisonCleaning(MethodModel comparison_cleaning) {
 		
 		if (!comparison_cleaning.getLabel().equals(JedaiOptions.NO_CLEANING)) {
@@ -321,11 +343,7 @@ public class WorkflowManager {
 				details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
 			}
 			
-			//the process was stopped by the user
-			if (interrupted.get()) {
-				eventPublisher.publish("", event_name);
-				return null;
-			}			
+			if (interrupt(interrupted)) return null;
 			
 			// Run Schema Clustering
 			AttributeClusters[] clusters = null;
@@ -340,11 +358,7 @@ public class WorkflowManager {
 	            }
 	        }
 	        
-	        //the process was stopped by the user
-			if (interrupted.get()) {
-				eventPublisher.publish("", event_name);
-				return null;
-			}		
+			if (interrupt(interrupted)) return null;
 	        	        
 			double overheadStart;
 	        double overheadEnd;
@@ -356,12 +370,8 @@ public class WorkflowManager {
 	        
 	        List<AbstractBlock> blocks = new ArrayList<>();
 	        for (IBlockBuilding bb : block_building) {
-	        	
-	        	//the process was stopped by the user
-				if (interrupted.get()) {
-					eventPublisher.publish("", event_name);
-					return null;
-				}		
+				
+				if (interrupt(interrupted)) return null;	
 	        	
 	            // Start time measurement
 	            overheadStart = System.currentTimeMillis();
@@ -391,11 +401,7 @@ public class WorkflowManager {
 	        // Run Block Cleaning
 	        if (block_cleaning != null && !block_cleaning.isEmpty()) {
 	        	
-	        	//the process was stopped by the user
-				if (interrupted.get()) {
-					eventPublisher.publish("", event_name);
-					return null;
-				}		
+				if (interrupt(interrupted)) return null;	
 	        	
 	            if(final_run) 
 	    			eventPublisher.publish("Block Cleaning", event_name);
@@ -420,12 +426,8 @@ public class WorkflowManager {
 	        if (comparison_cleaning != null) {
 	        	if(final_run) 
 	    			eventPublisher.publish("Comparison Cleaning", event_name);
-	    		
-	        	//the process was stopped by the user
-				if (interrupted.get()) {
-					eventPublisher.publish("", event_name);
-					return null;
-				}		
+				
+				if (interrupt(interrupted)) return null;					
 	        	
 				Triplet<List<AbstractBlock>, BlocksPerformance, Double> p = runBlockProcessing(ground_truth, final_run, blocks, comparison_cleaning);
 				blocks = p.getValue0();
@@ -446,11 +448,7 @@ public class WorkflowManager {
 	        if(final_run) 
 				eventPublisher.publish("Entity Matching", event_name);
 	        
-	        //the process was stopped by the user
-			if (interrupted.get()) {
-				eventPublisher.publish("", event_name);
-				return null;
-			}		
+			if (interrupt(interrupted)) return null;	
 	        
 			overheadStart = System.currentTimeMillis();
 			
@@ -468,11 +466,7 @@ public class WorkflowManager {
 	        
 	        overheadStart = System.currentTimeMillis();
 	        
-	        //the process was stopped by the user
-			if (interrupted.get()) {
-				eventPublisher.publish("", event_name);
-				return null;
-			}		
+			if (interrupt(interrupted)) return null;
 	        
 	        entityClusters = entity_clustering.getDuplicates(simPairs);
 	
@@ -538,13 +532,7 @@ public class WorkflowManager {
 			}
 			details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
 			 
-			
-			
-			//the process was stopped by the user
-			if (interrupted.get()) {
-				eventPublisher.publish("", event_name);
-				return null;
-			}		
+			if (interrupt(interrupted)) return null;
 			
 			// Schema Clustering local optimization
 		    AttributeClusters[] scClusters = null;
@@ -559,12 +547,8 @@ public class WorkflowManager {
 		        }
 		    }
 		    
-		    //the process was stopped by the user
-			if (interrupted.get()) {
-				eventPublisher.publish("", event_name);
-				return null;
-			}		
-		    
+		    if (interrupt(interrupted)) return null;
+		
 		    final List<AbstractBlock> blocks = new ArrayList<>();
 		    if (block_building != null && !block_building.isEmpty()) {	
 		    	
@@ -667,11 +651,7 @@ public class WorkflowManager {
 		        }
 		    }
 		    
-		    //the process was stopped by the user
-			if (interrupted.get()) {
-				eventPublisher.publish("", event_name);
-				return null;
-			}		
+		    if (interrupt(interrupted)) return null;
 		
 		    // Block Cleaning methods local optimization	
 		    List<AbstractBlock> cleanedBlocks = blocks;
@@ -764,7 +744,7 @@ public class WorkflowManager {
 		    
 		    // Entity Matching & Clustering local optimization
 		    time1 = System.currentTimeMillis();
-		    MethodModel em_method = (MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATHCING);
+		    MethodModel em_method = (MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATCHING);
 		    MethodModel ec_method = (MethodModel) methodsConfig.get(JedaiOptions.ENTITY_CLUSTERING);
 		    boolean matchingAutomatic = em_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG);
 		    boolean clusteringAutomatic = ec_method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG);

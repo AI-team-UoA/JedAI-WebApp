@@ -4,13 +4,19 @@ public class JedaiOptions {
 	
 	
 	
-	
+	 // Workflows
+     public static final String WORKFLOW_BLOCKING_BASED = "Blocking-based";
+     public static final String WORKFLOW_JOIN_BASED = "Join-based";
+     public static final String WORKFLOW_PROGRESSIVE = "Progressive";
+
+     
 	public static final String SCHEMA_CLUSTERING = "Schema Clustering";
     public static final String BLOCK_BUILDING = "Block Building";
     public static final String BLOCK_CLEANING = "Block Cleaning";
     public static final String COMPARISON_CLEANING = "Comparison Cleaning";
-    public static final String ENTITY_MATHCING = "Entity Matching";
+    public static final String ENTITY_MATCHING = "Entity Matching";
     public static final String ENTITY_CLUSTERING = "Entity Clustering";
+    public static final String SIMILARITY_JOIN = "Similarity Join";
     
     
     // Method configuration types
@@ -112,4 +118,11 @@ public class JedaiOptions {
     public static final String AUTOCONFIG_STEPBYSTEP = "Step-by-step";
     public static final String AUTOCONFIG_RANDOMSEARCH = "Random Search";
     public static final String AUTOCONFIG_GRIDSEARCH = "Grid Search";
+
+    // Similarity Join Methods
+    public static final String ALL_PAIRS_CHAR_BASED = "All Pairs (character-based)";
+    public static final String ALL_PAIRS_TOKEN_BASED = "All Pairs (token-based)";
+    public static final String FAST_SS = "FastSS";
+    public static final String PASS_JOIN = "PassJoin";
+    public static final String PP_JOIN = "PPJoin";
 }

@@ -18,8 +18,12 @@ class JoinForm extends Component {
 
         similarity_join: 
         {
-            value: "ALL_PAIRS_CHARACTER-BASED",
-            label: "All Pairs (character-based)"
+            method:{
+                name: "ALL_PAIRS_CHARACTER-BASED",
+                label: "All Pairs (character-based)",
+                parameters: [{label: "Threshold", value:"3"}]
+            },
+            attribute: null,
         },
 
         entity_clustering: {
@@ -52,7 +56,7 @@ class JoinForm extends Component {
         const steps =
         [
             {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading}/>},
-            {name: 'Similarity Join', component: <SimilarityJoin state={this.state.similarity_join}/>},
+            {name: 'Similarity Join', component: <SimilarityJoin submitState={this.submitState} state={this.state.similarity_join}/>},
             {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering}/>}, 
             {name: 'Confirm Configuration', component: <ConfirmConfiguration state={this.state}/>}     
         ]

@@ -1,6 +1,5 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
@@ -41,6 +41,7 @@ public class WorkflowController {
 	Map<String, Object> methodsConfig;	
 	static List<Map<String, Object>> datasetsConfig = new ArrayList<Map<String, Object>>();
 	private WorkflowConfiguration workflowConfiguration;
+	private String wf_mode;
 	
 	@Autowired
 	private HttpServletRequest request;
@@ -55,9 +56,15 @@ public class WorkflowController {
 	
 
 	@GetMapping("/workflow/get_configurations")
-	public Map<String, Object> getWotkflowConfigurations(){	return methodsConfig; }
+	public Map<String, Object> getWorkflowConfigurations(){	return methodsConfig; }
 	
 	
+	@GetMapping("workflow/set_mode/{wf_mode}")
+	public void setWorkflowMode(@PathVariable(value = "wf_mode") String wf_mode){ 
+		System.out.println(wf_mode);
+		this.wf_mode = wf_mode; 
+	}
+
 	/**
      * check the configurations of the data read step
      *
@@ -312,9 +319,17 @@ public class WorkflowController {
 
 
 	@PostMapping("/workflow/set_configurations/similarityjoin")
-	public boolean setSimilarityJoinMethod(@RequestBody MethodModel joinMethod){
-		System.out.println("controller");
-		return true;
+	public boolean setSimilarityJoinMethod(@RequestBody SimilarityMethodModel sm){
+		try {
+			WorkflowManager.setSimilarityJoinMethod(sm);
+			methodsConfig.put(JedaiOptions.SIMILARITY_JOIN, sm);
+
+			return true;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	/**

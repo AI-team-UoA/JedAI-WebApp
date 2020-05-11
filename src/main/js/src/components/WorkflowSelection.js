@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {Jumbotron, Button} from 'react-bootstrap';
 import {Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 class WorkflowSelection extends Component {
@@ -32,7 +33,7 @@ class WorkflowSelection extends Component {
                             <br/><br/>
                             
                             <Link to="/blockingbased">
-                                <Button variant="primary">Blocking-based Workflow</Button>
+                                <Button variant="primary" onClick={(e) => axios.get("workflow/set_mode/Blocking-based")}>Blocking-based Workflow</Button>
                             </Link>
                         </div>
                     </Jumbotron>
@@ -46,7 +47,7 @@ class WorkflowSelection extends Component {
                              measure in combination with a user-determined similarity threshold.<br/><br/>
 
                             <Link to="/joinbased">
-                                <Button>Join-based Workflow</Button>
+                                <Button variant="primary" onClick={ (e) => axios.get("workflow/set_mode/Join-based")}>Join-based Workflow</Button>
                             </Link>
                         </div>
                     </Jumbotron>
@@ -60,7 +61,7 @@ class WorkflowSelection extends Component {
                              duplicates and then, it emits them iteratively, in decreasing weight.<br/><br/>
                             
                              <Link to="/progressive">
-                                <Button>Progressive Workflow</Button>
+                                <Button variant="primary" onClick={(e) => axios.get("workflow/set_mode/Progressive")}>Progressive Workflow</Button>
                             </Link>
                         </div>
                     </Jumbotron>

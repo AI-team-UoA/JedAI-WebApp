@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import {Form, Row, Col, Alert} from 'react-bootstrap/'
+import {Form, Row, Col, Alert, FormControl, Jumbotron} from 'react-bootstrap/'
 import axios from 'axios';
+import AlertModal from './utilities/AlertModal'
+
 
 
 class SimilarityJoin extends Component {
@@ -9,12 +11,14 @@ class SimilarityJoin extends Component {
     constructor(...args) {
         super(...args);
         window.scrollTo(0, 0)
+        this.alertText = "Select attribute"
+        
 
         this.state = {
-            method_name: this.props.state.value,
-            label: this.props.state.label,
-            attribute: null,
-            headers: null
+            method: this.props.state.method,
+            attribute: this.props.state.attribute,
+            headers: null,
+            alertShow : false
         }
 
         axios
@@ -27,48 +31,96 @@ class SimilarityJoin extends Component {
     methods = 
         [
             {
-                value: "ALL_PAIRS_CHARACTER-BASED",
-                label: "All Pairs (character-based)"
+                name: "ALL_PAIRS_CHAR_BASED",
+                label: "All Pairs (character-based)",
+                parameters: [{label: "Threshold", value:"3"}]
             },
             {
-                value: "ALL_PAIRS_TOKEN-BASED",
-                label: "All Pairs (token-based)"
+                name: "ALL_PAIRS_TOKEN-BASED",
+                label: "All Pairs (token-based)",
+                parameters: [{label: "Similarity Threshold", value:"0.8"}]
             },
             {
-                value: "FASTSS",
-                label: "FastSS"
+                name: "FASTSS",
+                label: "FastSS",
+                parameters: [{label: "Threshold", value:"3"}]
             },
             {
-                value: "PASSJOIN",
-                label: "PassJoin"
+                name: "PASSJOIN",
+                label: "PassJoin",
+                parameters: [{label: "Threshold", value:"3"}]
             },
             {
-                value: "PPJOIN",
-                label: "PPJoin"
+                name: "PPJOIN",
+                label: "PPJoin",
+                parameters: [{label: "Similarity Threshold", value:"0.8"}]
             }
         ]
+
     
-    changeMethod = (label, value) => {
-        this.setState(
-            {
-                method_name: value,
-                label: label
+    isValidated(){
+        var send_state = {
+            name: this.state.method.name,
+            label: this.state.method.label,
+            parameters: this.state.method.parameters,
+            attribute: this.state.attribute
+        }
+       
+        return axios({
+            url: '/workflow/set_configurations/similarityjoin',
+            method: 'POST',
+            data: send_state
+        }).then(res => {
+            var success = res.data
+            this.props.submitState("similarity_join", this.state)
+            if (!success){
+                this.alertText = "Error while setting the methods parameters. The values must be numeric"
+                this.handleAlertShow()
             }
-        )
+            return success
+        })
     }
+    
+    
+    changeMethod = (index) => {
+        this.setState({method: this.methods[index]})
+    }
+
+    changeParameter = (e) => {
+        var new_method_state = {
+            name: this.state.method.name,
+            label: this.state.method.label,
+            parameters: [{label: this.state.method.parameters[0].label, value: e.target.value}]
+        }
+        this.setState({
+            method: new_method_state
+        })
+    }
+
+
+    //handle alert modal
+    handleAlertClose = () => this.setState({alertShow : false});
+    handleAlertShow = () => this.setState({alertShow : true});
+
 
     selectHeader = (e) => { this.setState({attribute: e.target.value})}
 
 
     render() {
+
+        //the JSX code of the parameters windows
+        var empty_col = 1
+        var first_col = 5
+        var second_col = 5
+        
         var options =  this.methods.map((method, index) => (
             <Form.Check
                 type="radio"
                 label={method.label}
                 name="method_name"
-                value={method.value}
-                onChange={(e) => this.changeMethod(method.label, method.value)}
-                checked={this.state.method_name === method.value }
+                value={method.name}
+                onChange={(e) => this.changeMethod(index)}
+                checked={this.state.method.name === method.name }
                 key={index}
             />
         ))
@@ -77,10 +129,20 @@ class SimilarityJoin extends Component {
         if (this.state.headers) 
             header_options = this.state.headers.map((header, index) => (<option value={header} key={index}>{header}</option>  ))
         
+        var parameter_view = 
+                    <Form.Row className="form-row">
+                        <Col sm={first_col} >
+                            <Form.Label>{this.state.method.parameters[0].label}</Form.Label> 
+                        </Col>
+                        <Col sm={empty_col} />
+                        <Col sm={second_col}>
+                            <FormControl type="text" name="value" value={this.state.method.parameters[0].value} onChange={this.changeParameter}/>
+                        </Col>
+                    </Form.Row>  
 
         return (
             <div>
-
+                <AlertModal title="Wrong Input" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 <div style={{marginBottom:"5px"}}> 
                     <h1 style={{display:'inline', marginRight:"20px"}}>Similarity Join</h1> 
                     <span className="workflow-desc" >This step accelerates the computation of a specific character- or token-based similarity measure in combination with a user-determined similarity threshold</span>
@@ -90,27 +152,41 @@ class SimilarityJoin extends Component {
                 <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
                 <br/>
 
-                <Form>
-                    <Form.Group as={Row} className="form-row">           
-                        <Col style={{margin:'20px'}}>
-                            <Form.Label><h5>Select a Similarity Join method</h5></Form.Label>
-                            <Alert  variant="primary" style={{color:'black', margin:'auto'}}>
-                                <Form.Label as="legend"><h5>{this.props.title}</h5> </Form.Label>
-                                {options}
-                            </Alert>
-                        </Col>
-                        <Col style={{margin:'20px'}}>
-                            <Form.Label><h5>Select attribute to apply Similarity Join</h5></Form.Label>
-                            <Form.Control 
-                                as="select" 
-                                placeholder="Select Attribute" 
-                                name="attribute" 
-                                onChange={(e) => this.selectHeader(e)}
-                                value={this.state.attribute}
-                            >
-                                {header_options}
-                            </Form.Control>
-                        </Col>
+                <Form >
+                    <Form.Group > 
+                        <Row className="justify-content-md-center">       
+                            <Col sm={4} style={{height: "100%", margin:'20px'}}>
+                                <Alert variant="primary" style={{color:'black', margin:'auto'}}>
+                                    <Form.Label><h5>Select a Similarity Join method</h5></Form.Label>
+                                    {options}
+                                </Alert>
+                            </Col>  
+                            <Col sm={4} style={{margin:'20px'}}>
+                                <Alert variant="primary" style={{height: "100%", color:"black", backgroundColor:"#FFFFFF", margin:'auto', border:"groove"}}>
+                                    <Form.Label><h5>Select Algorithm's Parameter</h5></Form.Label>
+                                    <div style={{ margin: 'auto'}}>
+                                        {parameter_view}
+                                    </div>
+                                </Alert>
+                            </Col>
+                        </Row>
+                        <br />
+                        <Row className="justify-content-md-center">
+                            <Col sm={4} style={{margin:'20px'}}>
+                                <Form.Label><h5>Select attribute to apply Similarity Join:</h5></Form.Label>
+                            </Col>
+                            <Col sm={4} style={{margin:'20px'}}>
+                                <Form.Control 
+                                    as="select" 
+                                    placeholder="Select Attribute" 
+                                    name="attribute" 
+                                    onChange={(e) => this.selectHeader(e)}
+                                    value={this.state.attribute}
+                                >
+                                    {header_options}
+                                </Form.Control>
+                            </Col>
+                        </Row>
                         
                     </Form.Group>
                 </Form>
@@ -120,7 +196,8 @@ class SimilarityJoin extends Component {
 }
 
 SimilarityJoin.propTypes = {
-    state: PropTypes.object.isRequired
+    state: PropTypes.object.isRequired,
+    submitState: PropTypes.func.isRequired
 }
 
 export default SimilarityJoin

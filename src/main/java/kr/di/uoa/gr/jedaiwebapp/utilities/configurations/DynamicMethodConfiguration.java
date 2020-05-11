@@ -40,12 +40,18 @@ import org.scify.jedai.schemaclustering.AttributeNameClustering;
 import org.scify.jedai.schemaclustering.AttributeValueClustering;
 import org.scify.jedai.schemaclustering.HolisticAttributeClustering;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
+import org.scify.jedai.similarityjoins.ISimilarityJoin;
+import org.scify.jedai.similarityjoins.characterbased.AllPairs;
+import org.scify.jedai.similarityjoins.characterbased.FastSS;
+import org.scify.jedai.similarityjoins.characterbased.PassJoin;
+import org.scify.jedai.similarityjoins.tokenbased.PPJoin;
 import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
 import org.scify.jedai.utilities.enumerations.RepresentationModel;
 import org.scify.jedai.utilities.enumerations.SimilarityMetric;
 import org.scify.jedai.utilities.enumerations.WeightingScheme;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 
 public class DynamicMethodConfiguration {
@@ -365,6 +371,27 @@ public class DynamicMethodConfiguration {
 		}
 		
 		return ecMethod;
-	}
+    }
+    
+    public static ISimilarityJoin configureSimilarityJoinMethod(SimilarityMethodModel sm){
+        
+        String methodName = sm.getLabel();
+        String parameterValue = (String) sm.getParameters().get(0).getValue();
+        switch (methodName) {
+            case JedaiOptions.ALL_PAIRS_CHAR_BASED:
+                return new AllPairs(Integer.parseInt(parameterValue));
+            case JedaiOptions.ALL_PAIRS_TOKEN_BASED:
+                return new org.scify.jedai.similarityjoins.tokenbased.AllPairs(Double.parseDouble(parameterValue));
+            case JedaiOptions.FAST_SS:
+                return new FastSS(Integer.parseInt(parameterValue));
+            case JedaiOptions.PASS_JOIN:
+                return new PassJoin(Integer.parseInt(parameterValue));
+            case JedaiOptions.PP_JOIN:
+                return new PPJoin(Double.parseDouble(parameterValue));
+            default:
+                return null;
+        }
+        
+    }
 
 }
