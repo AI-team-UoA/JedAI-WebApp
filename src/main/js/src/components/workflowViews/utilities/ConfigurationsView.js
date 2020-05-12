@@ -73,52 +73,68 @@ class ConfigurationsView extends Component {
 
             //Single Selected methods configurations
             var schema_clustering = null;
-            if (state['Schema Clustering' ] !== null){
-                schema_clustering = {
-                    label: state['Schema Clustering' ].label,
-                    configuration_type: state['Schema Clustering' ].configuration_type,
-                    parameters: state['Schema Clustering' ].parameters
-                }
+            if (state.hasOwnProperty("Schema Clustering")){
+                if (state['Schema Clustering'] !== null)
+                    schema_clustering = {
+                        label: state['Schema Clustering'].label,
+                        configuration_type: state['Schema Clustering'].configuration_type,
+                        parameters: state['Schema Clustering'].parameters
+                    }
             }
 
             var comparison_cleaning = null;
-            if (state['Comparison Cleaning' ] !== null){
-                comparison_cleaning = {
-                    label: state['Comparison Cleaning' ].label,
-                    configuration_type: state['Comparison Cleaning' ].configuration_type,
-                    parameters: state['Comparison Cleaning' ].parameters
-                }
+            if (state.hasOwnProperty("Comparison Cleaning")){
+                if (state['Comparison Cleaning'] !== null)
+                    comparison_cleaning = {
+                        label: state['Comparison Cleaning'].label,
+                        configuration_type: state['Comparison Cleaning'].configuration_type,
+                        parameters: state['Comparison Cleaning'].parameters
+                    }
             }
 
             var entity_matching = null;
-            if (state['Entity Matching' ] !== null){
-                entity_matching = {
-                    label: state['Entity Matching' ].label,
-                    configuration_type: state['Entity Matching' ].configuration_type,
-                    parameters: state['Entity Matching' ].parameters
-                }
+            if (state.hasOwnProperty("Entity Matching")){
+                if (state['Entity Matching'] !== null)
+                    entity_matching = {
+                        label: state['Entity Matching'].label,
+                        configuration_type: state['Entity Matching'].configuration_type,
+                        parameters: state['Entity Matching'].parameters
+                    }
             }
 
             var entity_clustering = null;
-            if (state['Entity Clustering' ] !== null){
-                entity_clustering = {
-                    label: state['Entity Clustering' ].label,
-                    configuration_type: state['Entity Clustering' ].configuration_type,
-                    parameters: state['Entity Clustering' ].parameters
-                }
-            }     
+            if (state.hasOwnProperty("Entity Clustering")){
+                if (state['Entity Clustering'] !== null)
+                    entity_clustering = {
+                        label: state['Entity Clustering'].label,
+                        configuration_type: state['Entity Clustering'].configuration_type,
+                        parameters: state['Entity Clustering'].parameters
+                    }
+            }
+            
+            console.log(state)
+            var similarity_join = null;
+            if (state.hasOwnProperty("Similarity Join")){
+                if(state['Similarity Join'] != null)
+                    similarity_join = {
+                        label: state['Similarity Join'].label,
+                        parameters: state['Similarity Join'].parameters,
+                        attribute: state['Similarity Join'].attribute
+                    }
+            }
             return (
                 <div>
                     <ConfigurationView  type="inline" title="ER Type" data={er_mode}/>
                     <ConfigurationView  type="file" title="Dataset 1 Parameters" data={entity_1}/>
                     {entity_2 !== null ? <ConfigurationView  type="file" title="Dataset 2 Parameters" data={entity_2}/> : <div />}
                     <ConfigurationView  type="file" title="Ground Truth Parameters" data={ground_truth}/>
-                    <ConfigurationView  type="inline" title="Schema Clustering" data={schema_clustering}/>
-                    <ConfigurationView  type="array" title="Block Building" data={state['Block Building' ]}/>
-                    {state.hasOwnProperty("Block Cleaning") ? <ConfigurationView  type="array" title="Block Cleaning" data={state['Block Cleaning' ]}/> : <div />}
-                    <ConfigurationView  type="inline" title="Comparison Cleaning" data={comparison_cleaning}/>
-                    <ConfigurationView  type="inline" title="Entity Matching" data={entity_matching}/>
-                    <ConfigurationView  type="inline" title="Entity Clustering" data={entity_clustering}/>
+                    {schema_clustering != null ? <ConfigurationView  type="inline" title="Schema Clustering" data={schema_clustering}/> : <div/>}
+                    {similarity_join != null ? <ConfigurationView  type="sj" title="Similarity Join" data={similarity_join}/>: <div/>}
+                    {state.hasOwnProperty("Block Building") ?  <ConfigurationView  type="array" title="Block Building" data={state['Block Building']}/> : <div/>}
+                    {state.hasOwnProperty("Block Cleaning") ? <ConfigurationView  type="array" title="Block Cleaning" data={state['Block Cleaning']}/> : <div />}
+                    {comparison_cleaning != null ? <ConfigurationView  type="inline" title="Comparison Cleaning" data={comparison_cleaning}/>: <div/>}
+                    {entity_matching != null ? <ConfigurationView  type="inline" title="Entity Matching" data={entity_matching}/>: <div/>}
+                    {entity_clustering != null ? <ConfigurationView  type="inline" title="Entity Clustering" data={entity_clustering}/>: <div/>}
 
                     <br/>
                     <br/>

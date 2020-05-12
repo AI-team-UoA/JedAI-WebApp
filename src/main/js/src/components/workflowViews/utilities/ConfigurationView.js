@@ -136,6 +136,44 @@ class ConfigurationView extends Component {
                         </Col>
                     </Form.Row>         
         }
+        else if (type === "sj"){
+            return_stmnt = 
+                    <Form.Row>
+                        <Col sm={title_col}>
+                            <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
+                        </Col>
+                        <Col sm={empty_col}></Col>
+                        <Col sm={big_col}>
+                            <Table  striped bordered hover size="sm">
+                                <thead>
+                                    <tr>
+                                        <th style={{color:"#4663b9"}}>Method</th>
+                                        <th style={{color:"#4663b9"}}>Attribute</th>
+                                        <th style={{color:"#4663b9"}}>Parameters</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr> 
+                                        <td>{data.label}</td>
+                                        <td>{data.attribute}</td>
+                                        <td>
+                                            <Row>
+                                                <Col>
+                                                    {data.parameters[0].label}
+                                                </Col>
+                                                <Col>
+                                                    {data.parameters[0].value}
+                                                </Col>
+                                            </Row>                                            
+                                        </td>    
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </Col>
+                    </Form.Row>    
+        } 
+
+        
         return(
             <div>
                 <div style={{margin:'auto', marginLeft: "10%"}}>
