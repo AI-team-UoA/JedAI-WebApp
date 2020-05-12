@@ -30,7 +30,7 @@ import gnu.trove.list.TIntList;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
-import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethod;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.DynamicMethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.MethodConfigurations;
@@ -40,6 +40,8 @@ public class WorkflowManager {
 	private final static int NO_OF_TRIALS = 100;
 
 	public static  String er_mode = null;
+	public static  String wf_mode = null;
+
 	public static List<EntityProfile> profilesD1 = null;
 	public static List<EntityProfile> profilesD2 = null;
 	public static AbstractDuplicatePropagation ground_truth = null;
@@ -110,7 +112,7 @@ public class WorkflowManager {
 	}
 	
 
-	public static void setSimilarityJoinMethod(SimilarityMethod similarity_join) {
+	public static void setSimilarityJoinMethod(SimilarityMethodModel similarity_join) {
 		
 		WorkflowManager.similarity_join_method = DynamicMethodConfiguration.configureSimilarityJoinMethod(similarity_join);
 

@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
@@ -124,23 +125,34 @@ public class ExecutionController {
 					WorkflowManager.profilesD1,
 					WorkflowManager.profilesD2);
 			
-			WorkflowManager.setSchemaClustering((MethodModel) wfConfig.get(JedaiOptions.SCHEMA_CLUSTERING));
-			
-			List<MethodModel> bb = (List<MethodModel>) wfConfig.get(JedaiOptions.BLOCK_BUILDING);
-			for (MethodModel m : bb) WorkflowManager.addBlockBuildingMethod(m);
-			
-			if (wfConfig.containsKey(JedaiOptions.BLOCK_CLEANING)){
-				List<MethodModel> bc = (List<MethodModel>) wfConfig.get(JedaiOptions.BLOCK_CLEANING);
-				for (MethodModel m : bc) WorkflowManager.addBlockCleaningMethod(m);
+			WorkflowManager.wf_mode = (String) wfConfig.get("wfmode");
+	
+			switch (WorkflowManager.wf_mode) {
+				case JedaiOptions.WORKFLOW_BLOCKING_BASED:
+							
+					WorkflowManager.setSchemaClustering((MethodModel) wfConfig.get(JedaiOptions.SCHEMA_CLUSTERING));
+					
+					List<MethodModel> bb = (List<MethodModel>) wfConfig.get(JedaiOptions.BLOCK_BUILDING);
+					for (MethodModel m : bb) WorkflowManager.addBlockBuildingMethod(m);
+					
+					if (wfConfig.containsKey(JedaiOptions.BLOCK_CLEANING)){
+						List<MethodModel> bc = (List<MethodModel>) wfConfig.get(JedaiOptions.BLOCK_CLEANING);
+						for (MethodModel m : bc) WorkflowManager.addBlockCleaningMethod(m);
+					}
+					
+					WorkflowManager.setComparisonCleaning((MethodModel) wfConfig.get(JedaiOptions.COMPARISON_CLEANING));
+					WorkflowManager.setEntityMatching((MethodModel) wfConfig.get(JedaiOptions.ENTITY_MATCHING));
+					WorkflowManager.setEntityClustering((MethodModel) wfConfig.get(JedaiOptions.ENTITY_CLUSTERING));
+					break;
+
+				case JedaiOptions.WORKFLOW_JOIN_BASED:
+
+					WorkflowManager.setSimilarityJoinMethod((SimilarityMethodModel) wfConfig.get(JedaiOptions.SIMILARITY_JOIN));
+					WorkflowManager.setEntityClustering((MethodModel) wfConfig.get(JedaiOptions.ENTITY_CLUSTERING));
+					break;
 			}
-			
-			WorkflowManager.setComparisonCleaning((MethodModel) wfConfig.get(JedaiOptions.COMPARISON_CLEANING));
-			WorkflowManager.setEntityMatching((MethodModel) wfConfig.get(JedaiOptions.ENTITY_MATCHING));
-			WorkflowManager.setEntityClustering((MethodModel) wfConfig.get(JedaiOptions.ENTITY_CLUSTERING));
-			
-			WorkflowResults results = dbm.findWRByWCID(wfID);
-			
-			return results;						
+
+			return dbm.findWRByWCID(wfID);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -189,22 +201,28 @@ public class ExecutionController {
 	 *  
 	 * Check if the configurations of the workflow have been set correctly.
 	 * */	
-	public boolean congurationsSetCorrectly() {
-		if (WorkflowManager.er_mode == null) return false;
-		if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER)) {
-			return WorkflowManager.profilesD1 != null 
-					&& WorkflowManager.ground_truth != null
-					&& WorkflowManager.block_building != null && WorkflowManager.block_building.size() > 0
-					&& WorkflowManager.entity_matching != null
-					&& WorkflowManager.entity_clustering != null;
-		}
-		else {
-			return WorkflowManager.profilesD1 != null 
-					&& WorkflowManager.profilesD2 != null 
-					&& WorkflowManager.ground_truth != null
-					&& WorkflowManager.block_building != null && WorkflowManager.block_building.size() > 0
-					&& WorkflowManager.entity_matching != null
-					&& WorkflowManager.entity_clustering != null;
+	public boolean configurationsSetCorrectly() {
+		if (WorkflowManager.er_mode == null || WorkflowManager.wf_mode == null) return false;
+		
+		boolean datasetOk;
+		if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER))
+			datasetOk = WorkflowManager.profilesD1 != null && WorkflowManager.ground_truth != null;
+		else
+			datasetOk = WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null 
+			&& WorkflowManager.ground_truth != null;
+
+		switch(WorkflowManager.wf_mode){
+			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
+				return datasetOk && WorkflowManager.block_building != null 
+				&& WorkflowManager.block_building.size() > 0
+				&& WorkflowManager.entity_matching != null
+				&& WorkflowManager.entity_clustering != null;
+			
+			case JedaiOptions.WORKFLOW_JOIN_BASED:
+				return datasetOk && WorkflowManager.similarity_join_method != null
+				&& WorkflowManager.entity_clustering != null;
+			default:
+				return false;
 		}
 	}
 	
@@ -256,6 +274,7 @@ public class ExecutionController {
 	}
 	
 	
+	//TODO here
 	/**
      * The method is triggered when the used presses the "Execute Workflow" button.
      * Firstly set the parameters if the configuration type of any method is automatic. 
@@ -266,12 +285,12 @@ public class ExecutionController {
      * @return  
      */		
 	@GetMapping("/workflow/execution/automatic_type/{automatic_type}/search_type/{search_type}")	
-	public Triplet<ClustersPerformance , Double, Integer> executeWorkflow(
+	public Triplet<ClustersPerformance, Double, Integer> executeWorkflow(
 			@PathVariable(value = "automatic_type") String automatic_type,
 			@PathVariable(value = "search_type") String search_type) {
 		try {
 			
-			if (!congurationsSetCorrectly()) {
+			if (!configurationsSetCorrectly()) {
 				WorkflowManager.setErrorMessage("The configurations have not been set correctly!");
 				return null;
 			}			

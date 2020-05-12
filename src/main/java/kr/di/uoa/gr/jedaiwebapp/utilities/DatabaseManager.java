@@ -14,12 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
 import kr.di.uoa.gr.jedaiwebapp.models.DatasetRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.SimilarityJoinRepository;
-import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethodModel;
+import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethod;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
@@ -55,6 +56,8 @@ public class DatabaseManager {
 	
 	public WorkflowResults findWRByID(int wrID) {return workflowResultsRepository.findById(wrID);}
 
+	public SimilarityMethod findSJByID(int sjID) {return sjRepository.findById(sjID);}
+
 	public Iterable<WorkflowResults> findAllWR() {return workflowResultsRepository.findAll();}
 	
 	public WorkflowResults findWRByWCID(int wfID) {return workflowResultsRepository.findByworkflowID(wfID);}
@@ -69,7 +72,7 @@ public class DatabaseManager {
 	
 	public void storeOrUpdateMC(MethodConfiguration m) {methodConfigurationRepository.save(m);}
 
-	public void storeOrUpdateSJ(SimilarityMethodModel sjm) {sjRepository.save(sjm);}
+	public void storeOrUpdateSJ(SimilarityMethod sjm) {sjRepository.save(sjm);}
 	
 	public void storeOrUpdateDataset(Dataset dt) {datasetRepository.save(dt);}
 	
@@ -108,39 +111,60 @@ public class DatabaseManager {
 		Dataset gt= findDatasetByID(gtID);
 		configurations.put("gt", gt);
 		
-		int scID = wc.getSchemaClustering();
-		MethodConfiguration sc = findMCbyID(scID);
-		configurations.put(JedaiOptions.SCHEMA_CLUSTERING, new MethodModel(sc));
-		
-					
-		List<Integer> bbIDs =  Arrays.stream(wc.getBlockBuilding()).boxed().collect(Collectors.toList());
-		Iterable<MethodConfiguration> bb = findAllMCbyIDs(bbIDs);
-		List<MethodModel> bbmm = new ArrayList<>();
-		for (MethodConfiguration mc : bb) 
-			bbmm.add(new MethodModel(mc));
-		configurations.put(JedaiOptions.BLOCK_BUILDING, bbmm);
-		
-		try {
-			List<Integer> bcIDs =  Arrays.stream(wc.getBlockCleaning()).boxed().collect(Collectors.toList());
-			Iterable<MethodConfiguration> bc = findAllMCbyIDs(bcIDs);
-			List<MethodModel> bcmm = new ArrayList<>();
-			for (MethodConfiguration mc : bc) 
-				bcmm.add(new MethodModel(mc));
-			configurations.put(JedaiOptions.BLOCK_CLEANING, bcmm);
+
+		String wfMode = wc.getWfMode();
+		configurations.put("wfmode", wfMode);
+
+		switch(wfMode){
+
+			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
+				int scID = wc.getSchemaClustering();
+				MethodConfiguration sc = findMCbyID(scID);
+				configurations.put(JedaiOptions.SCHEMA_CLUSTERING, new MethodModel(sc));
+				
+							
+				List<Integer> bbIDs =  Arrays.stream(wc.getBlockBuilding()).boxed().collect(Collectors.toList());
+				Iterable<MethodConfiguration> bb = findAllMCbyIDs(bbIDs);
+				List<MethodModel> bbmm = new ArrayList<>();
+				for (MethodConfiguration mc : bb) 
+					bbmm.add(new MethodModel(mc));
+				configurations.put(JedaiOptions.BLOCK_BUILDING, bbmm);
+				
+				try {
+					List<Integer> bcIDs =  Arrays.stream(wc.getBlockCleaning()).boxed().collect(Collectors.toList());
+					Iterable<MethodConfiguration> bc = findAllMCbyIDs(bcIDs);
+					List<MethodModel> bcmm = new ArrayList<>();
+					for (MethodConfiguration mc : bc) 
+						bcmm.add(new MethodModel(mc));
+					configurations.put(JedaiOptions.BLOCK_CLEANING, bcmm);
+				}
+				catch(Exception ignore) {}
+				
+				int ccID = wc.getComparisonCleaning();
+				MethodConfiguration cc = findMCbyID(ccID);
+				configurations.put(JedaiOptions.COMPARISON_CLEANING, new MethodModel(cc));
+				
+				int emID = wc.getEntityMatching();
+				MethodConfiguration em = findMCbyID(emID);
+				configurations.put(JedaiOptions.ENTITY_MATCHING, new MethodModel(em));
+				
+				int ecID = wc.getEntityClustering();
+				MethodConfiguration ec = findMCbyID(ecID);
+				configurations.put(JedaiOptions.ENTITY_CLUSTERING, new MethodModel(ec));
+				
+				break;
+
+			case JedaiOptions.WORKFLOW_JOIN_BASED:
+
+				int sjID = wc.getSimilarityJoin();
+				SimilarityMethod sj = findSJByID(sjID);
+				configurations.put(JedaiOptions.SIMILARITY_JOIN, new SimilarityMethodModel(sj));		
+
+				ecID = wc.getEntityClustering();
+				ec = findMCbyID(ecID);
+				configurations.put(JedaiOptions.ENTITY_CLUSTERING, new MethodModel(ec));
+				break;
 		}
-		catch(Exception ignore) {}
-		
-		int ccID = wc.getComparisonCleaning();
-		MethodConfiguration cc = findMCbyID(ccID);
-		configurations.put(JedaiOptions.COMPARISON_CLEANING, new MethodModel(cc));
-		
-		int emID = wc.getEntityMatching();
-		MethodConfiguration em = findMCbyID(emID);
-		configurations.put(JedaiOptions.ENTITY_MATCHING, new MethodModel(em));
-		
-		int ecID = wc.getEntityClustering();
-		MethodConfiguration ec = findMCbyID(ecID);
-		configurations.put(JedaiOptions.ENTITY_CLUSTERING, new MethodModel(ec));
 		
 		
 		return configurations;
