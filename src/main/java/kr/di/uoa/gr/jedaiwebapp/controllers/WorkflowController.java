@@ -24,9 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
-import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethod;
 import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
+import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
@@ -73,6 +74,7 @@ public class WorkflowController {
 	@GetMapping("/workflow/validate/dataread")	
 	public boolean validate_DataRead() {
 		workflowConfiguration = new WorkflowConfiguration();
+		methodsConfig = new HashMap<String, Object>();
 		WorkflowManager.clean();
 		
 		methodsConfig.put("mode", WorkflowManager.er_mode); 
@@ -319,10 +321,24 @@ public class WorkflowController {
 
 
 	@PostMapping("/workflow/set_configurations/similarityjoin")
-	public boolean setSimilarityJoinMethod(@RequestBody SimilarityMethodModel sm){
+	public boolean setSimilarityJoinMethod(@RequestBody SimilarityMethod sj_method){
 		try {
-			WorkflowManager.setSimilarityJoinMethod(sm);
-			methodsConfig.put(JedaiOptions.SIMILARITY_JOIN, sm);
+			WorkflowManager.setSimilarityJoinMethod(sj_method);
+			methodsConfig.put(JedaiOptions.SIMILARITY_JOIN, sj_method);
+
+			// Adding method to DB
+			SimilarityMethodModel sjm = new SimilarityMethodModel();
+			sjm.setLabel(sj_method.getLabel());
+			List<String> parameters = new ArrayList<>();
+			for (Parameter p : sj_method.getParameters()) 
+				parameters.add(p.getLabel() + "|" + p.getValue().toString());
+
+			sjm.setParameters(parameters);
+			sjm.setAttribute(sj_method.getAttribute());
+			dbm.storeOrUpdateSJ(sjm);
+
+			workflowConfiguration.setSimilarityJoin(sjm.getId());
+			
 
 			return true;
 		}
@@ -450,6 +466,7 @@ public class WorkflowController {
 	@GetMapping("/workflow/store")
 	public boolean storeWorkflow() {
 		try {
+			workflowConfiguration.setWfMode(wf_mode);
 			for (Map<String, Object> datasetConfig : datasetsConfig) {
 				Dataset dt = new Dataset(datasetConfig);
 				dbm.storeOrUpdateDataset(dt);

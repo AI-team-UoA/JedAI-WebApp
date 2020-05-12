@@ -18,6 +18,9 @@ public class WorkflowConfiguration {
 	
 	@Column(name="er_mode")
 	private String erMode;
+
+	@Column(name="wf_mode")
+	private String wfMode;
 	
 	@Column(name="datasetid1")
 	private int datasetID1;
@@ -45,6 +48,9 @@ public class WorkflowConfiguration {
 	
 	@Column(name="entity_clustering")
 	private int entityClustering;
+
+	@Column(name="similarity_join")
+	private int similarityJoin;
 	
 	public WorkflowConfiguration(){}
 	
@@ -114,8 +120,22 @@ public class WorkflowConfiguration {
 	public void setEntityClustering(int entityClustering) {
 		this.entityClustering = entityClustering;
 	}
-	
-	
+
+	public String getWfMode() {
+		return this.wfMode;
+	}
+
+	public void setWfMode(String wfMode) {
+		this.wfMode = wfMode;
+	}
+
+	public int getSimilarityJoin() {
+		return this.similarityJoin;
+	}
+
+	public void setSimilarityJoin(int similarityJoin) {
+		this.similarityJoin = similarityJoin;
+	}
 	
 
 }

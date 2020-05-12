@@ -18,6 +18,8 @@ import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
 import kr.di.uoa.gr.jedaiwebapp.models.DatasetRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfigurationRepository;
+import kr.di.uoa.gr.jedaiwebapp.models.SimilarityJoinRepository;
+import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfigurationRepository;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
@@ -38,6 +40,9 @@ public class DatabaseManager {
 	
 	@Autowired
 	private MethodConfigurationRepository methodConfigurationRepository;
+
+	@Autowired
+	private SimilarityJoinRepository sjRepository;
 	
 	
 	public WorkflowConfiguration findWCByID(int wfID) {return workflowConfigurationRepository.findById(wfID);}
@@ -63,6 +68,8 @@ public class DatabaseManager {
 	public void storeOrUpdateWC(WorkflowConfiguration workflowConfiguration) {workflowConfigurationRepository.save(workflowConfiguration);}
 	
 	public void storeOrUpdateMC(MethodConfiguration m) {methodConfigurationRepository.save(m);}
+
+	public void storeOrUpdateSJ(SimilarityMethodModel sjm) {sjRepository.save(sjm);}
 	
 	public void storeOrUpdateDataset(Dataset dt) {datasetRepository.save(dt);}
 	

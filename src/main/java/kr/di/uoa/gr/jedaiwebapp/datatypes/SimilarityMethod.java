@@ -2,16 +2,16 @@ package kr.di.uoa.gr.jedaiwebapp.datatypes;
 
 import java.util.List;
 
-public class SimilarityMethodModel {
+public class SimilarityMethod {
     private String method_name;
     private String label;
     private List<Parameter> parameters;
     private String attribute;
 
 
-    public SimilarityMethodModel() {}
+    public SimilarityMethod() {}
 
-    public SimilarityMethodModel(SimilarityMethodModel sm) {
+    public SimilarityMethod(SimilarityMethod sm) {
         this.method_name = sm.getMethod_name();
         this.label = sm.getLabel();
         this.attribute = sm.getAttribute();
