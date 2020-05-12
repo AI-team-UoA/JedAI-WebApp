@@ -14,28 +14,7 @@ class Workbench extends Component {
             collapse_rows: collapse_rows,
             show_configuration_modal : false,
             workflow_configurations: {},
-            data : [/*
-                {
-                    id: 1,
-                   	methodNames : ["ma1", "ma2", "ma2", "ma2"],
-                   	recall : [0.1, 0.2, 0.2, 0.2],
-                   	fmeasure: [0.1, 0.2, 0.2, 0.2],
-                   	precision: [0.1, 0.2, 0.2, 0.2],
-                   	time :[0.1, 0.2, 0.2, 0.2],
-                   	clusters: 202,
-                   	inputInstances: 202
-                },
-                {
-                    id: 1,
-                   	methodNames : ["ma1", "ma2", "ma2", "ma2"],
-                   	recall : [0.1, 0.2, 0.2, 0.2],
-                   	fmeasure: [0.1, 0.2, 0.2, 0.2],
-                   	precision: [0.1, 0.2, 0.2, 0.2],
-                   	time :[0.1, 0.2, 0.2, 0.2],
-                   	clusters: 202,
-                   	inputInstances: 202
-                }*/
-            ]
+            data : []
         }
         
       this.setData()
