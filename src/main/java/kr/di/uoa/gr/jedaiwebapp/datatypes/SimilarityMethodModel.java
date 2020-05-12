@@ -3,7 +3,7 @@ package kr.di.uoa.gr.jedaiwebapp.datatypes;
 import java.util.List;
 
 public class SimilarityMethodModel {
-    private String name;
+    private String method_name;
     private String label;
     private List<Parameter> parameters;
     private String attribute;
@@ -12,19 +12,19 @@ public class SimilarityMethodModel {
     public SimilarityMethodModel() {}
 
     public SimilarityMethodModel(SimilarityMethodModel sm) {
-        this.name = sm.getName();
+        this.method_name = sm.getMethod_name();
         this.label = sm.getLabel();
         this.attribute = sm.getAttribute();
 		this.parameters = sm.getParameters();
 	}
 
 
-    public String getName() {
-        return this.name;
+    public String getMethod_name() {
+        return this.method_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMethod_name(String name) {
+        this.method_name = name;
     }
 
     public String getLabel() {

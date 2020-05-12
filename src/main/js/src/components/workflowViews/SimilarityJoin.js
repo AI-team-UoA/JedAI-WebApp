@@ -31,7 +31,7 @@ class SimilarityJoin extends Component {
     methods = 
         [
             {
-                name: "ALL_PAIRS_CHAR_BASED",
+                name: "ALL_PAIRS_CHARACTER-BASED",
                 label: "All Pairs (character-based)",
                 parameters: [{label: "Threshold", value:"3"}]
             },
