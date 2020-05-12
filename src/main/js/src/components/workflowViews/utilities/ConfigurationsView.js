@@ -119,7 +119,9 @@ class ConfigurationsView extends Component {
                     similarity_join = {
                         label: state['Similarity Join'].label,
                         parameters: state['Similarity Join'].parameters,
-                        attribute: state['Similarity Join'].attribute
+                        attribute1: state['Similarity Join'].attribute1,
+                        attribute2: state['Similarity Join'].attribute2
+
                     }
             }
             return (

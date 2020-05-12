@@ -22,8 +22,11 @@ public class SimilarityMethod {
 	@Column(name="label")
 	private String label;
 
-	@Column(name="attribute")
-	private String attribute;
+	@Column(name="attribute1")
+    private String attribute1;
+    
+	@Column(name="attribute2")
+	private String attribute2;
 	
 	@ElementCollection
 	@Column(name="parameters")
@@ -32,10 +35,11 @@ public class SimilarityMethod {
 
     public SimilarityMethod() {}
 
-    public SimilarityMethod(int id, String label, String attribute, List<String> parameters) {
+    public SimilarityMethod(int id, String label, String attribute1, String attribute2, List<String> parameters) {
         this.id = id;
         this.label = label;
-        this.attribute = attribute;
+        this.attribute1 = attribute1;
+        this.attribute2 = attribute2;
         this.parameters = parameters;
     }
 
@@ -55,13 +59,6 @@ public class SimilarityMethod {
         this.label = label;
     }
 
-    public String getAttribute() {
-        return this.attribute;
-    }
-
-    public void setAttribute(String attribute) {
-        this.attribute = attribute;
-    }
 
     public List<String> getParameters() {
         return this.parameters;
@@ -81,23 +78,27 @@ public class SimilarityMethod {
         return this;
     }
 
-    public SimilarityMethod attribute(String attribute) {
-        this.attribute = attribute;
-        return this;
-    }
 
     public SimilarityMethod parameters(List<String> parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", label='" + getLabel() + "'" +
-            ", attribute='" + getAttribute() + "'" +
-            ", parameters='" + getParameters() + "'" +
-            "}";
-    } 
+
+    public String getAttribute1() {
+        return this.attribute1;
+    }
+
+    public void setAttribute1(String attribute1) {
+        this.attribute1 = attribute1;
+    }
+
+    public String getAttribute2() {
+        return this.attribute2;
+    }
+
+    public void setAttribute2(String attribute2) {
+        this.attribute2 = attribute2;
+    }
+    
 }

@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -338,11 +339,21 @@ public class DataReadController {
 	}
 	
 	@GetMapping("/desktopmode/dataread/headers")
-	public Set<String> getHeaders() {
-		Set<String> headers = new HashSet<String>();
+	public List<Set<String>> getHeaders() {
+		List<Set<String>> headers = new ArrayList<>();
+		Set<String> headers1 = new HashSet<String>();
 		for (EntityProfileNode en : entityProfiles_1)
 			for (Attribute attr : en.getProfile().getAttributes())
-				headers.add(attr.getName());
+				headers1.add(attr.getName());
+		headers.add(headers1);
+
+		if(WorkflowManager.er_mode.equals(JedaiOptions.CLEAN_CLEAN_ER)){
+			Set<String> headers2 = new HashSet<String>();
+			for (EntityProfileNode en : entityProfiles_2)
+				for (Attribute attr : en.getProfile().getAttributes())
+					headers2.add(attr.getName());
+			headers.add(headers2);
+		}
 		return headers;
 	}
 		

@@ -23,7 +23,8 @@ class JoinForm extends Component {
                 label: "All Pairs (character-based)",
                 parameters: [{label: "Threshold", value:"3"}]
             },
-            attribute: null,
+            attribute1: "",
+            attribute2: ""
         },
 
         entity_clustering: {
@@ -51,12 +52,27 @@ class JoinForm extends Component {
         var er_mode = null
         if (this.state.data_reading !== null)
             er_mode = this.state.data_reading.er_mode
+            if (er_mode === "clean" && this.state.entity_clustering.method_name !=="UNIQUE_MAPPING_CLUSTERING"){
+                this.setState({ entity_clustering : {
+                        method_name: "UNIQUE_MAPPING_CLUSTERING",
+                        label: "Unique Mapping Clustering",
+                        configuration_type: "Default",
+                        parameters  : [
+                            {
+                                label: "Similarity Threshold",
+                                value: "0.5"
+                            }
+                        ]
+                    }
+                })
+            }
+
         
         
         const steps =
         [
             {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading}/>},
-            {name: 'Similarity Join', component: <SimilarityJoin submitState={this.submitState} state={this.state.similarity_join}/>},
+            {name: 'Similarity Join', component: <SimilarityJoin submitState={this.submitState} state={this.state.similarity_join} clean_er= {er_mode == "clean"}/>},
             {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering}/>}, 
             {name: 'Confirm Configuration', component: <ConfirmConfiguration state={this.state}/>}     
         ]

@@ -313,6 +313,15 @@ public class WorkflowManager {
     }
 	
 	
+	public static Pair<ClustersPerformance, List<Triplet<String, BlocksPerformance, Double>>>
+	runWorkflow(boolean final_run, AtomicBoolean interrupted){
+		switch(wf_mode){
+			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
+				return runBlockBasedWF(final_run, interrupted);
+			default:
+				return null;
+		}
+	}
 	
 	/**
 	 * Run a workflow with the given methods and return its ClustersPerformance
@@ -321,7 +330,7 @@ public class WorkflowManager {
 	 * @return  the Cluster Performance and the performances of each step
 	 * */
 	public static Pair<ClustersPerformance, List<Triplet<String, BlocksPerformance, Double>>>
-	runWorkflow(boolean final_run, AtomicBoolean interrupted)  {
+	runBlockBasedWF(boolean final_run, AtomicBoolean interrupted)  {
 		try {	
 					
 			List<Triplet<String, BlocksPerformance, Double>> performances = new ArrayList<>();
@@ -499,6 +508,10 @@ public class WorkflowManager {
 		}
         
 	}
+
+	
+
+	
 	
 	
 	// TODO return performances from runStepByStepWorkflow

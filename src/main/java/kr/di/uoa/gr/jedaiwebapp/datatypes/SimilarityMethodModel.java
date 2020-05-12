@@ -9,22 +9,27 @@ public class SimilarityMethodModel {
     private String method_name;
     private String label;
     private List<Parameter> parameters;
-    private String attribute;
+    private String attribute1;
+    private String attribute2;
+
 
 
     public SimilarityMethodModel() {}
 
-    public SimilarityMethodModel(SimilarityMethodModel sm) {
-        this.method_name = sm.getMethod_name();
-        this.label = sm.getLabel();
-        this.attribute = sm.getAttribute();
-		this.parameters = sm.getParameters();
+
+    public SimilarityMethodModel(String method_name, String label, List<Parameter> parameters, String attribute1, String attribute2) {
+        this.method_name = method_name;
+        this.label = label;
+        this.parameters = parameters;
+        this.attribute1 = attribute1;
+        this.attribute2 = attribute2;
     }
     
     public SimilarityMethodModel(SimilarityMethod sm) {
         this.method_name = null;
         this.label = sm.getLabel();
-        this.attribute = sm.getAttribute();
+        this.attribute1 = sm.getAttribute1();
+        this.attribute2 = sm.getAttribute2();
         this.parameters = new ArrayList<>();
 		for (String p : sm.getParameters()) 
 			this.parameters.add(new Parameter(p));
@@ -56,14 +61,22 @@ public class SimilarityMethodModel {
         this.parameters = parameters;
     }
 
-    public String getAttribute() {
-        return this.attribute;
+
+    public String getAttribute1() {
+        return this.attribute1;
     }
 
-    public void setAttribute(String attribute) {
-        this.attribute = attribute;
+    public void setAttribute1(String attribute1) {
+        this.attribute1 = attribute1;
     }
 
-    
-    
+    public String getAttribute2() {
+        return this.attribute2;
+    }
+
+    public void setAttribute2(String attribute2) {
+        this.attribute2 = attribute2;
+    }
+
+
 }

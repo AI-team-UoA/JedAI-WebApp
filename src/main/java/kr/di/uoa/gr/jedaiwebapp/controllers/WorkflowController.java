@@ -328,18 +328,18 @@ public class WorkflowController {
 			methodsConfig.put(JedaiOptions.SIMILARITY_JOIN, sj_method);
 
 			// Adding method to DB
-			SimilarityMethodModel sjm = new SimilarityMethodModel();
+			SimilarityMethod sjm = new SimilarityMethod();
 			sjm.setLabel(sj_method.getLabel());
 			List<String> parameters = new ArrayList<>();
 			for (Parameter p : sj_method.getParameters()) 
 				parameters.add(p.getLabel() + "|" + p.getValue().toString());
 
 			sjm.setParameters(parameters);
-			sjm.setAttribute(sj_method.getAttribute());
+			sjm.setAttribute1(sj_method.getAttribute1());
+			sjm.setAttribute2(sj_method.getAttribute2());
 			dbm.storeOrUpdateSJ(sjm);
 
 			workflowConfiguration.setSimilarityJoin(sjm.getId());
-			
 
 			return true;
 		}

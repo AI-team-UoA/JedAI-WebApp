@@ -137,40 +137,24 @@ class ConfigurationView extends Component {
                     </Form.Row>         
         }
         else if (type === "sj"){
+            console.log(data)
             return_stmnt = 
-                    <Form.Row>
-                        <Col sm={title_col}>
-                            <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
-                        </Col>
-                        <Col sm={empty_col}></Col>
-                        <Col sm={big_col}>
-                            <Table  striped bordered hover size="sm">
-                                <thead>
-                                    <tr>
-                                        <th style={{color:"#4663b9"}}>Method</th>
-                                        <th style={{color:"#4663b9"}}>Attribute</th>
-                                        <th style={{color:"#4663b9"}}>Parameters</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr> 
-                                        <td>{data.label}</td>
-                                        <td>{data.attribute}</td>
-                                        <td>
-                                            <Row>
-                                                <Col>
-                                                    {data.parameters[0].label}
-                                                </Col>
-                                                <Col>
-                                                    {data.parameters[0].value}
-                                                </Col>
-                                            </Row>                                            
-                                        </td>    
-                                    </tr>
-                                </tbody>
-                            </Table>
-                        </Col>
-                    </Form.Row>    
+
+            <Form.Row>
+                <Col sm={title_col}>
+                    <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
+                </Col>
+                <Col sm={empty_col}></Col>
+                <Col sm={big_col}>  
+                    <Form.Control as="select" multiple>
+                        <option key="method">Method: {data.label}</option>
+                        <option key="param">{data.parameters[0].label + ": "+ data.parameters[0].value}</option>
+                        <option key="attr1">D1 Attribute: {data.attribute1}</option>
+                        {data.attribute2 != "" ? <option key="attr2">D2 Attribute: {data.attribute2}</option> : <div/>}
+                    </Form.Control>
+                </Col>
+            </Form.Row>
+
         } 
 
         

@@ -16,15 +16,23 @@ class SimilarityJoin extends Component {
 
         this.state = {
             method: this.props.state.method,
-            attribute: this.props.state.attribute,
-            headers: null,
+            attribute1: this.props.state.attribute1,
+            attribute2: this.props.state.attribute2,
+            headers1: [],
+            headers2: [],
             alertShow : false
         }
 
         axios
         .get("/desktopmode/dataread/headers")
         .then(res => { 
-            this.setState({headers: res.data, attribute: res.data[0]})
+            var h1 = res.data[0]            
+            if (this.props.clean_er){
+                var h2 = res.data[1]
+                this.setState({headers1: h1, headers2: h2, attribute1: h1[0], attribute2: h2[0]})
+            }
+            else
+                this.setState({headers1: h1, attribute1: h1[0]})
         })
     }
 
@@ -63,7 +71,8 @@ class SimilarityJoin extends Component {
             name: this.state.method.name,
             label: this.state.method.label,
             parameters: this.state.method.parameters,
-            attribute: this.state.attribute
+            attribute1: this.state.attribute1,
+            attribute2: this.state.attribute2
         }
        
         return axios({
@@ -103,7 +112,7 @@ class SimilarityJoin extends Component {
     handleAlertShow = () => this.setState({alertShow : true});
 
 
-    selectHeader = (e) => { this.setState({attribute: e.target.value})}
+    selectHeader = (e) => { this.setState({[e.target.name]: e.target.value})}
 
 
     render() {
@@ -125,9 +134,9 @@ class SimilarityJoin extends Component {
             />
         ))
 
-        var header_options = null
-        if (this.state.headers) 
-            header_options = this.state.headers.map((header, index) => (<option value={header} key={index}>{header}</option>  ))
+        
+        var header1_options = this.state.headers1.map((header, index) => (<option value={header} key={index}>{header}</option>  ))
+        var header2_options = this.state.headers2.map((header, index) => (<option value={header} key={index}>{header}</option>  ))
         
         var parameter_view = 
                     <Form.Row className="form-row">
@@ -173,17 +182,35 @@ class SimilarityJoin extends Component {
                         <br />
                         <Row className="justify-content-md-center">
                             <Col sm={4} style={{margin:'20px'}}>
-                                <Form.Label><h5>Select attribute to apply Similarity Join:</h5></Form.Label>
+                                <Form.Label><h5>Select attribute of Dataset 1:</h5></Form.Label>
                             </Col>
                             <Col sm={4} style={{margin:'20px'}}>
                                 <Form.Control 
                                     as="select" 
                                     placeholder="Select Attribute" 
-                                    name="attribute" 
+                                    name="attribute1" 
                                     onChange={(e) => this.selectHeader(e)}
-                                    value={this.state.attribute}
+                                    value={this.state.attribute1}
                                 >
-                                    {header_options}
+                                    {header1_options}
+                                </Form.Control>
+                            </Col>
+                        </Row>
+
+                        <Row className="justify-content-md-center">
+                            <Col sm={4} style={{margin:'20px'}}>
+                                <Form.Label><h5>Select attribute of Dataset 2:</h5></Form.Label>
+                            </Col>
+                            <Col sm={4} style={{margin:'20px'}}>
+                                <Form.Control 
+                                    as="select" 
+                                    placeholder="Select Attribute" 
+                                    name="attribute2" 
+                                    onChange={(e) => this.selectHeader(e)}
+                                    value={this.state.attribute2}
+                                    disabled={!this.props.clean_er}
+                                >
+                                    {header2_options}
                                 </Form.Control>
                             </Col>
                         </Row>
@@ -197,6 +224,7 @@ class SimilarityJoin extends Component {
 
 SimilarityJoin.propTypes = {
     state: PropTypes.object.isRequired,
+    clean_er: PropTypes.bool.isRequired,
     submitState: PropTypes.func.isRequired
 }
 
