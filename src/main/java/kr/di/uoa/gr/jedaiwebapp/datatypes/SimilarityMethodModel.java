@@ -1,21 +1,34 @@
 package kr.di.uoa.gr.jedaiwebapp.datatypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SimilarityMethod {
+import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethod;
+
+public class SimilarityMethodModel {
     private String method_name;
     private String label;
     private List<Parameter> parameters;
     private String attribute;
 
 
-    public SimilarityMethod() {}
+    public SimilarityMethodModel() {}
 
-    public SimilarityMethod(SimilarityMethod sm) {
+    public SimilarityMethodModel(SimilarityMethodModel sm) {
         this.method_name = sm.getMethod_name();
         this.label = sm.getLabel();
         this.attribute = sm.getAttribute();
 		this.parameters = sm.getParameters();
+    }
+    
+    public SimilarityMethodModel(SimilarityMethod sm) {
+        this.method_name = null;
+        this.label = sm.getLabel();
+        this.attribute = sm.getAttribute();
+        this.parameters = new ArrayList<>();
+		for (String p : sm.getParameters()) 
+			this.parameters.add(new Parameter(p));
+		
 	}
 
 

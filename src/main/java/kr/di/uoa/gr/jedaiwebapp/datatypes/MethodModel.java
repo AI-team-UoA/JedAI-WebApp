@@ -22,9 +22,7 @@ public class MethodModel {
 		List<String> parameters = mc.getParameters();
 		this.parameters = new ArrayList<>();
 		for (String p : parameters) 
-			this.parameters.add(new Parameter(p));
-		
-		System.out.println(this.parameters);
+			this.parameters.add(new Parameter(p));		
 	}
 	
 

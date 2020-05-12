@@ -51,7 +51,7 @@ import org.scify.jedai.utilities.enumerations.SimilarityMetric;
 import org.scify.jedai.utilities.enumerations.WeightingScheme;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
-import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethod;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 
 public class DynamicMethodConfiguration {
@@ -373,7 +373,7 @@ public class DynamicMethodConfiguration {
 		return ecMethod;
     }
     
-    public static ISimilarityJoin configureSimilarityJoinMethod(SimilarityMethod sm){
+    public static ISimilarityJoin configureSimilarityJoinMethod(SimilarityMethodModel sm){
         
         String methodName = sm.getLabel();
         String parameterValue = (String) sm.getParameters().get(0).getValue();

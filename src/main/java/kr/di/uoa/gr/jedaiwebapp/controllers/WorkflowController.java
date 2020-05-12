@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
-import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethod;
+import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
 import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
-import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethodModel;
+import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethod;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
@@ -42,7 +42,6 @@ public class WorkflowController {
 	Map<String, Object> methodsConfig;	
 	static List<Map<String, Object>> datasetsConfig = new ArrayList<Map<String, Object>>();
 	private WorkflowConfiguration workflowConfiguration;
-	private String wf_mode;
 	
 	@Autowired
 	private HttpServletRequest request;
@@ -63,7 +62,7 @@ public class WorkflowController {
 	@GetMapping("workflow/set_mode/{wf_mode}")
 	public void setWorkflowMode(@PathVariable(value = "wf_mode") String wf_mode){ 
 		System.out.println(wf_mode);
-		this.wf_mode = wf_mode; 
+		WorkflowManager.wf_mode = wf_mode; 
 	}
 
 	/**
@@ -141,6 +140,8 @@ public class WorkflowController {
 			WorkflowManager.setSchemaClustering(schema_clustering);
 			
 			// Adding method to DB
+			// TODO to reduce lines -> constructors of models in their classes
+
 			MethodConfiguration sc = new MethodConfiguration();
 			sc.setMethod(JedaiOptions.SCHEMA_CLUSTERING);
 			sc.setLabel(schema_clustering.getLabel());
@@ -321,7 +322,7 @@ public class WorkflowController {
 
 
 	@PostMapping("/workflow/set_configurations/similarityjoin")
-	public boolean setSimilarityJoinMethod(@RequestBody SimilarityMethod sj_method){
+	public boolean setSimilarityJoinMethod(@RequestBody SimilarityMethodModel sj_method){
 		try {
 			WorkflowManager.setSimilarityJoinMethod(sj_method);
 			methodsConfig.put(JedaiOptions.SIMILARITY_JOIN, sj_method);
@@ -466,7 +467,7 @@ public class WorkflowController {
 	@GetMapping("/workflow/store")
 	public boolean storeWorkflow() {
 		try {
-			workflowConfiguration.setWfMode(wf_mode);
+			workflowConfiguration.setWfMode(WorkflowManager.wf_mode);
 			for (Map<String, Object> datasetConfig : datasetsConfig) {
 				Dataset dt = new Dataset(datasetConfig);
 				dbm.storeOrUpdateDataset(dt);

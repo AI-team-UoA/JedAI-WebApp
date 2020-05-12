@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="similarity_join_methods")
-public class SimilarityMethodModel {
+public class SimilarityMethod {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,9 +30,9 @@ public class SimilarityMethodModel {
     private List<String> parameters;
     
 
-    public SimilarityMethodModel() {}
+    public SimilarityMethod() {}
 
-    public SimilarityMethodModel(int id, String label, String attribute, List<String> parameters) {
+    public SimilarityMethod(int id, String label, String attribute, List<String> parameters) {
         this.id = id;
         this.label = label;
         this.attribute = attribute;
@@ -71,22 +71,22 @@ public class SimilarityMethodModel {
         this.parameters = parameters;
     }
 
-    public SimilarityMethodModel id(int id) {
+    public SimilarityMethod id(int id) {
         this.id = id;
         return this;
     }
 
-    public SimilarityMethodModel label(String label) {
+    public SimilarityMethod label(String label) {
         this.label = label;
         return this;
     }
 
-    public SimilarityMethodModel attribute(String attribute) {
+    public SimilarityMethod attribute(String attribute) {
         this.attribute = attribute;
         return this;
     }
 
-    public SimilarityMethodModel parameters(List<String> parameters) {
+    public SimilarityMethod parameters(List<String> parameters) {
         this.parameters = parameters;
         return this;
     }
