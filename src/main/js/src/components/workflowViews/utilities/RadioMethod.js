@@ -38,6 +38,7 @@ class SelectMethod extends Component {
                 onChange={(e) => this.onChange(conf.label, e)}
                 checked={this.state.method_name === conf.value }
                 key={index}
+                disabled = {conf.disabled == undefined ? false : conf.disabled}
             />
         ))
         return (

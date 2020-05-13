@@ -1,0 +1,161 @@
+import React, { Component } from 'react'
+import StepZilla from "react-stepzilla"
+import Jumbotron from 'react-bootstrap/Jumbotron';
+import DataReader from './workflowViews/dataRead/DataReader'
+import SchemaClustering from './workflowViews/SchemaClustering'
+import BlockBuilding from './workflowViews/BlockBuilding'
+import BlockCleaning from './workflowViews/BlockCleaning'
+import ComparisonCleaning from './workflowViews/ComparisonCleaning'
+import EntityMatching from './workflowViews/EntityMatching' 
+import EntityClustering from './workflowViews/EntityClustering' 
+import ConfirmConfiguration from './workflowViews/ConfirmConfiguration'
+import Prioritization from './workflowViews/Prioritization'
+import '../../../resources/static/css/progressSteps.css'
+import '../../../resources/static/css/main.css'
+
+
+class ProgressiveForm extends Component {
+
+    // Default states of the workflow stages
+    state = {
+        
+        data_reading: null,
+
+
+        schema_clustering:  {
+            method_name: "NO_SCHEMA_CLUSTERING",
+            configuration_type: "Default",
+            label: "No Schema Clustering",
+            parameters: [
+                {
+                    label: "Representation Model",
+                    value: "TOKEN_UNIGRAM_GRAPHS"
+                },
+                {
+                    label: "Similarity Measure",
+                    value: "GRAPH_VALUE_SIMILARITY"
+                }
+            ]
+        },
+        
+        block_building: [],
+        
+        block_cleaning: [],
+
+        comparison_cleaning: {
+            method_name: "NO_CLEANING",
+            configuration_type: "Default",
+            label: "No Cleaning",
+            parameters: []
+        },
+
+        prioritization:  {
+            method_name: "PROGRESSIVE_BLOCK_SCHEDULING",
+            configuration_type: "Default",
+            label: "Progressive Block Scheduling",
+            parameters: [
+                {
+                    label: "Budget",
+                    value: "10000"
+                },
+                {
+                    label: "Weighting Scheme",
+                    value: "JS"
+                }
+            ]
+        },
+
+        
+        entity_matching:  {
+            method_name: "PROFILE_MATCHER",
+            configuration_type: "Default",
+            label: "Profile Matcher",
+            parameters: [
+                {
+                    label: "Representation Model",
+                    value: "TOKEN_UNIGRAM_GRAPHS"
+                },
+                {
+                    label: "Similarity Measure",
+                    value: "GRAPH_VALUE_SIMILARITY"
+                }
+            ]
+        },
+        
+        entity_clustering: {
+            method_name: "CENTER_CLUSTERING",
+            configuration_type: "Default",
+            label: "Center Clustering",
+            parameters  : [
+                {
+                    label: "Similarity Threshold",
+                    value: "0.5"
+                }
+            ]
+        }
+    }
+    
+
+    // Get data from child components
+    submitState = (state_name, state_value) =>{
+        this.setState({
+            [state_name]: state_value
+        })
+    }
+
+    render() {
+        var er_mode = "dirty"
+        if (this.state.data_reading !== null)
+            er_mode = this.state.data_reading.er_mode
+            if (er_mode === "clean" && this.state.entity_clustering.method_name !=="UNIQUE_MAPPING_CLUSTERING"){
+                this.setState({ entity_clustering : {
+                        method_name: "UNIQUE_MAPPING_CLUSTERING",
+                        label: "Unique Mapping Clustering",
+                        configuration_type: "Default",
+                        parameters  : [
+                            {
+                                label: "Similarity Threshold",
+                                value: "0.5"
+                            }
+                        ]
+                    }
+                })
+            }
+
+        const steps =
+        [
+            {name: 'Prioritization', component: <Prioritization submitState={this.submitState} state={this.state.prioritization}/>},
+            {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading}/>},
+            {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState} state={this.state.schema_clustering}/>},
+            {name: 'Block Building', component: <BlockBuilding submitState={this.submitState} state={this.state.block_building}/>},
+            {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState} state={this.state.block_cleaning}/>},
+            {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState} state={this.state.comparison_cleaning}/>},
+            {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState} state={this.state.entity_matching}/>},
+            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering}/>}, 
+            {name: 'Confirm Configuration', component: <ConfirmConfiguration state={this.state}/>} 
+           
+        ]
+        return (
+            
+                <Jumbotron  className='jumbotron_2'>
+                    <div className="container-fluid">
+                        <div className="step-progress">
+                            <StepZilla    
+                                steps={steps} 
+                                showSteps={true}
+                                stepsNavigation={false}
+                                preventEnterSubmission={true}
+                                
+                                backButtonCls={"btn btn-next btn-primary float-left"}
+                                nextButtonCls={"btn btn-prev btn-primary float-right"}
+                                
+                            />
+                        </div>
+                    </div>
+                </Jumbotron>
+        )
+    }
+}
+
+
+export default ProgressiveForm

@@ -9,7 +9,7 @@ import BlockingForm from './components/BlockingForm'
 import JoinForm from './components/JoinForm'
 import ExecutionView from './components/ExecutionView'
 import ErrorComponent from './components/ErrorComponent'
-
+import ProgressiveForm from './components/ProgressiveForm'
 
 
 
@@ -37,7 +37,7 @@ class App extends Component {
                 <Route exact path="/workflow" render={props=>(  <ExecutionView/> )}/>
                 <Route exact path="/blockingbased" render={props=>(  <BlockingForm/> )}/>
                 <Route exact path="/joinbased" render={props=> (<JoinForm />) }/>
-                <Route exact path="/progressive" render={props=>(  null )}/>
+                <Route exact path="/progressive" render={props=>(  <ProgressiveForm/> )}/>
                 <Route exact path="/*" render={props=>(  <ErrorComponent/> )}/>
               </Switch>
             </div>
