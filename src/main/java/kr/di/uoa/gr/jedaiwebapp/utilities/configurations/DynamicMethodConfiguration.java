@@ -2,6 +2,7 @@ package kr.di.uoa.gr.jedaiwebapp.utilities.configurations;
 
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.scify.jedai.blockbuilding.ExtendedQGramsBlocking;
 import org.scify.jedai.blockbuilding.ExtendedSortedNeighborhoodBlocking;
 import org.scify.jedai.blockbuilding.ExtendedSuffixArraysBlocking;
@@ -36,6 +37,14 @@ import org.scify.jedai.entityclustering.UniqueMappingClustering;
 import org.scify.jedai.entitymatching.GroupLinkage;
 import org.scify.jedai.entitymatching.IEntityMatching;
 import org.scify.jedai.entitymatching.ProfileMatcher;
+import org.scify.jedai.prioritization.GlobalProgressiveSortedNeighborhood;
+import org.scify.jedai.prioritization.IPrioritization;
+import org.scify.jedai.prioritization.LocalProgressiveSortedNeighborhood;
+import org.scify.jedai.prioritization.ProgressiveBlockScheduling;
+import org.scify.jedai.prioritization.ProgressiveEntityScheduling;
+import org.scify.jedai.prioritization.ProgressiveGlobalRandomComparisons;
+import org.scify.jedai.prioritization.ProgressiveGlobalTopComparisons;
+import org.scify.jedai.prioritization.ProgressiveLocalTopComparisons;
 import org.scify.jedai.schemaclustering.AttributeNameClustering;
 import org.scify.jedai.schemaclustering.AttributeValueClustering;
 import org.scify.jedai.schemaclustering.HolisticAttributeClustering;
@@ -46,10 +55,12 @@ import org.scify.jedai.similarityjoins.characterbased.FastSS;
 import org.scify.jedai.similarityjoins.characterbased.PassJoin;
 import org.scify.jedai.similarityjoins.tokenbased.PPJoin;
 import org.scify.jedai.utilities.enumerations.BlockBuildingMethod;
+import org.scify.jedai.utilities.enumerations.ProgressiveWeightingScheme;
 import org.scify.jedai.utilities.enumerations.RepresentationModel;
 import org.scify.jedai.utilities.enumerations.SimilarityMetric;
 import org.scify.jedai.utilities.enumerations.WeightingScheme;
 
+import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
@@ -391,7 +402,65 @@ public class DynamicMethodConfiguration {
             default:
                 return null;
         }
-        
+    }
+
+
+    public static IPrioritization configurePrioritizationMethod(MethodModel pm){
+        List<Parameter> params = pm.getParameters();
+        int budget = (int) params.get(0).getValue();
+        return configurePrioritizationMethod(pm, budget);
+    }
+
+        /**
+     * Given a prioritization method name and a list of parameters, initialize and return a method instance.
+     * Assumes the parameters are of correct type & number.
+     *
+     * @param methodName Name of similarity join method.
+     * @param params     Parameters list for method.
+     * @return Prioritization method instance
+     */
+    public static IPrioritization configurePrioritizationMethod(MethodModel pm, int budget){
+        String methodName = pm.getLabel();
+        List<Parameter> params = pm.getParameters();
+
+        switch (methodName) {
+            case JedaiOptions.GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD:
+                return new GlobalProgressiveSortedNeighborhood(
+                    budget, // Budget
+                    (ProgressiveWeightingScheme) params.get(1).getValue() // Weighting Scheme
+                );
+            case JedaiOptions.LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD:
+                return new LocalProgressiveSortedNeighborhood(
+                    budget, // Budget
+                    (ProgressiveWeightingScheme) params.get(1).getValue() // Weighting Scheme
+                );
+            case JedaiOptions.PROGRESSIVE_BLOCK_SCHEDULING:
+                return new ProgressiveBlockScheduling(
+                    budget, // Budget
+                    (WeightingScheme) params.get(1).getValue() // Weighting Scheme
+                );
+            case JedaiOptions.PROGRESSIVE_ENTITY_SCHEDULING:
+                return new ProgressiveEntityScheduling(
+                    budget, // Budget
+                    (WeightingScheme) params.get(1).getValue() // Weighting Scheme
+                );
+            case JedaiOptions.PROGRESSIVE_GLOBAL_TOP_COMPARISONS:
+                return new ProgressiveGlobalTopComparisons(
+                    budget, // Budget
+                    (WeightingScheme) params.get(1).getValue() // Weighting Scheme
+                );
+            case JedaiOptions.PROGRESSIVE_LOCAL_TOP_COMPARISONS:
+                return new ProgressiveLocalTopComparisons(
+                    budget, // Budget
+                    (WeightingScheme) params.get(1).getValue() // Weighting Scheme
+                );
+            case JedaiOptions.PROGRESSIVE_GLOBAL_RANDOM_COMPARISONS:
+                return new ProgressiveGlobalRandomComparisons(
+                    budget
+                );
+            default:
+                return null;
+        }
     }
 
 }

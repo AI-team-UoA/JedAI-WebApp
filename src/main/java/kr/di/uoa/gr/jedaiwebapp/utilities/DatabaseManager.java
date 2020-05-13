@@ -115,48 +115,54 @@ public class DatabaseManager {
 		String wfMode = wc.getWfMode();
 		configurations.put("wfmode", wfMode);
 
+		int scID, ccID, emID, ecID, sjID, pmID;
+		MethodConfiguration sc, cc, em, ec, pm;
+		List<Integer> bbIDs, bcIDs;
+		List<MethodModel> bbmm, bcmm;
+		Iterable<MethodConfiguration> bb, bc;
+
 		switch(wfMode){
 
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
-				int scID = wc.getSchemaClustering();
-				MethodConfiguration sc = findMCbyID(scID);
+				scID = wc.getSchemaClustering();
+				sc = findMCbyID(scID);
 				configurations.put(JedaiOptions.SCHEMA_CLUSTERING, new MethodModel(sc));
 				
 							
-				List<Integer> bbIDs =  Arrays.stream(wc.getBlockBuilding()).boxed().collect(Collectors.toList());
-				Iterable<MethodConfiguration> bb = findAllMCbyIDs(bbIDs);
-				List<MethodModel> bbmm = new ArrayList<>();
+				bbIDs =  Arrays.stream(wc.getBlockBuilding()).boxed().collect(Collectors.toList());
+				bb = findAllMCbyIDs(bbIDs);
+				bbmm = new ArrayList<>();
 				for (MethodConfiguration mc : bb) 
 					bbmm.add(new MethodModel(mc));
 				configurations.put(JedaiOptions.BLOCK_BUILDING, bbmm);
 				
 				try {
-					List<Integer> bcIDs =  Arrays.stream(wc.getBlockCleaning()).boxed().collect(Collectors.toList());
-					Iterable<MethodConfiguration> bc = findAllMCbyIDs(bcIDs);
-					List<MethodModel> bcmm = new ArrayList<>();
+					bcIDs =  Arrays.stream(wc.getBlockCleaning()).boxed().collect(Collectors.toList());
+					bc = findAllMCbyIDs(bcIDs);
+					bcmm = new ArrayList<>();
 					for (MethodConfiguration mc : bc) 
 						bcmm.add(new MethodModel(mc));
 					configurations.put(JedaiOptions.BLOCK_CLEANING, bcmm);
 				}
 				catch(Exception ignore) {}
 				
-				int ccID = wc.getComparisonCleaning();
-				MethodConfiguration cc = findMCbyID(ccID);
+				ccID = wc.getComparisonCleaning();
+				cc = findMCbyID(ccID);
 				configurations.put(JedaiOptions.COMPARISON_CLEANING, new MethodModel(cc));
 				
-				int emID = wc.getEntityMatching();
-				MethodConfiguration em = findMCbyID(emID);
+				emID = wc.getEntityMatching();
+				em = findMCbyID(emID);
 				configurations.put(JedaiOptions.ENTITY_MATCHING, new MethodModel(em));
 				
-				int ecID = wc.getEntityClustering();
-				MethodConfiguration ec = findMCbyID(ecID);
+				ecID = wc.getEntityClustering();
+				ec = findMCbyID(ecID);
 				configurations.put(JedaiOptions.ENTITY_CLUSTERING, new MethodModel(ec));
 				
 				break;
 
 			case JedaiOptions.WORKFLOW_JOIN_BASED:
 
-				int sjID = wc.getSimilarityJoin();
+				sjID = wc.getSimilarityJoin();
 				SimilarityMethod sj = findSJByID(sjID);
 				configurations.put(JedaiOptions.SIMILARITY_JOIN, new SimilarityMethodModel(sj));		
 
@@ -164,6 +170,49 @@ public class DatabaseManager {
 				ec = findMCbyID(ecID);
 				configurations.put(JedaiOptions.ENTITY_CLUSTERING, new MethodModel(ec));
 				break;
+			
+			case JedaiOptions.WORKFLOW_PROGRESSIVE:
+				scID = wc.getSchemaClustering();
+				sc = findMCbyID(scID);
+				configurations.put(JedaiOptions.SCHEMA_CLUSTERING, new MethodModel(sc));
+				
+							
+				bbIDs =  Arrays.stream(wc.getBlockBuilding()).boxed().collect(Collectors.toList());
+				bb = findAllMCbyIDs(bbIDs);
+				bbmm = new ArrayList<>();
+				for (MethodConfiguration mc : bb) 
+					bbmm.add(new MethodModel(mc));
+				configurations.put(JedaiOptions.BLOCK_BUILDING, bbmm);
+				
+				try {
+					bcIDs =  Arrays.stream(wc.getBlockCleaning()).boxed().collect(Collectors.toList());
+					bc = findAllMCbyIDs(bcIDs);
+					bcmm = new ArrayList<>();
+					for (MethodConfiguration mc : bc) 
+						bcmm.add(new MethodModel(mc));
+					configurations.put(JedaiOptions.BLOCK_CLEANING, bcmm);
+				}
+				catch(Exception ignore) {}
+				
+				ccID = wc.getComparisonCleaning();
+				cc = findMCbyID(ccID);
+				configurations.put(JedaiOptions.COMPARISON_CLEANING, new MethodModel(cc));
+				
+				pmID = wc.getPrioritization();
+				pm = findMCbyID(pmID);
+				configurations.put(JedaiOptions.PRIORITIZATION, new MethodModel(pm));
+				
+				emID = wc.getEntityMatching();
+				em = findMCbyID(emID);
+				configurations.put(JedaiOptions.ENTITY_MATCHING, new MethodModel(em));
+				
+				ecID = wc.getEntityClustering();
+				ec = findMCbyID(ecID);
+				configurations.put(JedaiOptions.ENTITY_CLUSTERING, new MethodModel(ec));
+				
+				break;
+
+				
 		}
 		
 		

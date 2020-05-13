@@ -42,6 +42,9 @@ public class WorkflowConfiguration {
 	
 	@Column(name="comparison_cleaning")
 	private int comparisonCleaning;
+
+	@Column(name="prioritization")
+	private int prioritization;
 	
 	@Column(name="entity_matching")
 	private int entityMatching;
@@ -136,6 +139,16 @@ public class WorkflowConfiguration {
 	public void setSimilarityJoin(int similarityJoin) {
 		this.similarityJoin = similarityJoin;
 	}
+
+
+	public int getPrioritization() {
+		return this.prioritization;
+	}
+
+	public void setPrioritization(int prioritization) {
+		this.prioritization = prioritization;
+	}
+	
 	
 
 }

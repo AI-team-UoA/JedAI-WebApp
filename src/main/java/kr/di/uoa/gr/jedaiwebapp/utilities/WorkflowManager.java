@@ -1,6 +1,5 @@
 package kr.di.uoa.gr.jedaiwebapp.utilities;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +16,7 @@ import org.scify.jedai.datamodel.EquivalenceCluster;
 import org.scify.jedai.datamodel.SimilarityPairs;
 import org.scify.jedai.entityclustering.IEntityClustering;
 import org.scify.jedai.entitymatching.IEntityMatching;
+import org.scify.jedai.prioritization.IPrioritization;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.similarityjoins.ISimilarityJoin;
 import org.scify.jedai.utilities.BlocksPerformance;
@@ -50,6 +50,8 @@ public class WorkflowManager {
 	public static ISimilarityJoin similarity_join_method = null;
 	public static IBlockProcessing comparison_cleaning = null;
 	public static IEntityMatching entity_matching = null;
+	public static IPrioritization prioritization = null;
+	public static MethodModel prioritizationModel = null; 
 	public static IEntityClustering entity_clustering = null;
 	public static List<IBlockBuilding> block_building = null;
 	public static List<IBlockProcessing> block_cleaning = null;
@@ -118,6 +120,25 @@ public class WorkflowManager {
 		WorkflowManager.similarity_join_method = DynamicMethodConfiguration.configureSimilarityJoinMethod(similarity_join);
 
 		System.out.println("SJ: " + WorkflowManager.similarity_join_method);
+	}
+
+	public static void setPrioritizationMethod(MethodModel pm){
+
+		if (!pm.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) {
+            // Create method instance with default configuration
+            prioritization = MethodMapping.getPrioritizationMethodByName(
+                    model.getPrioritization(),
+                    (int) budget
+            );
+            System.out.println("Prioritization budget: " + budget);
+        } else {
+            // Manual configuration selected, create method with the saved parameters
+            prioritization = DynamicMethodConfiguration.configurePrioritizationMethod(
+                    model.getPrioritization(),
+                    model.getPrioritizationParameters()
+            );
+            System.out.println("Prioritization parameters: " + model.getPrioritizationParameters());
+        }
 	}
 
 	public static void setComparisonCleaning(MethodModel comparison_cleaning) {

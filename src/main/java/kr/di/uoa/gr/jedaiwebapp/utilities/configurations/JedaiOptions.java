@@ -17,6 +17,7 @@ public class JedaiOptions {
     public static final String ENTITY_MATCHING = "Entity Matching";
     public static final String ENTITY_CLUSTERING = "Entity Clustering";
     public static final String SIMILARITY_JOIN = "Similarity Join";
+    public static final String PRIORITIZATION = "Prioritization";
     
     
     // Method configuration types
@@ -125,4 +126,14 @@ public class JedaiOptions {
     public static final String FAST_SS = "FastSS";
     public static final String PASS_JOIN = "PassJoin";
     public static final String PP_JOIN = "PPJoin";
+
+    // Prioritization Methods
+    public static final String GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD = "Global Progressive Sorted Neighborhood";
+    public static final String LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD = "Local Progressive Sorted Neighborhood";
+    public static final String PROGRESSIVE_BLOCK_SCHEDULING = "Progressive Block Scheduling";
+    public static final String PROGRESSIVE_ENTITY_SCHEDULING = "Progressive Entity Scheduling";
+    public static final String PROGRESSIVE_GLOBAL_TOP_COMPARISONS = "Progressive Global Top Comparisons";
+    public static final String PROGRESSIVE_LOCAL_TOP_COMPARISONS = "Progressive Local Top Comparisons";
+    public static final String PROGRESSIVE_GLOBAL_RANDOM_COMPARISONS = "Progressive Global Random Comparisons";
+
 }

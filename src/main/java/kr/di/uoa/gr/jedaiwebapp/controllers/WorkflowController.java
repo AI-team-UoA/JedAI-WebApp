@@ -400,6 +400,40 @@ public class WorkflowController {
 			return false;
 		}
 	}
+
+	@PostMapping("/workflow/set_configurations/prioritization")
+	public boolean setPrioritization(@RequestBody MethodModel prioritization_method){
+		try{
+			for (Parameter p : prioritization_method.getParameters()){
+				if (p.getLabel().equals("Budget")){
+					Integer.parseInt((String)p.getValue()); //check if it's integer
+				}
+			}
+			WorkflowManager.prioritizationModel = prioritization_method;
+			methodsConfig.put(JedaiOptions.PRIORITIZATION, prioritization_method);
+			
+			// Adding method to DB
+			MethodConfiguration pm = new MethodConfiguration();
+			pm.setMethod(JedaiOptions.PRIORITIZATION);
+			pm.setLabel(prioritization_method.getLabel());
+			List<String> parameters = new ArrayList<>();
+			for (Parameter p : prioritization_method.getParameters()) 
+				parameters.add(p.getLabel() + "|" + p.getValue().toString());
+
+			pm.setParameters(parameters);
+			pm.setConfigurationType(prioritization_method.getConfiguration_type());
+			dbm.storeOrUpdateMC(pm);
+			
+			workflowConfiguration.setPrioritization(pm.getId());			
+
+			return true;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	
 	
 	

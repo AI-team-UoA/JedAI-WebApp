@@ -32,6 +32,14 @@ import org.scify.jedai.entityclustering.MarkovClustering;
 import org.scify.jedai.entityclustering.MergeCenterClustering;
 import org.scify.jedai.entityclustering.RicochetSRClustering;
 import org.scify.jedai.entityclustering.UniqueMappingClustering;
+import org.scify.jedai.prioritization.GlobalProgressiveSortedNeighborhood;
+import org.scify.jedai.prioritization.IPrioritization;
+import org.scify.jedai.prioritization.LocalProgressiveSortedNeighborhood;
+import org.scify.jedai.prioritization.ProgressiveBlockScheduling;
+import org.scify.jedai.prioritization.ProgressiveEntityScheduling;
+import org.scify.jedai.prioritization.ProgressiveGlobalRandomComparisons;
+import org.scify.jedai.prioritization.ProgressiveGlobalTopComparisons;
+import org.scify.jedai.prioritization.ProgressiveLocalTopComparisons;
 import org.scify.jedai.schemaclustering.AttributeNameClustering;
 
 
@@ -189,6 +197,34 @@ public class MethodConfigurations {
 
         // Return the method
         return processingMethod;
+    }
+
+     /**
+     * Get an instance of a prioritization method with its default weighting scheme and the specified budget.
+     *
+     * @param methodName Name of method
+     * @param budget     Budget for method
+     * @return IPrioritization with instance of method
+     */
+    public static IPrioritization getPrioritizationMethodByName(String methodName, int budget) {
+        switch (methodName) {
+            case JedaiOptions.GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD:
+                return new GlobalProgressiveSortedNeighborhood(budget, ProgressiveWeightingScheme.ACF);
+            case JedaiOptions.LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD:
+                return new LocalProgressiveSortedNeighborhood(budget, ProgressiveWeightingScheme.ACF);
+            case JedaiOptions.PROGRESSIVE_BLOCK_SCHEDULING:
+                return new ProgressiveBlockScheduling(budget, WeightingScheme.ARCS);
+            case JedaiOptions.PROGRESSIVE_ENTITY_SCHEDULING:
+                return new ProgressiveEntityScheduling(budget, WeightingScheme.ARCS);
+            case JedaiOptions.PROGRESSIVE_GLOBAL_TOP_COMPARISONS:
+                return new ProgressiveGlobalTopComparisons(budget, WeightingScheme.JS);
+            case JedaiOptions.PROGRESSIVE_LOCAL_TOP_COMPARISONS:
+                return new ProgressiveLocalTopComparisons(budget, WeightingScheme.ARCS);
+            case JedaiOptions.PROGRESSIVE_GLOBAL_RANDOM_COMPARISONS:
+                return new ProgressiveGlobalRandomComparisons(budget);
+            default:
+                return null;
+        }
     }
 
 }
