@@ -326,6 +326,12 @@ public class WorkflowController {
 		try {
 			WorkflowManager.setSimilarityJoinMethod(sj_method);
 			methodsConfig.put(JedaiOptions.SIMILARITY_JOIN, sj_method);
+			
+			List<String> attributes = new ArrayList<>();
+			attributes.add(sj_method.getAttribute1());
+			if (WorkflowManager.er_mode.equals(JedaiOptions.CLEAN_CLEAN_ER))
+				attributes.add(sj_method.getAttribute2());
+			WorkflowManager.join_attributes = attributes;
 
 			// Adding method to DB
 			SimilarityMethod sjm = new SimilarityMethod();

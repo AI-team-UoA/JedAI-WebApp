@@ -60,6 +60,7 @@ public class WorkflowManager {
 	private static WorkflowDetailsManager details_manager ;
 
 	public static int workflowConfigurationsID = -1;
+	public static List<String> join_attributes = null;
 	
 
 	@Bean
@@ -318,10 +319,83 @@ public class WorkflowManager {
 		switch(wf_mode){
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 				return runBlockBasedWF(final_run, interrupted);
+			case JedaiOptions.WORKFLOW_JOIN_BASED:
+				return runSimilarityJoinWF(final_run, interrupted);
 			default:
 				return null;
 		}
 	}
+
+	public static Pair<ClustersPerformance, List<Triplet<String, BlocksPerformance, Double>>>
+	runSimilarityJoinWF(boolean final_run, AtomicBoolean interrupted){
+		try{
+
+			double overheadStart = System.currentTimeMillis();
+
+			List<Triplet<String, BlocksPerformance, Double>> performances = new ArrayList<>();
+			
+			String event_name="execution_step";
+			AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(WorkflowManager.class);
+			eventPublisher = context.getBean(EventPublisher.class);
+			details_manager = new WorkflowDetailsManager();
+
+			if(er_mode.equals(JedaiOptions.DIRTY_ER))
+					details_manager.print_Sentence("Input Entity Profiles", profilesD1.size());
+			else {
+				details_manager.print_Sentence("Input Entity Profiles 1", profilesD1.size());
+				details_manager.print_Sentence("Input Entity Profiles 2", profilesD2.size());
+			}
+			details_manager.print_Sentence("Existing Duplicates", ground_truth.getDuplicates().size());
+			
+			eventPublisher.publish("Similarity Join", event_name);
+			details_manager.print_Sentence("Similarity Join method: " +similarity_join_method.getMethodName());
+			details_manager.print_Sentence("Similarity Join Parameters: " +similarity_join_method.getMethodParameters());
+			details_manager.print_Sentence("D1 Attribute: " + join_attributes.get(0));
+						
+			if (interrupt(interrupted)) return null;
+
+			SimilarityPairs simPairs;
+			if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
+				simPairs = similarity_join_method.executeFiltering(
+						join_attributes.get(0),
+						profilesD1
+				);
+			} else {
+				details_manager.print_Sentence("D1 Attribute: " + join_attributes.get(0));
+				simPairs = similarity_join_method.executeFiltering(
+						join_attributes.get(0),
+						join_attributes.get(1),
+						profilesD1,
+						profilesD2
+				);
+			}
+
+			if (interrupt(interrupted)) return null;
+
+			eventPublisher.publish("Entity Clustering", event_name);
+
+			entityClusters = entity_clustering.getDuplicates(simPairs);
+			
+			double overheadEnd = System.currentTimeMillis();
+			ClustersPerformance clp = new ClustersPerformance(entityClusters, ground_truth);
+			clp.setStatistics();
+
+			details_manager.print_ClustersPerformance(clp, (overheadEnd - overheadStart)/1000, 
+				entity_clustering.getMethodName(), 
+				entity_clustering.getMethodConfiguration());
+			
+			eventPublisher.publish("Entity Clustering", event_name);
+			
+		    return new Pair<>(clp, performances);
+
+		}
+        catch(Exception e) {
+        	e.printStackTrace();
+        	setErrorMessage(e.getMessage());
+			return null;
+		}
+	}
+	
 	
 	/**
 	 * Run a workflow with the given methods and return its ClustersPerformance

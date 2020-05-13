@@ -58,6 +58,13 @@ public class WorkflowDetailsManager {
 	}
 	
 	
+	/**
+	 * Create a message 
+	 * @param text the message
+	 * @param value the corresponding value
+	 * */
+	public void print_Sentence(String message) { this.emit(message);}
+	
 	
 	/**
 	 * Create a message containing the performance of the block building process
