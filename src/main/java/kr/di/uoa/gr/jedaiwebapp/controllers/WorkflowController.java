@@ -234,7 +234,7 @@ public class WorkflowController {
 			return false;
 		}
 		
-		return WorkflowManager.entity_matching != null;
+		return true;
 	}
 	
 	
@@ -272,7 +272,7 @@ public class WorkflowController {
 			return false;
 		}
 		
-		return WorkflowManager.entity_clustering != null;
+		return true;
 	}
 	
 	
@@ -290,7 +290,6 @@ public class WorkflowController {
 		try {
 			int[] blockBuildingIDs = new int[block_building.size()];
 			methodsConfig.put(JedaiOptions.BLOCK_BUILDING, block_building);
-			WorkflowManager.block_building = new ArrayList<>();
 			int inedx = 0;
 	        for (MethodModel method : block_building) {
 	
@@ -317,21 +316,16 @@ public class WorkflowController {
 			return false;
 		}
 		        
-		return WorkflowManager.block_building != null;
+		return true;
 	}
 
 
 	@PostMapping("/workflow/set_configurations/similarityjoin")
 	public boolean setSimilarityJoinMethod(@RequestBody SimilarityMethodModel sj_method){
 		try {
+			
 			WorkflowManager.setSimilarityJoinMethod(sj_method);
 			methodsConfig.put(JedaiOptions.SIMILARITY_JOIN, sj_method);
-			
-			List<String> attributes = new ArrayList<>();
-			attributes.add(sj_method.getAttribute1());
-			if (WorkflowManager.er_mode.equals(JedaiOptions.CLEAN_CLEAN_ER))
-				attributes.add(sj_method.getAttribute2());
-			WorkflowManager.join_attributes = attributes;
 
 			// Adding method to DB
 			SimilarityMethod sjm = new SimilarityMethod();

@@ -30,6 +30,8 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
+import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.BlockingWF;
+import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.JoinWF;
 
 
 @RestController
@@ -128,6 +130,7 @@ public class ExecutionController {
 			WorkflowManager.wf_mode = (String) wfConfig.get("wfmode");
 	
 			switch (WorkflowManager.wf_mode) {
+				case JedaiOptions.WORKFLOW_PROGRESSIVE:
 				case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 							
 					WorkflowManager.setSchemaClustering((MethodModel) wfConfig.get(JedaiOptions.SCHEMA_CLUSTERING));
@@ -150,6 +153,7 @@ public class ExecutionController {
 					WorkflowManager.setSimilarityJoinMethod((SimilarityMethodModel) wfConfig.get(JedaiOptions.SIMILARITY_JOIN));
 					WorkflowManager.setEntityClustering((MethodModel) wfConfig.get(JedaiOptions.ENTITY_CLUSTERING));
 					break;
+									
 			}
 
 			return dbm.findWRByWCID(wfID);
@@ -212,15 +216,12 @@ public class ExecutionController {
 			&& WorkflowManager.ground_truth != null;
 
 		switch(WorkflowManager.wf_mode){
+			case JedaiOptions.WORKFLOW_PROGRESSIVE: //TODO : some progressive alg dont need blocking 
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
-				return datasetOk && WorkflowManager.block_building != null 
-				&& WorkflowManager.block_building.size() > 0
-				&& WorkflowManager.entity_matching != null
-				&& WorkflowManager.entity_clustering != null;
+				return datasetOk && BlockingWF.configurationOk();
 			
 			case JedaiOptions.WORKFLOW_JOIN_BASED:
-				return datasetOk && WorkflowManager.similarity_join_method != null
-				&& WorkflowManager.entity_clustering != null;
+				return datasetOk && JoinWF.configurationOk();
 			default:
 				return false;
 		}
@@ -274,7 +275,6 @@ public class ExecutionController {
 	}
 	
 	
-	//TODO here
 	/**
      * The method is triggered when the used presses the "Execute Workflow" button.
      * Firstly set the parameters if the configuration type of any method is automatic. 
@@ -319,7 +319,7 @@ public class ExecutionController {
 	                    int finalJ = j;
 	                    
 	                    // Set the next automatic random configuration
-	                    iterateHolisticRandom(null);
+	                    WorkflowManager.iterateHolisticRandom(methodsConfig, null);
 	
 	                    // Run a workflow and check its F-measure    
 	                    // Execute Workflow in different thread in order to be stoppable
@@ -342,7 +342,7 @@ public class ExecutionController {
 	                System.out.println("Best FMeasure\t:\t" + bestFMeasure);
 	
 	                // Before running the workflow, we should configure the methods using the best iteration's parameters
-	                iterateHolisticRandom(bestIteration);
+	                WorkflowManager.iterateHolisticRandom(methodsConfig, bestIteration);
 	
 	                // Run the final workflow (whether there was an automatic configuration or not)
 	                // Execute Workflow in different thread in order to be stoppable
@@ -411,97 +411,5 @@ public class ExecutionController {
 		}
 		
 	}
-	
-	
-	/**
-     * When bestIteration is null, set the next random configuration for each method in the workflow that should be
-     * automatically configured. If it is set, set these methods to that configuration.
-     *
-     * @param bestIteration Best iteration (optional)
-     */
-    private void iterateHolisticRandom(Integer bestIteration) {
-        
-    	//Check if schema clustering parameters should be set automatically
-    	if(WorkflowManager.schema_clustering != null)
-	        if (bestIteration == null) 
-	        	WorkflowManager.schema_clustering.setNextRandomConfiguration();
-	        else 
-	        	WorkflowManager.schema_clustering.setNumberedRandomConfiguration(bestIteration);
-        
-
-        // Check if any block building method parameters should be set automatically
-        if (WorkflowManager.getBlock_building() != null && !WorkflowManager.getBlock_building().isEmpty()) {
-            // Index of the methods in the Block Building List
-            int enabledMethodIndex = 0;
-
-            // Check each block building method configuration
-            List<MethodModel> blockBuilding_methods = (List<MethodModel>) methodsConfig.get(JedaiOptions.BLOCK_BUILDING);
-            for (MethodModel method : blockBuilding_methods){
-                // Method is enabled, check if we should configure automatically
-                if (method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
-                    // Get instance of the method and set next random configuration
-                    if (bestIteration == null) 
-                    	WorkflowManager.block_building.get(enabledMethodIndex).setNextRandomConfiguration();
-                    else 
-                    	WorkflowManager.block_building.get(enabledMethodIndex).setNumberedRandomConfiguration(bestIteration);
-                    
-                    // Increment index
-                    enabledMethodIndex++;
-                }
-            }            
-        }
-
-        
-        // Check if any block cleaning method parameters should be set automatically
-        if (WorkflowManager.getBlock_cleaning() != null && !WorkflowManager.getBlock_cleaning().isEmpty()) {
-            // Index of the methods in the Block Cleaning Methods List
-            int enabledMethodIndex = 0;
-
-            // Check each block cleaning method configuration
-            List<MethodModel> blockCleaning_methods = (List<MethodModel>) methodsConfig.get(JedaiOptions.BLOCK_CLEANING);
-            for ( MethodModel method :blockCleaning_methods) {
-                
-                // Method is enabled, check if we should configure automatically
-                if (method.getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
-                    // Get instance of the method and set next random configuration
-                    if (bestIteration == null) 
-                    	WorkflowManager.block_cleaning.get(enabledMethodIndex).setNextRandomConfiguration();
-                    else
-                    	WorkflowManager.block_cleaning.get(enabledMethodIndex).setNumberedRandomConfiguration(bestIteration);
-                    
-                    // Increment index
-                    enabledMethodIndex++;
-                }
-            }
-        }
-       
-
-        // Check if comparison cleaning parameters should be set automatically
-        if(WorkflowManager.comparison_cleaning != null)
-	        if (((MethodModel) methodsConfig.get(JedaiOptions.COMPARISON_CLEANING)).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) 
-	            if (bestIteration == null) 
-	            	WorkflowManager.comparison_cleaning.setNextRandomConfiguration();
-	            else 
-	            	WorkflowManager.comparison_cleaning.setNumberedRandomConfiguration(bestIteration);
-            
-
-        // Check if entity matching parameters should be set automatically
-        if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_MATCHING)).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
-            if (bestIteration == null) 
-            	WorkflowManager.entity_matching.setNextRandomConfiguration();
-            else 
-            	WorkflowManager.entity_matching.setNumberedRandomConfiguration(bestIteration);
-        }
-
-        
-        // Check if entity clustering parameters should be set automatically
-        if (((MethodModel) methodsConfig.get(JedaiOptions.ENTITY_CLUSTERING)).getConfiguration_type().equals(JedaiOptions.AUTOMATIC_CONFIG)) {
-            if (bestIteration == null) 
-            	WorkflowManager.entity_clustering.setNextRandomConfiguration();
-            else 
-            	WorkflowManager.entity_clustering.setNumberedRandomConfiguration(bestIteration);
-        }
-    }
-
     
 }
