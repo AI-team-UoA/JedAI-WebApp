@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Row, Col, FormControl, Collapse, Jumbotron } from 'react-bootstrap/'
 import RadioMethod from './utilities/RadioMethod'
+import AlertModal from './utilities/AlertModal'
+import axios from 'axios';
+
 
 class Prioritization extends Component {
 
@@ -32,7 +35,8 @@ class Prioritization extends Component {
             method_name: this.props.state.method_name,
             configuration_type: this.props.state.configuration_type,
             label: this.props.state.label,
-            parameters: this.props.state.parameters
+            parameters: this.props.state.parameters,
+            alertShow : false
         }
     }
 
@@ -104,6 +108,33 @@ class Prioritization extends Component {
         }
     }
 
+    // 
+
+    isValidated(){
+        
+        return axios({
+            url: '/workflow/set_configurations/prioritization',
+            method: 'POST',
+            data: this.state
+        }).then(res => {
+            var success = res.data
+            this.props.submitState("prioritization", this.state)
+            var s = this.state.method_name !== "" && this.state.configuration_type !== "" && success
+            if (!s){
+                this.alertText = "Error while setting the methods parameters."
+                this.handleAlertShow()
+                return false
+            }
+            else
+                return true
+        })
+    }
+
+        //handle alert modal
+    handleAlertClose = () => this.setState({alertShow : false});
+    handleAlertShow = () => this.setState({alertShow : true});
+    
+
     render() {
 
         var empty_col = 1
@@ -165,6 +196,7 @@ class Prioritization extends Component {
 
         return (
             <div>
+                <AlertModal title="Wrong Input" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 
                 <br/>
                 <div style={{marginBottom:"5px"}}> 

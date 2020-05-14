@@ -112,7 +112,6 @@ class ConfigurationsView extends Component {
                     }
             }
             
-            console.log(state)
             var similarity_join = null;
             if (state.hasOwnProperty("Similarity Join")){
                 if(state['Similarity Join'] != null)
@@ -124,6 +123,18 @@ class ConfigurationsView extends Component {
 
                     }
             }
+
+            var prioritization_method = null
+            console.log(state)
+            if (state.hasOwnProperty("Prioritization")){
+                if (state['Prioritization'] !== null)
+                    prioritization_method = {
+                        label: state['Prioritization'].label,
+                        configuration_type: state['Prioritization'].configuration_type,
+                        parameters: state['Prioritization'].parameters
+                    }
+            }
+
             return (
                 <div>
                     <ConfigurationView  type="inline" title="ER Type" data={er_mode}/>
@@ -135,6 +146,7 @@ class ConfigurationsView extends Component {
                     {state.hasOwnProperty("Block Building") ?  <ConfigurationView  type="array" title="Block Building" data={state['Block Building']}/> : <div/>}
                     {state.hasOwnProperty("Block Cleaning") ? <ConfigurationView  type="array" title="Block Cleaning" data={state['Block Cleaning']}/> : <div />}
                     {comparison_cleaning != null ? <ConfigurationView  type="inline" title="Comparison Cleaning" data={comparison_cleaning}/>: <div/>}
+                    {prioritization_method != null ? <ConfigurationView  type="inline" title="Prioritization" data={prioritization_method}/>: <div/>}
                     {entity_matching != null ? <ConfigurationView  type="inline" title="Entity Matching" data={entity_matching}/>: <div/>}
                     {entity_clustering != null ? <ConfigurationView  type="inline" title="Entity Clustering" data={entity_clustering}/>: <div/>}
 

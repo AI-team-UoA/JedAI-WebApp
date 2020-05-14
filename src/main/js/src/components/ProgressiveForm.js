@@ -124,12 +124,12 @@ class ProgressiveForm extends Component {
 
         const steps =
         [
-            {name: 'Prioritization', component: <Prioritization submitState={this.submitState} state={this.state.prioritization}/>},
             {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading}/>},
             {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState} state={this.state.schema_clustering}/>},
             {name: 'Block Building', component: <BlockBuilding submitState={this.submitState} state={this.state.block_building}/>},
             {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState} state={this.state.block_cleaning}/>},
             {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState} state={this.state.comparison_cleaning}/>},
+            {name: 'Prioritization', component: <Prioritization submitState={this.submitState} state={this.state.prioritization}/>},
             {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState} state={this.state.entity_matching}/>},
             {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering}/>}, 
             {name: 'Confirm Configuration', component: <ConfirmConfiguration state={this.state}/>} 
