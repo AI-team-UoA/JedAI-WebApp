@@ -405,13 +405,8 @@ public class DynamicMethodConfiguration {
     }
 
 
-    public static IPrioritization configurePrioritizationMethod(MethodModel pm){
-        List<Parameter> params = pm.getParameters();
-        int budget = (int) params.get(0).getValue();
-        return configurePrioritizationMethod(pm, budget);
-    }
 
-        /**
+    /**
      * Given a prioritization method name and a list of parameters, initialize and return a method instance.
      * Assumes the parameters are of correct type & number.
      *
@@ -419,40 +414,52 @@ public class DynamicMethodConfiguration {
      * @param params     Parameters list for method.
      * @return Prioritization method instance
      */
-    public static IPrioritization configurePrioritizationMethod(MethodModel pm, int budget){
-        String methodName = pm.getLabel();
-        List<Parameter> params = pm.getParameters();
+    public static IPrioritization configurePrioritizationMethod(String methodName, List<Parameter> params){
 
+        
+        Object pws = "JS";
+        int budget = 10000;
+
+        for(Parameter p : params){
+            switch (p.getLabel()){
+                case "Budget":
+                    budget = Integer.parseInt((String) p.getValue());
+                    break;
+                case "Weighting Scheme":
+                    pws = p.getValue();
+                    break;
+            }
+        }
         switch (methodName) {
             case JedaiOptions.GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD:
                 return new GlobalProgressiveSortedNeighborhood(
                     budget, // Budget
-                    (ProgressiveWeightingScheme) params.get(1).getValue() // Weighting Scheme
+                    (ProgressiveWeightingScheme) pws // Weighting Scheme
                 );
             case JedaiOptions.LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD:
                 return new LocalProgressiveSortedNeighborhood(
                     budget, // Budget
-                    (ProgressiveWeightingScheme) params.get(1).getValue() // Weighting Scheme
+                    (ProgressiveWeightingScheme) pws // Weighting Scheme
                 );
             case JedaiOptions.PROGRESSIVE_BLOCK_SCHEDULING:
                 return new ProgressiveBlockScheduling(
                     budget, // Budget
-                    (WeightingScheme) params.get(1).getValue() // Weighting Scheme
+                    (WeightingScheme) pws // Weighting Scheme
                 );
             case JedaiOptions.PROGRESSIVE_ENTITY_SCHEDULING:
                 return new ProgressiveEntityScheduling(
                     budget, // Budget
-                    (WeightingScheme) params.get(1).getValue() // Weighting Scheme
+                    (WeightingScheme) pws // Weighting Scheme
                 );
             case JedaiOptions.PROGRESSIVE_GLOBAL_TOP_COMPARISONS:
                 return new ProgressiveGlobalTopComparisons(
                     budget, // Budget
-                    (WeightingScheme) params.get(1).getValue() // Weighting Scheme
+                    (WeightingScheme) pws // Weighting Scheme
                 );
             case JedaiOptions.PROGRESSIVE_LOCAL_TOP_COMPARISONS:
                 return new ProgressiveLocalTopComparisons(
                     budget, // Budget
-                    (WeightingScheme) params.get(1).getValue() // Weighting Scheme
+                    (WeightingScheme) pws // Weighting Scheme
                 );
             case JedaiOptions.PROGRESSIVE_GLOBAL_RANDOM_COMPARISONS:
                 return new ProgressiveGlobalRandomComparisons(
@@ -462,5 +469,8 @@ public class DynamicMethodConfiguration {
                 return null;
         }
     }
+
+
+
 
 }

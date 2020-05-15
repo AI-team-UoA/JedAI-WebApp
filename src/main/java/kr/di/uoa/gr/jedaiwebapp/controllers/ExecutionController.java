@@ -32,6 +32,7 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.BlockingWF;
 import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.JoinWF;
+import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.ProgressiveWF;
 
 
 @RestController
@@ -131,6 +132,7 @@ public class ExecutionController {
 	
 			switch (WorkflowManager.wf_mode) {
 				case JedaiOptions.WORKFLOW_PROGRESSIVE:
+					WorkflowManager.setPrioritizationMethod((MethodModel) wfConfig.get(JedaiOptions.PRIORITIZATION));
 				case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 							
 					WorkflowManager.setSchemaClustering((MethodModel) wfConfig.get(JedaiOptions.SCHEMA_CLUSTERING));
@@ -217,6 +219,8 @@ public class ExecutionController {
 
 		switch(WorkflowManager.wf_mode){
 			case JedaiOptions.WORKFLOW_PROGRESSIVE: //TODO : some progressive alg dont need blocking 
+				return datasetOk && ProgressiveWF.configurationOk();
+
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 				return datasetOk && BlockingWF.configurationOk();
 			
@@ -241,6 +245,17 @@ public class ExecutionController {
 	 * */	
 	@GetMapping("/workflow/automatic_conf/")
 	public boolean getAutomaticIsSet() { return anyAutomaticConfig(); }
+	
+
+	/**
+	 *  
+	 * @return true if any configurations has been set to automatic
+	 * */	
+	@GetMapping("/workflow/roc/")
+	public List<Double> returnRecall() { 
+		
+		return ProgressiveWF.recallCurve;
+	 }
 		
 	
 	
@@ -273,6 +288,8 @@ public class ExecutionController {
 		
 		 return automatic_conf;	
 	}
+
+
 	
 	
 	/**

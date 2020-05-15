@@ -88,7 +88,7 @@ public class BlockUtils {
      * @param blocks List of blocks
      * @return Number of comparisons
      */
-    private static double getTotalComparisons(List<AbstractBlock> blocks) {
+    public static double getTotalComparisons(List<AbstractBlock> blocks) {
         double originalComparisons = 0;
         originalComparisons = blocks.stream()
                 .map(AbstractBlock::getNoOfComparisons)

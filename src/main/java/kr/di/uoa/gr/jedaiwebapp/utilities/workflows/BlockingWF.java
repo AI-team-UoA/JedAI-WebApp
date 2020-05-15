@@ -694,7 +694,7 @@ public class BlockingWF {
 				return null;
 			}	
 		    
-		EquivalenceCluster[] entityClusters = entity_clustering.getDuplicates(sims);
+			EquivalenceCluster[] entityClusters = entity_clustering.getDuplicates(sims);
 			WorkflowManager.setEntityClusters(entityClusters);
 	
 		    time2 = System.currentTimeMillis();

@@ -13,7 +13,6 @@ import org.scify.jedai.datamodel.EntityProfile;
 import org.scify.jedai.datamodel.EquivalenceCluster;
 import org.scify.jedai.entityclustering.IEntityClustering;
 import org.scify.jedai.entitymatching.IEntityMatching;
-import org.scify.jedai.prioritization.IPrioritization;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.BlocksPerformance;
 import org.scify.jedai.utilities.ClustersPerformance;
@@ -26,6 +25,7 @@ import gnu.trove.list.TIntList;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.BlockingWF;
 import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.JoinWF;
+import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.ProgressiveWF;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
@@ -44,8 +44,6 @@ public class WorkflowManager {
 	public static List<EntityProfile> profilesD2 = null;
 	public static AbstractDuplicatePropagation ground_truth = null;
 
-	public static IPrioritization prioritization = null;
-	public static MethodModel prioritizationModel = null; 
 	public static List<IBlockProcessing> block_cleaning = null;
 	
 	private static EquivalenceCluster[] entityClusters = null;
@@ -105,13 +103,15 @@ public class WorkflowManager {
 			switch(wf_mode){
 				case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 					BlockingWF.setSchema_clustering(schemaClustering);
+					break;
+				case JedaiOptions.WORKFLOW_PROGRESSIVE:
+					ProgressiveWF.setSchema_clustering(schemaClustering);
+					break;
 			}
 		}	
 	}
 
-	public static void setPrioritizationMethod(MethodModel pm){
-        
-	}
+	
 
 
 	public static void setComparisonCleaning(MethodModel cc) {
@@ -131,6 +131,10 @@ public class WorkflowManager {
 			switch(wf_mode){
 				case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 					BlockingWF.setComparison_cleaning(comparisonCleaning);
+					break;
+				case JedaiOptions.WORKFLOW_PROGRESSIVE:
+					ProgressiveWF.setComparison_cleaning(comparisonCleaning);
+					break;
 			}
 		}
 	}
@@ -148,6 +152,10 @@ public class WorkflowManager {
 		switch(wf_mode){
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 				BlockingWF.setEntity_matching(entityMatching);
+				break;
+			case JedaiOptions.WORKFLOW_PROGRESSIVE:
+				ProgressiveWF.setEntity_matching(entityMatching);
+				break;
 		}
 	}
 	
@@ -162,13 +170,23 @@ public class WorkflowManager {
 		switch(wf_mode){
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 				BlockingWF.setEntity_clustering(entityClustering);
+				break;
 			case JedaiOptions.WORKFLOW_JOIN_BASED:
 				JoinWF.setEntityClustering(entityClustering);
+				break;
+			case JedaiOptions.WORKFLOW_PROGRESSIVE:
+				ProgressiveWF.setEntity_clustering(entityClustering);
+				break;
 		}
 	}
 
 	public static void setSimilarityJoinMethod(SimilarityMethodModel similarity_join) {
 		JoinWF.setSimilarityJoinMethod(similarity_join);
+	}
+
+
+	public static void setPrioritizationMethod(MethodModel pm){
+		ProgressiveWF.setPrioritizationModel(pm);
 	}
 	
 
@@ -186,6 +204,10 @@ public class WorkflowManager {
 		switch(wf_mode){
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 				BlockingWF.addBlockBuilding(blockBuildingMethod);
+				break;
+			case JedaiOptions.WORKFLOW_PROGRESSIVE:
+				ProgressiveWF.addBlockBuilding(blockBuildingMethod);
+				break;
 		}
 	}
 	
@@ -201,6 +223,10 @@ public class WorkflowManager {
 		switch(wf_mode){
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 				BlockingWF.addBlockCleaning(blockCleaningMethod);
+				break;
+			case JedaiOptions.WORKFLOW_PROGRESSIVE:
+				ProgressiveWF.addBlockCleaning(blockCleaningMethod);
+				break;
 		}
 	}    
     
@@ -214,22 +240,14 @@ public class WorkflowManager {
 				return BlockingWF.run(final_run, interrupted);
 			case JedaiOptions.WORKFLOW_JOIN_BASED:
 				return JoinWF.run(final_run, interrupted);
+			case JedaiOptions.WORKFLOW_PROGRESSIVE:
+				return ProgressiveWF.run(final_run, interrupted);
 			default:
 				return null;
 		}
 	}
 
-	
-	
-	
-	
-/*
-	
-	public static Pair<ClustersPerformance, List<Triplet<String, BlocksPerformance, Double>>>
-	runProgressiveWF(boolean final_run, AtomicBoolean interrupted){
-
-	}
-*/		
+		
 	/**
      * Run a step by step workflow, using random or grid search based on the given parameter.
      *
@@ -273,7 +291,7 @@ public class WorkflowManager {
 		
 		List<List<EntityProfileNode>> duplicates = new ArrayList<>();
 		
-		for (EquivalenceCluster ec : ground_truth.getDetectedEquivalenceClusters()) {
+		for (EquivalenceCluster ec : ground_truth.getDetectedEquivalenceClusters()) { // TODO it is always empty
 			if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
 				
 				if (!ec.getEntityIdsD1().isEmpty()) { 

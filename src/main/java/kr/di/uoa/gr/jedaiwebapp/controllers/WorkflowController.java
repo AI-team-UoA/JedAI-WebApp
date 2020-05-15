@@ -403,7 +403,7 @@ public class WorkflowController {
 					Integer.parseInt((String)p.getValue()); //check if it's integer
 				}
 			}
-			WorkflowManager.prioritizationModel = prioritization_method;
+			WorkflowManager.setPrioritizationMethod(prioritization_method);
 			methodsConfig.put(JedaiOptions.PRIORITIZATION, prioritization_method);
 			
 			// Adding method to DB
