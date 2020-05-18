@@ -255,6 +255,8 @@ public class ProgressiveWF {
                 }
 			}
 
+			eventPublisher.publish("Prioritization", event_name);					
+
 			double originalRecall = 0;
 			// If we have blocks, run an initial entity matching/clustering before the similarity matching
 			if (!blocks.isEmpty()) {
@@ -289,8 +291,6 @@ public class ProgressiveWF {
 			}
 
 			// Prioritization
-			eventPublisher.publish("Prioritization", event_name);					
-
 			overheadStart = System.currentTimeMillis();
 			boolean isDirtyEr = WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER);
 	
@@ -349,7 +349,6 @@ public class ProgressiveWF {
 					 (int) ((!blocks.isEmpty() && !isDirtyEr) ? totalComparisons : budget)
 			);
 	 
-			List<Double> recallCurve = new ArrayList<>();
 			ClustersPerformance clp = null;
 			while (prioritization.hasNext()) {
 				if (interrupt(interrupted)) {
@@ -364,6 +363,7 @@ public class ProgressiveWF {
 				comparison.setUtilityMeasure(similarity);
 	 
 				sims.addComparison(comparison);
+
 	 
 				 // Run clustering
 				 EquivalenceCluster[] entityClusters = entity_clustering.getDuplicates(sims);
@@ -544,6 +544,10 @@ public class ProgressiveWF {
 					prioritizationModel.getParameters()
 			);
 		}
+	}
+
+	public static List<Double> getRecalls(){
+		return recallCurve;
 	}
 	
 }

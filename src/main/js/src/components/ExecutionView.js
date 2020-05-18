@@ -10,8 +10,7 @@ import axios from 'axios';
 import { saveAs } from 'file-saver';
 import Workbench from './Workbench'
 import ConfigurationView from './workflowViews/utilities/ConfigurationsView'
-
-
+import Plot from 'react-plotly.js';
 
 class ExecutionView extends Component {
    
@@ -45,9 +44,12 @@ class ExecutionView extends Component {
             
             alertShow: false,
             show_explore_window : false,
+            show_roc_modal: false,
             show_configuration_modal: false,
             workflow_configurations: {},
-            tabkey: "result"
+            tabkey: "result",
+            roc: [],
+            wf_mode: null
         }
         this.init("")        
     }
@@ -79,7 +81,7 @@ class ExecutionView extends Component {
                 execution_step: "",
                 execution_status : "Completed",
                 execution_results : results,
-                tabkey: "result"
+                tabkey: "result"              
             })
 
         }
@@ -94,13 +96,14 @@ class ExecutionView extends Component {
 
         this.eventSource.addEventListener("exception", (e) => {
             this.alertText = e.data
-            this.handleAlerShow()
+            this.handleAlertShow()
             this.setState({
                 execution_step: "",
                 execution_status: "Failed"}
             )
         })
         axios.get("/workflow/id").then(res => this.setState({ workflowID: res.data}))
+        axios.get("/workflow/wfmode").then(res => this.setState({ wf_mode: res.data}))
     }
 
 
@@ -116,9 +119,14 @@ class ExecutionView extends Component {
         .then(res => this.setState({workbench_data: res.data}))
     
     handleAlertClose = () => this.setState({alertShow : false});
-    handleAlerShow = () => this.setState({alertShow : true});
+    handleAlertShow = () => this.setState({alertShow : true});
+    
     close_explore_window = () => this.setState({show_explore_window : false});
     open_explore_window = () => this.setState({show_explore_window : true});
+    
+    close_roc_window = () => this.setState({show_roc_window : false});
+    open_roc_window = () => this.setState({show_roc_window : true});
+    
     close_configuration_modal = () => this.setState({show_configuration_modal : false});
     open_configuration_modal = () => this.setState({show_configuration_modal : true});
 
@@ -174,11 +182,11 @@ class ExecutionView extends Component {
             if (error.response) {
                 console.log('Error', error.response.status);
                 this.alertText = error.response.status
-                this.handleAlerShow()
+                this.handleAlertShow()
             } else {
                 console.log('Error', error.message);
                 this.alertText = error.message
-                this.handleAlerShow()
+                this.handleAlertShow()
             }
         });
     }
@@ -251,12 +259,61 @@ class ExecutionView extends Component {
         axios.get("/workflow/stop/")
     }
 
+    plotROC = () =>{
+        axios.get("/workflow/roc/").then(res => { 
+            let data = res.data
+            this.setState({roc: data}, () => {this.open_roc_window()})
+        })
+    }
+
 
     render() {
         var radio_col = 1.8
         var empty_col = 1
         var speedometer_col = 2.5
         var execution_stats = <div />
+
+        var roc_size = this.state.roc.length
+        var roc_curve = [{
+            x:[...Array(roc_size).keys()],
+            y: this.state.roc,
+            mode: 'markers',
+            type: 'scatter'
+        }]
+
+        var layout = {
+            title: {
+              text:'Progressive Workflow ROC Curve',
+              font: {
+                family: 'Courier New, monospace',
+                size: 24
+              },
+              xref: 'paper',
+              x: 0.05,
+            },
+            xaxis: {
+              title: {
+                text: 'Iterations',
+                font: {
+                  family: 'Courier New, monospace',
+                  size: 18,
+                  color: '#7f7f7f'
+                }
+              },
+            },
+            yaxis: {
+              title: {
+                text: 'Recall %',
+                font: {
+                  family: 'Courier New, monospace',
+                  size: 18,
+                  color: '#7f7f7f'
+                }
+              }
+            }
+          };
+
+          
         
         // Set execution status view
         var execution_status_view
@@ -376,6 +433,24 @@ class ExecutionView extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
+
+
+
+                <Modal show={this.state.show_roc_window} onHide={this.close_roc_window} size="xl">
+                    <Modal.Header closeButton>
+                    <Modal.Title>ROC Curve</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body >
+                    <Plot data={roc_curve} style={{textAlign: "center", margin:"auto"}} //layout={ {width: "90%", height: "35%", title: 'Roc'} }
+                />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.close_roc_window}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
 		        	
                 <AlertModal title="Exception" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
                 <Jumbotron  className='jumbotron_2'>
@@ -570,6 +645,8 @@ class ExecutionView extends Component {
                                     <Button variant="secondary" 
                                         style={{width: "100px", marginRight:"10px"}}
                                         disabled={this.state.execution_status !== "Completed"}
+                                        onClick={this.plotROC}
+                                        disabled={this.state.wf_mode != "Progressive"}
                                     >
                                         Show Plot
                                     </Button>
