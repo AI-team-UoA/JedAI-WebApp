@@ -74,6 +74,9 @@ public class WorkflowManager {
 			case JedaiOptions.WORKFLOW_JOIN_BASED:
 				JoinWF.clean();
 				break;
+			case JedaiOptions.WORKFLOW_PROGRESSIVE:
+				ProgressiveWF.clean();
+				break;
 		}
 	}
 
