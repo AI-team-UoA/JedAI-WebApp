@@ -1,5 +1,6 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -81,6 +82,15 @@ public class ExecutionController {
 	 */
 	@GetMapping("/workflow/id")
 	public int getWorkflowID() {return WorkflowManager.workflowConfigurationsID;}
+
+	/**
+	 * 
+	 * @return the mode of the current workflow
+	 */
+	@GetMapping("/workflow/wfmode")
+	public String getWorkflowMode() {return WorkflowManager.wf_mode;}
+
+	
 	
 	
 	/**
@@ -116,6 +126,7 @@ public class ExecutionController {
 			Map<String, Object> wfConfig = dbm.getWorkflowConfigurations(wfID);
 			WorkflowManager.workflowConfigurationsID = wfID;
 			String erMode = (String) wfConfig.get("mode");
+			WorkflowManager.er_mode = erMode;
 			
 			Reader reader1 = new Reader((Dataset) wfConfig.get("d1"));
 			WorkflowManager.profilesD1 = reader1.read();
@@ -253,8 +264,7 @@ public class ExecutionController {
 	 * */	
 	@GetMapping("/workflow/roc/")
 	public List<Double> returnRecall() { 
-		
-		return ProgressiveWF.recallCurve;
+		return ProgressiveWF.getRecalls();
 	 }
 		
 	
@@ -267,9 +277,7 @@ public class ExecutionController {
 	public boolean anyAutomaticConfig() {
 		
 		boolean automatic_conf = false;
-		
-		if (this.methodsConfig == null)
-			this.methodsConfig = getWorkflowConfigurations(WorkflowManager.workflowConfigurationsID);
+		this.methodsConfig = getWorkflowConfigurations(WorkflowManager.workflowConfigurationsID);
 		
 		 for (String key : methodsConfig.keySet())  {
 			 Object value = methodsConfig.get(key);
