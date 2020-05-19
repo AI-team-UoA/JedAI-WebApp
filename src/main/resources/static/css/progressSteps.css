@@ -1,6 +1,8 @@
 ol.progtrckr {
     list-style-type: none;
     padding: 0;
+    margin: "auto";
+    text-align: center;
   }
   
   ol.progtrckr li {
@@ -21,7 +23,7 @@ ol.progtrckr {
   }
   .progtrckr em {
     display: none;
-    font-weight: 700;
+    font-weight: 650;
     padding-left: 1rem;
   }
   
@@ -31,21 +33,22 @@ ol.progtrckr {
     }
   }
   
+  /*steps names*/
   ol.progtrckr li.progtrckr-todo {
     color: #909090	;
-    font-size: 0.9vw;
+    font-size: 0.8vw;
     border-bottom: 4px solid #909090	;
   }
   
   ol.progtrckr li.progtrckr-doing {
     color: black;
-    font-size: 0.9vw;
+    font-size: 0.8vw;
     border-bottom: 4px solid #909090	;
   }
   
   ol.progtrckr li.progtrckr-done {
     color: black;
-    font-size: 0.9vw;
+    font-size: 0.8vw;
     border-bottom: 4px solid #5cb85c;
   }
   
@@ -85,6 +88,7 @@ ol.progtrckr {
     color: #990000;
   }
   
+  /* tick*/
   ol.progtrckr li.progtrckr-done:before {
     content: "\2713";
     color: white;

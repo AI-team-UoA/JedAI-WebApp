@@ -189,7 +189,7 @@ class ProfileReader extends Component {
                                 <Button  name="explore_btn" disabled={this.state.configurations === null} onClick={this.onClick}>Explore</Button>
                             </Form.Group>
                         </Col>
-                        <Col sm={4}>
+                        <Col >
                             <Form.Group>
                                 <Form.Control as="textarea" rows="3" readOnly={true} value={this.text_area_msg}/>
                             </Form.Group>
