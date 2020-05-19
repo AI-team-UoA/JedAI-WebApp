@@ -450,7 +450,7 @@ class ExecutionView extends Component {
                     <Modal.Title>ROC Curve</Modal.Title>
                     </Modal.Header>
                     <Modal.Body >
-                    <Plot data={roc_curve} style={{textAlign: "center", margin:"auto"}} //layout={ {width: "90%", height: "35%", title: 'Roc'} }
+                    <Plot data={roc_curve} layout={layout} style={{textAlign: "center", margin:"auto"}} //layout={ {width: "90%", height: "35%", title: 'Roc'} }
                 />
                     </Modal.Body>
                     <Modal.Footer>
@@ -467,9 +467,9 @@ class ExecutionView extends Component {
                         <br/>
                         <div style={{marginBottom:"5px"}}> 
                             <h1 style={{display:'inline', marginRight:"20px"}}>Workflow Execution</h1> 
-                            <span className="workflow-desc" >   Press "Run algorithm" to run the algorithm. 
-                                                                You can export the results to a CSV file with the 
-                                                                "Export CSV" button.</span>
+                            <span className="workflow-desc" >   Press "Execute Workflow" to run the algorithm. 
+                                                                You can export the results to a file with the 
+                                                                "Export" button.</span>
                         </div>
 
                         <br/>
@@ -549,7 +549,7 @@ class ExecutionView extends Component {
 
                                             <Col  sm={empty_col} />
 
-                                            <Col  sm={speedometer_col}>
+                                            <Col  sm={speedometer_col} style={{marginRight:"10px"}}>
                                                 <div className="caption_item">
                                                 <span className="caption"><b>Recall</b></span>
                                                     <ReactSpeedometer  
@@ -568,7 +568,7 @@ class ExecutionView extends Component {
                                                 </div>
                                             </Col>
                                             
-                                            <Col  sm={speedometer_col}>
+                                            <Col  sm={speedometer_col} style={{marginRight:"10px"}}>
                                                 <div className="caption_item">
                                                 <span className="caption"><b>Precision</b></span>
                                                     <ReactSpeedometer  
@@ -587,7 +587,7 @@ class ExecutionView extends Component {
                                                 </div>
                                             </Col>
 
-                                            <Col  sm={speedometer_col}>
+                                            <Col  sm={speedometer_col}style={{marginRight:"10px"}}>
                                                 <div className="caption_item">
                                                 <span className="caption"><b>F1-measure</b></span>
                                                     <ReactSpeedometer  
