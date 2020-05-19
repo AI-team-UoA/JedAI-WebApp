@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Blob } from 'react-blob'
 import {Jumbotron,Modal, Tabs, Tab, Form, Row, Col, Button, Spinner, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
-import {Link } from 'react-router-dom';
+import {Link,withRouter } from 'react-router-dom';
 import "../../../resources/static/css/main.css"
 import AlertModal from './workflowViews/utilities/AlertModal'
 import Explorer from './workflowViews/utilities/explorer/Explorer'
@@ -12,8 +12,9 @@ import Workbench from './Workbench'
 import ConfigurationView from './workflowViews/utilities/ConfigurationsView'
 import Plot from 'react-plotly.js';
 
+
 class ExecutionView extends Component {
-   
+    
     constructor(...args) {
         super(...args);
         this.state = {
@@ -22,20 +23,20 @@ class ExecutionView extends Component {
             search_type: "Random Search",
             export_filetype: "",
             automatic_conf: false,
-
+    
             details_msg: "", 
             execution_step: "",
             execution_status : "Not Run",
-
+    
             execution_results:{
                 recall: 0,
                 f1_measure: 0,
                 precision: 0,
-
+    
                 input_instances: 0,
                 existing_duplicates: 0,
                 total_time : 0,
-
+    
                 no_clusters : 0,
                 detected_duplicates : 0,
                 total_matches: 0
@@ -51,7 +52,16 @@ class ExecutionView extends Component {
             roc: [],
             wf_mode: null
         }
-        this.init("")        
+    
+               
+    }
+
+    componentDidMount(){
+        if (typeof this.props.location.state != "undefined"){
+            this.init(this.props.location.state.data)
+        }
+        else 
+            this.init("") 
     }
 
     init = (state) =>{
@@ -74,7 +84,6 @@ class ExecutionView extends Component {
                 detected_duplicates : state.detectedDuplicates,
                 total_matches: state.totalMatches
             }
-            console.log(state)
             this.setState({
                 workflowID : state.workflowID,
                 details_msg: "", 
@@ -709,4 +718,4 @@ class ExecutionView extends Component {
 }
 
 
-export default ExecutionView 
+export default withRouter(ExecutionView)

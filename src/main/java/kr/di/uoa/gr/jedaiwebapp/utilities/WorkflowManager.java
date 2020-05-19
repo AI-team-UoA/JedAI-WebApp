@@ -67,6 +67,7 @@ public class WorkflowManager {
 		
 		workflowConfigurationsID = -1;
 		entityClusters = null;
+		if (wf_mode == null) return;
 		switch(wf_mode){
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 				BlockingWF.clean();
