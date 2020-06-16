@@ -98,6 +98,7 @@ class ExecutionView extends Component {
         this.getWorkbenchData()
         this.eventSource = new EventSource("/workflow/sse") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
+       
         this.eventSource.addEventListener("workflow_details", (e) => {
             var msg = this.state.details_msg + "\n" + e.data 
             this.setState({details_msg: msg})
@@ -212,6 +213,7 @@ class ExecutionView extends Component {
     // Execute the Workflow
     executeWorkFlow = (e) =>{
         this.setState({
+            details_msg: "",
             execution_status: "Running",
             show_explore_window: false
         })
@@ -225,13 +227,13 @@ class ExecutionView extends Component {
                 var total_time = res.data.value1
                 var no_istamces = res.data.value2
                 
-                if (data_stat.recall > 0 ) data_stat.recall = parseFloat(data_stat.recall).toFixed(2)
+                if (data_stat.recall > 0 ) data_stat.recall = parseFloat(data_stat.recall).toFixed(3)
                 else data_stat.recall = parseFloat(0.00)
 
-                if (data_stat.fmeasure > 0 ) data_stat.fmeasure = parseFloat(data_stat.fmeasure).toFixed(2)
+                if (data_stat.fmeasure > 0 ) data_stat.fmeasure = parseFloat(data_stat.fmeasure).toFixed(3)
                 else data_stat.fmeasure = parseFloat(0.00)
 
-                if (data_stat.precision > 0 ) data_stat.precision = parseFloat(data_stat.precision).toFixed(2)
+                if (data_stat.precision > 0 ) data_stat.precision = parseFloat(data_stat.precision).toFixed(3)
                 else data_stat.precision = parseFloat(0.00)
                 
                 var reuslts = {
