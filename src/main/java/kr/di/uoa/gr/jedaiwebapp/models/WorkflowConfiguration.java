@@ -1,6 +1,7 @@
 package kr.di.uoa.gr.jedaiwebapp.models;
 
 import javax.persistence.Column;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,7 +13,8 @@ import javax.persistence.Table;
 public class WorkflowConfiguration {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(name = "gen", sequenceName = "id_gen", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_entity_gen")
 	@Column(updatable = false, nullable = false, unique = true, name="id")
 	private int id;
 	
