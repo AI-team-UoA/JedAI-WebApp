@@ -137,7 +137,6 @@ class ConfigurationView extends Component {
                     </Form.Row>         
         }
         else if (type === "sj"){
-            console.log(data)
             return_stmnt = 
 
             <Form.Row>

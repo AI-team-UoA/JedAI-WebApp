@@ -6,7 +6,6 @@ import axios from 'axios';
 
 class WorkflowSelection extends Component {
     render() {
-        console.log("here")
         return (
             <div >
                 <Jumbotron  className='jumbotron_2'>

@@ -125,7 +125,6 @@ class ConfigurationsView extends Component {
             }
 
             var prioritization_method = null
-            console.log(state)
             if (state.hasOwnProperty("Prioritization")){
                 if (state['Prioritization'] !== null)
                     prioritization_method = {
