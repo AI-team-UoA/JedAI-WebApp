@@ -16,7 +16,10 @@ import Plot from 'react-plotly.js';
 class ExecutionView extends Component {
     
     constructor(...args) {
+       
         super(...args);
+        
+        this.start_over_path = "/"
         this.state = {
             workflowID : -1,
             automatic_type: "Holistic",
@@ -57,7 +60,12 @@ class ExecutionView extends Component {
     }
 
     componentDidMount(){
-        if (typeof this.props.location.state != "undefined"){
+        if (typeof this.props.location.state.conf != "undefined"){
+            this.setState({wf_state: this.props.location.state.conf})
+        }
+        else
+          this.start_over_path = "/"
+        if (typeof this.props.location.state.data != "undefined"){
             this.init(this.props.location.state.data)
         }
         else 
@@ -113,7 +121,23 @@ class ExecutionView extends Component {
             )
         })
         axios.get("/workflow/id").then(res => this.setState({ workflowID: res.data}))
-        axios.get("/workflow/wfmode").then(res => this.setState({ wf_mode: res.data}))
+        axios.get("/workflow/wfmode").then(res => {
+            let mode = res.data
+            switch(mode){
+                case "Blocking-based":
+                    this.start_over_path = "/blockingbased"
+                    break
+                case "Join-based":
+                    this.start_over_path = "/joinbased"
+                    break
+                case "Progressive":
+                    this.start_over_path = "/progressive"
+                    break
+                default:
+                    this.start_over_path = "/"
+            }
+            this.setState({ wf_mode: mode})
+        })
     }
 
 
@@ -699,7 +723,7 @@ class ExecutionView extends Component {
                                         <span className="fa fa-stop" style={{marginRight: "10px"}}/>
                                         Stop
                                     </Button>
-                                    <Link to="/">
+                                    <Link to={{pathname: this.start_over_path, state:{conf: this.state.wf_state}}}>
                                         <Button variant="secondary" 
                                             style={{width: "100px", marginRight:"10px"}}
                                             disabled={this.state.execution_status === "Running"}

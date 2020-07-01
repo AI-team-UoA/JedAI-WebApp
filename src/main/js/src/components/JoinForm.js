@@ -12,32 +12,46 @@ import '../../../resources/static/css/main.css'
 
 class JoinForm extends Component {
 
-    // Default states of the workflow stages
-    state = {
-        data_reading: null,
-
-        similarity_join: 
-        {
-            method:{
-                name: "ALL_PAIRS_CHARACTER-BASED",
-                label: "All Pairs (character-based)",
-                parameters: [{label: "Threshold", value:"3"}]
-            },
-            attribute1: "",
-            attribute2: ""
-        },
-
-        entity_clustering: {
-            method_name: "CENTER_CLUSTERING",
-            configuration_type: "Default",
-            label: "Center Clustering",
-            parameters  : [
-                {
-                    label: "Similarity Threshold",
-                    value: "0.5"
-                }
-            ]
+  
+    constructor(...args){
+        super(...args);
+        if(typeof args[0].location.state != "undefined"){
+            let new_state = args[0].location.state.conf
+            this.state ={
+                data_reading: new_state.data_reading,
+                similarity_join: new_state.similarity_join,
+                entity_clustering: new_state.entity_clustering
+            }
         }
+        else{
+            // Default states of the workflow stages
+            this.state = {
+                data_reading: null,
+                similarity_join: 
+                {
+                    method:{
+                        name: "ALL_PAIRS_CHARACTER-BASED",
+                        label: "All Pairs (character-based)",
+                        parameters: [{label: "Threshold", value:"3"}]
+                    },
+                    attribute1: "",
+                    attribute2: ""
+                },
+
+                entity_clustering: {
+                    method_name: "CENTER_CLUSTERING",
+                    configuration_type: "Default",
+                    label: "Center Clustering",
+                    parameters  : [
+                        {
+                            label: "Similarity Threshold",
+                            value: "0.5"
+                        }
+                    ]
+                }
+            }
+        }
+
     }
     
 
@@ -46,6 +60,17 @@ class JoinForm extends Component {
         this.setState({
             [state_name]: state_value
         })
+    }
+
+    componentDidMount(){
+        if (typeof this.props.location.state != "undefined"){
+           let new_state = this.props.location.state.conf
+           this.setState({
+                data_reading: new_state.data_reading,
+                similarity_join: new_state.similarity_join,
+                entity_clustering: new_state.entity_clustering
+           })
+        }
     }
 
     render() {

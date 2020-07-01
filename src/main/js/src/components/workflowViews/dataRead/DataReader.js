@@ -18,7 +18,6 @@ import axios from 'axios'
         this.setEntity = this.setEntity.bind(this)
 
         this.alertText = "Select an ER Mode"
-
         if (this.props.state !== null){
             this.state = { 
                 er_mode : this.props.state.er_mode,
@@ -37,6 +36,19 @@ import axios from 'axios'
             }
         }
     }
+
+
+   /* componentDidUpdate(){
+        console.log("---> ", this.props.state)
+        if (this.props.state !== null){
+            this.setState ({ 
+                er_mode : this.props.state.er_mode,
+                entity1_set : this.props.state.entity1_set,
+                entity2_set : this.props.state.entity2_set,
+                groundTruth_set : this.props.state.groundTruth_set
+            })
+        }
+    }*/
 
     // Set er_mode and based on that it disables the second profileReader
     onChange = (e) => {

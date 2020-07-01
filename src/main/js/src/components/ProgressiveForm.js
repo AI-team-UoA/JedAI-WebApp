@@ -16,82 +16,92 @@ import '../../../resources/static/css/main.css'
 
 class ProgressiveForm extends Component {
 
-    // Default states of the workflow stages
-    state = {
-        
-        data_reading: null,
+    constructor(...args){
+        super(...args);
 
+        if(typeof args[0].location.state != "undefined"){
+            let new_state = args[0].location.state.conf
+            this.state ={
+                data_reading: new_state.data_reading,
+                schema_clustering: new_state.schema_clustering,
+                block_building: new_state.block_building,
+                block_cleaning: new_state.block_cleaning,
+                comparison_cleaning: new_state.comparison_cleaning,
+                prioritization: new_state.prioritization,
+                entity_matching: new_state.entity_matching,
+                entity_clustering: new_state.entity_clustering
+            }
+        }
+        else{
 
-        schema_clustering:  {
-            method_name: "NO_SCHEMA_CLUSTERING",
-            configuration_type: "Default",
-            label: "No Schema Clustering",
-            parameters: [
-                {
-                    label: "Representation Model",
-                    value: "TOKEN_UNIGRAM_GRAPHS"
+            // Default states of the workflow stages
+            this.state = {
+                data_reading: null,
+                schema_clustering:  {
+                    method_name: "NO_SCHEMA_CLUSTERING",
+                    configuration_type: "Default",
+                    label: "No Schema Clustering",
+                    parameters: [
+                        {
+                            label: "Representation Model",
+                            value: "TOKEN_UNIGRAM_GRAPHS"
+                        },
+                        {
+                            label: "Similarity Measure",
+                            value: "GRAPH_VALUE_SIMILARITY"
+                        }
+                    ]
                 },
-                {
-                    label: "Similarity Measure",
-                    value: "GRAPH_VALUE_SIMILARITY"
-                }
-            ]
-        },
-        
-        block_building: [],
-        
-        block_cleaning: [],
-
-        comparison_cleaning: {
-            method_name: "NO_CLEANING",
-            configuration_type: "Default",
-            label: "No Cleaning",
-            parameters: []
-        },
-
-        prioritization:  {
-            method_name: "PROGRESSIVE_BLOCK_SCHEDULING",
-            configuration_type: "Default",
-            label: "Progressive Block Scheduling",
-            parameters: [
-                {
-                    label: "Budget",
-                    value: "10000"
+                block_building: [],
+                block_cleaning: [],
+                comparison_cleaning: {
+                    method_name: "NO_CLEANING",
+                    configuration_type: "Default",
+                    label: "No Cleaning",
+                    parameters: []
                 },
-                {
-                    label: "Weighting Scheme",
-                    value: "JS"
-                }
-            ]
-        },
-
-        
-        entity_matching:  {
-            method_name: "PROFILE_MATCHER",
-            configuration_type: "Default",
-            label: "Profile Matcher",
-            parameters: [
-                {
-                    label: "Representation Model",
-                    value: "TOKEN_UNIGRAM_GRAPHS"
+                prioritization:  {
+                    method_name: "PROGRESSIVE_BLOCK_SCHEDULING",
+                    configuration_type: "Default",
+                    label: "Progressive Block Scheduling",
+                    parameters: [
+                        {
+                            label: "Budget",
+                            value: "10000"
+                        },
+                        {
+                            label: "Weighting Scheme",
+                            value: "JS"
+                        }
+                    ]
                 },
-                {
-                    label: "Similarity Measure",
-                    value: "GRAPH_VALUE_SIMILARITY"
+                entity_matching:  {
+                    method_name: "PROFILE_MATCHER",
+                    configuration_type: "Default",
+                    label: "Profile Matcher",
+                    parameters: [
+                        {
+                            label: "Representation Model",
+                            value: "TOKEN_UNIGRAM_GRAPHS"
+                        },
+                        {
+                            label: "Similarity Measure",
+                            value: "GRAPH_VALUE_SIMILARITY"
+                        }
+                    ]
+                },
+                entity_clustering: {
+                    method_name: "CENTER_CLUSTERING",
+                    configuration_type: "Default",
+                    label: "Center Clustering",
+                    parameters  : [
+                        {
+                            label: "Similarity Threshold",
+                            value: "0.5"
+                        }
+                    ]
                 }
-            ]
-        },
-        
-        entity_clustering: {
-            method_name: "CENTER_CLUSTERING",
-            configuration_type: "Default",
-            label: "Center Clustering",
-            parameters  : [
-                {
-                    label: "Similarity Threshold",
-                    value: "0.5"
-                }
-            ]
+            }
         }
     }
     
@@ -103,7 +113,13 @@ class ProgressiveForm extends Component {
         })
     }
 
+    componentDidMount(){
+        if (typeof this.props.location.state != "undefined")
+        console.log(this.props.location.state.conf)
+    }
+
     render() {
+        
         var er_mode = "dirty"
         if (this.state.data_reading !== null)
             er_mode = this.state.data_reading.er_mode

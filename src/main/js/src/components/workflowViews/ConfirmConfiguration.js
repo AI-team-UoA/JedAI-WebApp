@@ -5,16 +5,18 @@ import ConfigurationsView from './utilities/ConfigurationsView'
 import {Link, withRouter } from 'react-router-dom';
 import {Button} from 'react-bootstrap/'
 import axios from 'axios';
+import { Redirect } from 'react-router';
+
 
 class ConfirmConfiguration extends Component {
-
 
     constructor(...args) {
         super(...args)
         this.setData()
 
         this.state = {
-            data : null
+            data : null,
+            redirect: false
         } 
 
         this.setData()
@@ -32,11 +34,16 @@ class ConfirmConfiguration extends Component {
         })
     }
    
-    storeWorkflow = () => axios.get("/workflow/store").then(r => {if (r.data === true) this.props.history.push("/workflow")})
+    storeWorkflow = () => axios.get("/workflow/store").then(r => {if (r.data === true) this.setState({redirect: true})})
 
 
     render() {
         window.scrollTo(0, 0)
+
+        if (this.state.redirect) {
+            return <Redirect to={{pathname: "/workflow", state:{conf: this.props.state}}} />;
+          }
+
         return (
             <div>
                 <br/>

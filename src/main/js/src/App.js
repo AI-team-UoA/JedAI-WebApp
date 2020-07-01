@@ -34,10 +34,10 @@ class App extends Component {
                 <Route exact path="/"  render={props=>(<React.Fragment ><Modes /></React.Fragment>)}/>
                 <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
                 <Route exact path="/selectworkflow" render={props=>(  <WorkflowSelection/> )}/>
-                <Route exact path="/workflow" render={props=>(  <ExecutionView/> )}/>
-                <Route exact path="/blockingbased" render={props=>(  <BlockingForm/> )}/>
-                <Route exact path="/joinbased" render={props=> (<JoinForm />) }/>
-                <Route exact path="/progressive" render={props=>(  <ProgressiveForm/> )}/>
+                <Route exact path="/workflow" render={props=>(  <ExecutionView {...props}/> )}/>
+                <Route exact path="/blockingbased" render={props=>(  <BlockingForm {...props}/> )}/>
+                <Route exact path="/joinbased" render={props=> (<JoinForm {...props}/>) }/>
+                <Route exact path="/progressive" render={props=>(  <ProgressiveForm {...props}/> )}/>
                 <Route exact path="/*" render={props=>(  <ErrorComponent/> )}/>
               </Switch>
             </div>

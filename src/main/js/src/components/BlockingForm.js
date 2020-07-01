@@ -15,74 +15,88 @@ import '../../../resources/static/css/main.css'
 
 class BlockingForm extends Component {
 
-    // Default states of the workflow stages
-    state = {
-        
-        data_reading: null,
 
-
-        schema_clustering:  {
-            method_name: "NO_SCHEMA_CLUSTERING",
-            configuration_type: "Default",
-            label: "No Schema Clustering",
-            parameters: [
-                {
-                    label: "Representation Model",
-                    value: "TOKEN_UNIGRAM_GRAPHS"
+    constructor(...args){
+        super(...args);
+        if(typeof args[0].location.state != "undefined"){
+            let new_state = args[0].location.state.conf
+            this.state ={
+                data_reading: new_state.data_reading,
+                schema_clustering: new_state.schema_clustering,
+                block_building: new_state.block_building,
+                block_cleaning: new_state.block_cleaning,
+                comparison_cleaning: new_state.comparison_cleaning,
+                entity_matching: new_state.entity_matching,
+                entity_clustering: new_state.entity_clustering
+            }
+        }
+        else{
+        // Default states of the workflow stages
+            this.state = {
+                data_reading: null,
+                schema_clustering:  {
+                    method_name: "NO_SCHEMA_CLUSTERING",
+                    configuration_type: "Default",
+                    label: "No Schema Clustering",
+                    parameters: [
+                        {
+                            label: "Representation Model",
+                            value: "TOKEN_UNIGRAM_GRAPHS"
+                        },
+                        {
+                            label: "Similarity Measure",
+                            value: "GRAPH_VALUE_SIMILARITY"
+                        }
+                    ]
                 },
-                {
-                    label: "Similarity Measure",
-                    value: "GRAPH_VALUE_SIMILARITY"
-                }
-            ]
-        },
-        
-        block_building: [],
-        
-        block_cleaning: [],
-
-        comparison_cleaning: {
-            method_name: "NO_CLEANING",
-            configuration_type: "Default",
-            label: "No Cleaning",
-            parameters: []
-        },
-        
-        entity_matching:  {
-            method_name: "PROFILE_MATCHER",
-            configuration_type: "Default",
-            label: "Profile Matcher",
-            parameters: [
-                {
-                    label: "Representation Model",
-                    value: "TOKEN_UNIGRAM_GRAPHS"
+                block_building: [],
+                block_cleaning: [],
+                comparison_cleaning: {
+                    method_name: "NO_CLEANING",
+                    configuration_type: "Default",
+                    label: "No Cleaning",
+                    parameters: []
                 },
-                {
-                    label: "Similarity Measure",
-                    value: "GRAPH_VALUE_SIMILARITY"
+                entity_matching:  {
+                    method_name: "PROFILE_MATCHER",
+                    configuration_type: "Default",
+                    label: "Profile Matcher",
+                    parameters: [
+                        {
+                            label: "Representation Model",
+                            value: "TOKEN_UNIGRAM_GRAPHS"
+                        },
+                        {
+                            label: "Similarity Measure",
+                            value: "GRAPH_VALUE_SIMILARITY"
+                        }
+                    ]
+                },
+                entity_clustering: {
+                    method_name: "CENTER_CLUSTERING",
+                    configuration_type: "Default",
+                    label: "Center Clustering",
+                    parameters  : [
+                        {
+                            label: "Similarity Threshold",
+                            value: "0.5"
+                        }
+                    ]
                 }
-            ]
-        },
-        
-        entity_clustering: {
-            method_name: "CENTER_CLUSTERING",
-            configuration_type: "Default",
-            label: "Center Clustering",
-            parameters  : [
-                {
-                    label: "Similarity Threshold",
-                    value: "0.5"
-                }
-            ]
+            }
         }
     }
-    
 
     // Get data from child components
     submitState = (state_name, state_value) =>{
         this.setState({
             [state_name]: state_value
         })
+    }
+
+    componentDidMount(){
+        if (typeof this.props.location.state != "undefined")
+        console.log(this.props.location.state.conf)
     }
 
     render() {

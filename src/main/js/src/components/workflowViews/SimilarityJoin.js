@@ -29,10 +29,17 @@ class SimilarityJoin extends Component {
             var h1 = res.data[0]            
             if (this.props.clean_er){
                 var h2 = res.data[1]
-                this.setState({headers1: h1, headers2: h2, attribute1: h1[0], attribute2: h2[0]})
+                if (this.state.attribute1 != "" && this.state.attribute2 != "")
+                    this.setState({headers1: h1, headers2: h2})
+                else
+                    this.setState({headers1: h1, headers2: h2, attribute1: h1[0], attribute2: h2[0]})
             }
-            else
-                this.setState({headers1: h1, attribute1: h1[0]})
+            else{
+                if (this.state.attribute1 != "")
+                    this.setState({headers1: h1})
+                else
+                    this.setState({headers1: h1, attribute1: h1[0]})
+            }
         })
     }
 
