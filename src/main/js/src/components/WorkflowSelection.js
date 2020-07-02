@@ -1,19 +1,79 @@
 import React, { Component } from 'react'
-import {Jumbotron, Button} from 'react-bootstrap';
+import {Jumbotron, Button, Modal} from 'react-bootstrap';
 import {Link } from 'react-router-dom';
 import axios from 'axios';
-
+import TestSelection from './TestSelection'
+import { Redirect } from 'react-router';
 
 class WorkflowSelection extends Component {
+
+    state ={
+        show_test_modal: false,
+        er_mode: "",
+        wf_mode: "",
+        dt_choice: "",
+        redirect_path: "/",
+        new_state: null,
+        redirect: false
+    }
+
+    onChange = (e) => {
+        this.setState({[e.target.name]: e.target.value})
+        if (e.target.name == "er_mode")
+            this.setState({dt_choice: ""})
+    }
+
+    close_test_window = () => {
+        axios.get("/test/get/" + this.state.er_mode + "/" + this.state.wf_mode + "/" + this.state.dt_choice)
+        .then((res) => {
+            var path = "/"
+            if (this.state.wf_mode == "Blocking-based")
+                path = "/blockingbased"
+            else
+                path = "/joinbased"
+            this.setState({
+                redirect_path: path,
+                new_state: res.data, 
+                redirect: true,
+                show_test_modal : false
+            })
+        })
+
+    }
+    open_test_window = () => this.setState({show_test_modal : true});
+
     render() {
+       
+        if (this.state.redirect) {
+            return <Redirect to={{pathname: this.state.redirect_path, state:{conf: this.props.new_state}}} />;
+          }
+
         return (
             <div >
+
+                <Modal className="grey-modal" show={this.state.show_test_modal} onHide={this.close_test_window} size="lg">
+                    <Modal.Header closeButton>
+                    <Modal.Title>Select Test to execute {this.state.workflowID}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body >
+                        <TestSelection er_mode={this.state.er_mode} wf_mode={this.state.wf_mode} dt_choice={this.state.dt_choice} change={this.onChange}/>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" 
+                        disabled={this.state.dt_choice == "" || this.state.er_mode == "" || this.state.er_mode == ""}  
+                        onClick={this.close_test_window}>
+                            Confirm
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+
                 <Jumbotron  className='jumbotron_2'>
                     <div className="container-fluid">
                     <br/>
                 <div style={{marginBottom:"5px"}}> 
                     <h1 style={{display:'inline', marginRight:"20px"}}>Select Workflow</h1> 
-                    <span className="workflow-desc" >Select one of the three available workflows.</span>
+                    <span className="workflow-desc" >Select one of the three available workflows, or you can choose to execute one of the existing tests.</span>
                 </div>
 
                 <br/>
@@ -67,8 +127,14 @@ class WorkflowSelection extends Component {
                 
                 </div>
             </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <Button style={{float: 'right'}} onClick={this.open_test_window} >Run tests</Button>
         </Jumbotron>
-   </div>
+        
+        </div>
         )
     }
 }

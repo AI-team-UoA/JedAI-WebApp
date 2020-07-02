@@ -10,7 +10,7 @@ import JoinForm from './components/JoinForm'
 import ExecutionView from './components/ExecutionView'
 import ErrorComponent from './components/ErrorComponent'
 import ProgressiveForm from './components/ProgressiveForm'
-
+import TestSelection from './components/TestSelection'
 
 
 
@@ -24,7 +24,6 @@ class App extends Component {
 
  
     render() {
-
         return (
           <Router>
             <div className="App">
