@@ -98,6 +98,60 @@ class ConfigureCSV extends Component {
         const first_col = 4
         const second_col = 6
 
+        if (this.props.entity_id != "3"){
+        var conf = 
+                <div>
+                <Form.Row className="form-row">
+                <Col sm={empty_col} />
+                <Col sm={first_col} >
+                    <Form.Label >Id index</Form.Label> 
+                </Col>
+                <Col sm={second_col}>
+                    <FormControl 
+                        type="text" 
+                        name="id_index" 
+                        value={this.state.id_index} 
+                        onChange={this.onChange}
+                        isInvalid={isNaN(this.state.id_index) || this.state.id_index === "" }
+                    />
+                </Col>
+            </Form.Row>
+
+            <Form.Row className="form-row">
+                <Col sm={empty_col} />
+                <Col sm={first_col} >
+                    <Form.Label >Attributes to Exclude</Form.Label> 
+                </Col>
+                <Col sm={second_col}>
+                    <InputGroup >
+                        <FormControl 
+                            type="text" 
+                            name="excluded_attr"   
+                            aria-describedby="basic-addon2" 
+                            disabled={this.state.filename === ""}   
+                            value={this.excluded_attr_value}
+                            onChange={this.excludedAttr_change}                     
+                        />
+                        <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
+                            <Button disabled={this.state.filename === ""} onClick={this.addExcludedItem}>Add</Button>
+                        </div>
+                    </InputGroup>
+                </Col>
+            </Form.Row>
+            <Form.Row className="form-row">
+                <Col sm={empty_col} />
+                <Col sm={first_col} />
+                <Col sm={second_col}>
+                    <ListGroup>
+                        {this.state.excluded_attr.map((attr, index) => (<ListGroup.Item key={index}> 
+                            <span style={{color:"#990000"}}>Exclude Item with ID: </span>{attr} <Button onClick={this.removeExcludedItem.bind(this, attr)} className="X_btnStyle">X</Button></ListGroup.Item>))}
+                    </ListGroup>                        
+                </Col>
+            </Form.Row>
+            </div>
+    }
+    else{ var conf = <div/> }
+
         return (
             <div>
                 <div style ={{textAlign:'center'}}>
@@ -166,53 +220,7 @@ class ConfigureCSV extends Component {
                         </Col>
                     </Form.Row>
 
-                    <Form.Row className="form-row">
-                        <Col sm={empty_col} />
-                        <Col sm={first_col} >
-                            <Form.Label >Id index</Form.Label> 
-                        </Col>
-                        <Col sm={second_col}>
-                            <FormControl 
-                                type="text" 
-                                name="id_index" 
-                                value={this.state.id_index} 
-                                onChange={this.onChange}
-                                isInvalid={isNaN(this.state.id_index) || this.state.id_index === "" }
-                            />
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Row className="form-row">
-                        <Col sm={empty_col} />
-                        <Col sm={first_col} >
-                            <Form.Label >Attributes to Exclude</Form.Label> 
-                        </Col>
-                        <Col sm={second_col}>
-                            <InputGroup >
-                                <FormControl 
-                                    type="text" 
-                                    name="excluded_attr"   
-                                    aria-describedby="basic-addon2" 
-                                    disabled={this.state.filename === ""}   
-                                    value={this.excluded_attr_value}
-                                    onChange={this.excludedAttr_change}                     
-                                />
-                                <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
-                                    <Button disabled={this.state.filename === ""} onClick={this.addExcludedItem}>Add</Button>
-                                </div>
-                            </InputGroup>
-                        </Col>
-                    </Form.Row>
-                    <Form.Row className="form-row">
-                        <Col sm={empty_col} />
-                        <Col sm={first_col} />
-                        <Col sm={second_col}>
-                            <ListGroup>
-                                {this.state.excluded_attr.map((attr, index) => (<ListGroup.Item key={index}> 
-                                    <span style={{color:"#990000"}}>Exclude Item with ID: </span>{attr} <Button onClick={this.removeExcludedItem.bind(this, attr)} className="X_btnStyle">X</Button></ListGroup.Item>))}
-                            </ListGroup>                        
-                        </Col>
-                    </Form.Row>
+                    {conf}
                 </div>
 
 
@@ -227,7 +235,8 @@ class ConfigureCSV extends Component {
 
 
 ConfigureCSV.propTypes = {
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    entity_id: PropTypes.string.isRequired
   }
 
 export default ConfigureCSV

@@ -66,7 +66,7 @@ public class Reader {
 	        
 		case "CSV":
 			this.first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
-			this.separator = ((String) configurations.getFirst("separator"));
+			this.separator = ((String) configurations.getFirst("separator")).replace("\"", "");
 			this.id_index = Integer.parseInt(((String) configurations.getFirst("id_index")).replace("\"", ""));
 			
 		case "RDF":
@@ -154,7 +154,7 @@ public class Reader {
 			
         EntityCSVReader csvReader = new EntityCSVReader(filepath);
         csvReader.setAttributeNamesInFirstRow(first_row);
-        csvReader.setSeparator(separator.charAt(1));
+        csvReader.setSeparator(separator.charAt(0));
         csvReader.setIdIndex(id_index);
         csvReader.setAttributesToExclude(excluded);
         

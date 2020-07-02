@@ -95,7 +95,7 @@ class Configurations extends Component {
         var configureSource
         switch(this.props.filetype) {
             case "CSV":
-                configureSource =  <ConfigureCSV  onChange={this.onChange} />
+                configureSource =  <ConfigureCSV  onChange={this.onChange} entity_id={this.props.entity_id}/>
                 break;
             case "Database":
                 configureSource  = <ConfigureRDB  onChange={this.onChange}/>
