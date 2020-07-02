@@ -26,6 +26,7 @@ class WorkflowSelection extends Component {
     close_test_window = () => {
         axios.get("/test/get/" + this.state.er_mode + "/" + this.state.wf_mode + "/" + this.state.dt_choice)
         .then((res) => {
+            console.log(res.data)
             var path = "/"
             if (this.state.wf_mode == "Blocking-based")
                 path = "/blockingbased"
@@ -45,7 +46,7 @@ class WorkflowSelection extends Component {
     render() {
        
         if (this.state.redirect) {
-            return <Redirect to={{pathname: this.state.redirect_path, state:{conf: this.props.new_state}}} />;
+            return <Redirect to={{pathname: this.state.redirect_path, state:{conf: this.state.new_state}}} />;
           }
 
         return (
