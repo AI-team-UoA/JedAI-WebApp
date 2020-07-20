@@ -1,0 +1,11 @@
+{
+	"data_reading":{
+		"er_mode":"clean",
+		"entity1_set":{"source":"data/CleanClean_ER/Amazon-Gp/amazonProfiles","configurations":{"file":{},"filename":"amazonProfiles","excluded_attr":[]},"filetype":"Serialized"},
+		"entity2_set":{"source":"data/CleanClean_ER/Amazon-Gp/gpProfiles","configurations":{"file":{},"filename":"gpProfiles","excluded_attr":[]},"filetype":"Serialized"},
+		"groundTruth_set":{"source":"data/CleanClean_ER/Amazon-Gp/amazonGpIdDuplicates","configurations":{"file":{},"filename":"amazonGpIdDuplicates","excluded_attr":[]},"filetype":"Serialized"},
+		"alertShow":false
+	},
+	"similarity_join":{"method":{"name":"PPJOIN","label":"PPJoin","parameters":[{"label":"Similarity Threshold","value":"0.45"}]},"attribute1":"title","attribute2":"title","headers1":["price","description","title","manufacturer"],"headers2":["price","description","title","manufacturer"],"alertShow":false},
+	"entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Manual","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.45"}]}
+}

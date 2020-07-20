@@ -1,0 +1,11 @@
+{
+	"data_reading":{
+		"er_mode":"clean",
+		"entity1_set":{"source":"data/CleanClean_ER/DBLP-ACM/dblpProfiles","configurations":{"file":{},"filename":"dblpProfiles","excluded_attr":[]},"filetype":"Serialized"},
+		"entity2_set":{"source":"data/CleanClean_ER/DBLP-ACM/acmProfiles","configurations":{"file":{},"filename":"acmProfiles","excluded_attr":[]},"filetype":"Serialized"},
+		"groundTruth_set":{"source":"data/CleanClean_ER/DBLP-ACM/dblpAcmIdDuplicates","configurations":{"file":{},"filename":"dblpAcmIdDuplicates","excluded_attr":[]},"filetype":"Serialized"}
+		,"alertShow":false
+	},
+	"similarity_join":{"method":{"name":"PPJOIN","label":"PPJoin","parameters":[{"label":"Similarity Threshold","value":"0.8"}]},"attribute1":"title","attribute2":"title","headers1":["venue","year","title","authors"],"headers2":["venue","year","title","authors"],"alertShow":false},
+	"entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Manual","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.8"}]}
+}

@@ -1,0 +1,11 @@
+{
+	"data_reading":{
+		"er_mode":"clean",
+		"entity1_set":{"source":"data/CleanClean_ER/Restaurants/restaurant1Profiles","configurations":{"file":{},"filename":"restaurant1Profiles","excluded_attr":[]},"filetype":"Serialized"},
+		"entity2_set":{"source":"data/CleanClean_ER/Restaurants/restaurant2Profiles","configurations":{"file":{},"filename":"restaurant2Profiles","excluded_attr":[]},"filetype":"Serialized"},
+		"groundTruth_set":{"source":"data/CleanClean_ER/Restaurants/restaurantsIdDuplicates","configurations":{"file":{},"filename":"restaurantsIdDuplicates","excluded_attr":[]},"filetype":"Serialized"},
+		"alertShow":false
+	},
+	"similarity_join":{"method":{"name":"PPJOIN","label":"PPJoin","parameters":[{"label":"Similarity Threshold","value":"0.9"}]},"attribute1":"http://www.okkam.org/ontology_restaurant1.owl#phone_number","attribute2":"http://www.okkam.org/ontology_restaurant2.owl#phone_number","headers1":["http://www.okkam.org/ontology_restaurant1.owl#name","http://www.okkam.org/ontology_restaurant1.owl#category","http://www.okkam.org/ontology_restaurant1.owl#has_address","http://www.okkam.org/ontology_restaurant1.owl#street","http://www.okkam.org/ontology_restaurant1.owl#is_in_city","http://www.okkam.org/ontology_restaurant1.owl#phone_number","http://www.w3.org/1999/02/22-rdf-syntax-ns#type"],"headers2":["http://www.okkam.org/ontology_restaurant2.owl#street","http://www.okkam.org/ontology_restaurant2.owl#has_category","http://www.okkam.org/ontology_restaurant2.owl#name","http://www.okkam.org/ontology_restaurant2.owl#has_address","http://www.okkam.org/ontology_restaurant2.owl#city","http://www.w3.org/1999/02/22-rdf-syntax-ns#type","http://www.okkam.org/ontology_restaurant2.owl#phone_number"],"alertShow":false},
+	"entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Manual","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.9"}]}
+}
