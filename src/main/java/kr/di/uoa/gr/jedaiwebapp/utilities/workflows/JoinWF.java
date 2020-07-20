@@ -8,6 +8,8 @@ import com.github.andrewoma.dexx.collection.Map;
 
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
+import org.scify.jedai.datamodel.Attribute;
+import org.scify.jedai.datamodel.EntityProfile;
 import org.scify.jedai.datamodel.EquivalenceCluster;
 import org.scify.jedai.datamodel.SimilarityPairs;
 import org.scify.jedai.entityclustering.IEntityClustering;
@@ -81,6 +83,44 @@ public class JoinWF {
 	public static void setEntityClustering(IEntityClustering ec) {
 		entity_clustering = ec;
 	}
+
+
+	/**
+	 * flatten profiles
+	 * @param profiles
+	 * @return list of flatten profiles
+	 */
+	public static List<EntityProfile> getFlatProfiles(List<EntityProfile> profiles) {
+
+        final List<EntityProfile> flatProfiles = new ArrayList<>();
+        for (final EntityProfile p : profiles) {
+            String totalValue = getAggregateValues(p);
+
+            final EntityProfile newProfile = new EntityProfile(p.getEntityUrl());
+            newProfile.addAttribute("all", totalValue);
+            flatProfiles.add(newProfile);
+        }
+
+        return flatProfiles;
+    }
+
+	/**
+	 * flatten all attributes of a profiles
+	 * @param profile
+	 * @return a flatten profile
+	 */
+    static String getAggregateValues(EntityProfile profile) {
+        final StringBuilder sb = new StringBuilder();
+        for (Attribute attribute : profile.getAttributes()) {
+            String[] tokens = attribute.getValue().toLowerCase().split("[\\W_]");
+            for (String token : tokens) {
+                if (0 < token.trim().length()) {
+                    sb.append(token).append(" ");
+                }
+            }
+        }
+        return sb.toString().trim();
+    }
     
 
 
@@ -116,18 +156,37 @@ public class JoinWF {
 
 			SimilarityPairs simPairs;
 			if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER)) {
+				// if input attribute is "all" then we flatten the profiles
+				List<EntityProfile> profilesD1;
+				if(join_attributes.get(0).equals("all"))
+					profilesD1 = getFlatProfiles(WorkflowManager.profilesD1);
+				else
+					profilesD1 = WorkflowManager.profilesD1;
+
 				simPairs = similarity_join_method.executeFiltering(
                     join_attributes.get(0),
-                    WorkflowManager.profilesD1
-				);
-			} else {
+                    profilesD1);
+			} 
+			else {
 				details_manager.print_Sentence("D1 Attribute: " + join_attributes.get(0));
+				// if input attribute is "all" then we flatten the profiles
+				List<EntityProfile> profilesD1, profilesD2;
+				if(join_attributes.get(0).equals("all"))
+					profilesD1 = getFlatProfiles(WorkflowManager.profilesD1);
+				else
+					profilesD1 = WorkflowManager.profilesD1;
+				
+				if(join_attributes.get(1).equals("all"))
+					profilesD2 = getFlatProfiles(WorkflowManager.profilesD2);
+				else
+					profilesD2 = WorkflowManager.profilesD2;
+
+
 				simPairs = similarity_join_method.executeFiltering(
                         join_attributes.get(0),
 						join_attributes.get(1),
-						WorkflowManager.profilesD1,
-						WorkflowManager.profilesD2
-				);
+						profilesD1,
+						profilesD2);
 			}
 
 			if (interrupt(interrupted)) {

@@ -30,6 +30,7 @@ import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethod;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.StaticReader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
@@ -40,7 +41,6 @@ import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 public class WorkflowController {
 	
 	Map<String, Object> methodsConfig;	
-	static List<Map<String, Object>> datasetsConfig = new ArrayList<Map<String, Object>>();
 	private WorkflowConfiguration workflowConfiguration;
 	
 	@Autowired
@@ -61,7 +61,6 @@ public class WorkflowController {
 	
 	@GetMapping("workflow/set_mode/{wf_mode}")
 	public void setWorkflowMode(@PathVariable(value = "wf_mode") String wf_mode){ 
-		System.out.println(wf_mode);
 		WorkflowManager.wf_mode = wf_mode; 
 	}
 
@@ -71,34 +70,36 @@ public class WorkflowController {
      * @return true if the configurations of data read ware set correctly 
      */	
 	@GetMapping("/workflow/validate/dataread")	
-	public boolean validate_DataRead() {
+	public boolean validateDataRead() {
 		workflowConfiguration = new WorkflowConfiguration();
 		methodsConfig = new HashMap<String, Object>();
 		WorkflowManager.clean();
 		
 		methodsConfig.put("mode", WorkflowManager.er_mode); 
-		for (Map<String, Object> datasetConfig : datasetsConfig) {
-			Dataset dt = new Dataset(datasetConfig);
-			String entityID = dt.getEntity_id();
-			switch (entityID) {
-				case "1": 
-					methodsConfig.put("d1", dt);
-					break;
-				case "2": 
-					methodsConfig.put("d2", dt);
-					break;
-				case "3": 
-					methodsConfig.put("gt", dt);
-					break;
-			}
-		}			
 		
 		switch(WorkflowManager.er_mode) {
 			case JedaiOptions.DIRTY_ER:
 				workflowConfiguration.setErMode(JedaiOptions.DIRTY_ER);
+				
+				if(StaticReader.datasetConf1 == null || StaticReader.datasetConfGT == null) return false;
+				Dataset dt = new Dataset(StaticReader.datasetConf1);
+				methodsConfig.put("d1", dt);
+				Dataset gtd = new Dataset(StaticReader.datasetConfGT);
+				methodsConfig.put("gt", gtd);
+				
 				return  WorkflowManager.profilesD1 != null && WorkflowManager.ground_truth != null;
+
 			case JedaiOptions.CLEAN_CLEAN_ER:
 				workflowConfiguration.setErMode(JedaiOptions.CLEAN_CLEAN_ER);
+
+				if(StaticReader.datasetConf1 == null || StaticReader.datasetConf2 == null || StaticReader.datasetConfGT == null) return false;
+				Dataset dt1 = new Dataset(StaticReader.datasetConf1);
+				methodsConfig.put("d1", dt1);
+				Dataset dt2 = new Dataset(StaticReader.datasetConf1);
+				methodsConfig.put("d2", dt2);
+				Dataset gtcc = new Dataset(StaticReader.datasetConfGT);
+				methodsConfig.put("gt", gtcc);
+
 				return  WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null && WorkflowManager.ground_truth != null;
 			default:
 				return false;
@@ -502,19 +503,17 @@ public class WorkflowController {
 	public boolean storeWorkflow() {
 		try {
 			workflowConfiguration.setWfMode(WorkflowManager.wf_mode);
-			for (Map<String, Object> datasetConfig : datasetsConfig) {
-				Dataset dt = new Dataset(datasetConfig);
-				dbm.storeOrUpdateDataset(dt);
-				String entityID = dt.getEntity_id();
-				switch (entityID) {
-					case "1": 
-						workflowConfiguration.setDatasetID1(dt.getId());
-					case "2": 
-						workflowConfiguration.setDatasetID2(dt.getId());
-					case "3": 
-						workflowConfiguration.setGtID(dt.getId());
-				}
+			Dataset dt1 = (Dataset) methodsConfig.get("d1");
+			dbm.storeOrUpdateDataset(dt1);
+			workflowConfiguration.setDatasetID1(dt1.getId());
+			if (WorkflowManager.er_mode.equals(JedaiOptions.CLEAN_CLEAN_ER)){
+				Dataset dt2 = (Dataset) methodsConfig.get("d2");
+				dbm.storeOrUpdateDataset(dt2);
+				workflowConfiguration.setDatasetID2(dt2.getId());
 			}
+			Dataset dtgt = (Dataset) methodsConfig.get("gt");
+			dbm.storeOrUpdateDataset(dtgt);
+			workflowConfiguration.setGtID(dtgt.getId());
 			
 			dbm.storeOrUpdateWC(workflowConfiguration);
 			WorkflowManager.workflowConfigurationsID = workflowConfiguration.getId();

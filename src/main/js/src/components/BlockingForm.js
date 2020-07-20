@@ -94,11 +94,6 @@ class BlockingForm extends Component {
         })
     }
 
-    componentDidMount(){
-        if (typeof this.props.location.state != "undefined")
-        console.log(this.props.location.state.conf)
-    }
-
     render() {
         var er_mode = "dirty"
         if (this.state.data_reading !== null)

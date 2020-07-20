@@ -28,11 +28,13 @@ import org.scify.jedai.blockprocessing.comparisoncleaning.WeightedEdgePruning;
 import org.scify.jedai.blockprocessing.comparisoncleaning.WeightedNodePruning;
 import org.scify.jedai.entityclustering.CenterClustering;
 import org.scify.jedai.entityclustering.ConnectedComponentsClustering;
+import org.scify.jedai.entityclustering.CorrelationClustering;
 import org.scify.jedai.entityclustering.CutClustering;
 import org.scify.jedai.entityclustering.IEntityClustering;
 import org.scify.jedai.entityclustering.MarkovClustering;
 import org.scify.jedai.entityclustering.MergeCenterClustering;
 import org.scify.jedai.entityclustering.RicochetSRClustering;
+import org.scify.jedai.entityclustering.RowColumnClustering;
 import org.scify.jedai.entityclustering.UniqueMappingClustering;
 import org.scify.jedai.entitymatching.GroupLinkage;
 import org.scify.jedai.entitymatching.IEntityMatching;
@@ -60,7 +62,6 @@ import org.scify.jedai.utilities.enumerations.RepresentationModel;
 import org.scify.jedai.utilities.enumerations.SimilarityMetric;
 import org.scify.jedai.utilities.enumerations.WeightingScheme;
 
-import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
@@ -350,7 +351,11 @@ public class DynamicMethodConfiguration {
 					Double.parseDouble((String) parameters.get(0).getValue())
 				);
 				break;
-				
+            case JedaiOptions.CORRELATION_CLUSTERING:
+				ecMethod = new CorrelationClustering(
+						Double.parseDouble((String) parameters.get(0).getValue())
+				);
+				break;	
 			case JedaiOptions.MARKOV_CLUSTERING:
 				
 				ecMethod = new MarkovClustering(
@@ -373,6 +378,11 @@ public class DynamicMethodConfiguration {
 				
 			case JedaiOptions.UNIQUE_MAPPING_CLUSTERING:
 				ecMethod = new UniqueMappingClustering(
+						Double.parseDouble((String) parameters.get(0).getValue()));
+                break;
+            
+            case JedaiOptions.ROW_COLUMN_CLUSTERING:
+				ecMethod = new RowColumnClustering(
 						Double.parseDouble((String) parameters.get(0).getValue()));
 				break;
 				

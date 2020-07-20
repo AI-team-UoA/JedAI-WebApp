@@ -26,11 +26,13 @@ import org.scify.jedai.blockprocessing.comparisoncleaning.WeightedEdgePruning;
 import org.scify.jedai.blockprocessing.comparisoncleaning.WeightedNodePruning;
 import org.scify.jedai.entityclustering.CenterClustering;
 import org.scify.jedai.entityclustering.ConnectedComponentsClustering;
+import org.scify.jedai.entityclustering.CorrelationClustering;
 import org.scify.jedai.entityclustering.CutClustering;
 import org.scify.jedai.entityclustering.IEntityClustering;
 import org.scify.jedai.entityclustering.MarkovClustering;
 import org.scify.jedai.entityclustering.MergeCenterClustering;
 import org.scify.jedai.entityclustering.RicochetSRClustering;
+import org.scify.jedai.entityclustering.RowColumnClustering;
 import org.scify.jedai.entityclustering.UniqueMappingClustering;
 import org.scify.jedai.prioritization.GlobalProgressiveSortedNeighborhood;
 import org.scify.jedai.prioritization.IPrioritization;
@@ -119,6 +121,9 @@ public class MethodConfigurations {
             case JedaiOptions.CUT_CLUSTERING:
                 method = new CutClustering();
                 break;
+            case JedaiOptions.CORRELATION_CLUSTERING:
+                method = new CorrelationClustering();
+                break;
             case JedaiOptions.MARKOV_CLUSTERING:
                 method = new MarkovClustering();
                 break;
@@ -130,6 +135,9 @@ public class MethodConfigurations {
                 break;
             case JedaiOptions.UNIQUE_MAPPING_CLUSTERING:
                 method = new UniqueMappingClustering();
+                break;
+            case JedaiOptions.ROW_COLUMN_CLUSTERING:
+                method = new RowColumnClustering();
                 break;
             default:
             	System.out.println("ERROR: Entity clustering method does not exist: " + methodName);

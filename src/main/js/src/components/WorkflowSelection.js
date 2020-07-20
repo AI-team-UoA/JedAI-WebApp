@@ -9,37 +9,50 @@ class WorkflowSelection extends Component {
 
     state ={
         show_test_modal: false,
+
+        test_type: "",
         er_mode: "",
         wf_mode: "",
         dt_choice: "",
+
         redirect_path: "/",
         new_state: null,
         redirect: false
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]: e.target.value})
-        if (e.target.name == "er_mode")
-            this.setState({dt_choice: ""})
+        if (e.target.name == "test_type"){
+            this.setState({[e.target.name]: e.target.value, er_mode: "dirty", wf_mode: "", dt_choice: ""})
+        }
+        else if (e.target.name == "er_mode")
+            this.setState({[e.target.name]: e.target.value, dt_choice: ""})
+        else
+            this.setState({[e.target.name]: e.target.value})
     }
 
     close_test_window = () => {
-        axios.get("/test/get/" + this.state.er_mode + "/" + this.state.wf_mode + "/" + this.state.dt_choice)
-        .then((res) => {
-            console.log(res.data)
-            var path = "/"
-            if (this.state.wf_mode == "Blocking-based")
-                path = "/blockingbased"
-            else
-                path = "/joinbased"
+        console.log("in")
+        if (this.state.test_type == "" || this.state.dt_choice == "" || this.state.er_mode == "" || this.state.wf_mode == ""){
             this.setState({
-                redirect_path: path,
-                new_state: res.data, 
-                redirect: true,
                 show_test_modal : false
             })
-        })
-
+        }
+        else{
+            axios.get("/test/get/" + this.state.test_type + "/" + this.state.er_mode + "/" + this.state.wf_mode + "/" + this.state.dt_choice)
+            .then((res) => {
+                var path = "/"
+                if (this.state.wf_mode == "Best Blocking-based" || this.state.wf_mode == "Default Blocking-based")
+                    path = "/blockingbased"
+                else
+                    path = "/joinbased" // todo add new case "default"
+                this.setState({
+                    redirect_path: path,
+                    new_state: res.data, 
+                    redirect: true,
+                    show_test_modal : false
+                })
+            })
+        }
     }
     open_test_window = () => this.setState({show_test_modal : true});
 
@@ -51,17 +64,16 @@ class WorkflowSelection extends Component {
 
         return (
             <div >
-
                 <Modal className="grey-modal" show={this.state.show_test_modal} onHide={this.close_test_window} size="lg">
                     <Modal.Header closeButton>
                     <Modal.Title>Select Test to execute {this.state.workflowID}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body >
-                        <TestSelection er_mode={this.state.er_mode} wf_mode={this.state.wf_mode} dt_choice={this.state.dt_choice} change={this.onChange}/>
+                        <TestSelection test_type={this.state.test_type} er_mode={this.state.er_mode} wf_mode={this.state.wf_mode} dt_choice={this.state.dt_choice} change={this.onChange}/>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="primary" 
-                        disabled={this.state.dt_choice == "" || this.state.er_mode == "" || this.state.er_mode == ""}  
+                        disabled={this.state.dt_choice == "" || this.state.er_mode == "" || this.state.wf_mode == ""}  
                         onClick={this.close_test_window}>
                             Confirm
                         </Button>

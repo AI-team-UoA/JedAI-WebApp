@@ -9,7 +9,7 @@ import Explorer from './workflowViews/utilities/explorer/Explorer'
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import Workbench from './Workbench'
-import ConfigurationView from './workflowViews/utilities/ConfigurationsView'
+import ConfigurationsView from './workflowViews/utilities/ConfigurationsView'
 import Plot from 'react-plotly.js';
 
 
@@ -446,7 +446,7 @@ class ExecutionView extends Component {
                     <Modal.Title>Configurations of Workflow {this.state.workflowID}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body >
-                        <ConfigurationView state={this.state.workflow_configurations} />
+                        <ConfigurationsView state={this.state.workflow_configurations} />
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="primary" onClick={this.close_configuration_modal}>

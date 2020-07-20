@@ -87,6 +87,10 @@ class EntityClustering extends Component {
         {
             value: "RICOCHET_SR_CLUSTERING",
             label: "Ricochet SR Clustering"
+        },
+        {
+            value: "CORRELATION_CLUSTERING",
+            label: "Correlation Clustering"
         }
     ]
 
@@ -95,6 +99,14 @@ class EntityClustering extends Component {
         {
             value: "UNIQUE_MAPPING_CLUSTERING",
             label: "Unique Mapping Clustering"
+        },
+        {
+            value: "MERGE_CENTER_CLUSTERING",
+            label: "Merge-Center Clustering"
+        },
+        {
+            value: "ROW_COLUMN_CLUSTERING",
+            label: "Row Column Clustering"
         }
     ]
 

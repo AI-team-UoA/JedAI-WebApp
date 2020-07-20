@@ -5,10 +5,14 @@ public class JedaiOptions {
 	
 	
 	 // Workflows
-     public static final String WORKFLOW_BLOCKING_BASED = "Blocking-based";
+     public static final String DEFAULT_WORKFLOW_BLOCKING_BASED = "Default Blocking-based";
      public static final String WORKFLOW_JOIN_BASED = "Join-based";
      public static final String WORKFLOW_PROGRESSIVE = "Progressive";
 
+     public static final String WORKFLOW_BLOCKING_BASED = "Blocking-based";
+     public static final String BEST_WORKFLOW_BLOCKING_BASED = "Best Blocking-based";
+     public static final String SCALING_TEST = "Scaling Test";
+     public static final String PERFORMANCE_TEST = "Performance Test";
      
 	public static final String SCHEMA_CLUSTERING = "Schema Clustering";
     public static final String BLOCK_BUILDING = "Block Building";
@@ -109,10 +113,12 @@ public class JedaiOptions {
     public static final String CENTER_CLUSTERING = "Center Clustering";
     public static final String CONNECTED_COMPONENTS_CLUSTERING = "Connected Components Clustering";
     public static final String CUT_CLUSTERING = "Cut Clustering";
+    public static final String CORRELATION_CLUSTERING = "Correlation Clustering";
     public static final String MARKOV_CLUSTERING = "Markov Clustering";
     public static final String MERGE_CENTER_CLUSTERING = "Merge-Center Clustering";
     public static final String RICOCHET_SR_CLUSTERING = "Ricochet SR Clustering";
     public static final String UNIQUE_MAPPING_CLUSTERING = "Unique Mapping Clustering";
+    public static final String ROW_COLUMN_CLUSTERING = "Row Column Clustering";
 
     // Automatic Configuration
     public static final String AUTOCONFIG_HOLISTIC = "Holistic";

@@ -30,7 +30,7 @@ class BlockCleaning extends Component {
                     [
                         {
                             label: "Smoothing Factor",
-                            value: "1.025"
+                            value: "1.0"
                         }
                     ]
             },
