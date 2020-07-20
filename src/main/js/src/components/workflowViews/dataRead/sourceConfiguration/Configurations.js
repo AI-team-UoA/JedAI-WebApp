@@ -25,57 +25,90 @@ class Configurations extends Component {
             configuration: null,
             source: ""
         }
-
     }
 
 
     onChange(conf_state, isDisable) {
         this.disabled = isDisable
-        let {configuration} = this.state;
-        configuration = conf_state;
-        this.setState({configuration});
+        this.setState({configuration: conf_state});
         this.collapse_conf_flag = false;
     } 
     
     onSubmit = (e) => {
+        
         //calculate and return msg to profileReader
         e.preventDefault()
-        var text_area_msg
-        let formData = new FormData()
+        var text_area_msg, conf, file = null
         this.collapse_flag =false
         switch(this.props.filetype) {
             case "CSV":
-                formData.append('file', this.state.configuration.file )
                 text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  +"\nAtributes in firts row: " + this.state.configuration.first_row + "\nSeperator: " + this.state.configuration.separator + "\nID index: "+ this.state.configuration.id_index
+                conf = {
+                    excluded_attr: this.state.configuration.excluded_attr,
+                    entity_id: this.props.entity_id,
+                    filetype: this.props.filetype,
+                    filename : this.state.configuration.filename,
+                    first_row: this.state.configuration.first_row,
+                    separator: this.state.configuration.separator,
+                    id_index: this.state.configuration.id_index
+                }
+                file = this.state.configuration.file
                 break;
             case "Database":
                 text_area_msg = this.state.configuration === null? "" : "\nURL: " +  this.state.configuration.url  +"\nTable: " + this.state.configuration.table + "\nUsername: " + this.state.configuration.username + "\nSSL: "+ this.state.configuration.ssl
+                conf = {
+                    excluded_attr: this.state.configuration.excluded_attr,
+                    entity_id: this.props.entity_id,
+                    filetype: this.props.filetype,
+                    url: this.state.configuration.url,
+                    table: this.state.configuration.table,
+                    username: this.state.configuration.username,
+                    ssl: this.state.configuration.ssl
+                }
                 break;
             case "RDF":
-                formData.append('file', this.state.configuration.file )
-                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
+                text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename
+                conf = {
+                    excluded_attr: this.state.configuration.excluded_attr,
+                    entity_id: this.props.entity_id,
+                    filetype: this.props.filetype,
+                    filename: this.state.configuration.filename
+                }
+                file = this.state.configuration.file
                 break;
             case "XML":
-                formData.append('file', this.state.configuration.file )
                 text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
+                conf = {
+                    excluded_attr: this.state.configuration.excluded_attr,
+                    entity_id: this.props.entity_id,
+                    filetype: this.props.filetype,
+                    filename: this.state.configuration.filename
+                }
+                file = this.state.configuration.file
                 break;
             case "Serialized":
-                formData.append('file', this.state.configuration.file )
                 text_area_msg = this.state.configuration === null? "" : "\nFile: " +  this.state.configuration.filename  
+                conf = {
+                    excluded_attr: this.state.configuration.excluded_attr,
+                    entity_id: this.props.entity_id,
+                    filetype: this.props.filetype,
+                    filename: this.state.configuration.filename
+                }
+                file = this.state.configuration.file
                 break;
             default:
                 text_area_msg = ""
+                conf = null
         }
-
         // Form the data that will be sent to server
-        formData.append('entity_id', this.props.entity_id)
-        formData.append('filetype', this.props.filetype)
-        Object.keys(this.state.configuration).forEach((key) => { formData.append(key, JSON.stringify(this.state.configuration[key]));})
-
+        var json_conf= JSON.stringify(conf)
+        const formData = new FormData();
+        formData.append("file", file)
+        formData.append("json_conf", JSON.stringify(conf))
         axios({
-            url: '/desktopmode/dataread',
+            url: '/desktopmode/dataread/set',
             method: 'POST',
-            data: formData
+            data: formData 
         }).then(res => {
             var result = res.data
             

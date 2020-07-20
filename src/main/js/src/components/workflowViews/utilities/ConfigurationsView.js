@@ -44,11 +44,10 @@ class ConfigurationsView extends Component {
     }
      
     render() {
-      
+        
         window.scrollTo(0, 0)
         if (this.props.state != null) {
             const state = this.props.state
-
             //Data Reading Configurations
             var er_label = state.mode
             var er_mode = {label: er_label, configuration_type: ""}

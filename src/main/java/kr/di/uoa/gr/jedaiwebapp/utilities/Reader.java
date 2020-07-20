@@ -3,6 +3,8 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.scify.jedai.datamodel.EntityProfile;
 import org.scify.jedai.datamodel.EquivalenceCluster;
 import org.scify.jedai.datareader.entityreader.EntityCSVReader;
@@ -18,9 +20,6 @@ import org.scify.jedai.datareader.groundtruthreader.IGroundTruthReader;
 import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
 import org.scify.jedai.utilities.datastructures.BilateralDuplicatePropagation;
 import org.scify.jedai.utilities.datastructures.UnilateralDuplicatePropagation;
-import org.springframework.util.MultiValueMap;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gnu.trove.list.TIntList;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
@@ -48,31 +47,37 @@ public class Reader {
 	 * Constructor
 	 * 
 	 */
-	public Reader(String filetype, String source, MultiValueMap<String, Object> configurations) throws Exception{
+	public Reader(String filetype, String source,JSONObject configurations) throws Exception{
 		
 		this.filetype = filetype;
-		ObjectMapper mapper = new ObjectMapper();
+		JSONArray jArray = configurations.getJSONArray("excluded_attr");
+		if (jArray != null && jArray.length() > 0 ){
+			this.excluded = new int[jArray.length()]; 
+			for (int i=0;i<jArray.length();i++)
+				this.excluded[i] = jArray.getInt(i);
+		}
+		else
+			excluded = new int[0];
+	
 		switch (filetype) {
 		case "Database":
 			this.url = source;
 			this.filepath = null;
 			
-			this.table =  ((String) configurations.getFirst("table")).replace("\"", "");
-			this.username = ((String)  configurations.getFirst("username")).replace("\"", "");
-	        this.password =  ((String) configurations.getFirst("password")).replace("\"", "");  
-	        this.ssl =  Boolean.parseBoolean(((String) configurations.getFirst("ssl")).replace("\"", ""));
-	        excluded = mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
+			this.table =  configurations.getString("table").replace("\"", "");
+			this.username = configurations.getString("username").replace("\"", "");
+	        this.password = configurations.getString("password").replace("\"", "");  
+	        this.ssl = configurations.getBoolean("ssl");
+	        
 	        break;
 	        
 		case "CSV":
-			this.first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
-			this.separator = ((String) configurations.getFirst("separator")).replace("\"", "");
-			this.id_index = Integer.parseInt(((String) configurations.getFirst("id_index")).replace("\"", ""));
+			this.first_row = configurations.getBoolean("first_row");
+			this.separator = configurations.getString("separator").replace("\"", "");
+			this.id_index = configurations.getInt("id_index");
 			
 		case "RDF":
-		case "XML":
-			excluded = mapper.readValue((String) configurations.getFirst("excluded_attr"), int[].class);
-			
+		case "XML":			
 		default:
 			this.filepath = source;
 			this.url = null;

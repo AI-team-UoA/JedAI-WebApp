@@ -1,33 +1,31 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.json.JSONObject;
 import org.scify.jedai.datamodel.Attribute;
-import org.scify.jedai.datamodel.EntityProfile;
-import org.springframework.beans.factory.annotation.Autowired;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.multipart.MultipartFile;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
-import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.StaticReader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
+
+import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 
@@ -35,24 +33,10 @@ import org.springframework.util.StringUtils;
 @RequestMapping("/desktopmode/dataread/**")
 public class DataReadController {
 	
-	@Autowired
-    private HttpServletRequest request;
-	private Map<String, Reader> dataRead_map;
-	private List<EntityProfileNode> entityProfiles_1;
-	private List<EntityProfileNode> entityProfiles_2;
-	private List<List<EntityProfileNode>> duplicates;
-	
 	private int enities_per_page = 5;
 	
-	
-	/**
-	 * Constructor
-	 * 
-	 * */
-	DataReadController(){
-		dataRead_map = new HashMap<String, Reader>();
-	}
-	
+	@Autowired
+    private HttpServletRequest request;
 	
 	
 	/**
@@ -63,175 +47,24 @@ public class DataReadController {
 	 * @param configurations informations regarding the input dataset
 	 * @return the path in the server of the uploaded file
 	 * */
-	@PostMapping	
-	public String DataRead(
-			@RequestParam(value="file", required=false) MultipartFile file,
-			@RequestParam MultiValueMap<String, Object> configurations) {
+	@PostMapping(path = "/desktopmode/dataread/set", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	
+	public String setDataset(
+			@RequestPart(value="file") MultipartFile file,
+			@RequestPart(required=true) String json_conf){
+				
+		JSONObject configurations = new JSONObject(json_conf);
+		String filetype = configurations.getString("filetype");
+		String source = null;
+		if (filetype.equals("Database") )
+			source = configurations.getString("url");
+		else if (file != null)
+			source = UploadFile(file);
 		
-		String filetype = (String) configurations.getFirst("filetype");
-		String source =  filetype.equals("Database") ? (String) configurations.getFirst("url"): UploadFile(file);
-		if (source == null || source.equals("")){
-			return "";
-		}
-		else {
-			String entity_id = (String) configurations.getFirst("entity_id");
-			if (dataRead_map.containsKey(entity_id))
-				dataRead_map.remove(entity_id);
-			try {
-				Reader entity_profile = new Reader(filetype, source, configurations);
-				dataRead_map.put(entity_id, entity_profile);
-				
-				switch(entity_id) {
-				case "1":
-					WorkflowManager.profilesD1 = entity_profile.read();
-					entityProfiles_1 = new ArrayList<>();
-					//construct the dataset which will be displayed in explore
-					for (int i=0; i<WorkflowManager.profilesD1.size(); i++) {
-						EntityProfile entity = WorkflowManager.profilesD1.get(i);
-						EntityProfileNode entity_node = new EntityProfileNode(entity, i+1);
-						entityProfiles_1.add(entity_node);	
-					}	
-					duplicates = null;
-					WorkflowManager.ground_truth = null;
-					break;
-					
-				case "2":	
-					WorkflowManager.profilesD2 = entity_profile.read();
-					entityProfiles_2 = new ArrayList<>();
-					//construct the dataset which will be displayed in explore
-					for (int i=0; i<WorkflowManager.profilesD2.size(); i++) {
-						EntityProfile entity = WorkflowManager.profilesD2.get(i);
-						EntityProfileNode entity_node = new EntityProfileNode(entity, i+1);
-						entityProfiles_2.add(entity_node);	
-					}
-					duplicates = null;
-					WorkflowManager.ground_truth = null;
-					break;
-					
-				case "3":
-					WorkflowManager.ground_truth = entity_profile.read_GroundTruth(WorkflowManager.er_mode,
-								WorkflowManager.profilesD1,
-								WorkflowManager.profilesD2);
-					 
-				    //construct the dataset which will be displayed in explore
-					this.duplicates = entity_profile.getDuplicates_GroundTruth();
-					break;
-				}
-				
-				// adding dataset to the Dataset table 
-				Map<String, Object> datasetConf = new HashMap<String, Object>();
-				
-				
-				datasetConf.put("source", source);
-				datasetConf.put("filetype", filetype);
-				datasetConf.put("entity_id", entity_id);
-				
-				if (!filetype.equals("Database"))
-					datasetConf.put("filename", StringUtils.cleanPath(file.getOriginalFilename()));
-				else
-					datasetConf.put("filename", null);
-				
-				if(entity_id == "2") 
-					datasetConf.put("type", "gt");
-				else 
-					datasetConf.put("type", "d");
-				
-				if(configurations.containsKey("separator")){
-					String strValue = ((String) configurations.getFirst("separator")).replace("\"", "");
-					if(strValue.length() > 0){ 
-						String value = strValue;
-						datasetConf.put("separator", value);   
-					}
-					else
-						datasetConf.put("separator", "-");
-				}
-				else datasetConf.put("separator", "-");
-
-				if(configurations.containsKey("first_row")){
-					boolean first_row = Boolean.parseBoolean(((String) configurations.getFirst("first_row")).replace("\"", ""));
-					datasetConf.put("first_row", first_row);
-				}
-				else datasetConf.put("first_row", false);
-
+		String filename = StringUtils.cleanPath(file.getOriginalFilename());
 		
-				if(configurations.containsKey("excluded_attr")){
-					String strValue = ((String) configurations.getFirst("excluded_attr")).replace("\"", "");
-					if(strValue.length() > 0){ 
-						ObjectMapper mapper = new ObjectMapper();
-				        int[] value = mapper.readValue(strValue, int[].class);
-						datasetConf.put("excluded_attr", value);
-					}
-					else
-						datasetConf.put("excluded_attr", null);
-				}
-				else datasetConf.put("excluded_attr", null);
-
-				if(configurations.containsKey("id_index")){
-					String strValue = ((String) configurations.getFirst("id_index")).replace("\"", "");
-					if(strValue.length() > 0){ 
-						int value = Integer.parseInt(strValue);
-						datasetConf.put("id_index", value);
-					}
-					else
-						datasetConf.put("id_index", -1);
-				}
-				else datasetConf.put("id_index", -1);
-
-				if(configurations.containsKey("table")){
-					String strValue = ((String) configurations.getFirst("table")).replace("\"", "");
-					if(strValue.length() > 0){ 
-						String value = strValue;
-						datasetConf.put("table", value);
-					}
-					else
-						datasetConf.put("table", null);
-				}
-				else datasetConf.put("table", null);
-
-				if(configurations.containsKey("username")){
-					String strValue = ((String) configurations.getFirst("username")).replace("\"", "");
-					if(strValue.length() > 0){ 
-						String value = strValue;
-						datasetConf.put("username", value);
-					}
-					else
-						datasetConf.put("username", null);
-				}
-				else datasetConf.put("username", null);
-
-				if(configurations.containsKey("password")){
-					String strValue = ((String) configurations.getFirst("password")).replace("\"", "");
-					if(strValue.length() > 0){ 
-						String value = strValue;
-						datasetConf.put("password", value);
-					}
-					else
-						datasetConf.put("password", null);
-				}
-				else datasetConf.put("password", null);
-
-				if(configurations.containsKey("ssl")){
-					String strValue = ((String) configurations.getFirst("ssl")).replace("\"", "");
-					if(strValue.length() > 0){ 
-						boolean value = Boolean.parseBoolean((strValue));
-						datasetConf.put("ssl", value);
-					}
-					else
-						datasetConf.put("ssl", false);
-				}
-				else datasetConf.put("ssl", false);
-
-				WorkflowController.datasetsConfig.add(datasetConf);
-						
-				return source;
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-				return "";
-			}
-		}
+		return StaticReader.setDataset(configurations, source, filename);
 	}
-	
+
 	
 	
 	/**
@@ -245,20 +78,20 @@ public class DataReadController {
 		
 		switch(entity_id) {
 			case "1":
-				if (this.entityProfiles_1 == null) 
+				if (StaticReader.entityProfiles1 == null) 
 					return 0;
 				else
-					return this.entityProfiles_1.size()/enities_per_page;
+					return StaticReader.entityProfiles1.size()/enities_per_page;
 			case "2":
-				if (this.entityProfiles_2 == null) 
+				if (StaticReader.entityProfiles2 == null) 
 					return 0;
 				else
-					return this.entityProfiles_2.size()/enities_per_page;
+					return StaticReader.entityProfiles2.size()/enities_per_page;
 			case "3":
-				if (this.duplicates == null) 
+				if (StaticReader.duplicates == null) 
 					return 0;
 				else
-					return this.duplicates.size()/enities_per_page;
+					return StaticReader.duplicates.size()/enities_per_page;
 			default:
 				return 0;
 		}
@@ -282,29 +115,50 @@ public class DataReadController {
 		
 		switch(entity_id) {
 			case "1":
-				if (this.entityProfiles_1 == null) 
+				if (StaticReader.entityProfiles1 == null) 
 					return null;
 				else
-					return this.entityProfiles_1.subList(start, end);
+					return StaticReader.entityProfiles1.subList(start, end);
 				
 			case "2":
-				if (this.entityProfiles_2 == null)
+				if (StaticReader.entityProfiles2 == null)
 					return null;
 				else
-					return this.entityProfiles_2.subList(start, end);
+					return StaticReader.entityProfiles2.subList(start, end);
 			
 			case "3":
-				if (this.duplicates == null) 
+				if (StaticReader.duplicates == null) 
 					return null;
 				else
-					return this.duplicates.subList(start, end);
+					return StaticReader.duplicates.subList(start, end);
 				
 			default:
 				return null;
 		}
 	}
 			
-		
+	
+	@GetMapping("/desktopmode/dataread/headers")
+	public List<Set<String>> getHeaders() {
+		List<Set<String>> headers = new ArrayList<>();
+		Set<String> headers1 = new HashSet<String>();
+		for (EntityProfileNode en : StaticReader.entityProfiles1)
+			for (Attribute attr : en.getProfile().getAttributes())
+				headers1.add(attr.getName());
+		headers.add(headers1);
+
+		if(WorkflowManager.er_mode.equals(JedaiOptions.CLEAN_CLEAN_ER)){
+			Set<String> headers2 = new HashSet<String>();
+			for (EntityProfileNode en : StaticReader.entityProfiles2)
+				for (Attribute attr : en.getProfile().getAttributes())
+					headers2.add(attr.getName());
+			headers.add(headers2);
+		}
+		return headers;
+	}
+
+
+
 	/**
 	 * Upload the input file in the server
 	 * @param file the input file
@@ -312,16 +166,12 @@ public class DataReadController {
 	 **/
 	public String UploadFile(MultipartFile file) {
 		String uploadsDir = "/uploads/";
-        String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir);
+        String realPathToUploads =  request.getServletContext().getRealPath(uploadsDir); // TODO change here
        
-        if(! new File(realPathtoUploads).exists())
-        {
-            new File(realPathtoUploads).mkdir();
-            
-        }
-               
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String filepath = realPathtoUploads + fileName;
+        if(! new File(realPathToUploads).exists())
+            new File(realPathToUploads).mkdir();
+        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        String filepath = realPathToUploads + filename;
         File dest = new File(filepath);
         if(! dest.exists()) {
 	        try {
@@ -336,25 +186,6 @@ public class DataReadController {
         }
         
         return filepath;
-	}
-	
-	@GetMapping("/desktopmode/dataread/headers")
-	public List<Set<String>> getHeaders() {
-		List<Set<String>> headers = new ArrayList<>();
-		Set<String> headers1 = new HashSet<String>();
-		for (EntityProfileNode en : entityProfiles_1)
-			for (Attribute attr : en.getProfile().getAttributes())
-				headers1.add(attr.getName());
-		headers.add(headers1);
-
-		if(WorkflowManager.er_mode.equals(JedaiOptions.CLEAN_CLEAN_ER)){
-			Set<String> headers2 = new HashSet<String>();
-			for (EntityProfileNode en : entityProfiles_2)
-				for (Attribute attr : en.getProfile().getAttributes())
-					headers2.add(attr.getName());
-			headers.add(headers2);
-		}
-		return headers;
 	}
 		
 }

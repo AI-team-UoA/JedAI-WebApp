@@ -16,12 +16,11 @@ class ConfigureSerialized extends Component {
         this.state={
             file: null,
             filename : "",
-            excluded_attr : ""
+            excluded_attr : []
         }
     }
 
     onChange = (e) => {
-        
         if(e.target.name === "file"){
             var file = e.target.files[0]
             this.setState({file:file, filename: file.name}, () =>{

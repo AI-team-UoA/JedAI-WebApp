@@ -89,7 +89,7 @@ import axios from 'axios'
     }
 
     handleAlertClose = () => this.setState({alertShow : false});
-    handleAlerShow = () => this.setState({alertShow : true});
+    handleAlertShow = () => this.setState({alertShow : true});
 
 
     isValidated(){
@@ -105,13 +105,13 @@ import axios from 'axios'
                     var validation_result = res.data
                     if (!validation_result){
                         this.alertText = "Entity profiles were not set properly!"
-                        this.handleAlerShow()
+                        this.handleAlertShow()
                     }
                     
                     return validation_result})
         }
         else{
-            this.handleAlerShow()
+            this.handleAlertShow()
             return false
         }
 
