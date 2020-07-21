@@ -1,0 +1,11 @@
+{
+	"data_reading":{
+		"er_mode":"dirty",
+		"entity1_set":null,
+		"entity2_set":null,
+		"groundTruth_set":null,
+		"alertShow":false
+	},
+	"similarity_join":{"method":{"name":"PPJOIN","label":"PPJoin","parameters":[{"label":"Similarity Threshold","value":"0.4"}]},"attribute1":"all","attribute2":"","headers1":["all","surname","address_1","date_of_birth","address_2","postcode","soc_sec_id","street_number","suburb","phone_number","state","given_name","age"],"headers2":[],"alertShow":false},
+	"entity_clustering":{"method_name":"CONNECTED_COMPONENTS_CLUSTERING","configuration_type":"Manual","label":"Connected Components Clustering","parameters":[{"label":"Similarity Threshold","value":"0.4"}]}
+}
