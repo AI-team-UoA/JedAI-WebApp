@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Blob } from 'react-blob'
-import {Jumbotron,Modal, Tabs, Tab, Form, Row, Col, Button, Spinner, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {Jumbotron,Modal, Tabs, Tab, Form, Row, Col, Button, Spinner, OverlayTrigger, Tooltip, Table} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
 import {Link,withRouter } from 'react-router-dom';
 import "../../../resources/static/css/main.css"
@@ -373,40 +373,35 @@ class ExecutionView extends Component {
                         <h3> <span style={{display:"inline", marginRight: "20px"}}>Status: </span>  <span style={{color: "#00802b"}}><b>{this.state.execution_status}</b></span></h3>
                     </div>
                     
-               // Execution Results
+               // Execution Results style={{marginLeft:"28%"}}
                execution_stats = 
-                    <Form.Group style={{marginLeft:"28%"}}>
-                            <Row>
-                                <Col sm={5}>
-                                    <Row>
-                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Input Instances:</h4> </Col>
-                                        <Col sm={1}>{this.state.execution_results.input_instances}</Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Existing Duplicates:</h4> </Col>
-                                        <Col sm={1}>{this.state.execution_results.existing_duplicates}</Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Total execution time (sec):</h4> </Col>
-                                        <Col sm={1}>{this.state.execution_results.total_time}</Col>
-                                    </Row>
-                                </Col>
-                                <Col sm={5}>
-                                    <Row>
-                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Number of Clusters:</h4> </Col>
-                                        <Col sm={1}>{this.state.execution_results.no_clusters}</Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Detected Duplicates:</h4> </Col>
-                                        <Col sm={1}>{this.state.execution_results.detected_duplicates}</Col>
-                                    </Row>
-                                    <Row>
-                                        <Col sm={8}><h4 style={{color:"#4663b9"}} className="form-row" >Total Matches:</h4> </Col>
-                                        <Col sm={1}>{this.state.execution_results.total_matches}</Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </Form.Group>
+                <div style={{margin:"auto", width:"80%"}}>
+                        <Table responsive="sm">
+                            <thead>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><h4 style={{color:"#4663b9"}} className="form-row" >Input Instances:</h4></td>
+                                <td>{this.state.execution_results.input_instances}</td>
+                                <td><h4 style={{color:"#4663b9"}} className="form-row" >Number of Clusters:</h4></td>
+                                <td>{this.state.execution_results.no_clusters}</td>
+                            </tr>
+                            <tr>
+                                <td><h4 style={{color:"#4663b9"}} className="form-row" >Existing Duplicates:</h4></td>
+                                <td>{this.state.execution_results.existing_duplicates}</td>
+                                <td><h4 style={{color:"#4663b9"}} className="form-row" >Detected Duplicates:</h4></td>
+                                <td>{this.state.execution_results.detected_duplicates}</td>
+                            </tr>
+                            <tr>
+                                <td><h4 style={{color:"#4663b9"}} className="form-row" >Total execution time (sec):</h4></td>
+                                <td>{this.state.execution_results.total_time}</td>
+                                <td><h4 style={{color:"#4663b9"}} className="form-row" >Total Matches:</h4></td>
+                                <td>{this.state.execution_results.total_matches}</td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                </div>
+              
                 break;
             case "Failed":
             case "Download Failed":
@@ -571,67 +566,67 @@ class ExecutionView extends Component {
                                             <br/>
                                             {execution_status_view}
 
-                                            </Col>
+                                        </Col>
 
-                                            <Col  sm={empty_col} />
+                                        <Col  sm={empty_col} />
 
-                                            <Col  sm={speedometer_col} style={{marginRight:"10px"}}>
-                                                <div className="caption_item">
-                                                <span className="caption"><b>Recall</b></span>
-                                                    <ReactSpeedometer  
-                                                        value={this.state.execution_results.recall} 
-                                                        maxValue={1} 
-                                                        segments={5} 
-                                                        segmentColors={[
-                                                            "#ffad33",
-                                                            "#ffad33",
-                                                            "#a3be8c",
-                                                            "#a3be8c",
-                                                            "#61d161"
-                                                        ]}
-                                                    />
-                                                   
-                                                </div>
-                                            </Col>
-                                            
-                                            <Col  sm={speedometer_col} style={{marginRight:"10px"}}>
-                                                <div className="caption_item">
-                                                <span className="caption"><b>Precision</b></span>
-                                                    <ReactSpeedometer  
-                                                        value={this.state.execution_results.precision} 
-                                                        maxValue={1} 
-                                                        segments={5} 
-                                                        segmentColors={[
-                                                            "#ffad33",
-                                                            "#ffad33",
-                                                            "#a3be8c",
-                                                            "#a3be8c",
-                                                            "#61d161"
-                                                        ]}
-                                                    />
-                                                   
-                                                </div>
-                                            </Col>
+                                        <Col  sm={speedometer_col} style={{marginRight:"20px"}}>
+                                            <div className="caption_item">
+                                            <h4 className="caption"><b>Recall</b></h4>
+                                                <ReactSpeedometer  
+                                                    value={this.state.execution_results.recall} 
+                                                    maxValue={1} 
+                                                    segments={5} 
+                                                    segmentColors={[
+                                                        "#ffad33",
+                                                        "#ffad33",
+                                                        "#a3be8c",
+                                                        "#a3be8c",
+                                                        "#61d161"
+                                                    ]}
+                                                />
+                                                
+                                            </div>
+                                        </Col>
+                                        
+                                        <Col  sm={speedometer_col} style={{marginRight:"20px"}}>
+                                            <div className="caption_item">
+                                            <h4 className="caption"><b>Precision</b></h4>
+                                                <ReactSpeedometer  
+                                                    value={this.state.execution_results.precision} 
+                                                    maxValue={1} 
+                                                    segments={5} 
+                                                    segmentColors={[
+                                                        "#ffad33",
+                                                        "#ffad33",
+                                                        "#a3be8c",
+                                                        "#a3be8c",
+                                                        "#61d161"
+                                                    ]}
+                                                />
+                                                
+                                            </div>
+                                        </Col>
 
-                                            <Col  sm={speedometer_col}style={{marginRight:"10px"}}>
-                                                <div className="caption_item">
-                                                <span className="caption"><b>F1-measure</b></span>
-                                                    <ReactSpeedometer  
-                                                        value={this.state.execution_results.f1_measure} 
-                                                        maxValue={1} 
-                                                        segments={5} 
-                                                        segmentColors={[
-                                                            "#ffad33",
-                                                            "#ffad33",
-                                                            "#a3be8c",
-                                                            "#a3be8c",
-                                                            "#61d161"
-                                                        ]}
-                                                    />
-                                                    
-                                                </div>
-                                            </Col>
-                                        </Form.Group>
+                                        <Col  sm={speedometer_col}style={{marginRight:"20px"}}>
+                                            <div className="caption_item">
+                                            <h4 className="caption"><b>F1-measure</b></h4>
+                                                <ReactSpeedometer  
+                                                    value={this.state.execution_results.f1_measure} 
+                                                    maxValue={1} 
+                                                    segments={5} 
+                                                    segmentColors={[
+                                                        "#ffad33",
+                                                        "#ffad33",
+                                                        "#a3be8c",
+                                                        "#a3be8c",
+                                                        "#61d161"
+                                                    ]}
+                                                />
+                                                
+                                            </div>
+                                        </Col>
+                                    </Form.Group>
 
                                         
                                                 
