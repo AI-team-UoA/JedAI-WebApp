@@ -33,7 +33,7 @@ import org.springframework.util.StringUtils;
 @RequestMapping("/desktopmode/dataread/**")
 public class DataReadController {
 	
-	private int enities_per_page = 5;
+	private int entities_per_page = 5;
 	
 	@Autowired
     private HttpServletRequest request;
@@ -81,17 +81,17 @@ public class DataReadController {
 				if (StaticReader.entityProfiles1 == null) 
 					return 0;
 				else
-					return StaticReader.entityProfiles1.size()/enities_per_page;
+					return StaticReader.entityProfiles1.size()/entities_per_page;
 			case "2":
 				if (StaticReader.entityProfiles2 == null) 
 					return 0;
 				else
-					return StaticReader.entityProfiles2.size()/enities_per_page;
+					return StaticReader.entityProfiles2.size()/entities_per_page;
 			case "3":
 				if (StaticReader.duplicates == null) 
 					return 0;
 				else
-					return StaticReader.duplicates.size()/enities_per_page;
+					return StaticReader.duplicates.size()/entities_per_page;
 			default:
 				return 0;
 		}
@@ -110,28 +110,34 @@ public class DataReadController {
 			@PathVariable(value = "entity_id") String entity_id) {
 		int int_page = Integer.parseInt(page);
 		
-		int start = (int_page - 1) * enities_per_page;
-		int end = start + enities_per_page;
+		int start = (int_page - 1) * entities_per_page;
+		int end = start + entities_per_page;
 		
 		switch(entity_id) {
 			case "1":
 				if (StaticReader.entityProfiles1 == null) 
 					return null;
-				else
+				else{
+					int max = StaticReader.entityProfiles1.size();
+					if (max < end) end = max;
 					return StaticReader.entityProfiles1.subList(start, end);
-				
+				}
 			case "2":
 				if (StaticReader.entityProfiles2 == null)
 					return null;
-				else
+				else{
+					int max = StaticReader.entityProfiles2.size();
+					if (max < end) end = max;
 					return StaticReader.entityProfiles2.subList(start, end);
-			
+				}
 			case "3":
 				if (StaticReader.duplicates == null) 
 					return null;
-				else
+				else{
+					int max = StaticReader.duplicates.size();
+					if (max < end) end = max;
 					return StaticReader.duplicates.subList(start, end);
-				
+				}				
 			default:
 				return null;
 		}
