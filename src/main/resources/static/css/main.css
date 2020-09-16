@@ -2,13 +2,13 @@
     border:groove;
 
     margin:auto;
-    background:#E8E8E8;
+    background:#e2e2e2;
 }
 
 
 .jumbotron_2{
     border:groove;
-    background:#E8E8E8;
+    background:#e2e2e2;
     
     width:90%;
 }
@@ -97,7 +97,7 @@
 
 
   .Jumbotron_Tabs {
-    background-color: #D3D3D3;
+    background-color: #e2e0e0;
   }
 
   .Jumbotron_Tab {
@@ -124,7 +124,7 @@
 }
 
 .grey-modal .modal-content {
-  background-color: #E8E8E8;
+  background-color: #ffffff;
   border: groove;
 }
 
