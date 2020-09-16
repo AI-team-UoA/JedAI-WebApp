@@ -339,7 +339,7 @@ class EntityMatching extends Component {
                     <Form.Label><h5>Select parameters for Entity Matching</h5></Form.Label>
                 </Form.Group> 
 
-                <RadioMethod methods={this.methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Entity Matching Parameters"}/>
+                <RadioMethod methods={this.methods} state={this.state} disableAutomatic={!this.props.GTIsSet} onChange={this.onChange} title={"Entity Matching Parameters"}/>
 
                 <br/>
                 <Collapse in={this.state.configuration_type === "Manual"} >
@@ -361,7 +361,8 @@ class EntityMatching extends Component {
 
 EntityMatching.propTypes = {
     state: PropTypes.object.isRequired,
-    submitState: PropTypes.func.isRequired
+    submitState: PropTypes.func.isRequired,
+    GTIsSet: PropTypes.bool.isRequired  
 }
 
 export default  EntityMatching

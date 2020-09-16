@@ -76,31 +76,32 @@ public class WorkflowController {
 		WorkflowManager.clean();
 		
 		methodsConfig.put("mode", WorkflowManager.er_mode); 
+
+		if (StaticReader.datasetConfGT != null){
+			Dataset gtd = new Dataset(StaticReader.datasetConfGT);
+			methodsConfig.put("gt", gtd);
+		}
 		
 		switch(WorkflowManager.er_mode) {
+			
 			case JedaiOptions.DIRTY_ER:
 				workflowConfiguration.setErMode(JedaiOptions.DIRTY_ER);
 				
-				if(StaticReader.datasetConf1 == null || StaticReader.datasetConfGT == null) return false;
+				if(StaticReader.datasetConf1 == null) return false;
 				Dataset dt = new Dataset(StaticReader.datasetConf1);
-				methodsConfig.put("d1", dt);
-				Dataset gtd = new Dataset(StaticReader.datasetConfGT);
-				methodsConfig.put("gt", gtd);
-				
-				return  WorkflowManager.profilesD1 != null && WorkflowManager.ground_truth != null;
+				methodsConfig.put("d1", dt);				
+				return  WorkflowManager.profilesD1 != null;
 
 			case JedaiOptions.CLEAN_CLEAN_ER:
 				workflowConfiguration.setErMode(JedaiOptions.CLEAN_CLEAN_ER);
 
-				if(StaticReader.datasetConf1 == null || StaticReader.datasetConf2 == null || StaticReader.datasetConfGT == null) return false;
+				if(StaticReader.datasetConf1 == null || StaticReader.datasetConf2 == null) return false;
 				Dataset dt1 = new Dataset(StaticReader.datasetConf1);
 				methodsConfig.put("d1", dt1);
 				Dataset dt2 = new Dataset(StaticReader.datasetConf1);
 				methodsConfig.put("d2", dt2);
-				Dataset gtcc = new Dataset(StaticReader.datasetConfGT);
-				methodsConfig.put("gt", gtcc);
 
-				return  WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null && WorkflowManager.ground_truth != null;
+				return  WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null;
 			default:
 				return false;
 		}	
@@ -462,27 +463,30 @@ public class WorkflowController {
 	        File export_file = new File(export_path);
 	        if (!export_file.exists()) 
 	        	export_file.createNewFile();
-	        
-	        // Construct file containing the results of the execution
-	       	ClustersPerformanceWriter cpw = new ClustersPerformanceWriter(
-                    WorkflowManager.getEntityClusters(),
-                    WorkflowManager.ground_truth);
-	        	       
-			switch (filetype) {
-	            case JedaiOptions.CSV:
-	                // Output CSV
-	                cpw.printDetailedResultsToCSV(WorkflowManager.profilesD1, WorkflowManager.profilesD2,
-	                		export_path);
-	                break;
-	            case JedaiOptions.XML:
-	                cpw.printDetailedResultsToXML(WorkflowManager.profilesD1, WorkflowManager.profilesD2,
-	                		export_path);
-	                break;
-	            case JedaiOptions.RDF:
-	                cpw.printDetailedResultsToRDF(WorkflowManager.profilesD1, WorkflowManager.profilesD2,
-	                		export_path);
-	                break;
-	        }
+			
+			if (WorkflowManager.ground_truth == null)
+				WorkflowManager.exportToCSV(export_path);
+			else{
+				// Construct file containing the results of the execution
+				ClustersPerformanceWriter cpw = new ClustersPerformanceWriter(
+						WorkflowManager.getEntityClusters(),
+						WorkflowManager.ground_truth);
+						
+				switch (filetype) {
+					case JedaiOptions.CSV:
+						// Output CSV
+						cpw.printDetailedResultsToCSV(WorkflowManager.profilesD1, WorkflowManager.profilesD2,export_path);
+						break;
+					case JedaiOptions.XML:
+						cpw.printDetailedResultsToXML(WorkflowManager.profilesD1, WorkflowManager.profilesD2,
+								export_path);
+						break;
+					case JedaiOptions.RDF:
+						cpw.printDetailedResultsToRDF(WorkflowManager.profilesD1, WorkflowManager.profilesD2,
+								export_path);
+						break;
+				}
+			}
 					
 	       	// Insert the stream to the response
 			response.setHeader(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"" + export_file.getName() + "\"");
@@ -511,9 +515,11 @@ public class WorkflowController {
 				dbm.storeOrUpdateDataset(dt2);
 				workflowConfiguration.setDatasetID2(dt2.getId());
 			}
-			Dataset dtgt = (Dataset) methodsConfig.get("gt");
-			dbm.storeOrUpdateDataset(dtgt);
-			workflowConfiguration.setGtID(dtgt.getId());
+			if (methodsConfig.containsKey("gt")){
+				Dataset dtgt = (Dataset) methodsConfig.get("gt");
+				dbm.storeOrUpdateDataset(dtgt);
+				workflowConfiguration.setGtID(dtgt.getId());
+			}
 			
 			dbm.storeOrUpdateWC(workflowConfiguration);
 			WorkflowManager.workflowConfigurationsID = workflowConfiguration.getId();

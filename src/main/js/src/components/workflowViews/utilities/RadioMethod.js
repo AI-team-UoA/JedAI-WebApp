@@ -67,7 +67,7 @@ class SelectMethod extends Component {
                                             name="configuration_type"
                                             value="Automatic"
                                             onChange={(e) => this.onChange("", e)}
-                                            disabled={this.props.auto_disabled}
+                                            disabled={this.props.disableAutomatic}
                                             checked={this.state.configuration_type ===  "Automatic"}
                                         />
                                         <Form.Check
@@ -92,7 +92,7 @@ class SelectMethod extends Component {
 SelectMethod.propTypes = {
     methods: PropTypes.array.isRequired,
     state: PropTypes.object.isRequired,
-    auto_disabled: PropTypes.bool.isRequired,
+    disableAutomatic: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired
 }

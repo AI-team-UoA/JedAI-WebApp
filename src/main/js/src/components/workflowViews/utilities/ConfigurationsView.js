@@ -64,11 +64,13 @@ class ConfigurationsView extends Component {
                         source: state.d2.filetype,
                         conf: this.getDatasetConfigurations(state.d2)
                     }
-            var ground_truth =
-            {
-                source: state.gt.filetype,
-                conf: this.getDatasetConfigurations(state.gt)
-            }
+            var ground_truth = null
+            if (typeof state.gt != "undefined" && state.gt != null)
+                ground_truth = 
+                    {
+                        source: state.gt.filetype,
+                        conf: this.getDatasetConfigurations(state.gt)
+                    }
 
             //Single Selected methods configurations
             var schema_clustering = null;
@@ -138,7 +140,7 @@ class ConfigurationsView extends Component {
                     <ConfigurationView  type="inline" title="ER Type" data={er_mode}/>
                     <ConfigurationView  type="file" title="Dataset 1 Parameters" data={entity_1}/>
                     {entity_2 !== null ? <ConfigurationView  type="file" title="Dataset 2 Parameters" data={entity_2}/> : <div />}
-                    <ConfigurationView  type="file" title="Ground Truth Parameters" data={ground_truth}/>
+                    {ground_truth !== null ? <ConfigurationView  type="file" title="Ground Truth Parameters" data={ground_truth}/> : <div />}
                     {schema_clustering != null ? <ConfigurationView  type="inline" title="Schema Clustering" data={schema_clustering}/> : <div/>}
                     {similarity_join != null ? <ConfigurationView  type="sj" title="Similarity Join" data={similarity_join}/>: <div/>}
                     {state.hasOwnProperty("Block Building") ?  <ConfigurationView  type="array" title="Block Building" data={state['Block Building']}/> : <div/>}

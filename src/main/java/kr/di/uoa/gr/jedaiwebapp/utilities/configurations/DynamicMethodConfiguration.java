@@ -148,7 +148,7 @@ public class DynamicMethodConfiguration {
                 );
             case EXTENDED_Q_GRAMS_BLOCKING:
                 return new ExtendedQGramsBlocking(
-                		Double.parseDouble((String) parameters.get(1).getValue()),
+                		Float.parseFloat((String) parameters.get(1).getValue()),
                         Integer.parseInt((String)parameters.get(0).getValue())
                 );
             case EXTENDED_SORTED_NEIGHBORHOOD:
@@ -186,17 +186,17 @@ public class DynamicMethodConfiguration {
         switch (methodName) {
             case JedaiOptions.BLOCK_FILTERING:
                 processingMethod = new BlockFiltering(
-                		Double.parseDouble((String) parameters.get(0).getValue())
+                    Float.parseFloat((String) parameters.get(0).getValue())
                 );
                 break;
             case JedaiOptions.SIZE_BASED_BLOCK_PURGING:
                 processingMethod = new SizeBasedBlockPurging(
-                		Double.parseDouble((String) parameters.get(0).getValue())
+                    Float.parseFloat((String) parameters.get(0).getValue())
                 );
                 break;
             case JedaiOptions.COMPARISON_BASED_BLOCK_PURGING:
                 processingMethod = new ComparisonsBasedBlockPurging(
-                		Double.parseDouble((String) parameters.get(0).getValue())
+                    Float.parseFloat((String) parameters.get(0).getValue())
                 );
                 break;
         }
@@ -258,8 +258,8 @@ public class DynamicMethodConfiguration {
 			
 			case JedaiOptions.CANOPY_CLUSTERING:
 				processingMethod = new CanopyClustering(
-						Double.parseDouble((String) parameters.get(0).getValue()), // Inclusive threshold
-						Double.parseDouble((String) parameters.get(1).getValue())  // Exclusive threshold 
+						Float.parseFloat((String) parameters.get(0).getValue()), // Inclusive threshold
+						Float.parseFloat((String) parameters.get(1).getValue())  // Exclusive threshold 
 				);
 				break;
 			
@@ -290,7 +290,7 @@ public class DynamicMethodConfiguration {
 		switch (emMethodName) {
 			
 			case JedaiOptions.GROUP_LINKAGE:
-				double simThr = (parameters != null) ?  Double.parseDouble((String) parameters.get(2).getValue()) : 0.5;
+				float simThr = (parameters != null) ? Float.parseFloat((String) parameters.get(2).getValue()) : 0.5f;
 				
 				rep = (parameters != null) ?
 						RepresentationModel.valueOf((String) parameters.get(0).getValue()) : RepresentationModel.TOKEN_UNIGRAM_GRAPHS;
@@ -335,55 +335,55 @@ public class DynamicMethodConfiguration {
 		switch (methodName) {
 			case JedaiOptions.CENTER_CLUSTERING:
 				ecMethod = new CenterClustering(
-						Double.parseDouble((String) parameters.get(0).getValue())
+                    Float.parseFloat((String) parameters.get(0).getValue())
 				);
 				break;
 				
 			case JedaiOptions.CONNECTED_COMPONENTS_CLUSTERING:
 				ecMethod = new ConnectedComponentsClustering(
-						Double.parseDouble((String) parameters.get(0).getValue())
+                    Float.parseFloat((String) parameters.get(0).getValue())
 				);
 				break;
 				
 			case JedaiOptions.CUT_CLUSTERING:
 				ecMethod = new CutClustering(
-					Double.parseDouble((String) parameters.get(1).getValue()),  // 1st parameter of CutClustering, but 2nd in JedAI-core
-					Double.parseDouble((String) parameters.get(0).getValue())
+					Float.parseFloat((String) parameters.get(1).getValue()),  // 1st parameter of CutClustering, but 2nd in JedAI-core
+					Float.parseFloat((String) parameters.get(0).getValue())
 				);
 				break;
             case JedaiOptions.CORRELATION_CLUSTERING:
 				ecMethod = new CorrelationClustering(
-						Double.parseDouble((String) parameters.get(0).getValue())
+                    Float.parseFloat((String) parameters.get(0).getValue())
 				);
 				break;	
 			case JedaiOptions.MARKOV_CLUSTERING:
 				
 				ecMethod = new MarkovClustering(
-					Double.parseDouble((String) parameters.get(1).getValue()) ,  // Cluster Threshold
-					Double.parseDouble((String) parameters.get(2).getValue()),  // Matrix Similarity Threshold
+					Float.parseFloat((String) parameters.get(1).getValue()) ,  // Cluster Threshold
+					Float.parseFloat((String) parameters.get(2).getValue()),  // Matrix Similarity Threshold
 					(int) Double.parseDouble((String) parameters.get(3).getValue()),     // Similarity Checks Limit
-					Double.parseDouble((String) parameters.get(0).getValue())   // Similarity Threshold
+					Float.parseFloat((String) parameters.get(0).getValue())   // Similarity Threshold
 				);
 				break;
 				
 			case JedaiOptions.MERGE_CENTER_CLUSTERING:
 				ecMethod = new MergeCenterClustering(
-						Double.parseDouble((String) parameters.get(0).getValue()));
+                    Float.parseFloat((String) parameters.get(0).getValue()));
 				break;
 				
 			case JedaiOptions.RICOCHET_SR_CLUSTERING:
 				ecMethod = new RicochetSRClustering(
-						Double.parseDouble((String) parameters.get(0).getValue()));
+                    Float.parseFloat((String) parameters.get(0).getValue()));
 				break;
 				
 			case JedaiOptions.UNIQUE_MAPPING_CLUSTERING:
 				ecMethod = new UniqueMappingClustering(
-						Double.parseDouble((String) parameters.get(0).getValue()));
+                    Float.parseFloat((String) parameters.get(0).getValue()));
                 break;
             
             case JedaiOptions.ROW_COLUMN_CLUSTERING:
 				ecMethod = new RowColumnClustering(
-						Double.parseDouble((String) parameters.get(0).getValue()));
+                    Float.parseFloat((String) parameters.get(0).getValue()));
 				break;
 				
 			default:
@@ -402,13 +402,13 @@ public class DynamicMethodConfiguration {
             case JedaiOptions.ALL_PAIRS_CHAR_BASED:
                 return new AllPairs(Integer.parseInt(parameterValue));
             case JedaiOptions.ALL_PAIRS_TOKEN_BASED:
-                return new org.scify.jedai.similarityjoins.tokenbased.AllPairs(Double.parseDouble(parameterValue));
+                return new org.scify.jedai.similarityjoins.tokenbased.AllPairs(Float.parseFloat(parameterValue));
             case JedaiOptions.FAST_SS:
                 return new FastSS(Integer.parseInt(parameterValue));
             case JedaiOptions.PASS_JOIN:
                 return new PassJoin(Integer.parseInt(parameterValue));
             case JedaiOptions.PP_JOIN:
-                return new PPJoin(Double.parseDouble(parameterValue));
+                return new PPJoin(Float.parseFloat(parameterValue));
             default:
                 return null;
         }

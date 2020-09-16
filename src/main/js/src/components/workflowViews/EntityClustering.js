@@ -303,10 +303,10 @@ class EntityClustering extends Component {
         var er_mode = this.props.er_mode
         var configurations 
         if (er_mode === "dirty"){
-            configurations = <RadioMethod methods={this.dirtyER_methods} state={this.state}  auto_disabled={false} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
+            configurations = <RadioMethod methods={this.dirtyER_methods} state={this.state}   disableAutomatic={!this.props.GTIsSet} onChange={this.onChange} title={"Algorithms for Dirty ER"}/>
         }
         else if (er_mode === "clean"){
-            configurations = <RadioMethod methods={this.cleanER_methods} state={this.state} auto_disabled={false} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
+            configurations = <RadioMethod methods={this.cleanER_methods} state={this.state}  disableAutomatic={!this.props.GTIsSet} onChange={this.onChange} title={"Algorithms for Clean-Clean ER"}/>
         }
         else configurations = <h2>ERROR</h2>
         return (
@@ -348,7 +348,8 @@ class EntityClustering extends Component {
 EntityClustering.propTypes = {
     submitState: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired,
-    er_mode: PropTypes.string.isRequired
+    er_mode: PropTypes.string.isRequired,
+    GTIsSet: PropTypes.bool.isRequired  
 }
 
 export default  EntityClustering

@@ -2,6 +2,7 @@ package kr.di.uoa.gr.jedaiwebapp.utilities.workflows;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -137,7 +138,8 @@ public class ProgressiveWF {
 					details_manager.print_Sentence("Input Entity Profiles 1", WorkflowManager.profilesD1.size());
 					details_manager.print_Sentence("Input Entity Profiles 2", WorkflowManager.profilesD2.size());
 				}
-				details_manager.print_Sentence("Existing Duplicates", WorkflowManager.ground_truth.getDuplicates().size());
+				if(WorkflowManager.ground_truth != null)
+					details_manager.print_Sentence("Existing Duplicates", WorkflowManager.ground_truth.getDuplicates().size());
 			}
 			
 			if (interrupt(interrupted)) {
@@ -184,12 +186,12 @@ public class ProgressiveWF {
 					// Get blocks performance to print
 					overheadEnd = System.currentTimeMillis();
 					blp = new BlocksPerformance(blocks, WorkflowManager.ground_truth);
-					blp.setStatistics();
+					if (WorkflowManager.ground_truth != null) blp.setStatistics();
 					
-					if (final_run) {
+					if (final_run && WorkflowManager.ground_truth != null) {
 						// print block Building performance
 						details_manager.print_BlockBuildingPerformance(blp, 
-								(overheadEnd - overheadStart)/1000, 
+								(float)((overheadEnd - overheadStart)/1000), 
 								bb.getMethodConfiguration(), 
 								bb.getMethodName());
 						performances.add(new Triplet<>(bb.getMethodName(), blp, (overheadEnd - overheadStart)/1000));
@@ -278,12 +280,12 @@ public class ProgressiveWF {
 				ClustersPerformance clp = new ClustersPerformance(originalClusters, WorkflowManager.ground_truth);
 				clp.setStatistics();
 				details_manager.print_ClustersPerformance(clp, 
-	        			(overheadEnd - overheadStart)/1000, 
-	        			entity_clustering.getMethodName(), 
-	        			entity_clustering.getMethodConfiguration());
+						(float)((overheadEnd - overheadStart)/1000), 
+						entity_clustering.getMethodName(), 
+						entity_clustering.getMethodConfiguration());
 	
 				originalRecall = clp.getRecall();
-
+				
 				if (interrupt(interrupted)) {
                     context.close();
                     return null;
@@ -359,7 +361,7 @@ public class ProgressiveWF {
 				Comparison comparison = prioritization.next();
 	 
 				// Calculate the similarity
-				double similarity = entity_matching.executeComparison(comparison);
+				float similarity = entity_matching.executeComparison(comparison);
 				comparison.setUtilityMeasure(similarity);
 	 
 				sims.addComparison(comparison);
@@ -367,6 +369,7 @@ public class ProgressiveWF {
 	 
 				 // Run clustering
 				 EquivalenceCluster[] entityClusters = entity_clustering.getDuplicates(sims);
+				 WorkflowManager.entityClusters.addAll(Arrays.asList(entityClusters));
 	 
 				 // Calculate new clusters performance
 				 clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
@@ -388,7 +391,7 @@ public class ProgressiveWF {
 			// Print clustering performance
 			if (clp != null) {
 				details_manager.print_ClustersPerformance(clp, 
-						(overheadEnd - overheadStart)/1000, 
+						(float)((overheadEnd - overheadStart)/1000), 
 						entity_clustering.getMethodName(), 
 						entity_clustering.getMethodConfiguration());
 	

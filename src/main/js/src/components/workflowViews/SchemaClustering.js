@@ -253,7 +253,7 @@ import axios from 'axios';
                     <Form.Label><h5>Select a Schema Clustering method</h5></Form.Label>
                 </Form.Group> 
 
-                <RadioMethod methods={this.methods} state={this.state}  auto_disabled={true} disable_manual={this.state.method_name === "NO_SCHEMA_CLUSTERING"} onChange={this.onChange} title={"Schema Clustering methods"}/>
+                <RadioMethod methods={this.methods} state={this.state}  disableAutomatic={!this.props.GTIsSet} disable_manual={this.state.method_name === "NO_SCHEMA_CLUSTERING"} onChange={this.onChange} title={"Schema Clustering methods"}/>
                 
                 <br/>
                 <Collapse in={this.state.configuration_type === "Manual" && this.state.method !== "NO_SCHEMA_CLUSTERING"} >
@@ -282,7 +282,8 @@ import axios from 'axios';
 }
 SchemaClustering.propTypes = {
     state: PropTypes.object.isRequired,
-    submitState: PropTypes.func.isRequired   
+    submitState: PropTypes.func.isRequired,
+    GTIsSet: PropTypes.bool.isRequired  
 }
 
 export default SchemaClustering

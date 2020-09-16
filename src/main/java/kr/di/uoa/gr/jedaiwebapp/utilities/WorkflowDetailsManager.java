@@ -73,7 +73,7 @@ public class WorkflowDetailsManager {
 	 * @param methodConfiguration the method's configurations
 	 * @param methodName the method's name
 	 * */
-	public void print_BlockBuildingPerformance(BlocksPerformance blp, double totalTime, String methodConfiguration, String methodName) {
+	public void print_BlockBuildingPerformance(BlocksPerformance blp, float totalTime, String methodConfiguration, String methodName) {
 		
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -99,7 +99,7 @@ public class WorkflowDetailsManager {
 	 * @param methodConfiguration the method's configurations
 	 * @param methodName the method's name
 	 * */
-	public void print_ClustersPerformance(ClustersPerformance clp, double totalTime, String methodConfiguration, String methodName) {
+	public void print_ClustersPerformance(ClustersPerformance clp, float totalTime, String methodConfiguration, String methodName) {
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(baos);

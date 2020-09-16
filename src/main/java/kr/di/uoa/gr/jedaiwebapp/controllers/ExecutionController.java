@@ -1,6 +1,5 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -48,6 +47,8 @@ public class ExecutionController {
 	private List<List<EntityProfileNode>> detected_duplicates;
 	private int entities_per_page = 5;
 
+
+
 	@Autowired
 	private DatabaseManager dbm;
 	
@@ -91,6 +92,12 @@ public class ExecutionController {
 	public String getWorkflowMode() {return WorkflowManager.wf_mode;}
 
 	
+	/**
+	 * 
+	 * @return if the GT is set
+	 */
+	@GetMapping("/workflow/gtisset")
+	public boolean isGTset() {return WorkflowManager.ground_truth != null;}
 	
 	
 	/**
@@ -223,13 +230,12 @@ public class ExecutionController {
 		
 		boolean datasetOk;
 		if (WorkflowManager.er_mode.equals(JedaiOptions.DIRTY_ER))
-			datasetOk = WorkflowManager.profilesD1 != null && WorkflowManager.ground_truth != null;
+			datasetOk = WorkflowManager.profilesD1 != null ;
 		else
-			datasetOk = WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null 
-			&& WorkflowManager.ground_truth != null;
+			datasetOk = WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null;
 
 		switch(WorkflowManager.wf_mode){
-			case JedaiOptions.WORKFLOW_PROGRESSIVE: //TODO : some progressive alg dont need blocking 
+			case JedaiOptions.WORKFLOW_PROGRESSIVE: //TODO : some progressive algs dont need blocking 
 				return datasetOk && ProgressiveWF.configurationOk();
 
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
@@ -275,6 +281,7 @@ public class ExecutionController {
 	 * @return true if any configurations has been set to automatic
 	 * */
 	public boolean anyAutomaticConfig() {
+		if(WorkflowManager.ground_truth == null) return false;
 		
 		boolean automatic_conf = false;
 		this.methodsConfig = getWorkflowConfigurations(WorkflowManager.workflowConfigurationsID);
@@ -340,7 +347,7 @@ public class ExecutionController {
 					// Holistic random configuration (holistic grid is not supported at this time)
 	                int bestIteration = 0;
 	                double bestFMeasure = 0;
-	                for (int j = 0; j < NO_OF_TRIALS; j++) {
+	                for (int j=0; j < NO_OF_TRIALS; j++) {
 	                    int finalJ = j;
 	                    
 	                    // Set the next automatic random configuration
@@ -420,7 +427,8 @@ public class ExecutionController {
 			if (clp == null || interrupt_execution.get()) return null;
 			
 			// Store workflow results to H2 DB
-			dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, blocksMethodsPerformances);
+			if(WorkflowManager.ground_truth != null) 
+				dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, blocksMethodsPerformances);
             
 			return new Triplet<ClustersPerformance , Double, Integer>(clp, totalTime, no_instances);
 		}

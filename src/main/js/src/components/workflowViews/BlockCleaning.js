@@ -269,7 +269,7 @@ class BlockCleaning extends Component {
                     <Form.Label><h5>Select methods for Block Cleaning (Optional)</h5></Form.Label>
                 </Form.Group> 
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[0]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[0]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[0]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -280,7 +280,7 @@ class BlockCleaning extends Component {
                     </div>
                 </Collapse>
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[1]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[1]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[1]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -291,7 +291,7 @@ class BlockCleaning extends Component {
                     </div>
                 </Collapse>
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[2]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_cleaning[2]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[2]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -310,7 +310,8 @@ class BlockCleaning extends Component {
 }
 
 BlockCleaning.propTypes = {
-    submitState: PropTypes.func.isRequired
+    submitState: PropTypes.func.isRequired,
+    GTIsSet: PropTypes.bool.isRequired  
 }
 
 export default BlockCleaning

@@ -69,11 +69,11 @@ public class BlockUtils {
             blocks = currentMethod.refineBlocks(blocks);
             overheadEnd = System.currentTimeMillis();
 
-            if (finalRun) {
+            if (finalRun && WorkflowManager.ground_truth != null) {
                 // Print blocks performance
                 blp = new BlocksPerformance(blocks, duProp);
                 blp.setStatistics();
-                details_manager.print_BlockBuildingPerformance(blp, (overheadEnd - overheadStart)/1000, currentMethod.getMethodConfiguration(),  currentMethod.getMethodName());
+                details_manager.print_BlockBuildingPerformance(blp, (float)((overheadEnd - overheadStart)/1000), currentMethod.getMethodConfiguration(),  currentMethod.getMethodName());
                 
             }
             return new Triplet<>(blocks, blp, (overheadEnd - overheadStart)/1000);
@@ -88,8 +88,8 @@ public class BlockUtils {
      * @param blocks List of blocks
      * @return Number of comparisons
      */
-    public static double getTotalComparisons(List<AbstractBlock> blocks) {
-        double originalComparisons = 0;
+    public static float getTotalComparisons(List<AbstractBlock> blocks) {
+        float originalComparisons = 0f;
         originalComparisons = blocks.stream()
                 .map(AbstractBlock::getNoOfComparisons)
                 .reduce(originalComparisons, (accumulator, _item) -> accumulator + _item);

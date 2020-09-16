@@ -142,7 +142,8 @@ public class JoinWF {
 				details_manager.print_Sentence("Input Entity Profiles 1", WorkflowManager.profilesD1.size());
 				details_manager.print_Sentence("Input Entity Profiles 2", WorkflowManager.profilesD2.size());
 			}
-			details_manager.print_Sentence("Existing Duplicates", WorkflowManager.ground_truth.getDuplicates().size());
+			if(WorkflowManager.ground_truth != null)
+				details_manager.print_Sentence("Existing Duplicates", WorkflowManager.ground_truth.getDuplicates().size());
 			
 			eventPublisher.publish("Similarity Join", event_name);
 			details_manager.print_Sentence("Similarity Join method: " + similarity_join_method.getMethodName());
@@ -201,8 +202,7 @@ public class JoinWF {
 			double overheadEnd = System.currentTimeMillis();
 			ClustersPerformance clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
 			clp.setStatistics();
-
-			details_manager.print_ClustersPerformance(clp, (overheadEnd - overheadStart)/1000, 
+			details_manager.print_ClustersPerformance(clp, (float)((overheadEnd - overheadStart)/1000), 
 				entity_clustering.getMethodName(), 
 				entity_clustering.getMethodConfiguration());
 			
@@ -392,13 +392,12 @@ public class JoinWF {
 	
 		
 		    final ClustersPerformance clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
-		    clp.setStatistics();
-		    // TODO: Could set the entire configuration details instead of entity clustering method name & config.	
-		    details_manager.print_ClustersPerformance(clp, 
-		    		time2 - time1,
-	    			entity_clustering.getMethodName(), 
-	    			entity_clustering.getMethodConfiguration());
-		    
+			clp.setStatistics();
+			// TODO: Could set the entire configuration details instead of entity clustering method name & config.	
+			details_manager.print_ClustersPerformance(clp, 
+					(float)((time2 - time1)/1000),
+					entity_clustering.getMethodName(), 
+					entity_clustering.getMethodConfiguration());
             eventPublisher.publish("", event_name);
 			context.close();
             

@@ -1,6 +1,6 @@
 import React,{ Component } from 'react'
 import PropTypes from 'prop-types';
-import {Form, Col, Row} from 'react-bootstrap/'
+import {Form, Col, Row, Collapse, Button} from 'react-bootstrap/'
 import 'react-dropdown/style.css'
 import ProfileReader from './ProfileReader';
 import AlertModal from '../utilities/AlertModal'
@@ -16,9 +16,9 @@ import axios from 'axios'
         this.collapse_explore = false;
         this.dataIsSet = false;
         this.setEntity = this.setEntity.bind(this)
-
         this.alertText = "Select an ER Mode"
         if (this.props.state !== null){
+            this.collapse_gt = true;
             this.state = { 
                 er_mode : this.props.state.er_mode,
                 entity1_set : this.props.state.entity1_set,
@@ -35,20 +35,9 @@ import axios from 'axios'
                 alertShow : false
             }
         }
+
+        this.collapse_gt = this.state.groundTruth_set != null
     }
-
-
-   /* componentDidUpdate(){
-        console.log("---> ", this.props.state)
-        if (this.props.state !== null){
-            this.setState ({ 
-                er_mode : this.props.state.er_mode,
-                entity1_set : this.props.state.entity1_set,
-                entity2_set : this.props.state.entity2_set,
-                groundTruth_set : this.props.state.groundTruth_set
-            })
-        }
-    }*/
 
     // Set er_mode and based on that it disables the second profileReader
     onChange = (e) => {
@@ -91,12 +80,18 @@ import axios from 'axios'
     handleAlertClose = () => this.setState({alertShow : false});
     handleAlertShow = () => this.setState({alertShow : true});
 
+    openGT = (e) =>{
+        console.log("open/close GT", this.collapse_gt)
+        this.collapse_gt = !this.collapse_gt
+        this.setState({groundTruth_set: null})
+    }
+
 
     isValidated(){
         //return true
         var isSet
-        if(this.state.er_mode === "dirty") isSet = this.state.entity1_set !==null && this.state.groundTruth_set !==null
-        else if(this.state.er_mode === "clean") isSet = this.state.entity1_set !==null && this.state.entity2_set !== null && this.state.groundTruth_set !==null
+        if(this.state.er_mode === "dirty") isSet = this.state.entity1_set !== null 
+        else if(this.state.er_mode === "clean") isSet = this.state.entity1_set !== null && this.state.entity2_set !== null
         else isSet = false
         if (isSet){
             return axios
@@ -128,7 +123,8 @@ import axios from 'axios'
                     <br/>
                     <div style={{marginBottom:"5px"}}> 
                         <h1 style={{display:'inline', marginRight:"20px"}}>Data Reading</h1> 
-                        <span className="workflow-desc">  Data Reading transforms the input data into a list of entity profiles.</span>
+                        <span style={{display:'inline'}} className="workflow-desc">  Data Reading transforms the input data into a list of entity profiles.</span>
+                        <span title="If Dirty ER is selected, then you will need to configure only the Entity profiles D1, otherwise, if Clean-Clean ER is selected, you will need to configure both entity profiles D1 and D2. Configure Ground truth if you want to examine the performance of the workflow." className="fa fa-info-circle fa-2x" style={{marginLeft: "30px", color: "#4663b9"}}/>
                     </div>
                     <br/>
                     
@@ -168,8 +164,20 @@ import axios from 'axios'
                         
                     <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.er_mode === ""} type="entity" setEntity={this.setEntity} state={this.state.entity1_set}/>   
                     <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.er_mode !== "clean"} type="entity" setEntity={this.setEntity} state={this.state.entity2_set}/> 
-                    <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.er_mode === "" || disable_ground_truth} type="ground-truth" setEntity={this.setEntity} state={this.state.groundTruth_set} />   
-                    
+                    <div>
+                        <Button variant="primary" onClick={this.openGT}>
+                            <span className="fa fa-plus-circle" style={{marginRight: "10px"}}/>
+                            Add Ground-Truth file
+                        </Button>
+                        <br/>
+                        <Collapse in={this.collapse_gt} >
+                            <div>
+                                <br/>
+                                <br/>
+                                <ProfileReader entity_id="3" title="Ground-Truth file:" disabled={this.state.er_mode === "" || disable_ground_truth} type="ground-truth" setEntity={this.setEntity} state={this.state.groundTruth_set} />   
+                            </div>
+                        </Collapse>
+                    </div>
                     <br/>
                     <br/>
                     

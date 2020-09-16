@@ -103,6 +103,7 @@ class ExecutionView extends Component {
 
         }
         axios.get("/workflow/automatic_conf/").then(res => this.setState({ automatic_conf: res.data}))
+        axios.get("/workflow/gtisset/").then(res => this.setState({ GT_isSet: res.data}))
         this.getWorkbenchData()
         this.eventSource = new EventSource("/workflow/sse") 
         this.eventSource.addEventListener("execution_step", (e) => this.setState({execution_step: e.data}))
@@ -375,28 +376,28 @@ class ExecutionView extends Component {
                     
                // Execution Results style={{marginLeft:"28%"}}
                execution_stats = 
-                <div style={{margin:"auto", width:"80%"}}>
+                <div style={{margin:"auto", width:"70%"}}>
                         <Table responsive="sm">
                             <thead>
                             </thead>
                             <tbody>
                             <tr>
                                 <td><h4 style={{color:"#4663b9"}} className="form-row" >Input Instances:</h4></td>
-                                <td>{this.state.execution_results.input_instances}</td>
+                                <td style={{fontSize:"150%"}}>{this.state.execution_results.input_instances}</td>
                                 <td><h4 style={{color:"#4663b9"}} className="form-row" >Number of Clusters:</h4></td>
-                                <td>{this.state.execution_results.no_clusters}</td>
+                                <td style={{fontSize:"150%"}}>{this.state.execution_results.no_clusters}</td>
                             </tr>
                             <tr>
                                 <td><h4 style={{color:"#4663b9"}} className="form-row" >Existing Duplicates:</h4></td>
-                                <td>{this.state.execution_results.existing_duplicates}</td>
+                                <td style={{fontSize:"150%"}}>{this.state.execution_results.existing_duplicates}</td>
                                 <td><h4 style={{color:"#4663b9"}} className="form-row" >Detected Duplicates:</h4></td>
-                                <td>{this.state.execution_results.detected_duplicates}</td>
+                                <td style={{fontSize:"150%"}}>{this.state.execution_results.detected_duplicates}</td>
                             </tr>
                             <tr>
                                 <td><h4 style={{color:"#4663b9"}} className="form-row" >Total execution time (sec):</h4></td>
-                                <td>{this.state.execution_results.total_time}</td>
+                                <td style={{fontSize:"150%"}}>{this.state.execution_results.total_time}</td>
                                 <td><h4 style={{color:"#4663b9"}} className="form-row" >Total Matches:</h4></td>
-                                <td>{this.state.execution_results.total_matches}</td>
+                                <td style={{fontSize:"150%"}}>{this.state.execution_results.total_matches}</td>
                             </tr>
                         </tbody>
                     </Table>
@@ -432,309 +433,449 @@ class ExecutionView extends Component {
         }
 
         var explorer =  <Explorer source="/workflow/" entity_id={"3"} get_entities={this.explorer_get_entities}  />
-       
-                    
-        return (
-        	<div>
-		      <Modal className="grey-modal" show={this.state.show_configuration_modal} onHide={this.close_configuration_modal} size="xl">
-                    <Modal.Header closeButton>
-                    <Modal.Title>Configurations of Workflow {this.state.workflowID}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body >
-                        <ConfigurationsView state={this.state.workflow_configurations} />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={this.close_configuration_modal}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                         
+        if (this.state.GT_isSet) {
+            return (
+                <div>
+                    <Modal className="grey-modal" show={this.state.show_configuration_modal} onHide={this.close_configuration_modal} size="xl">
+                        <Modal.Header closeButton>
+                            <Modal.Title>Configurations of Workflow {this.state.workflowID}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body >
+                            <ConfigurationsView state={this.state.workflow_configurations} />
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={this.close_configuration_modal}>Close</Button>
+                        </Modal.Footer>
+                    </Modal>
+                    <Modal show={this.state.show_explore_window} onHide={this.close_explore_window} size="xl">
+                        <Modal.Header closeButton>
+                            <Modal.Title>Explore</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body >{explorer}</Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={this.close_explore_window}>Close</Button>
+                        </Modal.Footer>
+                    </Modal>
 
-                <Modal show={this.state.show_explore_window} onHide={this.close_explore_window} size="xl">
-                    <Modal.Header closeButton>
-                    <Modal.Title>Explore</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body >
-                    {explorer}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={this.close_explore_window}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                    <Modal show={this.state.show_roc_window} onHide={this.close_roc_window} size="xl">
+                        <Modal.Header closeButton>
+                            <Modal.Title>ROC Curve</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body >
+                            <Plot data={roc_curve} layout={layout} style={{textAlign: "center", margin:"auto"}} />
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={this.close_roc_window}>Close</Button>
+                        </Modal.Footer>
+                    </Modal>
 
-
-
-                <Modal show={this.state.show_roc_window} onHide={this.close_roc_window} size="xl">
-                    <Modal.Header closeButton>
-                    <Modal.Title>ROC Curve</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body >
-                    <Plot data={roc_curve} layout={layout} style={{textAlign: "center", margin:"auto"}} //layout={ {width: "90%", height: "35%", title: 'Roc'} }
-                />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={this.close_roc_window}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-		        	
-                <AlertModal title="Exception" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
-                <Jumbotron  className='jumbotron_2'>
-                    <div className="container-fluid">
-                        <br/>
-                        <div style={{marginBottom:"5px"}}> 
-                            <h1 style={{display:'inline', marginRight:"20px"}}>Workflow Execution</h1> 
-                            <span className="workflow-desc" >   Press "Execute Workflow" to run the algorithm. 
-                                                                You can export the results to a file with the 
-                                                                "Export" button.</span>
-                        </div>
-
-                        <br/>
-                        <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
-                        <br/>
-
-                        
-                        <Tabs activeKey={this.state.tabkey} onSelect={this.changeTab} defaultActiveKey="result" className="Jumbotron_Tabs">
-                            <Tab eventKey="result" title="Results" className="Jumbotron_Tab">
-                                <div className="Tab_container">
-                                    <br/>
-                                    <Form>
-                                        <Form.Group as={Row}  className="form-row" >
-                                            <Col  sm={radio_col}  style={{display: "inline-block"}}>
-                                                <Form.Label as="legend"><h5>Workflow ID: {this.state.workflowID}</h5> </Form.Label>
-
-                                                <OverlayTrigger
-                                                    placement='top'
-                                                    overlay={
-                                                        <Tooltip id='tooltip-top' >
-                                                            Preview
-                                                        </Tooltip>}
-                                                    >
-                                                    <Button style={{marginLeft:"5px"}} variant="info" size="sm" onClick={e => this.previewWorkflow()} >
-                                                        <span className="fa fa-eye"/>
-                                                    </Button>
-                                                </OverlayTrigger>
-                                            </Col>
-                                        </Form.Group>
-                                        <Form.Group as={Row}  className="form-row" >
-                                            <Col  sm={radio_col}>
-                                                <Form.Label as="legend"><h5>Automatic Configuration Type</h5> </Form.Label>
-                                                <Form.Check
-                                                    type="radio"
-                                                    label="Holistic"
-                                                    name="automatic_type"
-                                                    value="Holistic"
-                                                    checked={this.state.automatic_type === "Holistic"}
-                                                    onChange={this.onChange}
-                                                    disabled={!this.state.automatic_conf}
-                                                />
-                                                <Form.Check
-                                                    type="radio"
-                                                    label="Step-by-step"
-                                                    name="automatic_type"
-                                                    value="Step-by-step"
-                                                    checked={this.state.automatic_type === "Step-by-step"}
-                                                    onChange={this.onChange}
-                                                    disabled={!this.state.automatic_conf}
-                                                />
-                                                <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
-                                                <Form.Label as="legend"><h5>Search Type</h5> </Form.Label>
-                                                <Form.Check
-                                                    type="radio"
-                                                    label="Random Search"
-                                                    name="search_type"
-                                                    value="Random Search"
-                                                    checked={this.state.search_type === "Random Search"}
-                                                    onChange={this.onChange}
-                                                    disabled={!this.state.automatic_conf || this.state.automatic_type === "Holistic"}
-                                                />
-                                                <Form.Check
-                                                    type="radio"
-                                                    label="Grid Search"
-                                                    name="search_type"
-                                                    value="Grid Search"
-                                                    checked={this.state.search_type === "Grid Search"}
-                                                    onChange={this.onChange}
-                                                    disabled={!this.state.automatic_conf || this.state.automatic_type === "Holistic"}
-                                                /> 
-                                            
-                                            <br/>
-                                            <br/>
-                                            {execution_status_view}
-
-                                        </Col>
-
-                                        <Col  sm={empty_col} />
-
-                                        <Col  sm={speedometer_col} style={{marginRight:"20px"}}>
-                                            <div className="caption_item">
-                                            <h4 className="caption"><b>Recall</b></h4>
-                                                <ReactSpeedometer  
-                                                    value={this.state.execution_results.recall} 
-                                                    maxValue={1} 
-                                                    segments={5} 
-                                                    segmentColors={[
-                                                        "#ffad33",
-                                                        "#ffad33",
-                                                        "#a3be8c",
-                                                        "#a3be8c",
-                                                        "#61d161"
-                                                    ]}
-                                                />
-                                                
-                                            </div>
-                                        </Col>
-                                        
-                                        <Col  sm={speedometer_col} style={{marginRight:"20px"}}>
-                                            <div className="caption_item">
-                                            <h4 className="caption"><b>Precision</b></h4>
-                                                <ReactSpeedometer  
-                                                    value={this.state.execution_results.precision} 
-                                                    maxValue={1} 
-                                                    segments={5} 
-                                                    segmentColors={[
-                                                        "#ffad33",
-                                                        "#ffad33",
-                                                        "#a3be8c",
-                                                        "#a3be8c",
-                                                        "#61d161"
-                                                    ]}
-                                                />
-                                                
-                                            </div>
-                                        </Col>
-
-                                        <Col  sm={speedometer_col}style={{marginRight:"20px"}}>
-                                            <div className="caption_item">
-                                            <h4 className="caption"><b>F1-measure</b></h4>
-                                                <ReactSpeedometer  
-                                                    value={this.state.execution_results.f1_measure} 
-                                                    maxValue={1} 
-                                                    segments={5} 
-                                                    segmentColors={[
-                                                        "#ffad33",
-                                                        "#ffad33",
-                                                        "#a3be8c",
-                                                        "#a3be8c",
-                                                        "#61d161"
-                                                    ]}
-                                                />
-                                                
-                                            </div>
-                                        </Col>
-                                    </Form.Group>
-
-                                        
-                                                
-                                        {execution_stats}
-                                       
-                                        <br/>
-                                    </Form>
-                                </div>
-                            </Tab>
-                            <Tab eventKey="details" title="Details" className="Jumbotron_Tab">
-                                <br/>
-                                <h1>Details</h1>
-                                
-                                <Form.Group>
-                                    <Form.Control as="textarea" rows="20" readOnly={true} value={this.state.details_msg}/>
-                                </Form.Group>
-                            </Tab>
-                            <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
-                                <br/>
-                                <Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} setNewWorkflow={this.setNewWorkflow} />
-                            </Tab>
-                        </Tabs>
-
-
-                        {execution_msg}
-
-                        <br/>
-
-                        <div style={{marginBottom: '20px', paddingBottom:'20px'}}>
-                            <div style={{float:'left'}}>
-                                <Form.Group as={Row}  className="form-row">
-                                    <Button variant="primary" 
-                                        style={{width:"180", marginRight:"10px"}} 
-                                        onClick={this.executeWorkFlow}
-                                        disabled={this.state.execution_status === "Running"}
-                                    >
-                                        <span className="fa fa-play-circle" style={{marginRight: "10px"}}/>
-                                        Execute Workflow
-                                    </Button>
-                                    <Button variant="secondary" 
-                                        style={{width:"100px", marginRight:"10px"}} 
-                                        disabled={this.state.execution_status !== "Completed"} 
-                                        onClick={this.explore}>
-                                            Explore
-                                        </Button>
-                                    <Button variant="secondary" 
-                                        style={{width: "100px", marginRight:"10px"}}
-                                        disabled={this.state.execution_status !== "Completed"}
-                                        onClick={this.plotROC}
-                                        disabled={this.state.wf_mode != "Progressive"}
-                                    >
-                                        Show Plot
-                                    </Button>
-                                </Form.Group>
-                                <Form.Group as={Row}  className="form-row">
-                                    <Form.Control
-                                        style={{width:"290px", marginRight:"10px"}} 
-                                        as="select" 
-                                        placeholder="Select Filetype" 
-                                        name="export_filetype" 
-                                        onChange={this.onChange}
-                                        disabled={this.state.execution_status !== "Completed"}
-                                        value={this.state.export_filetype}
-                                    >
-                                        <option value="" ></option>
-                                        <option value="CSV" >CSV</option>
-                                        <option value="RDF" >RDF</option>
-                                        <option value="XML" >XML</option>
-                                    </Form.Control>   
-                                    <Button 
-                                        style={{width:"100px", marginRight:"10px"}} 
-                                        disabled={this.state.export_filetype === ""} 
-                                        onClick={this.export}
-                                    >
-                                        Export
-                                    </Button>
-                                </Form.Group>
+                    <AlertModal title="Exception" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
+                    <Jumbotron  className='jumbotron_2'>
+                        <div className="container-fluid">
+                            <br/>
+                            <div style={{marginBottom:"5px"}}> 
+                                <h1 style={{display:'inline', marginRight:"20px"}}>Workflow Execution</h1> 
+                                <span className="workflow-desc" > Press "Execute Workflow" to run the algorithm. You can export the results to a file with the "Export" button.</span>
                             </div>
-                            
-                            
-                            
-                            <div style={{float: 'right'}}>                                    	
-                                <Form.Group as={Row} className="form-row">
-                                    <Button variant="secondary" 
-                                        style={{width:"100px", marginRight:"10px"}}
-                                        disabled={this.state.execution_status !== "Running"}
-                                        onClick={this.stop_execution}
-                                    >
-                                        <span className="fa fa-stop" style={{marginRight: "10px"}}/>
-                                        Stop
-                                    </Button>
-                                    <Link to={{pathname: this.start_over_path, state:{conf: this.state.wf_state}}}>
-                                        <Button variant="secondary" 
-                                            style={{width: "100px", marginRight:"10px"}}
+                            <br/>
+                            <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                            <br/>
+
+                            <Tabs activeKey={this.state.tabkey} onSelect={this.changeTab} defaultActiveKey="result" className="Jumbotron_Tabs">
+                                <Tab eventKey="result" title="Results" className="Jumbotron_Tab">
+                                    <div className="Tab_container">
+                                        <br/>
+                                        <Form>
+                                            <Form.Group as={Row}  className="form-row" >
+                                                <Col sm={radio_col}  style={{display: "inline-block"}}>
+                                                    <Form.Label as="legend"><h5>Workflow ID: {this.state.workflowID}</h5> </Form.Label>
+                                                    <OverlayTrigger
+                                                        placement='top'
+                                                        overlay={<Tooltip id='tooltip-top'>Preview</Tooltip>}>
+                                                        <Button style={{marginLeft:"5px"}} variant="info" size="sm" onClick={e => this.previewWorkflow()} >
+                                                            <span className="fa fa-eye"/>
+                                                        </Button>
+                                                    </OverlayTrigger>
+                                                </Col>
+                                            </Form.Group>
+                                            <Form.Group as={Row}  className="form-row" >
+                                                <Col  sm={radio_col}>
+                                                    <Form.Label as="legend"><h5>Automatic Configuration Type</h5> </Form.Label>
+                                                    <Form.Check
+                                                        type="radio"
+                                                        label="Holistic"
+                                                        name="automatic_type"
+                                                        value="Holistic"
+                                                        checked={this.state.automatic_type === "Holistic"}
+                                                        onChange={this.onChange}
+                                                        disabled={!this.state.automatic_conf}
+                                                    />
+                                                    <Form.Check
+                                                        type="radio"
+                                                        label="Step-by-step"
+                                                        name="automatic_type"
+                                                        value="Step-by-step"
+                                                        checked={this.state.automatic_type === "Step-by-step"}
+                                                        onChange={this.onChange}
+                                                        disabled={!this.state.automatic_conf}
+                                                    />
+                                                    <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                                                    <Form.Label as="legend"><h5>Search Type</h5> </Form.Label>
+                                                    <Form.Check
+                                                        type="radio"
+                                                        label="Random Search"
+                                                        name="search_type"
+                                                        value="Random Search"
+                                                        checked={this.state.search_type === "Random Search"}
+                                                        onChange={this.onChange}
+                                                        disabled={!this.state.automatic_conf || this.state.automatic_type === "Holistic"}
+                                                    />
+                                                    <Form.Check
+                                                        type="radio"
+                                                        label="Grid Search"
+                                                        name="search_type"
+                                                        value="Grid Search"
+                                                        checked={this.state.search_type === "Grid Search"}
+                                                        onChange={this.onChange}
+                                                        disabled={!this.state.automatic_conf || this.state.automatic_type === "Holistic"}
+                                                    /> 
+                                                
+                                                    <br/>
+                                                    <br/>
+                                                    {execution_status_view}
+                                                </Col>
+                                                <Col sm={empty_col} />
+                                                <Col sm={speedometer_col} style={{marginRight:"20px"}}>
+                                                    <div className="caption_item">
+                                                    <h4 className="caption"><b>Recall</b></h4>
+                                                        <ReactSpeedometer  
+                                                            value={this.state.execution_results.recall} 
+                                                            maxValue={1} 
+                                                            segments={5} 
+                                                            segmentColors={[
+                                                                "#ffad33",
+                                                                "#ffad33",
+                                                                "#a3be8c",
+                                                                "#a3be8c",
+                                                                "#61d161"
+                                                            ]}/>
+                                                    </div>
+                                                </Col>
+                                                
+                                                <Col sm={speedometer_col} style={{marginRight:"20px"}}>
+                                                    <div className="caption_item">
+                                                    <h4 className="caption"><b>Precision</b></h4>
+                                                        <ReactSpeedometer  
+                                                            value={this.state.execution_results.precision} 
+                                                            maxValue={1} 
+                                                            segments={5} 
+                                                            segmentColors={[
+                                                                "#ffad33",
+                                                                "#ffad33",
+                                                                "#a3be8c",
+                                                                "#a3be8c",
+                                                                "#61d161"
+                                                            ]}/>    
+                                                    </div>
+                                                </Col>
+                                                <Col sm={speedometer_col}style={{marginRight:"20px"}}>
+                                                    <div className="caption_item">
+                                                    <h4 className="caption"><b>F1-measure</b></h4>
+                                                        <ReactSpeedometer  
+                                                            value={this.state.execution_results.f1_measure} 
+                                                            maxValue={1} 
+                                                            segments={5} 
+                                                            segmentColors={[
+                                                                "#ffad33",
+                                                                "#ffad33",
+                                                                "#a3be8c",
+                                                                "#a3be8c",
+                                                                "#61d161"
+                                                            ]}/>   
+                                                    </div>
+                                                </Col>
+                                            </Form.Group>  
+                                            {execution_stats}
+                                            <br/>
+                                        </Form>
+                                    </div>
+                                </Tab>
+                                <Tab eventKey="details" title="Details" className="Jumbotron_Tab">
+                                    <br/>
+                                    <h1>Details</h1>
+                                    <Form.Group>
+                                        <Form.Control as="textarea" rows="20" readOnly={true} value={this.state.details_msg}/>
+                                    </Form.Group>
+                                </Tab>
+                                <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
+                                    <br/>
+                                    <Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} setNewWorkflow={this.setNewWorkflow} />
+                                </Tab>
+                            </Tabs>
+                            {execution_msg}
+                            <br/>
+                            <div style={{marginBottom: '20px', paddingBottom:'20px'}}>
+                                <div style={{float:'left'}}>
+                                    <Form.Group as={Row}  className="form-row">
+                                        <Button variant="primary" 
+                                            style={{width:"180", marginRight:"10px"}} 
+                                            onClick={this.executeWorkFlow}
                                             disabled={this.state.execution_status === "Running"}
                                         >
-                                            Start Over
+                                            <span className="fa fa-play-circle" style={{marginRight: "10px"}}/>
+                                            Execute Workflow
                                         </Button>
-                                    </Link>
-                                </Form.Group>
+                                        <Button variant="secondary" 
+                                            style={{width:"100px", marginRight:"10px"}} 
+                                            disabled={this.state.execution_status !== "Completed"} 
+                                            onClick={this.explore}>
+                                                Explore
+                                            </Button>
+                                        <Button variant="secondary" 
+                                            style={{width: "100px", marginRight:"10px"}}
+                                            disabled={this.state.execution_status !== "Completed"}
+                                            onClick={this.plotROC}
+                                            disabled={this.state.wf_mode != "Progressive"}
+                                        >
+                                            Show Plot
+                                        </Button>
+                                    </Form.Group>
+                                    <Form.Group as={Row}  className="form-row">
+                                        <Form.Control
+                                            style={{width:"290px", marginRight:"10px"}} 
+                                            as="select" 
+                                            placeholder="Select Filetype" 
+                                            name="export_filetype" 
+                                            onChange={this.onChange}
+                                            disabled={this.state.execution_status !== "Completed"}
+                                            value={this.state.export_filetype}
+                                        >
+                                            <option value="" ></option>
+                                            <option value="CSV" >CSV</option>
+                                            <option value="RDF" >RDF</option>
+                                            <option value="XML" >XML</option>
+                                        </Form.Control>   
+                                        <Button 
+                                            style={{width:"100px", marginRight:"10px"}} 
+                                            disabled={this.state.export_filetype === ""} 
+                                            onClick={this.export}
+                                        >
+                                            Export
+                                        </Button>
+                                    </Form.Group>
+                                </div>
+                                
+                                <div style={{float: 'right'}}>                                    	
+                                    <Form.Group as={Row} className="form-row">
+                                        <Button variant="secondary" 
+                                            style={{width:"100px", marginRight:"10px"}}
+                                            disabled={this.state.execution_status !== "Running"}
+                                            onClick={this.stop_execution}
+                                        >
+                                            <span className="fa fa-stop" style={{marginRight: "10px"}}/>
+                                            Stop
+                                        </Button>
+                                        <Link to={{pathname: this.start_over_path, state:{conf: this.state.wf_state}}}>
+                                            <Button variant="secondary" 
+                                                style={{width: "100px", marginRight:"10px"}}
+                                                disabled={this.state.execution_status === "Running"}
+                                            >
+                                                Start Over
+                                            </Button>
+                                        </Link>
+                                    </Form.Group>
+                                </div>
                             </div>
+                            <br/>
+                                
                         </div>
-                        <br/>
-                          
-                    </div>
-                </Jumbotron>
-            </div>
-        )
+                    </Jumbotron>
+                </div>
+            )
+        }
+        else
+            return(
+                <div>
+                    <Modal className="grey-modal" show={this.state.show_configuration_modal} onHide={this.close_configuration_modal} size="xl">
+                        <Modal.Header closeButton>
+                            <Modal.Title>Configurations of Workflow {this.state.workflowID}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body >
+                            <ConfigurationsView state={this.state.workflow_configurations} />
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={this.close_configuration_modal}>Close</Button>
+                        </Modal.Footer>
+                    </Modal>
+                    <Modal show={this.state.show_explore_window} onHide={this.close_explore_window} size="xl">
+                        <Modal.Header closeButton>
+                            <Modal.Title>Explore</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body >{explorer}</Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={this.close_explore_window}>Close</Button>
+                        </Modal.Footer>
+                    </Modal>
+
+                    <AlertModal title="Exception" text={this.alertText} show={this.state.alertShow} handleClose={this.handleAlertClose} />
+                    <Jumbotron  className='jumbotron_2'>
+                        <div className="container-fluid">
+                            <br/>
+                            <div style={{marginBottom:"5px"}}> 
+                                <h1 style={{display:'inline', marginRight:"20px"}}>Workflow Execution</h1> 
+                                <span className="workflow-desc" > Press "Execute Workflow" to run the algorithm. You can export the results to a file with the "Export" button.</span>
+                            </div>
+                            <br/>
+                            <hr style={{ color: 'black', backgroundColor: 'black', height: '5' }}/>
+                            <br/>
+                            <Tabs activeKey={this.state.tabkey} onSelect={this.changeTab} defaultActiveKey="result" className="Jumbotron_Tabs">
+                                <Tab eventKey="result" title="Results" className="Jumbotron_Tab">
+                                    <div className="Tab_container">
+                                        <br/>
+                                        <Form>
+                                            <Form.Group as={Row}  className="form-row" >
+                                                <Col sm={radio_col}  style={{display: "inline-block"}}>
+                                                    <Form.Label as="legend"><h5>Workflow ID: {this.state.workflowID}</h5> </Form.Label>
+                                                    <OverlayTrigger
+                                                        placement='top'
+                                                        overlay={<Tooltip id='tooltip-top'>Preview</Tooltip>}>
+                                                        <Button style={{marginLeft:"5px"}} variant="info" size="sm" onClick={e => this.previewWorkflow()} >
+                                                            <span className="fa fa-eye"/>
+                                                        </Button>
+                                                    </OverlayTrigger>
+                                                </Col>
+                                            </Form.Group>
+                                            <Form.Group as={Row}  className="form-row" >
+                                                <Col  sm={radio_col}>
+                                                    <br/>
+                                                    <br/>
+                                                    {execution_status_view}
+                                                </Col>
+                                                <Col sm={empty_col} />
+                                               
+                                            </Form.Group>  
+                                            <div style={{margin:"auto", width:"70%"}}>
+                                            <Table responsive="sm">
+                                                <thead>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><h4 style={{color:"#4663b9"}} className="form-row" >Input Instances:</h4></td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.input_instances}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h4 style={{color:"#4663b9"}} className="form-row" >Number of Clusters:</h4></td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.no_clusters}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h4 style={{color:"#4663b9"}} className="form-row" >Total Matches:</h4></td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.total_matches}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><h4 style={{color:"#4663b9"}} className="form-row" >Total execution time (sec):</h4></td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.total_time}</td>
+                                                    </tr>
+                                                    
+                                                </tbody>
+                                            </Table>
+                </div>
+                                            <br/>
+                                        </Form>
+                                    </div>
+                                </Tab>
+                                <Tab eventKey="details" title="Details" className="Jumbotron_Tab">
+                                    <br/>
+                                    <h1>Details</h1>
+                                    <Form.Group>
+                                        <Form.Control as="textarea" rows="20" readOnly={true} value={this.state.details_msg}/>
+                                    </Form.Group>
+                                </Tab>
+                                <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
+                                    <br/>
+                                    <Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} setNewWorkflow={this.setNewWorkflow} />
+                                </Tab>
+                            </Tabs>
+                            {execution_msg}
+                            <br/>
+                            <div style={{marginBottom: '20px', paddingBottom:'20px'}}>
+                                <div style={{float:'left'}}>
+                                    <Form.Group as={Row}  className="form-row">
+                                        <Button variant="primary" 
+                                            style={{width:"180", marginRight:"10px"}} 
+                                            onClick={this.executeWorkFlow}
+                                            disabled={this.state.execution_status === "Running"}
+                                        >
+                                            <span className="fa fa-play-circle" style={{marginRight: "10px"}}/>
+                                            Execute Workflow
+                                        </Button>
+                                        <Button variant="secondary" 
+                                            style={{width:"100px", marginRight:"10px"}} 
+                                            disabled={this.state.execution_status !== "Completed"} 
+                                            onClick={this.explore}>
+                                                Explore
+                                            </Button>
+                                        <Button variant="secondary" 
+                                            style={{width: "100px", marginRight:"10px"}}
+                                            disabled={this.state.execution_status !== "Completed"}
+                                            onClick={this.plotROC}
+                                            disabled={this.state.wf_mode != "Progressive"}
+                                        >
+                                            Show Plot
+                                        </Button>
+                                    </Form.Group>
+                                    <Form.Group as={Row}  className="form-row">
+                                        <Form.Control
+                                            style={{width:"290px", marginRight:"10px"}} 
+                                            as="select" 
+                                            placeholder="Select Filetype" 
+                                            name="export_filetype" 
+                                            onChange={this.onChange}
+                                            disabled={this.state.execution_status !== "Completed"}
+                                            value={this.state.export_filetype}
+                                        >
+                                            <option value="" ></option>
+                                            <option value="CSV" >CSV</option>
+                                        </Form.Control>   
+                                        <Button 
+                                            style={{width:"100px", marginRight:"10px"}} 
+                                            disabled={this.state.export_filetype === ""} 
+                                            onClick={this.export}
+                                        >
+                                            Export
+                                        </Button>
+                                    </Form.Group>
+                                </div>
+                                
+                                <div style={{float: 'right'}}>                                    	
+                                    <Form.Group as={Row} className="form-row">
+                                        <Button variant="secondary" 
+                                            style={{width:"100px", marginRight:"10px"}}
+                                            disabled={this.state.execution_status !== "Running"}
+                                            onClick={this.stop_execution}
+                                        >
+                                            <span className="fa fa-stop" style={{marginRight: "10px"}}/>
+                                            Stop
+                                        </Button>
+                                        <Link to={{pathname: this.start_over_path, state:{conf: this.state.wf_state}}}>
+                                            <Button variant="secondary" 
+                                                style={{width: "100px", marginRight:"10px"}}
+                                                disabled={this.state.execution_status === "Running"}
+                                            >
+                                                Start Over
+                                            </Button>
+                                        </Link>
+                                    </Form.Group>
+                                </div>
+                            </div>
+                            <br/>
+
+                        </div>
+                    </Jumbotron>
+                </div>
+                
+            )
+        
     }
 }
 

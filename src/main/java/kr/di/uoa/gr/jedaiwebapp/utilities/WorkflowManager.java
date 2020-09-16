@@ -1,6 +1,10 @@
 package kr.di.uoa.gr.jedaiwebapp.utilities;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -46,7 +50,7 @@ public class WorkflowManager {
 
 	public static List<IBlockProcessing> block_cleaning = null;
 	
-	private static EquivalenceCluster[] entityClusters = null;
+	public static List<EquivalenceCluster> entityClusters = null;
 
 	
 	private static EventPublisher eventPublisher;
@@ -152,7 +156,7 @@ public class WorkflowManager {
          else 
 		 	entityMatching = DynamicMethodConfiguration
                     .configureEntityMatchingMethod(em.getLabel(), em.getParameters());
-        
+		
 		switch(wf_mode){
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
 				BlockingWF.setEntity_matching(entityMatching);
@@ -284,8 +288,6 @@ public class WorkflowManager {
 	}
     
     
-    
-    
 	/**
      * Construct a list containing the detected duplicates
      * 
@@ -295,7 +297,7 @@ public class WorkflowManager {
 		
 		List<List<EntityProfileNode>> duplicates = new ArrayList<>();
 		
-		for (EquivalenceCluster ec : ground_truth.getDetectedEquivalenceClusters()) { // TODO it is always empty
+		for (EquivalenceCluster ec : entityClusters){
 			if (er_mode.equals(JedaiOptions.DIRTY_ER)) {
 				
 				if (!ec.getEntityIdsD1().isEmpty()) { 
@@ -334,7 +336,6 @@ public class WorkflowManager {
 	}
     
 	
-
 	/**
      * When bestIteration is null, set the next random configuration for each method in the workflow that should be
      * automatically configured. If it is set, set these methods to that configuration.
@@ -350,7 +351,6 @@ public class WorkflowManager {
 					BlockingWF.schema_clustering.setNextRandomConfiguration();
 				else 
 					BlockingWF.schema_clustering.setNumberedRandomConfiguration(bestIteration);
-			
 		
 				// Check if any block building method parameters should be set automatically
 				if (BlockingWF.getBlock_building() != null && !BlockingWF.getBlock_building().isEmpty()) {
@@ -373,7 +373,6 @@ public class WorkflowManager {
 						}
 					}            
 				}
-		
 				
 				// Check if any block cleaning method parameters should be set automatically
 				if (BlockingWF.getBlock_cleaning() != null && !BlockingWF.getBlock_cleaning().isEmpty()) {
@@ -397,7 +396,6 @@ public class WorkflowManager {
 						}
 					}
 				}
-			
 		
 				// Check if comparison cleaning parameters should be set automatically
 				if(BlockingWF.comparison_cleaning != null)
@@ -426,11 +424,45 @@ public class WorkflowManager {
 				}
 		}
     	
-    }
-
+	}
 	
-    
-   
+	public static void exportToCSV(String outputFile) throws FileNotFoundException{
+        final PrintWriter pw = new PrintWriter(new File(outputFile));
+        StringBuilder sb = new StringBuilder();
+        if (er_mode == JedaiOptions.CLEAN_CLEAN_ER) {
+            for (EquivalenceCluster cluster : entityClusters) {
+
+                final int entityId1 = cluster.getEntityIdsD1().get(0);
+                final EntityProfile profile1 = profilesD1.get(entityId1);
+
+                final int entityId2 = cluster.getEntityIdsD2().get(0);
+                final EntityProfile profile2 = profilesD2.get(entityId2);
+
+                sb.append(profile1.getEntityUrl()).append(",");
+                sb.append(profile2.getEntityUrl()).append("\n");
+
+			}
+		}
+		else{
+			for (EquivalenceCluster cluster : entityClusters) {
+                final int[] duplicatesArray = cluster.getEntityIdsD1().toArray();
+				for (int i = 0; i < duplicatesArray.length; i++) {
+					for (int j = i + 1; j < duplicatesArray.length; j++) {
+
+						final EntityProfile profile1 = profilesD1.get(duplicatesArray[i]);
+						final EntityProfile profile2 = profilesD1.get(duplicatesArray[j]);
+
+						sb.append(profile1.getEntityUrl()).append(",");
+						sb.append(profile2.getEntityUrl()).append("\n");
+					}
+				}
+			}
+		}
+		pw.write(sb.toString());
+        pw.close();
+	}
+
+
 	public static String getEr_mode() {
 		return er_mode;
 	}
@@ -464,14 +496,13 @@ public class WorkflowManager {
 	}
 
 	public static EquivalenceCluster[] getEntityClusters() {
-		return entityClusters;
+		EquivalenceCluster[] ec = new EquivalenceCluster[entityClusters.size()];
+		ec = entityClusters.toArray(ec);
+		return ec;
 	}
 
 	public static void setEntityClusters(EquivalenceCluster[] entityClusters) {
-		WorkflowManager.entityClusters = entityClusters;
+		WorkflowManager.entityClusters = Arrays.asList(entityClusters);
 	}
-	
-	
-	
 	
 }

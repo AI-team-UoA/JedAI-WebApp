@@ -304,7 +304,7 @@ class ComparisonCleaning extends Component {
                     <Form.Label><h5>Select a Comparison Cleaning method (Optional)</h5>  </Form.Label>
                 </Form.Group> 
 
-                <RadioMethod methods={this.methods} state={this.state} auto_disabled={false} disable_manual={this.state.method_name === "NO_CLEANING"} onChange={this.onChange} title={"Comparison Cleaning method"}/>
+                <RadioMethod methods={this.methods} state={this.state} disableAutomatic={!this.props.GTIsSet} disable_manual={this.state.method_name === "NO_CLEANING"} onChange={this.onChange} title={"Comparison Cleaning method"}/>
                 <br/>
                 <Collapse in={this.state.configuration_type === "Manual" && this.state.method_name !== "NO_CLEANING"} >
                     <div className="jumbotron_parameters_container">
@@ -325,7 +325,8 @@ class ComparisonCleaning extends Component {
 
 ComparisonCleaning.propTypes = {
     state: PropTypes.object.isRequired,
-    submitState: PropTypes.func.isRequired
+    submitState: PropTypes.func.isRequired,
+    GTIsSet: PropTypes.bool.isRequired  
 }
 
 

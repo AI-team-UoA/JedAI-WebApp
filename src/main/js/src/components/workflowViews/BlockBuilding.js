@@ -634,9 +634,9 @@ class BlockBuilding extends Component {
                  
                
                
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[0]} disable_manual={true}/>
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[0]} disable_manual={true} disableAutomatic={!this.props.GTIsSet}/>
                 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[1]} configurations={this.SN_configurations}/>
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[1]} configurations={this.SN_configurations} disableAutomatic={!this.props.GTIsSet}/>
                 <Collapse in={this.parameters_collapse[1]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -647,7 +647,7 @@ class BlockBuilding extends Component {
                     </div>
                 </Collapse>
                 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[2]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[2]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[2]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -658,7 +658,7 @@ class BlockBuilding extends Component {
                     </div>
                 </Collapse>
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[3]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[3]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[3]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -669,7 +669,7 @@ class BlockBuilding extends Component {
                     </div>
                 </Collapse>
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[4]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[4]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[4]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -680,7 +680,7 @@ class BlockBuilding extends Component {
                     </div>
                 </Collapse>
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[5]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[5]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[5]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -691,7 +691,7 @@ class BlockBuilding extends Component {
                     </div>
                 </Collapse>
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[6]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[6]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[6]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -702,7 +702,7 @@ class BlockBuilding extends Component {
                     </div>
                 </Collapse>
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[7]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[7]} disableAutomatic={!this.props.GTIsSet} />
                 <Collapse in={this.parameters_collapse[7]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -713,7 +713,7 @@ class BlockBuilding extends Component {
                     </div>
                 </Collapse>
 
-                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[8]} />
+                <CheckboxMethod submitChange={this.submitChange} state={this.state.block_building[8]} disableAutomatic={!this.props.GTIsSet}/>
                 <Collapse in={this.parameters_collapse[8]} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters">
@@ -733,7 +733,8 @@ class BlockBuilding extends Component {
 }
 
 BlockBuilding.propTypes = {
-    submitState: PropTypes.func.isRequired
+    submitState: PropTypes.func.isRequired,
+    GTIsSet: PropTypes.bool.isRequired  
 }
 
 export default BlockBuilding

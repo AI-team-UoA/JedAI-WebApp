@@ -110,7 +110,8 @@ public class BlockingWF {
 					details_manager.print_Sentence("Input Entity Profiles 1", WorkflowManager.profilesD1.size());
 					details_manager.print_Sentence("Input Entity Profiles 2", WorkflowManager.profilesD2.size());
 				}
-				details_manager.print_Sentence("Existing Duplicates", WorkflowManager.ground_truth.getDuplicates().size());
+				if (WorkflowManager.ground_truth != null)
+					details_manager.print_Sentence("Existing Duplicates", WorkflowManager.ground_truth.getDuplicates().size());
 			}
 			
 			if (interrupt(interrupted)) {
@@ -161,12 +162,12 @@ public class BlockingWF {
 	            // Get blocks performance to print
 	            overheadEnd = System.currentTimeMillis();
 	            blp = new BlocksPerformance(blocks, WorkflowManager.ground_truth);
-	            blp.setStatistics();
 	            
-	            if (final_run) {
+	            if (final_run && WorkflowManager.ground_truth != null) {
+					blp.setStatistics();
 	                // print block Building performance
 	                details_manager.print_BlockBuildingPerformance(blp, 
-	                		(overheadEnd - overheadStart)/1000, 
+	                		(float)((overheadEnd - overheadStart)/1000), 
 	                		bb.getMethodConfiguration(), 
 	                		bb.getMethodName());
 	                performances.add(new Triplet<>(bb.getMethodName(), blp, (overheadEnd - overheadStart)/1000));
@@ -267,10 +268,10 @@ public class BlockingWF {
 	        // Print clustering performance
 	        overheadEnd = System.currentTimeMillis();
 	        ClustersPerformance clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
-	        clp.setStatistics();        
+			clp.setStatistics(); 
 	        if (final_run)
 	        	details_manager.print_ClustersPerformance(clp, 
-	        			(overheadEnd - overheadStart)/1000, 
+	        			(float)((overheadEnd - overheadStart)/1000), 
 	        			entity_clustering.getMethodName(), 
 	        			entity_clustering.getMethodConfiguration());
 	
@@ -405,7 +406,7 @@ public class BlockingWF {
 		                    }
 		
 		                    final BlocksPerformance methodBlp = new BlocksPerformance(originalBlocks, WorkflowManager.ground_truth);
-		                    methodBlp.setStatistics();
+							methodBlp.setStatistics();
 		                    double recall = methodBlp.getPc();
 		                    double rr = 1 - methodBlp.getAggregateCardinality() / originalComparisons;
 		                    double a = rr * recall;
@@ -438,13 +439,15 @@ public class BlockingWF {
 		            time2 = System.currentTimeMillis();
 		            	
 		            blp = new BlocksPerformance(blocks, WorkflowManager.ground_truth);
-		            blp.setStatistics();
-		            details_manager.print_BlockBuildingPerformance(blp, 
-		            		time2 - time1, 
+		            if (WorkflowManager.ground_truth != null){
+						blp.setStatistics();
+		            	details_manager.print_BlockBuildingPerformance(blp, 
+							(float)((time2 - time1)/1000), 
 	                		bb.getMethodConfiguration(), 
 	                		bb.getMethodName());
 		            
-		            performances.add(new Triplet<>(bb.getMethodName(), blp, time2 - time1));
+						performances.add(new Triplet<>(bb.getMethodName(), blp, time2 - time1));
+					}
 		
 		            index++;
 		        }
@@ -493,14 +496,16 @@ public class BlockingWF {
 		            time2 = System.currentTimeMillis();
 		
 		            blp = new BlocksPerformance(cleanedBlocks, WorkflowManager.ground_truth);
-		            blp.setStatistics();
-		            details_manager.print_BlockBuildingPerformance(blp, 
-		            		time2 - time1, 
-	                		bp.getMethodConfiguration(), 
-	                		bp.getMethodName());
-		            
-		            performances.add(new Triplet<>(bp.getMethodName(), blp, time2 - time1));
-		            
+					if (WorkflowManager.ground_truth != null) {
+						blp.setStatistics();
+						details_manager.print_BlockBuildingPerformance(blp, 
+								(float)((time2 - time1)/1000), 
+								bp.getMethodConfiguration(), 
+								bp.getMethodName());
+						
+						performances.add(new Triplet<>(bp.getMethodName(), blp, time2 - time1));
+					}
+
 		            // Increment index
 		            index++;
 		        }
@@ -535,13 +540,14 @@ public class BlockingWF {
 			}	
 	
 		    blp = new BlocksPerformance(finalBlocks, WorkflowManager.ground_truth);
-		    blp.setStatistics();
-		    details_manager.print_BlockBuildingPerformance(blp, 
-	        		time2 - time1, 
-	        		comparison_cleaning.getMethodConfiguration(), 
-	        		comparison_cleaning.getMethodName());
-		    performances.add(new Triplet<>(comparison_cleaning.getMethodName(), blp, time2 - time1));
-		
+		    if (WorkflowManager.ground_truth != null) {
+				blp.setStatistics();
+				details_manager.print_BlockBuildingPerformance(blp, 
+						(float)((time2 - time1)/1000), 
+						comparison_cleaning.getMethodConfiguration(), 
+						comparison_cleaning.getMethodName());
+				performances.add(new Triplet<>(comparison_cleaning.getMethodName(), blp, time2 - time1));
+			}
 		    
 		    
 		    // Entity Matching & Clustering local optimization
@@ -579,8 +585,8 @@ public class BlockingWF {
 		                final EquivalenceCluster[] clusters = entity_clustering.getDuplicates(sims);
 		
 		                final ClustersPerformance clp = new ClustersPerformance(clusters, WorkflowManager.ground_truth);
-		                clp.setStatistics();
-		                double fMeasure = clp.getFMeasure();
+						clp.setStatistics();
+						double fMeasure = clp.getFMeasure();
 		                if (bestFMeasure < fMeasure) {
 		                    bestIteration = j;
 		                    bestFMeasure = fMeasure;
@@ -636,7 +642,7 @@ public class BlockingWF {
 		                    final EquivalenceCluster[] clusters = entity_clustering.getDuplicates(sims);
 		
 		                    final ClustersPerformance clp = new ClustersPerformance(clusters, WorkflowManager.ground_truth);
-		                    clp.setStatistics();
+							clp.setStatistics();
 		                    double fMeasure = clp.getFMeasure();
 		                    if (bestFMeasure < fMeasure) {
 		                        bestInnerIteration = k;
@@ -701,10 +707,11 @@ public class BlockingWF {
 	
 		
 		    final ClustersPerformance clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
-		    clp.setStatistics();
+			//if (WorkflowManager.ground_truth != null) clp.setStatistics();
+			clp.setStatistics();
 		    // TODO: Could set the entire configuration details instead of entity clustering method name & config.	
 		    details_manager.print_ClustersPerformance(clp, 
-		    		time2 - time1,
+		    		(float)((time2 - time1)/1000),
 	    			entity_clustering.getMethodName(), 
 	    			entity_clustering.getMethodConfiguration());
 		    

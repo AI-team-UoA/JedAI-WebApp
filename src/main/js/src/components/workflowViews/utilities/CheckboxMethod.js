@@ -59,7 +59,7 @@ class SelectMultipleMethods extends Component {
                                     value="Automatic"
                                     style={{marginRight:'5px'}}
                                     onChange={this.onChange} 
-                                    disabled={this.state.selected === false}
+                                    disabled={this.state.selected === false || this.props.disableAutomatic}
                                     checked={this.state.configuration_type === "Automatic"}
                                 />
                                 <Form.Check
@@ -84,6 +84,7 @@ class SelectMultipleMethods extends Component {
 
 SelectMultipleMethods.propTypes = {
     state: PropTypes.object.isRequired,
-    submitChange: PropTypes.func.isRequired
+    submitChange: PropTypes.func.isRequired,
+    disableAutomatic: PropTypes.bool.isRequired
 }
 export default SelectMultipleMethods

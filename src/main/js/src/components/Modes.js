@@ -64,7 +64,7 @@ class Modes extends Component {
                     <header><h2></h2></header>
                     <br/>
                     <div style={{marginBottom:"5px"}}> 
-                        <h1 style={{display:'inline', marginRight:"20px"}}><b>JedAI</b></h1> 
+                        <h1 style={{fontSize: "400%", display:'inline', marginRight:"20px"}}>JedAI</h1> 
                         <span className="workflow-desc" >The Java gEneric DAta Integration ToolKit is an open source, high scalability toolkit that offers out-of-the-box solutions for any data integration task.</span>
                     </div>
                     <br/>
