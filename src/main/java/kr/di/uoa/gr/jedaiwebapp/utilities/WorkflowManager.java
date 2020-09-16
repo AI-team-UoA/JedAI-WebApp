@@ -431,7 +431,10 @@ public class WorkflowManager {
         StringBuilder sb = new StringBuilder();
         if (er_mode == JedaiOptions.CLEAN_CLEAN_ER) {
             for (EquivalenceCluster cluster : entityClusters) {
-
+				if (cluster.getEntityIdsD1().size() != 1
+                        || cluster.getEntityIdsD2().size() != 1) {
+                    continue;
+                }
                 final int entityId1 = cluster.getEntityIdsD1().get(0);
                 final EntityProfile profile1 = profilesD1.get(entityId1);
 

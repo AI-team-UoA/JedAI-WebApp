@@ -104,13 +104,6 @@
 			<version>20190722</version>
 		</dependency>
 
-
-		<!-- <dependency>
-			<groupId>gr.scify</groupId>
-		    <artifactId>jedai</artifactId>
-		    <version>1.3</version>			   
-		</dependency> 
-		-->
 		<!-- https://mvnrepository.com/artifact/org.scify/jedai-core -->
 		 <dependency>
 		    <groupId>org.scify</groupId>
