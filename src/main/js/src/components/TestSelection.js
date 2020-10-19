@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Form, Col, Row, Button, Collapse} from 'react-bootstrap/'
+import {Form, Col, Row} from 'react-bootstrap/'
 import PropTypes from 'prop-types';
 
 
@@ -20,12 +20,11 @@ import PropTypes from 'prop-types';
             dataset_options = ["", "10K", "50K", "100K", "200K", "300K", "1M", "2M"]
         else{
             if(this.props.er_mode == "clean")
-                dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "IMDB-DBpedia", "Restaurants", "DBpedia"]
+                dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "DBLP-Scholars", "IMDB-DBpedia", "Restaurants", "DBpedia"]
             else if (this.props.er_mode == "dirty")
                 dataset_options = ["", "Cora", "CDDB"]
         }
-                
-        
+
 
         return (
             <div>
