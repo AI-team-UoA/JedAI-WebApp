@@ -8,6 +8,7 @@ public class JedaiOptions {
      public static final String DEFAULT_WORKFLOW_BLOCKING_BASED = "Default Blocking-based";
      public static final String WORKFLOW_JOIN_BASED = "Join-based";
      public static final String WORKFLOW_PROGRESSIVE = "Progressive";
+     public static final String WORKFLOW_RANDOM_PROGRESSIVE = "Random Progressive";
 
      public static final String WORKFLOW_BLOCKING_BASED = "Blocking-based";
      public static final String BEST_WORKFLOW_BLOCKING_BASED = "Best Blocking-based";

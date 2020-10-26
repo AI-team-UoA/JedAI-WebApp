@@ -43,6 +43,8 @@ class WorkflowSelection extends Component {
                 var path = "/"
                 if (this.state.wf_mode == "Best Blocking-based" || this.state.wf_mode == "Default Blocking-based")
                     path = "/blockingbased"
+                else if (this.state.wf_mode == "Progressive" || this.state.wf_mode == "Random Progressive")
+                    path = "/progressive"
                 else
                     path = "/joinbased" // todo add new case "default"
                 this.setState({

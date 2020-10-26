@@ -72,6 +72,10 @@ class Prioritization extends Component {
         {
             value: "PROGRESSIVE_GLOBAL_RANDOM_COMPARISONS",
             label: "Progressive Global Random Comparisons"
+        },
+        {
+            value: "RANDOM",
+            label: "Random Prioritization"
         }
     ]
 
@@ -130,7 +134,7 @@ class Prioritization extends Component {
         })
     }
 
-        //handle alert modal
+    //handle alert modal
     handleAlertClose = () => this.setState({alertShow : false});
     handleAlertShow = () => this.setState({alertShow : true});
     
@@ -142,7 +146,7 @@ class Prioritization extends Component {
         var second_col = 5
 
         var weighting_scheme_form = <div />
-        if (this.state.method_name != "LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD" && this.state.method_name != "GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD")
+        if (this.state.method_name != "LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD" && this.state.method_name != "GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD" && this.state.method_name != "RANDOM")
             weighting_scheme_form = 
                         <Form.Row>
                             <Col sm={empty_col} />

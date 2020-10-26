@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 
         var test_options = ["", "Performance Test", "Scaling Test"]
         
-        var wf_options = ["", "Best Blocking-based", "Default Blocking-based", "Join-based"]
+        var wf_options = ["", "Best Blocking-based", "Default Blocking-based", "Join-based", "Progressive", "Random Progressive"]
         if (this.props.test_type == "Scaling Test")
             var wf_options = ["", "Default Blocking-based", "Join-based"]
         
@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
             dataset_options = ["", "10K", "50K", "100K", "200K", "300K", "1M", "2M"]
         else{
             if(this.props.er_mode == "clean")
-                dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "DBLP-Scholars", "IMDB-DBpedia", "Restaurants", "DBpedia"]
+                dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "DBLP-Scholar", "IMDB-DBpedia", "Restaurants", "DBpedia"]
             else if (this.props.er_mode == "dirty")
                 dataset_options = ["", "Cora", "CDDB"]
         }

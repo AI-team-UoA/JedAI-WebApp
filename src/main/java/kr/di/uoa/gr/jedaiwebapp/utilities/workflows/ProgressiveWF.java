@@ -1,8 +1,9 @@
 package kr.di.uoa.gr.jedaiwebapp.utilities.workflows;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,6 +14,7 @@ import org.scify.jedai.blockprocessing.IBlockProcessing;
 import org.scify.jedai.datamodel.AbstractBlock;
 import org.scify.jedai.datamodel.AttributeClusters;
 import org.scify.jedai.datamodel.Comparison;
+import org.scify.jedai.datamodel.ComparisonIterator;
 import org.scify.jedai.datamodel.EquivalenceCluster;
 import org.scify.jedai.datamodel.SimilarityPairs;
 import org.scify.jedai.entityclustering.IEntityClustering;
@@ -92,18 +94,6 @@ public class ProgressiveWF {
 		return entity_matching != null && entity_clustering != null && block_building != null && !block_building.isEmpty()
 		&& (prioritizationModel != null || prioritization !=null) ;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * Run a workflow with the given methods and return its ClustersPerformance
@@ -320,21 +310,23 @@ public class ProgressiveWF {
 	
 			// Create instance of prioritization method
 			setPrioritization(budget);
-			details_manager.print_Sentence("Prioritization budget: " + prioritization.getMethodParameters()); // TODO print budget and ws
-
+			if (prioritization != null) details_manager.print_Sentence("Prioritization budget: " + prioritization.getMethodParameters()); 
+			else details_manager.print_Sentence("Random Prioritization");
 	
-			// Run prioritization
-			if (!blocks.isEmpty()) {
-				// Block-based schedule (there were block building methods selected)
-				prioritization.developBlockBasedSchedule(blocks);
-			} else {
-				// Entity-based schedule (directly with input entities!)
-				if (isDirtyEr) {
-					// Dirty ER
-					prioritization.developEntityBasedSchedule(WorkflowManager.profilesD1);
+			if(prioritization != null){
+				// Run prioritization
+				if (!blocks.isEmpty()) {
+					// Block-based schedule (there were block building methods selected)
+					prioritization.developBlockBasedSchedule(blocks);
 				} else {
-					// Clean-Clean ER
-					prioritization.developEntityBasedSchedule(WorkflowManager.profilesD1, WorkflowManager.profilesD2);
+					// Entity-based schedule (directly with input entities!)
+					if (isDirtyEr) {
+						// Dirty ER
+						prioritization.developEntityBasedSchedule(WorkflowManager.profilesD1);
+					} else {
+						// Clean-Clean ER
+						prioritization.developEntityBasedSchedule(WorkflowManager.profilesD1, WorkflowManager.profilesD2);
+					}
 				}
 			}
 
@@ -350,15 +342,30 @@ public class ProgressiveWF {
 					 !isDirtyEr,
 					 (int) ((!blocks.isEmpty() && !isDirtyEr) ? totalComparisons : budget)
 			);
-	 
+
+			
+			Iterator<Comparison> comparisonsIter; 
+			if (prioritization != null) 
+				comparisonsIter = prioritization;
+			else{
+				List<Comparison> allComparisons = new ArrayList<>();
+				for (AbstractBlock block : blocks) {
+					final ComparisonIterator cIterator = block.getComparisonIterator();
+					while (cIterator.hasNext()) {
+						allComparisons.add(cIterator.next());
+					}
+				}
+				Collections.shuffle(allComparisons);
+				comparisonsIter = allComparisons.iterator();
+			}
 			ClustersPerformance clp = null;
-			while (prioritization.hasNext()) {
+			while (comparisonsIter.hasNext()) {
 				if (interrupt(interrupted)) {
                     context.close();
                     return null;
                 }
 				// Get the comparison
-				Comparison comparison = prioritization.next();
+				Comparison comparison = comparisonsIter.next();
 	 
 				// Calculate the similarity
 				float similarity = entity_matching.executeComparison(comparison);
@@ -369,6 +376,8 @@ public class ProgressiveWF {
 	 
 				 // Run clustering
 				 EquivalenceCluster[] entityClusters = entity_clustering.getDuplicates(sims);
+				 if (WorkflowManager.entityClusters == null) 
+				 	WorkflowManager.entityClusters = new ArrayList<EquivalenceCluster>();
 				 WorkflowManager.entityClusters.addAll(Arrays.asList(entityClusters));
 	 
 				 // Calculate new clusters performance
@@ -389,6 +398,7 @@ public class ProgressiveWF {
 
 
 			// Print clustering performance
+			String prioritizationName = prioritization != null ? prioritization.getMethodName() : "Random Prioritization" ;
 			if (clp != null) {
 				details_manager.print_ClustersPerformance(clp, 
 						(float)((overheadEnd - overheadStart)/1000), 
@@ -398,7 +408,7 @@ public class ProgressiveWF {
 				// Add prioritization performance step for workbench
 				performancePerStep.add(
 						new WorkflowResult(
-								prioritization.getMethodName(),
+								prioritizationName,
 								clp.getRecall(),
 								clp.getPrecision(),
 								clp.getFMeasure(),
@@ -411,7 +421,7 @@ public class ProgressiveWF {
 			} else {
 				// Add prioritization performance step for workbench without clustering values
 				performancePerStep.add(
-						new WorkflowResult(prioritization.getMethodName(), -1, -1, -1, (overheadEnd - overheadStart) / 1000.0, -1, -1, -1)
+						new WorkflowResult(prioritizationName, -1, -1, -1, (overheadEnd - overheadStart) / 1000.0, -1, -1, -1)
 				);
 			}
 	

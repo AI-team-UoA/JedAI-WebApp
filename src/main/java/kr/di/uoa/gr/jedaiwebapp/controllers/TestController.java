@@ -44,7 +44,7 @@ public class TestController {
                 pathStr += "CleanClean_ER/";
             
             pathStr += dt_choice + "/";
-
+            System.out.println(wf_mode);
             if(wf_mode.equals(JedaiOptions.BEST_WORKFLOW_BLOCKING_BASED)){
                 pathStr += "bb_workflow_conf.json";
                 WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_BLOCKING_BASED;
@@ -52,6 +52,14 @@ public class TestController {
             else if(wf_mode.equals(JedaiOptions.DEFAULT_WORKFLOW_BLOCKING_BASED)){
                 pathStr += "default_bb_workflow_conf.json";
                 WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_BLOCKING_BASED;
+            }
+            else if(wf_mode.equals(JedaiOptions.WORKFLOW_PROGRESSIVE)){
+                pathStr += "pbb_workflow_conf.json";
+                WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_PROGRESSIVE;
+            }
+            else if(wf_mode.equals(JedaiOptions.WORKFLOW_RANDOM_PROGRESSIVE)){
+                pathStr += "rpbb_workflow_conf.json";
+                WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_PROGRESSIVE;
             }
             else{
                 pathStr += "sj_workflow_conf.json";

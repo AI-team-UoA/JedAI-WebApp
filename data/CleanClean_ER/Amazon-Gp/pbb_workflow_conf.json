@@ -1,0 +1,16 @@
+{
+    "data_reading":{
+        "er_mode":"clean",
+        "entity1_set":{"source":"data/CleanClean_ER/Amazon-Gp/amazonProfiles","configurations":{"file":{},"filename":"amazonProfiles","excluded_attr":[]},"filetype":"Serialized"},
+        "entity2_set":{"source":"data/CleanClean_ER/Amazon-Gp/gpProfiles","configurations":{"file":{},"filename":"gpProfiles","excluded_attr":[]},"filetype":"Serialized"},
+        "groundTruth_set":{"source":"data/CleanClean_ER/Amazon-Gp/amazonGpIdDuplicates","configurations":{"file":{},"filename":"amazonGpIdDuplicates","excluded_attr":[]},"filetype":"Serialized"},
+        "alertShow":false
+    },
+    "schema_clustering":{"method_name":"NO_SCHEMA_CLUSTERING","configuration_type":"Default","label":"No Schema Clustering","parameters":[{"label":"Representation Model","value":"TOKEN_UNIGRAM_GRAPHS"},{"label":"Similarity Measure","value":"GRAPH_VALUE_SIMILARITY"}]},
+    "block_building":[{"method_name":"STANDARD_TOKEN_BUILDING","label":"Standard/Token Blocking","selected":true,"configuration_type":"Default","parameters":[]}],
+    "block_cleaning":[{"method_name":"COMPARISON_BASED_BLOCK_PURGING","label":"Comparison-based Block Purging","selected":true,"configuration_type":"Manual","parameters":[{"label":"Smoothing Factor","value":"1.0"}]},{"method_name":"BLOCK_FILTERING","label":"Block Filtering","selected":true,"configuration_type":"Default","parameters":[{"label":"Filtering Ratio","value":"0.8"}]}],
+    "comparison_cleaning":{"method_name":"CARDINALITY_NODE_PRUNING","configuration_type":"Default","label":"Cardinality Node Pruning (CNP)","parameters":[{"label":"Weighting Scheme","value":"CBS"}]},
+    "prioritization":{"method_name":"PROGRESSIVE_GLOBAL_TOP_COMPARISONS","configuration_type":"Default","label":"Progressive Global Top Comparisons","parameters":[{"label":"Budget","value":"10000"},{"label":"Weighting Scheme","value":"JS"}],"alertShow":false},
+    "entity_matching":{"method_name":"PROFILE_MATCHER","configuration_type":"Manual","label":"Profile Matcher","parameters":[{"label":"Representation Model","value":"TOKEN_BIGRAMS"},{"label":"Similarity Measure","value":"COSINE_SIMILARITY"}]},
+    "entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Manual","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.5"}]}
+}
