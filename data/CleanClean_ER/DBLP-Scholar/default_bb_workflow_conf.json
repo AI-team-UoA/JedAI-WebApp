@@ -1,9 +1,9 @@
 {
 	"data_reading":{
 		"er_mode":"clean",
-		"entity1_set":{"source":"data/CleanClean_ER/DBLP-Scholars/dblpProfiles2","configurations":{"file":{},"filename":"dblpProfiles2","excluded_attr":[]},"filetype":"Serialized"},
-		"entity2_set":{"source":"data/CleanClean_ER/DBLP-Scholars/scholarProfiles","configurations":{"file":{},"filename":"scholarProfiles","excluded_attr":[]},"filetype":"Serialized"},
-		"groundTruth_set":{"source":"data/CleanClean_ER/DBLP-Scholars/dblpScholarIdDuplicates","configurations":{"file":{},"filename":"dblpScholarIdDuplicates","excluded_attr":[]},"filetype":"Serialized"},
+		"entity1_set":{"source":"data/CleanClean_ER/DBLP-Scholar/dblpProfiles2","configurations":{"file":{},"filename":"dblpProfiles2","excluded_attr":[]},"filetype":"Serialized"},
+		"entity2_set":{"source":"data/CleanClean_ER/DBLP-Scholar/scholarProfiles","configurations":{"file":{},"filename":"scholarProfiles","excluded_attr":[]},"filetype":"Serialized"},
+		"groundTruth_set":{"source":"data/CleanClean_ER/DBLP-Scholar/dblpScholarIdDuplicates","configurations":{"file":{},"filename":"dblpScholarIdDuplicates","excluded_attr":[]},"filetype":"Serialized"},
 		"alertShow":false
 	},
 	"schema_clustering":{"method_name":"NO_SCHEMA_CLUSTERING","configuration_type":"Default","label":"No Schema Clustering","parameters":[{"label":"Representation Model","value":"TOKEN_UNIGRAM_GRAPHS"},{"label":"Similarity Measure","value":"GRAPH_VALUE_SIMILARITY"}]},
