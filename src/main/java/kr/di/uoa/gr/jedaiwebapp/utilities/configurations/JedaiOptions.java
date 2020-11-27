@@ -10,6 +10,14 @@ public class JedaiOptions {
      public static final String WORKFLOW_PROGRESSIVE = "Progressive";
      public static final String WORKFLOW_RANDOM_PROGRESSIVE = "Random Progressive";
 
+     public static final String BUDGET_AWARENESS_TEST = "Budget-awareness Test";
+     public static final String BEST_SCHEMA_AGNOSTIC = "Best Schema-agnostic Workflow";
+     public static final String DEFAULT_SCHEMA_AGNOSTIC = "Default Schema-agnostic Workflow";
+     public static final String SCHEMA_AWARE_WF = "Schema-aware Workflow" ;
+     public static final String BUDGET_AWARE_WF = "Budget-aware Workflow" ;
+     public static final String BUDGET_AGNOSTIC_WF = "Budget-agnostic Workflow";
+     
+
      public static final String WORKFLOW_BLOCKING_BASED = "Blocking-based";
      public static final String BEST_WORKFLOW_BLOCKING_BASED = "Best Blocking-based";
      public static final String SCALING_TEST = "Scaling Test";

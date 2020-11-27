@@ -45,27 +45,30 @@ public class TestController {
             
             pathStr += dt_choice + "/";
             System.out.println(wf_mode);
-            if(wf_mode.equals(JedaiOptions.BEST_WORKFLOW_BLOCKING_BASED)){
-                pathStr += "bb_workflow_conf.json";
-                WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_BLOCKING_BASED;
-            }
-            else if(wf_mode.equals(JedaiOptions.DEFAULT_WORKFLOW_BLOCKING_BASED)){
-                pathStr += "default_bb_workflow_conf.json";
-                WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_BLOCKING_BASED;
-            }
-            else if(wf_mode.equals(JedaiOptions.WORKFLOW_PROGRESSIVE)){
-                pathStr += "pbb_workflow_conf.json";
-                WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_PROGRESSIVE;
-            }
-            else if(wf_mode.equals(JedaiOptions.WORKFLOW_RANDOM_PROGRESSIVE)){
-                pathStr += "rpbb_workflow_conf.json";
-                WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_PROGRESSIVE;
+            if (test_type.equals(JedaiOptions.BUDGET_AWARENESS_TEST)){
+                if(wf_mode.equals(JedaiOptions.BUDGET_AWARE_WF)){
+                    pathStr += "pbb_workflow_conf.json";
+                    WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_PROGRESSIVE;
+                }
+                else if(wf_mode.equals(JedaiOptions.BUDGET_AGNOSTIC_WF)){
+                    pathStr += "rpbb_workflow_conf.json";
+                    WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_PROGRESSIVE;
+                }
             }
             else{
-                pathStr += "sj_workflow_conf.json";
-                WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_JOIN_BASED;
+                if(wf_mode.equals(JedaiOptions.BEST_SCHEMA_AGNOSTIC)){
+                    pathStr += "bb_workflow_conf.json";
+                    WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_BLOCKING_BASED;
+                }
+                else if(wf_mode.equals(JedaiOptions.DEFAULT_SCHEMA_AGNOSTIC)){
+                    pathStr += "default_bb_workflow_conf.json";
+                    WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_BLOCKING_BASED;
+                }
+                else{
+                    pathStr += "sj_workflow_conf.json";
+                    WorkflowManager.wf_mode = JedaiOptions.WORKFLOW_JOIN_BASED;
+                }
             }
-
             System.out.println("Test path: " + pathStr);
 
             Path path = Paths.get(pathStr);

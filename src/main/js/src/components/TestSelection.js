@@ -9,13 +9,15 @@ import PropTypes from 'prop-types';
         var small = 5
         var large = 6
 
-        var test_options = ["", "Performance Test", "Scaling Test"]
-        
-        var wf_options = ["", "Best Blocking-based", "Default Blocking-based", "Join-based", "Progressive", "Random Progressive"]
-        if (this.props.test_type == "Scaling Test")
-            var wf_options = ["", "Default Blocking-based", "Join-based"]
-        
+        var test_options = ["", "Performance Test", "Scaling Test", "Budget-awareness Test"]
+        var wf_options = ["", "Best Schema-agnostic Workflow", "Default Schema-agnostic Workflow", "Schema-aware Workflow"]
         var dataset_options = [""]
+
+        if (this.props.test_type == "Budget-awareness Test")
+            wf_options = ["", "Budget-aware Workflow", "Budget-agnostic Workflow"]
+        else if (this.props.test_type == "Scaling Test")
+            wf_options = ["", "Default Schema-agnostic Workflow", "Schema-aware Workflow"]
+
         if(this.props.test_type == "Scaling Test")
             dataset_options = ["", "10K", "50K", "100K", "200K", "300K", "1M", "2M"]
         else{
@@ -24,7 +26,6 @@ import PropTypes from 'prop-types';
             else if (this.props.er_mode == "dirty")
                 dataset_options = ["", "Cora", "CDDB"]
         }
-
 
         return (
             <div>
