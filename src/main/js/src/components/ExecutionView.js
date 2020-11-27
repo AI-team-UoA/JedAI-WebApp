@@ -463,6 +463,7 @@ class ExecutionView extends Component {
                             <Modal.Title>ROC Curve</Modal.Title>
                         </Modal.Header>
                         <Modal.Body >
+                            <h2>AUC: {(this.state.roc.reduce(function(a, b) { return a + b; }, 0) / this.state.roc.length).toFixed(3)}</h2>
                             <Plot data={roc_curve} layout={layout} style={{textAlign: "center", margin:"auto"}} />
                         </Modal.Body>
                         <Modal.Footer>
