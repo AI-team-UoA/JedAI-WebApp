@@ -196,6 +196,9 @@ class ComparisonCleaning extends Component {
                                             value={this.state.parameters[0].value}   
                                         />
                                     </Col>
+                                    <Col sm={2}>
+                                        <span title="The Inclusive Threshold defines the minimum similarity of a retained comparison/edge per entity/node." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                                    </Col>
                                 </Form.Row>
                                 <Form.Row className="form-row">
                                     <Col sm={empty_col} />
@@ -209,6 +212,9 @@ class ComparisonCleaning extends Component {
                                             onChange={(e) => this.changeParameters(e, 1)}
                                             value={this.state.parameters[1].value} 
                                         />
+                                    </Col>
+                                    <Col sm={2}>
+                                        <span title="The Exclusive Threshold defines the similarity above which a node is removed from the blocking graph so that it is not considered as a candidate match for any other node." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                                     </Col>
                                 </Form.Row>
                             </Form>
@@ -235,6 +241,9 @@ class ComparisonCleaning extends Component {
                                             value={this.state.parameters[0].value}   
                                         />
                                     </Col>
+                                    <Col sm={2}>
+                                        <span title="The Weighting Scheme determines the function that assigns weights to the edges of the Blocking Graph." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                                    </Col>
                                 </Form.Row>
                                 <Form.Row className="form-row">
                                     <Col sm={empty_col} />
@@ -248,6 +257,9 @@ class ComparisonCleaning extends Component {
                                             onChange={(e) => this.changeParameters(e, 1)}
                                             value={this.state.parameters[1].value} 
                                         />
+                                    </Col>
+                                    <Col sm={2}>
+                                        <span title="The invalid parameter id defines the maximum number of nodes/entities that are removed from the blocking graph so that they are not considered as candidate matches for any other node." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                                     </Col>
                                 </Form.Row>
                             </Form>
@@ -281,6 +293,9 @@ class ComparisonCleaning extends Component {
                                                 <option value="PEARSON_X2" >PEARSON_X2</option>
                                             </Form.Control>
                                         </Form.Group>
+                                    </Col>
+                                    <Col sm={2}>
+                                        <span title="The Weighting Scheme determines the function that assigns weights to the edges of the Blocking Graph." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                                     </Col>
                                 </Form.Row>
                             </Form>

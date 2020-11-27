@@ -196,6 +196,9 @@ class BlockCleaning extends Component {
                                     value={this.state.block_cleaning[0].parameters[0].value} 
                                 />
                             </Col>
+                            <Col sm={2}>
+                                <span title="The Purging Factor determines indirectly the maximum number of entities per block." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                            </Col>
                         </Form.Row>
                     </Form>
                 , 
@@ -218,6 +221,9 @@ class BlockCleaning extends Component {
                                 value={this.state.block_cleaning[1].parameters[0].value} 
                             />
                         </Col>
+                        <Col sm={2}>
+                                <span title="The Smoothing Factor determines the termination criterion for automatically estimating the maximum number of comparisons per block." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                            </Col>
                     </Form.Row>
                 </Form>, 
                 <Form>
@@ -238,6 +244,9 @@ class BlockCleaning extends Component {
                                 onChange={(e) => this.onChange(e, 2)}
                                 value={this.state.block_cleaning[2].parameters[0].value} 
                             />
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Filtering Ratio specifies the portion of the retained smaller blocks per entity." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                 </Form>]

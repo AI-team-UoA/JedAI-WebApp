@@ -146,6 +146,7 @@ class SimilarityJoin extends Component {
         
         var header1_options = this.state.headers1.map((header, index) => (<option value={header} key={index}>{header}</option>  ))
         var header2_options = this.state.headers2.map((header, index) => (<option value={header} key={index}>{header}</option>  ))
+        var parameterInfo = this.state.method.parameters[0].label == "Similarity Threshold" ? "The Similarity Threshold specifies the minimum Jaccard similarity between two attribute values, above which they are considered as matches." : "The Threshold specifies the minimum edit distance between two attribute values, below which they are considered as matches. "
         
         var parameter_view = 
                     <Form.Row className="form-row">
@@ -156,6 +157,9 @@ class SimilarityJoin extends Component {
                         <Col sm={second_col}>
                             <FormControl type="text" name="value" value={this.state.method.parameters[0].value} onChange={this.changeParameter}/>
                         </Col>
+                        <Col sm={2}>
+                                <span title={parameterInfo} className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                            </Col>
                     </Form.Row>  
 
         return (

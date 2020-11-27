@@ -66,7 +66,7 @@ class BlockBuilding extends Component {
                 parameters: 
                     [
                         {
-                            label: "Minimum Suffix Lenght",
+                            label: "Minimum Suffix Length",
                             value: "6"
                         },
                         {
@@ -79,7 +79,7 @@ class BlockBuilding extends Component {
                 parameters: 
                     [
                         {
-                            label: "Minimum Substring Lenght",
+                            label: "Minimum Substring Length",
                             value: "6"
                         },
                         {
@@ -371,6 +371,9 @@ class BlockBuilding extends Component {
                                 value={this.state.block_building[1].parameters[0].value} 
                             />
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Window Size determines the fixed size of the window that slides over the sorted list of entities." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                 </Form>
                 ,
@@ -392,6 +395,9 @@ class BlockBuilding extends Component {
                                 onChange={(e) => this.onChange(e, 2, 0)}
                                 value={this.state.block_building[2].parameters[0].value} 
                             />
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Window Size determines the fixed size of the window that slides over the sorted list of entities." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                 </Form>
@@ -415,6 +421,9 @@ class BlockBuilding extends Component {
                                 value={this.state.block_building[3].parameters[0].value} 
                             />
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Q-gram Size defines the number of characters that comprise every q-gram." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                 </Form>
                 ,
@@ -437,6 +446,9 @@ class BlockBuilding extends Component {
                                 value={this.state.block_building[4].parameters[0].value} 
                             />
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Q-gram Size defines the number of characters that comprise every q-gram." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                     <Form.Row className="form-row">
                         <Col sm={empty_col} />
@@ -451,6 +463,9 @@ class BlockBuilding extends Component {
                                 value={this.state.block_building[4].parameters[1].value} 
                             />
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Combination Threshold (t) defines the number N of q-grams that are combined to form an individual blocking key.In more detail, the minimum number l_{min} of q-grams per blocking key is defined as l_{min} =  (1, \floor{k \cdot t}), where k is the number of q-grams from the original blocking key (token)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                 </Form>
                 ,
@@ -463,7 +478,7 @@ class BlockBuilding extends Component {
                     <Form.Row className="form-row">
                         <Col sm={empty_col} />
                         <Col sm={first_col} >
-                            <Form.Label>Minimum Suffix Lenght</Form.Label> 
+                            <Form.Label>Minimum Suffix Length</Form.Label> 
                         </Col>
                         <Col sm={second_col}>
                             <FormControl 
@@ -472,6 +487,9 @@ class BlockBuilding extends Component {
                                 onChange={(e) => this.onChange(e, 5, 0)}
                                 value={this.state.block_building[5].parameters[0].value} 
                             />
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Minimum Suffix Length determines the minimum number of characters in a suffix that is used as blocking key." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                     <Form.Row className="form-row">
@@ -487,6 +505,9 @@ class BlockBuilding extends Component {
                                 value={this.state.block_building[5].parameters[1].value} 
                             />
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Maximum Suffix Frequency determines the maximum number of entities that correspond to a valid suffix (i.e., maximum block size)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                 </Form>
                 ,
@@ -499,7 +520,7 @@ class BlockBuilding extends Component {
                     <Form.Row className="form-row">
                         <Col sm={empty_col} />
                         <Col sm={first_col} >
-                            <Form.Label>Minimum Suffix Lenght</Form.Label> 
+                            <Form.Label>Minimum Suffix Length</Form.Label> 
                         </Col>
                         <Col sm={second_col}>
                             <FormControl 
@@ -508,6 +529,9 @@ class BlockBuilding extends Component {
                                 onChange={(e) => this.onChange(e, 6, 0)}
                                 value={this.state.block_building[6].parameters[0].value} 
                             />
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Minimum Suffix Length determines the minimum number of characters in a suffix that is used as blocking key." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                     <Form.Row className="form-row">
@@ -522,6 +546,9 @@ class BlockBuilding extends Component {
                                 onChange={(e) => this.onChange(e, 6, 1)}
                                 value={this.state.block_building[6].parameters[1].value} 
                             />
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Maximum Suffix Frequency determines the maximum number of entities that correspond to a valid suffix (i.e., maximum block size)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                 </Form>
@@ -545,6 +572,9 @@ class BlockBuilding extends Component {
                                 value={this.state.block_building[7].parameters[0].value} 
                             />
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Band size determines the number of hash functions comprising every band." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                     <Form.Row className="form-row">
                         <Col sm={empty_col} />
@@ -558,6 +588,9 @@ class BlockBuilding extends Component {
                                 onChange={(e) => this.onChange(e, 7, 1)}
                                 value={this.state.block_building[7].parameters[1].value} 
                             />
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Number of bands determines the number of bands, i.e., blocking keys, per entity." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                 </Form>
@@ -581,6 +614,9 @@ class BlockBuilding extends Component {
                                 value={this.state.block_building[8].parameters[0].value} 
                             />
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Band size determines the number of hash functions comprising every band." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                     <Form.Row className="form-row">
                         <Col sm={empty_col} />
@@ -594,6 +630,9 @@ class BlockBuilding extends Component {
                                 onChange={(e) => this.onChange(e, 8, 1)}
                                 value={this.state.block_building[8].parameters[1].value} 
                             />
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Number of bands determines the number of bands, i.e., blocking keys, per entity." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                 </Form>

@@ -191,6 +191,9 @@ class EntityClustering extends Component {
                                            value={this.state.parameters[0].value}   
                                        />
                                    </Col>
+                                   <Col sm={2}>
+                                        <span title="The Similarity Threshold determines the cut-off similarity threshold for connecting two entities with an edge in the (initial) similarity graph." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                                    </Col>
                                </Form.Row>
                                <Form.Row className="form-row">
                                    <Col sm={empty_col} />
@@ -205,6 +208,9 @@ class EntityClustering extends Component {
                                            value={this.state.parameters[1].value} 
                                        />
                                    </Col>
+                                   <Col sm={2}>
+                                        <span title="The A-cap determines the weight of the capacity edges, which connect every vertex with the artificial sink." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                                    </Col>
                                </Form.Row>
                            </Form>
                            
@@ -229,6 +235,10 @@ class EntityClustering extends Component {
                                             onChange={(e) => this.changeParameters(e, 0)}
                                             value={this.state.parameters[0].value}   
                                         />
+                                        
+                                    </Col>
+                                    <Col sm={2}>
+                                        <span title="The Similarity Threshold determines the cut-off similarity threshold for connecting two entities with an edge in the (initial) similarity graph." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                                     </Col>
                                 </Form.Row>
                                 <Form.Row className="form-row">
@@ -244,6 +254,9 @@ class EntityClustering extends Component {
                                             value={this.state.parameters[1].value} 
                                         />
                                     </Col>
+                                    <Col sm={2}>
+                                        <span title="The Cluster Threshold determines the similarity threshold for including an edge in the similarity graph." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                                    </Col>
                                 </Form.Row>
                                 <Form.Row className="form-row">
                                     <Col sm={empty_col} />
@@ -258,11 +271,14 @@ class EntityClustering extends Component {
                                             value={this.state.parameters[2].value} 
                                         />
                                     </Col>
+                                    <Col sm={2}>
+                                        <span title="The >Matrix Similarity Threshold determines the similarity threshold for compariing all cells of two matrices and considering them similar." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                                    </Col>
                                 </Form.Row>
                                 <Form.Row className="form-row">
                                     <Col sm={empty_col} />
                                     <Col sm={first_col} >
-                                        <Form.Label>Similarity Check Limitp</Form.Label> 
+                                        <Form.Label>Similarity Check Limit</Form.Label> 
                                     </Col>
                                     <Col sm={second_col}>
                                         <FormControl 
@@ -271,6 +287,9 @@ class EntityClustering extends Component {
                                             onChange={(e) => this.changeParameters(e, 3)}
                                             value={this.state.parameters[3].value} 
                                         />
+                                    </Col>
+                                    <Col sm={2}>
+                                        <span title="The Similarity Check Limit determines the maximum number of repetitions we apply the expansion-inflation process" className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                                     </Col>
                                 </Form.Row>
                             </Form>
@@ -295,6 +314,9 @@ class EntityClustering extends Component {
                                             onChange={(e) => this.changeParameters(e, 0)}
                                             value={this.state.parameters[0].value}   
                                         />
+                                    </Col>
+                                    <Col sm={2}>
+                                        <span title="The Similarity Threshold determines the cut-off similarity threshold for connecting two entities with an edge in the (initial) similarity graph." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                                     </Col>
                                 </Form.Row>
                             </Form>

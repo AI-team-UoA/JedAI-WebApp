@@ -7,6 +7,7 @@ import axios from 'axios';
 
  class SchemaClustering extends Component {
     
+    
     constructor(...args) {
         super(...args);
         window.scrollTo(0, 0)
@@ -15,9 +16,11 @@ import axios from 'axios';
             method_name: this.props.state.method_name,
             configuration_type: this.props.state.configuration_type,
             label: this.props.state.label,
-            parameters: this.props.state.parameters
+            parameters: this.props.state.parameters,
+            parametersInfo: null
         }
     }
+    
 
     methods = 
         [
@@ -94,11 +97,13 @@ import axios from 'axios';
 
     }
 
-
+    
     render() {
         var empty_col = 1
         var first_col = 4
         var second_col = 5
+
+        var collapse = this.state.configuration_type === "Manual" && this.state.method !== "NO_SCHEMA_CLUSTERING"
 
         var representationModel_window = 
             <Form.Row>
@@ -141,6 +146,9 @@ import axios from 'axios';
                         </Form.Control>
                     </Form.Group>
                 </Col>
+                <Col sm={2}>
+                    <span title="The Representation Model aggregates the textual items that correspond to every attribute." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                </Col>
             </Form.Row>
 
 
@@ -175,6 +183,9 @@ import axios from 'axios';
                                 </Form.Control>
                             </Form.Group>
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Similarity Measure compares the models of two attributes, returning a value between 0 (completely dissimlar) and 1 (identical)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                     break;
             case "CHARACTER_BIGRAM_GRAPHS":
@@ -203,6 +214,9 @@ import axios from 'axios';
                                     <option value="GRAPH_VALUE_SIMILARITY" >GRAPH_VALUE_SIMILARITY</option>
                                </Form.Control>
                             </Form.Group>
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Similarity Measure compares the models of two attributes, returning a value between 0 (completely dissimlar) and 1 (identical)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                     break;
@@ -233,6 +247,9 @@ import axios from 'axios';
                                 </Form.Control>
                             </Form.Group>
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Similarity Measure compares the models of two attributes, returning a value between 0 (completely dissimlar) and 1 (identical)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                     break;
         }
@@ -256,7 +273,7 @@ import axios from 'axios';
                 <RadioMethod methods={this.methods} state={this.state}  disableAutomatic={!this.props.GTIsSet} disable_manual={this.state.method_name === "NO_SCHEMA_CLUSTERING"} onChange={this.onChange} title={"Schema Clustering methods"}/>
                 
                 <br/>
-                <Collapse in={this.state.configuration_type === "Manual" && this.state.method !== "NO_SCHEMA_CLUSTERING"} >
+                <Collapse in={collapse} >
                     <div className="jumbotron_parameters_container">
                         <Jumbotron className="jumbotron_parameters" style={{width:"100%"}}>
                             <div style={{margin:"auto"}}>

@@ -31,7 +31,6 @@ class WorkflowSelection extends Component {
     }
 
     close_test_window = () => {
-        console.log("in")
         if (this.state.test_type == "" || this.state.dt_choice == "" || this.state.er_mode == "" || this.state.wf_mode == ""){
             this.setState({
                 show_test_modal : false
@@ -41,10 +40,11 @@ class WorkflowSelection extends Component {
             axios.get("/test/get/" + this.state.test_type + "/" + this.state.er_mode + "/" + this.state.wf_mode + "/" + this.state.dt_choice)
             .then((res) => {
                 var path = "/"
-                if (this.state.wf_mode == "Best Blocking-based" || this.state.wf_mode == "Default Blocking-based")
-                    path = "/blockingbased"
-                else if (this.state.wf_mode == "Progressive" || this.state.wf_mode == "Random Progressive")
+                console.log(this.state)
+                if (this.state.test_type == "Budget-awareness Test")
                     path = "/progressive"
+                else if (this.state.wf_mode == "Best Schema-agnostic Workflow" || this.state.wf_mode == "Default Schema-agnostic Workflow")
+                    path = "/blockingbased"
                 else
                     path = "/joinbased" // todo add new case "default"
                 this.setState({

@@ -171,6 +171,9 @@ class Prioritization extends Component {
                                     </Form.Control>
                                 </Form.Group>
                             </Col>
+                            <Col sm={2}>
+                                <span title="The Weighting Scheme determines the function that assigns weights to the non-redundant comparisons within each block." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                            </Col>
                         </Form.Row>
 
         var parameters_JSX_window = 
@@ -192,6 +195,9 @@ class Prioritization extends Component {
                                     onChange={(e) => this.changeParameters(e)}
                                     value={this.state.parameters[0].value} 
                                 />
+                            </Col>
+                            <Col sm={2}>
+                                <span title="The Budget defines the maximum number of pairwise comparisons that will be executed." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                             </Col>
                         </Form.Row>
                         {weighting_scheme_form}

@@ -117,11 +117,12 @@ class EntityMatching extends Component {
 
     isValidated(){
 
-        axios({
+        return axios({
             url: '/workflow/set_configurations/entitymatching',
             method: 'POST',
             data: this.state
         }).then(res => {
+            console.log(res)
             var success = res.data
             this.props.submitState("entity_matching", this.state)
             return this.state.method_name !== "" && this.state.configuration_type !== "" && success
@@ -177,6 +178,9 @@ class EntityMatching extends Component {
                         </Form.Control>
                     </Form.Group>
                 </Col>
+                <Col sm={2}>
+                    <span title="The Representation Model aggregates the textual values that correspond to every entity." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                </Col>
             </Form.Row>
 
         // set the options of the similarity measures according the 
@@ -210,6 +214,9 @@ class EntityMatching extends Component {
                                 </Form.Control>
                             </Form.Group>
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Similarity Measure compares the models of two entities, returning a value between 0 (completely dissimlar) and 1 (identical)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                     break;
             case "CHARACTER_BIGRAM_GRAPHS":
@@ -238,6 +245,9 @@ class EntityMatching extends Component {
                                     <option value="GRAPH_VALUE_SIMILARITY" >GRAPH_VALUE_SIMILARITY</option>
                                </Form.Control>
                             </Form.Group>
+                        </Col>
+                        <Col sm={2}>
+                            <span title="The Similarity Measure compares the models of two entities, returning a value between 0 (completely dissimlar) and 1 (identical)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                         </Col>
                     </Form.Row>
                     break;
@@ -268,6 +278,9 @@ class EntityMatching extends Component {
                                 </Form.Control>
                             </Form.Group>
                         </Col>
+                        <Col sm={2}>
+                            <span title="The Similarity Measure compares the models of two entities, returning a value between 0 (completely dissimlar) and 1 (identical)." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
+                        </Col>
                     </Form.Row>
                     break;
         }
@@ -297,8 +310,10 @@ class EntityMatching extends Component {
                                     type="text" 
                                     name="value" 
                                     onChange={(e) => this.changeParameters(e, 2)}
-                                    value={this.state.parameters[2].value} 
                                 />
+                            </Col>
+                            <Col sm={2}>
+                                <span title="The Similarity Threshold determines the similarity value over which two compared attribute values are connected with an edge in the bipartite graph." className="fa fa-info-circle fa-2x" style={{color: "#4663b9"}}/>	
                             </Col>
                         </Form.Row>
                     </Form>
