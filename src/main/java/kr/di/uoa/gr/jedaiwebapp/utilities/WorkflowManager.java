@@ -147,7 +147,7 @@ public class WorkflowManager {
 		}
 	}
 	
-	public static void setEntityMatching(MethodModel em) {
+	public static boolean setEntityMatching(MethodModel em) {
 		IEntityMatching entityMatching = null;
 
 		if(!em.getConfiguration_type().equals(JedaiOptions.MANUAL_CONFIG)) 	
@@ -165,6 +165,7 @@ public class WorkflowManager {
 				ProgressiveWF.setEntity_matching(entityMatching);
 				break;
 		}
+		return true;
 	}
 	
 	public static void setEntityClustering(MethodModel ec) {

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
@@ -216,7 +217,7 @@ public class WorkflowController {
 		
 		try {
 			methodsConfig.put(JedaiOptions.ENTITY_MATCHING, entity_matching);
-			WorkflowManager.setEntityMatching(entity_matching);			
+			boolean done = WorkflowManager.setEntityMatching(entity_matching);			
 			// Adding method to DB
 			MethodConfiguration em = new MethodConfiguration();
 			em.setMethod(JedaiOptions.ENTITY_MATCHING);
@@ -229,14 +230,15 @@ public class WorkflowController {
 			em.setConfigurationType(entity_matching.getConfiguration_type());
 			dbm.storeOrUpdateMC(em);
 			
-			workflowConfiguration.setEntityMatching(em.getId());			
+			workflowConfiguration.setEntityMatching(em.getId());
+			return done;			
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 		
-		return true;
+		
 	}
 	
 	
@@ -530,7 +532,6 @@ public class WorkflowController {
 			return false;
 		}
 	}
-	
-	
+
 
 }
