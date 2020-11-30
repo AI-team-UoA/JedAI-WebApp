@@ -250,7 +250,7 @@ public class ProgressiveWF {
 			eventPublisher.publish("Prioritization", event_name);					
 
 			double originalRecall = 0;
-			// If we have blocks, run an initial entity matching/clustering before the similarity matching
+			// If we have blocks, run an initial entity matching/clustering before similarity matching
 			if (!blocks.isEmpty()) {
 				// Entity matching
 				SimilarityPairs originalSims = entity_matching.executeComparisons(blocks);
@@ -294,7 +294,7 @@ public class ProgressiveWF {
 			details_manager.print_Sentence("Total comparisons\t:\t" + totalComparisons);
 	
 			
-			// Calculate the budget/comparisons here
+			// Calculate budget/comparisons here
 			long budget;
 	
 			if (blocks.isEmpty()) {
@@ -359,6 +359,7 @@ public class ProgressiveWF {
 				comparisonsIter = allComparisons.iterator();
 			}
 			ClustersPerformance clp = null;
+			EquivalenceCluster[] entityClusters = null;
 			while (comparisonsIter.hasNext()) {
 				if (interrupt(interrupted)) {
                     context.close();
@@ -370,15 +371,13 @@ public class ProgressiveWF {
 				// Calculate the similarity
 				float similarity = entity_matching.executeComparison(comparison);
 				comparison.setUtilityMeasure(similarity);
-	 
 				sims.addComparison(comparison);
-
 	 
 				 // Run clustering
-				 EquivalenceCluster[] entityClusters = entity_clustering.getDuplicates(sims);
-				 if (WorkflowManager.entityClusters == null) 
-				 	WorkflowManager.entityClusters = new ArrayList<EquivalenceCluster>();
-				 WorkflowManager.entityClusters.addAll(Arrays.asList(entityClusters));
+				 entityClusters = entity_clustering.getDuplicates(sims);
+				//  if (WorkflowManager.entityClusters == null) 
+				//  	WorkflowManager.entityClusters = new ArrayList<EquivalenceCluster>();
+				//  WorkflowManager.entityClusters.addAll(Arrays.asList(entityClusters));
 	 
 				 // Calculate new clusters performance
 				 clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
@@ -394,7 +393,10 @@ public class ProgressiveWF {
 					 break;
 				 }
 			}
+
 			overheadEnd = System.currentTimeMillis();
+			WorkflowManager.entityClusters = new ArrayList<EquivalenceCluster>();
+			WorkflowManager.entityClusters.addAll(Arrays.asList(entityClusters));
 
 
 			// Print clustering performance
