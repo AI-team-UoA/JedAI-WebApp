@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import RadioMethod from './utilities/RadioMethod'
-import {Form, Row, Col, FormControl, Collapse, Jumbotron } from 'react-bootstrap/'
+import {Form, Row, Col, FormControl, Collapse, Jumbotron, Spinner} from 'react-bootstrap/'
 import update from 'immutability-helper'
 import axios from 'axios';
 
@@ -42,11 +42,14 @@ class EntityMatching extends Component {
             }
         ]
 
+        
+
         this.state = {
             method_name: this.props.state.method_name,
             configuration_type: this.props.state.configuration_type,
             label: this.props.state.label,
-            parameters: this.props.state.parameters
+            parameters: this.props.state.parameters,
+            showSpinner: false
         }
     }
 
@@ -74,7 +77,8 @@ class EntityMatching extends Component {
                 method_name: e.method_name,
                 configuration_type: e.configuration_type,
                 label: e.label,
-                parameters: parameters
+                parameters: parameters,
+                showSpinner: false
             }
         )
     } 
@@ -116,6 +120,8 @@ class EntityMatching extends Component {
     }
 
     isValidated(){
+
+        this.setState({showSpinner: true})
 
         return axios({
             url: '/workflow/set_configurations/entitymatching',
@@ -337,6 +343,23 @@ class EntityMatching extends Component {
                 parameters_JSX_window = <div />
         }
 
+        var spinner = <div/>
+        if (this.state.showSpinner)
+            spinner= 
+                <div>
+                    <br/>
+                    <br/>
+                    <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                        <Spinner style={{color:"#0073e6"}} animation="grow" />
+                        <div style={{marginLeft:"10px", display:"inline"}}>
+                            <h3 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>
+                                Creating Representation Model
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
+
 
         return (
             <div>
@@ -366,10 +389,11 @@ class EntityMatching extends Component {
                         </Jumbotron>
                     </div>
                 </Collapse>
-
-                <br/>
-                <br/>
-            </div>
+               
+               {spinner}
+               <br/>
+               <br/>
+               </div>
         )
     }
 }
