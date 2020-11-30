@@ -66,7 +66,7 @@ ol.progtrckr {
   ol.progtrckr li.progtrckr-todo:before {
     content: "\25CB";
     color: #909090	;  
-    background-color: #E8E8E8;
+    background-color: #e2e2e2;
     width: 1.0em;
     line-height: 1.2em;
   }
@@ -78,7 +78,7 @@ ol.progtrckr {
   ol.progtrckr li.progtrckr-doing:before {
     content: "\2022";
     color: white;
-    background-color: #909090;
+    background-color: #e2e2e2;
     width: 1.1em;
     line-height: 1.2em;
     border-radius: 1.2em;
