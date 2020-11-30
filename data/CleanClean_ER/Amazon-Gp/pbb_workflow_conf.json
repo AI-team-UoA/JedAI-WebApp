@@ -12,5 +12,5 @@
     "comparison_cleaning":{"method_name":"CARDINALITY_NODE_PRUNING","configuration_type":"Default","label":"Cardinality Node Pruning (CNP)","parameters":[{"label":"Weighting Scheme","value":"CBS"}]},
     "prioritization":{"method_name":"PROGRESSIVE_GLOBAL_TOP_COMPARISONS","configuration_type":"Default","label":"Progressive Global Top Comparisons","parameters":[{"label":"Budget","value":"10000"},{"label":"Weighting Scheme","value":"JS"}],"alertShow":false},
     "entity_matching":{"method_name":"PROFILE_MATCHER","configuration_type":"Manual","label":"Profile Matcher","parameters":[{"label":"Representation Model","value":"TOKEN_BIGRAMS"},{"label":"Similarity Measure","value":"COSINE_SIMILARITY"}]},
-    "entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Manual","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.5"}]}
+    "entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Manual","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.05"}]}
 }
