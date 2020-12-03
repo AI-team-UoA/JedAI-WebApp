@@ -51,5 +51,4 @@ class App extends Component {
         );
     }
 }
- //style={{position:'relative', left:'20%'}}
 export default App;

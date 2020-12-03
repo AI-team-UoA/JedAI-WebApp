@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.javatuples.Pair;
@@ -296,7 +297,6 @@ public class ProgressiveWF {
 			
 			// Calculate budget/comparisons here
 			long budget;
-	
 			if (blocks.isEmpty()) {
 				// No blocks, calculate budget based on entity profiles
 				budget = isDirtyEr ?
@@ -355,7 +355,7 @@ public class ProgressiveWF {
 						allComparisons.add(cIterator.next());
 					}
 				}
-				Collections.shuffle(allComparisons);
+				Collections.shuffle(allComparisons, new Random(System.currentTimeMillis()));
 				comparisonsIter = allComparisons.iterator();
 			}
 			ClustersPerformance clp = null;
@@ -375,9 +375,6 @@ public class ProgressiveWF {
 	 
 				 // Run clustering
 				 entityClusters = entity_clustering.getDuplicates(sims);
-				//  if (WorkflowManager.entityClusters == null) 
-				//  	WorkflowManager.entityClusters = new ArrayList<EquivalenceCluster>();
-				//  WorkflowManager.entityClusters.addAll(Arrays.asList(entityClusters));
 	 
 				 // Calculate new clusters performance
 				 clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
@@ -388,7 +385,7 @@ public class ProgressiveWF {
 				 // Add current recall to the list
 				 recallCurve.add(recall);
 	 
-				 // If we reached the original recall, stop
+				 // If we reach the original recall, stop
 				 if (originalRecall <= recall) {
 					 break;
 				 }
