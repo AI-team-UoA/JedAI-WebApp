@@ -99,7 +99,7 @@ public class WorkflowController {
 				if(StaticReader.datasetConf1 == null || StaticReader.datasetConf2 == null) return false;
 				Dataset dt1 = new Dataset(StaticReader.datasetConf1);
 				methodsConfig.put("d1", dt1);
-				Dataset dt2 = new Dataset(StaticReader.datasetConf1);
+				Dataset dt2 = new Dataset(StaticReader.datasetConf2);
 				methodsConfig.put("d2", dt2);
 
 				return  WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null;
