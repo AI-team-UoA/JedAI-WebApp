@@ -91,18 +91,31 @@ public class TestController {
             if (!dataReadingConf.isNull("entity1_set")){
 
                 JSONObject entityConf1 = getDatasetConf(dataReadingConf.getJSONObject("entity1_set"));
+
+                String source;
+                String filename = null;
+                source = entityConf1.getString("source");
+                filename = entityConf1.getString("filename");
+
                 entityConf1.put("entity_id", "1");
-                StaticReader.setDataset(entityConf1, null, null);
+                StaticReader.setDataset(entityConf1, source, filename);
                 
                 if(WorkflowManager.er_mode.equals(JedaiOptions.CLEAN_CLEAN_ER)){
                     JSONObject entityConf2 = getDatasetConf(dataReadingConf.getJSONObject("entity2_set"));
+
+                    source = entityConf2.getString("source");
+                    filename = entityConf2.getString("filename");
+
                     entityConf2.put("entity_id", "2");
-                    StaticReader.setDataset(entityConf2, null, null);
+                    StaticReader.setDataset(entityConf2, source, filename);
                 }
 
                 JSONObject gtConf = getDatasetConf(dataReadingConf.getJSONObject("groundTruth_set"));
+                source = gtConf.getString("source");
+                filename = gtConf.getString("filename");
+                
                 gtConf.put("entity_id", "3");
-                StaticReader.setDataset(gtConf, null, null);
+                StaticReader.setDataset(gtConf, source, filename);
             }
             
             return json_conf; 

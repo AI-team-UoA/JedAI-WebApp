@@ -34,16 +34,17 @@ public class StaticReader {
 	public static String setDataset(JSONObject configurations, String source, String filename) {
 		
 		try {
-			
-			String filetype = configurations.getString("filetype");
 			if (isURL(source)) {
 				String newPath = storeRemoteFile(source, configurations.getString("filename"));
 				source = newPath;
 			}
-			if (!new File(source).exists())
-				return "";
+			if(! new File(source).exists())	
+				return "";				
+			filename = source;	
+
 				
 			String entity_id = configurations.getString("entity_id");
+			String filetype = configurations.getString("filetype");	
 			Reader entity_profile = new Reader(filetype, source, configurations);
 
 			switch (entity_id) {
@@ -107,15 +108,17 @@ public class StaticReader {
 		File targetFile = new File(localFilepath);
 
 		if(!targetFile.exists()){
+			System.out.println("Downloading File");
 			InputStream inStream = remoteFile.openStream();
 			FileUtils.copyInputStreamToFile(inStream, targetFile);
 			inStream.close();
+			System.out.println("Downloading Completed");
 		}
 
 		return localFilepath;
 	}
 
-	
+
 	public static boolean isURL(String url) 
     { 
         /* checking if it is a URL */
