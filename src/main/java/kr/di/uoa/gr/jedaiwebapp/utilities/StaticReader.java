@@ -1,11 +1,18 @@
 package kr.di.uoa.gr.jedaiwebapp.utilities;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.scify.jedai.datamodel.EntityProfile;
@@ -13,77 +20,115 @@ import org.scify.jedai.datamodel.EntityProfile;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 
 public class StaticReader {
-    
 
-    public static Map<String, Object> datasetConf1 = null;
-    public static Map<String, Object> datasetConf2 = null;
-    public static Map<String, Object> datasetConfGT = null;
+	public static Map<String, Object> datasetConf1 = null;
+	public static Map<String, Object> datasetConf2 = null;
+	public static Map<String, Object> datasetConfGT = null;
 	public static List<EntityProfileNode> entityProfiles1 = null;
 	public static List<EntityProfileNode> entityProfiles2 = null;
-    public static List<List<EntityProfileNode>> duplicates = null;
-    
+	public static List<List<EntityProfileNode>> duplicates = null;
+
+	public static String realPathToUploads;
 
 
-    public static String setDataset(JSONObject configurations, String source, String filename){
-        String filetype = configurations.getString("filetype");
-		if(configurations.has("source")){
-			source = configurations.getString("source");
-			filename = source;
-			if(! new File(source).exists())
-				return "";
-		}
-
-		if (source == null || source.equals(""))
-			return "";
-	
-		String entity_id = configurations.getString("entity_id");
+	public static String setDataset(JSONObject configurations, String source, String filename) {
+		
 		try {
-			Reader entity_profile = new Reader(filetype, source, configurations);
 			
-			switch(entity_id) {
+			String filetype = configurations.getString("filetype");
+			if (isURL(source)) {
+				String newPath = storeRemoteFile(source, configurations.getString("filename"));
+				source = newPath;
+			}
+			if (!new File(source).exists())
+				return "";
+				
+			String entity_id = configurations.getString("entity_id");
+			Reader entity_profile = new Reader(filetype, source, configurations);
+
+			switch (entity_id) {
 				case "1":
 					WorkflowManager.profilesD1 = entity_profile.read();
 					entityProfiles1 = new ArrayList<>();
-					//construct the dataset which will be displayed in explore
-					for (int i=0; i<WorkflowManager.profilesD1.size(); i++) {
+					// construct the dataset which will be displayed in explore
+					for (int i = 0; i < WorkflowManager.profilesD1.size(); i++) {
 						EntityProfile entity = WorkflowManager.profilesD1.get(i);
-						EntityProfileNode entity_node = new EntityProfileNode(entity, i+1);
-						entityProfiles1.add(entity_node);	
-					}	
-					duplicates = null;
-					WorkflowManager.ground_truth = null;
-					break;
-					
-				case "2":	
-					WorkflowManager.profilesD2 = entity_profile.read();
-					entityProfiles2 = new ArrayList<>();
-					//construct the dataset which will be displayed in explore
-					for (int i=0; i<WorkflowManager.profilesD2.size(); i++) {
-						EntityProfile entity = WorkflowManager.profilesD2.get(i);
-						EntityProfileNode entity_node = new EntityProfileNode(entity, i+1);
-						entityProfiles2.add(entity_node);	
+						EntityProfileNode entity_node = new EntityProfileNode(entity, i + 1);
+						entityProfiles1.add(entity_node);
 					}
 					duplicates = null;
 					WorkflowManager.ground_truth = null;
 					break;
-					
+
+				case "2":
+					WorkflowManager.profilesD2 = entity_profile.read();
+					entityProfiles2 = new ArrayList<>();
+					// construct the dataset which will be displayed in explore
+					for (int i = 0; i < WorkflowManager.profilesD2.size(); i++) {
+						EntityProfile entity = WorkflowManager.profilesD2.get(i);
+						EntityProfileNode entity_node = new EntityProfileNode(entity, i + 1);
+						entityProfiles2.add(entity_node);
+					}
+					duplicates = null;
+					WorkflowManager.ground_truth = null;
+					break;
+
 				case "3":
 					WorkflowManager.ground_truth = entity_profile.read_GroundTruth(WorkflowManager.er_mode,
-								WorkflowManager.profilesD1,
-								WorkflowManager.profilesD2);
-					
-					//construct the dataset which will be displayed in explore
+							WorkflowManager.profilesD1, WorkflowManager.profilesD2);
+
+					// construct the dataset which will be displayed in explore
 					duplicates = entity_profile.getDuplicates_GroundTruth();
 					break;
 			}
 			saveDatasetConf(source, filetype, entity_id, filename, configurations);
 			return source;
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
 		}
-    }
+	}
+
+
+
+	public static String storeRemoteFile(String path, String filename) throws Exception {
+
+		URL remoteFile;
+		remoteFile = new URL(path);
+	
+		String host = remoteFile.getHost();
+		String domain = host.startsWith("www.") ? host.substring(4) : host;
+		
+		
+		if(! new File(realPathToUploads).exists())
+			new File(realPathToUploads).mkdir();
+	
+		String localFilepath = realPathToUploads + domain + "."+ filename;
+		File targetFile = new File(localFilepath);
+
+		if(!targetFile.exists()){
+			InputStream inStream = remoteFile.openStream();
+			FileUtils.copyInputStreamToFile(inStream, targetFile);
+			inStream.close();
+		}
+
+		return localFilepath;
+	}
+
+	
+	public static boolean isURL(String url) 
+    { 
+        /* checking if it is a URL */
+        try { 
+            new URL(url).toURI(); 
+            return true; 
+        } 
+        catch (Exception e) { 
+            return false; 
+        } 
+	} 
+
+	
 
     public static boolean saveDatasetConf(String source, String filetype, String entity_id, String filename, JSONObject configurations){
 	

@@ -1,6 +1,6 @@
 import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
-import {Jumbotron, Form, Button, Alert, Collapse } from 'react-bootstrap/'
+import {Jumbotron, FormCheck, Col, Form, Button, Alert, Collapse, Spinner } from 'react-bootstrap/'
 import axios from 'axios';
 import ConfigureCSV from './ConfigureCSV'
 import ConfigureRDB from './ConfigureRDB'
@@ -11,7 +11,7 @@ import '../../../../../../resources/static/css/main.css'
 
 
 /**
- * Configurations of CSV files
+ * Configurations 
  */
  
 class Configurations extends Component {
@@ -23,10 +23,16 @@ class Configurations extends Component {
         this.collapse_flag = false
         this.state = { 
             configuration: null,
-            source: ""
+            source: "",
+            browsing: true,
+            showSpinner: false
         }
     }
 
+    flipURLSwitch = (e) => {
+        var flipped =  !this.state.browsing
+        this.setState({browsing: flipped})
+    }
 
     onChange(conf_state, isDisable) {
         this.disabled = isDisable
@@ -36,6 +42,8 @@ class Configurations extends Component {
     
     onSubmit = (e) => {
         
+        this.setState({showSpinner: true})
+
         //calculate and return msg to profileReader
         e.preventDefault()
         var text_area_msg, conf, file = null
@@ -100,13 +108,16 @@ class Configurations extends Component {
                 text_area_msg = ""
                 conf = null
         }
-        // Form the data that will be sent to server
-        var json_conf= JSON.stringify(conf)
+        
         const formData = new FormData();
-        formData.append("file", file)
+        var postPath = "setConfiguration"
+        if (file != null){
+            formData.append("file", file)
+            postPath = "setConfigurationWithFile"
+        } 
         formData.append("json_conf", JSON.stringify(conf))
         axios({
-            url: '/desktopmode/dataread/set',
+            url: '/desktopmode/dataread/' + postPath,
             method: 'POST',
             data: formData 
         }).then(res => {
@@ -115,9 +126,11 @@ class Configurations extends Component {
             if (result !== ""){
                 this.setState({source: result})
                 this.props.submitted(this.state, text_area_msg)
+                this.setState({showSpinner: false})
             }
             else{
                 this.collapse_flag = true
+                this.setState({showSpinner: false})
                 this.forceUpdate()
                 }
         });
@@ -125,33 +138,75 @@ class Configurations extends Component {
     }
 
     render() {
+
+        var spinner = <div/>
+        if (this.state.showSpinner)
+            spinner= 
+                <div>
+                    <br/>
+                    <br/>
+                    <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                        <Spinner style={{color:"#0073e6"}} animation="grow" />
+                        <div style={{marginLeft:"10px", display:"inline"}}>
+                            <h3 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>
+                               Loading Data
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
         var configureSource
         switch(this.props.filetype) {
             case "CSV":
-                configureSource =  <ConfigureCSV  onChange={this.onChange} entity_id={this.props.entity_id}/>
+                configureSource =  <ConfigureCSV  onChange={this.onChange} entity_id={this.props.entity_id}  browsing={this.state.browsing}/>
                 break;
             case "Database":
-                configureSource  = <ConfigureRDB  onChange={this.onChange}/>
+                configureSource  = <ConfigureRDB  onChange={this.onChange}  entity_id={this.props.entity_id} />
                 break;
             case "RDF":
-                configureSource = <ConfigureRDF  onChange={this.onChange} />
+                configureSource = <ConfigureRDF  onChange={this.onChange}  entity_id={this.props.entity_id} browsing={this.state.browsing}/>
                 break;
             case "XML":
-                configureSource = <ConfigureXML  onChange={this.onChange} />
+                configureSource = <ConfigureXML  onChange={this.onChange}  entity_id={this.props.entity_id} browsing={this.state.browsing}/>
                 break;
             case "Serialized":
-                configureSource = <ConfigureSerialized onChange={this.onChange} />
+                configureSource = <ConfigureSerialized onChange={this.onChange}  entity_id={this.props.entity_id} browsing={this.state.browsing} />
                 break;
             default:
                 configureSource = <div />
         }
 
+        const empty_col = 1
+        const first_col = 4
+        const second_col = 6
+
+        var browsingSwitch = <div />
+
+        if (this.props.filetype != "Database")
+            browsingSwitch = <FormCheck 
+                    name="browsingSwitch"
+                    id={this.props.entity_id+"Switch"}
+                    type="switch"
+                    checked={!this.state.browsing}
+                    onChange={this.flipURLSwitch}
+                    label="Enable/Disable URL"
+                    />
+       
         return (
 
             <Jumbotron style={{backgroundColor:"white", border:"groove", width:"70%" }}>
                 <div style={{margin:"auto"}}>
                     <Form>
                         {configureSource}
+                        
+                        <Form.Row className="form-row">
+
+                        <Col sm={empty_col} />
+                        <Col sm={first_col} />
+                        <Col sm={second_col}>
+                            {browsingSwitch}
+                        </Col>
+                    </Form.Row>
                         <Collapse in={this.collapse_flag } >
                             <div style={{width:'75%', margin:'auto'}}>
                                 <Alert variant="danger" >
@@ -165,7 +220,7 @@ class Configurations extends Component {
                         </div>
                     </Form>
                 </div>
-                
+                {spinner}
             </Jumbotron>
         )
     }

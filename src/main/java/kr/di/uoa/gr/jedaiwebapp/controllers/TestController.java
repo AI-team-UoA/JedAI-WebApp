@@ -12,20 +12,32 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+
 
 @RestController
 @RequestMapping("/test/**")
 public class TestController {
     
+
+    @Autowired
+    private HttpServletRequest request;
+
     @GetMapping("/test/get/{test_type}/{er_mode}/{wf_mode}/{dt_choice}")
     public String getTest(
                 @PathVariable(value = "test_type") String test_type,
                 @PathVariable(value = "er_mode") String er_mode,
                 @PathVariable(value = "wf_mode") String wf_mode,
                 @PathVariable(value = "dt_choice") String dt_choice){
+
+        StaticReader.realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
+		
                     
         System.out.println(test_type + " " + er_mode + " " + wf_mode + " " + dt_choice);
         WorkflowManager.clean();

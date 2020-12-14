@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,8 +48,8 @@ public class DataReadController {
 	 * @param configurations informations regarding the input dataset
 	 * @return the path in the server of the uploaded file
 	 * */
-	@PostMapping(path = "/desktopmode/dataread/set", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	
-	public String setDataset(
+	@PostMapping(path = "/desktopmode/dataread/setConfigurationWithFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	
+	public String setDatasetWithFile(
 			@RequestPart(value="file") MultipartFile file,
 			@RequestPart(required=true) String json_conf){
 				
@@ -62,6 +63,28 @@ public class DataReadController {
 		
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
 		
+		StaticReader.realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
+		return StaticReader.setDataset(configurations, source, filename);
+	}
+
+
+	@PostMapping(path = "/desktopmode/dataread/setConfiguration")	
+	public String SetDataset(@RequestPart(required=true) String json_conf){
+		
+		JSONObject configurations = new JSONObject(json_conf);
+		String filetype = configurations.getString("filetype");
+		String source = null;
+		if (filetype.equals("Database") )
+			source = configurations.getString("url");
+		else
+			source = configurations.getString("filename");
+
+		if (! isURL(source) && !filetype.equals("Database"))
+			return "";
+		
+		String filename = configurations.getString("filename");
+		
+		StaticReader.realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
 		return StaticReader.setDataset(configurations, source, filename);
 	}
 
@@ -96,6 +119,18 @@ public class DataReadController {
 				return 0;
 		}
 	}
+
+	public static boolean isURL(String url) 
+    { 
+        /* checking if it is a URL */
+        try { 
+            new URL(url).toURI(); 
+            return true; 
+        } 
+        catch (Exception e) { 
+            return false; 
+        } 
+	} 
 	
 	
 	/**
@@ -171,8 +206,8 @@ public class DataReadController {
 	 * @return the path
 	 **/
 	public String UploadFile(MultipartFile file) {
-		String uploadsDir = "/uploads/";
-        String realPathToUploads =  request.getServletContext().getRealPath(uploadsDir); // TODO change here
+
+        String realPathToUploads =  request.getServletContext().getRealPath("/uploads/"); // TODO change here
        
         if(! new File(realPathToUploads).exists())
             new File(realPathToUploads).mkdir();

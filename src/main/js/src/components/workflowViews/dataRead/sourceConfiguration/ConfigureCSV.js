@@ -175,12 +175,12 @@ class ConfigureCSV extends Component {
                                     name="filename"
                                     value={this.state.filename}
                                     onChange={this.onChange}
-                                    readOnly
+                                    readOnly = {this.props.browsing}
                                 />
                             
                                 <div  className="upload-btn-wrapper" style={{cursor:'pointer'}}>
                                     <Button >Browse</Button>
-                                    <FormControl type="file" name="file" onChange={this.onChange}/>
+                                    <FormControl type="file" name="file" onChange={this.onChange} disabled={!this.props.browsing}/>
                                 </div>
                             </InputGroup>
                         </Col>
@@ -236,7 +236,8 @@ class ConfigureCSV extends Component {
 
 ConfigureCSV.propTypes = {
     onChange: PropTypes.func.isRequired,
-    entity_id: PropTypes.string.isRequired
+    entity_id: PropTypes.string.isRequired,
+    browsing: PropTypes.bool.isRequired
   }
 
 export default ConfigureCSV

@@ -3,6 +3,8 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.scify.jedai.datamodel.EntityProfile;
@@ -20,11 +22,14 @@ import org.scify.jedai.datareader.groundtruthreader.IGroundTruthReader;
 import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
 import org.scify.jedai.utilities.datastructures.BilateralDuplicatePropagation;
 import org.scify.jedai.utilities.datastructures.UnilateralDuplicatePropagation;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import gnu.trove.list.TIntList;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.models.Dataset;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
+
+
 
 public class Reader {
 	private String filetype;
@@ -42,12 +47,11 @@ public class Reader {
 	
 	
 	
-	
 	/**
 	 * Constructor
 	 * 
 	 */
-	public Reader(String filetype, String source,JSONObject configurations) throws Exception{
+	public Reader(String filetype, String source, JSONObject configurations) throws Exception{
 		
 		this.filetype = filetype;
 		JSONArray jArray = configurations.getJSONArray("excluded_attr");
@@ -115,6 +119,8 @@ public class Reader {
 		}
 	}
 		
+
+	
 	
 	/**
 	 *Call the appropriate Reader and read the input 
@@ -124,7 +130,8 @@ public class Reader {
 	public List<EntityProfile> read() throws Exception {
 		 IEntityReader eReader = null;
 		 List<EntityProfile> profiles = null;
-		 
+
+		
 		 switch (this.filetype) {
 			 case "CSV":
 	             eReader = CSVReader();
