@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Jumbotron, Button, Modal} from 'react-bootstrap';
+import {Jumbotron, Button, Modal, Spinner} from 'react-bootstrap';
 import {Link } from 'react-router-dom';
 import axios from 'axios';
 import TestSelection from './TestSelection'
@@ -17,7 +17,8 @@ class WorkflowSelection extends Component {
 
         redirect_path: "/",
         new_state: null,
-        redirect: false
+        redirect: false,
+        showSpinner: false
     }
 
     onChange = (e) => {
@@ -37,6 +38,7 @@ class WorkflowSelection extends Component {
             })
         }
         else{
+            this.setState({showSpinner: true})
             axios.get("/test/get/" + this.state.test_type + "/" + this.state.er_mode + "/" + this.state.wf_mode + "/" + this.state.dt_choice)
             .then((res) => {
                 var path = "/"
@@ -51,7 +53,8 @@ class WorkflowSelection extends Component {
                     redirect_path: path,
                     new_state: res.data, 
                     redirect: true,
-                    show_test_modal : false
+                    show_test_modal : false,
+                    showSpinner: false
                 })
             })
         }
@@ -64,6 +67,22 @@ class WorkflowSelection extends Component {
             return <Redirect to={{pathname: this.state.redirect_path, state:{conf: this.state.new_state}}} />;
           }
 
+          var spinner = <div/>
+        if (this.state.showSpinner)
+            spinner= 
+                <div>
+                    <br/>
+                    <br/>
+                    <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                        <Spinner style={{color:"#0073e6"}} animation="grow" />
+                        <div style={{marginLeft:"10px", display:"inline"}}>
+                            <h3 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>
+                               Loading Data
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
         return (
             <div >
                 <Modal className="grey-modal" show={this.state.show_test_modal} onHide={this.close_test_window} size="lg">
@@ -72,13 +91,14 @@ class WorkflowSelection extends Component {
                     </Modal.Header>
                     <Modal.Body >
                         <TestSelection test_type={this.state.test_type} er_mode={this.state.er_mode} wf_mode={this.state.wf_mode} dt_choice={this.state.dt_choice} change={this.onChange}/>
+                        {spinner}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="primary" 
                         disabled={this.state.dt_choice == "" || this.state.er_mode == "" || this.state.wf_mode == ""}  
                         onClick={this.close_test_window}>
                             Confirm
-                        </Button>
+                        </Button> 
                     </Modal.Footer>
                 </Modal>
 
