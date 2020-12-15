@@ -1,11 +1,12 @@
 {
-	"data_reading":{
-		"er_mode":"dirty",
-		"entity1_set":null,
-		"entity2_set":null,
-		"groundTruth_set":null,
-		"alertShow":false
-	},
+        "data_reading":{
+                "er_mode":"dirty",
+                "entity1_set":{"source":"http://88.197.53.158:8000/2Mprofiles","configurations":{"file":{},"filename":"2Mprofiles","excluded_attr":[]},"filetype":"Serialized"},
+                "entity2_set":null,
+                "groundTruth_set":{"source":"http://88.197.53.158:8000/2MIdDuplicates","configurations":{"file":{},"filename":"2MIdDuplicates","excluded_attr":[]},"filetype":"Serialized"},
+                "alertShow":false
+        },
+
 	"schema_clustering":{"method_name":"NO_SCHEMA_CLUSTERING","configuration_type":"Default","label":"No Schema Clustering","parameters":[{"label":"Representation Model","value":"TOKEN_UNIGRAM_GRAPHS"},{"label":"Similarity Measure","value":"GRAPH_VALUE_SIMILARITY"}]},
 	"block_building":[{"method_name":"STANDARD_TOKEN_BUILDING","label":"Standard/Token Blocking","selected":true,"configuration_type":"Default","parameters":[]}],
 	"block_cleaning":[{"method_name":"COMPARISON_BASED_BLOCK_PURGING","label":"Comparison-based Block Purging","selected":true,"configuration_type":"Default","parameters":[{"label":"Smoothing Factor","value":"1.0"}]},{"method_name":"BLOCK_FILTERING","label":"Block Filtering","selected":true,"configuration_type":"Default","parameters":[{"label":"Filtering Ratio","value":"0.8"}]}],
