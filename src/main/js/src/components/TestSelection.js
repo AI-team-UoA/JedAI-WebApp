@@ -9,16 +9,16 @@ import PropTypes from 'prop-types';
         var small = 5
         var large = 6
 
-        var test_options = ["", "Performance Test", "Scaling Test", "Budget-awareness Test"]
+        var test_options = ["", "Performance Test", "Scalability Test", "Budget-awareness Test"]
         var wf_options = ["", "Best Schema-agnostic Workflow", "Default Schema-agnostic Workflow", "Schema-aware Workflow"]
         var dataset_options = [""]
 
         if (this.props.test_type == "Budget-awareness Test")
             wf_options = ["", "Budget-aware Workflow", "Budget-agnostic Workflow"]
-        else if (this.props.test_type == "Scaling Test")
+        else if (this.props.test_type == "Scalability Test")
             wf_options = ["", "Default Schema-agnostic Workflow", "Schema-aware Workflow"]
 
-        if(this.props.test_type == "Scaling Test")
+        if(this.props.test_type == "Scalability Test")
             dataset_options = ["", "10K", "50K", "100K", "200K", "300K", "1M", "2M"]
         else{
             if(this.props.er_mode == "clean")
@@ -59,8 +59,8 @@ import PropTypes from 'prop-types';
                                 placeholder="Select ER Mode" 
                                 name="er_mode" 
                                 onChange={this.props.change}
-                                value={this.props.test_type == "Scaling Test" ? "dirty": this.props.er_mode}
-                                disabled={this.props.test_type == "Scaling Test" || this.props.test_type == ""}
+                                value={this.props.test_type == "Scalability Test" ? "dirty": this.props.er_mode}
+                                disabled={this.props.test_type == "Scalability Test" || this.props.test_type == ""}
                             >
                                 <option key="" value="" ></option>
                                 <option key="d" value="dirty" >Dirty Entity Resolution</option>
