@@ -20,7 +20,7 @@ public class JedaiOptions {
 
      public static final String WORKFLOW_BLOCKING_BASED = "Blocking-based";
      public static final String BEST_WORKFLOW_BLOCKING_BASED = "Best Blocking-based";
-     public static final String SCALING_TEST = "Scaling Test";
+     public static final String SCALING_TEST = "Scalability Test";
      public static final String PERFORMANCE_TEST = "Performance Test";
      
 	public static final String SCHEMA_CLUSTERING = "Schema Clustering";
