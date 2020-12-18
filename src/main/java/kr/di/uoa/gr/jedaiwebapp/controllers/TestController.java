@@ -47,7 +47,7 @@ public class TestController {
             WorkflowManager.er_mode = JedaiOptions.CLEAN_CLEAN_ER;
                     
         try{
-            String pathStr = "data/";
+            String pathStr = "testConfigurations/";
             if (test_type.equals(JedaiOptions.SCALING_TEST))
                 pathStr += "Synthetic/";
             else if (er_mode.equals("dirty"))
