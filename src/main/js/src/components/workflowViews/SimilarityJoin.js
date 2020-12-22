@@ -18,31 +18,33 @@ class SimilarityJoin extends Component {
             method: this.props.state.method,
             attribute1: this.props.state.attribute1,
             attribute2: this.props.state.attribute2,
-            headers1: [],
-            headers2: [],
+            headers1: this.props.state.headers1,
+            headers2: this.props.state.headers2,
             alertShow : false
         }
 
-        axios
-        .get("/desktopmode/dataread/headers")
-        .then(res => { 
-            var h1 = res.data[0]
-            h1.push("all")
-            if (this.props.clean_er){
-                var h2 = res.data[1]
-                h2.push("all")
-                if (this.state.attribute1 != "" && this.state.attribute2 != "")
-                    this.setState({headers1: h1, headers2: h2})
-                else
-                    this.setState({headers1: h1, headers2: h2, attribute1: h1[0], attribute2: h2[0]})
-            }
-            else{
-                if (this.state.attribute1 != "")
-                    this.setState({headers1: h1})
-                else
-                    this.setState({headers1: h1, attribute1: h1[0]})
-            }
-        })
+        if (this.state.headers1.length == 0){
+            axios
+            .get("/desktopmode/dataread/headers")
+            .then(res => { 
+                var h1 = res.data[0]
+                h1.push("all")
+                if (this.props.clean_er){
+                    var h2 = res.data[1]
+                    h2.push("all")
+                    if (this.state.attribute1 != "" && this.state.attribute2 != "")
+                        this.setState({headers1: h1, headers2: h2})
+                    else
+                        this.setState({headers1: h1, headers2: h2, attribute1: h1[0], attribute2: h2[0]})
+                }
+                else{
+                    if (this.state.attribute1 != "")
+                        this.setState({headers1: h1})
+                    else
+                        this.setState({headers1: h1, attribute1: h1[0]})
+                }
+            })
+        }
     }
 
     methods = 

@@ -35,7 +35,9 @@ class JoinForm extends Component {
                         parameters: [{label: "Threshold", value:"3"}]
                     },
                     attribute1: "",
-                    attribute2: ""
+                    attribute2: "",
+                    headers1: [],
+                    headers2: []
                 },
 
                 entity_clustering: {
