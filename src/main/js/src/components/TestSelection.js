@@ -21,9 +21,12 @@ import PropTypes from 'prop-types';
         if(this.props.test_type == "Scalability Test")
             dataset_options = ["", "10K", "50K", "100K", "200K", "300K", "1M", "2M"]
         else{
-            if(this.props.er_mode == "clean")
-                dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "DBLP-Scholar", "IMDB-DBpedia", "Restaurants", "DBpedia"]
-            else if (this.props.er_mode == "dirty")
+            if(this.props.er_mode == "clean"){
+               if( this.props.test_type == "Budget-awareness Test") 
+			dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "DBLP-Scholar", "IMDB-DBpedia", "Restaurants"]
+               else
+			dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "DBLP-Scholar", "IMDB-DBpedia", "Restaurants", "DBpedia"]
+	    }else if (this.props.er_mode == "dirty")
                 dataset_options = ["", "Cora", "CDDB"]
         }
 

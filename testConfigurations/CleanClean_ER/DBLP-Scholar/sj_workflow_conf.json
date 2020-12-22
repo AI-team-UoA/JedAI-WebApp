@@ -1,0 +1,12 @@
+{
+	"data_reading":{
+		"er_mode":"clean",
+		"entity1_set":{"source":"/tmp/Real Clean-Clean ER data/dblpProfiles2","configurations":{"file":{},"filename":"dblpProfiles2","excluded_attr":[]},"filetype":"Serialized"},
+               	"entity2_set":{"source":"/tmp/Real Clean-Clean ER data/scholarProfiles","configurations":{"file":{},"filename":"scholarProfiles","excluded_attr":[]},"filetype":"Serialized"},
+               	"groundTruth_set":{"source":"/tmp/Real Clean-Clean ER data/dblpScholarIdDuplicates","configurations":{"file":{},"filename":"dblpScholarIdDuplicates","excluded_attr":[]},"filetype":"Serialized"},
+
+		"alertShow":false
+	},
+	"similarity_join":{"method":{"name":"PPJOIN","label":"PPJoin","parameters":[{"label":"Similarity Threshold","value":"0.8"}]},"attribute1":"title","attribute2":"title","headers1":["venue","year","title","authors"],"headers2":["venue","year","title","authors"],"alertShow":false},
+	"entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Manual","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.8"}]}
+}

@@ -1,0 +1,10 @@
+{
+	"data_reading":{
+		"er_mode":"dirty",
+		"entity1_set":{"source":"/tmp/Real Dirty ER data/coraProfiles","configurations":{"file":{},"filename":"coraProfiles","excluded_attr":[]},"filetype":"Serialized"},
+		"entity2_set":null,"groundTruth_set":{"source":"/tmp/Real Dirty ER data/coraIdDuplicates","configurations":{"file":{},"filename":"coraIdDuplicates","excluded_attr":[]},"filetype":"Serialized"}
+		,"alertShow":false
+	},
+	"similarity_join":{"method":{"name":"PPJOIN","label":"PPJoin","parameters":[{"label":"Similarity Threshold","value":"0.7"}]},"attribute1":"title","attribute2":"","headers1":["volume","venue","editor","note","institution","address","pages","month","year","author","publisher","title"],"headers2":[],"alertShow":false},
+	"entity_clustering":{"method_name":"CONNECTED_COMPONENTS_CLUSTERING","configuration_type":"Manual","label":"Connected Components Clustering","parameters":[{"label":"Similarity Threshold","value":"0.7"}]}
+}

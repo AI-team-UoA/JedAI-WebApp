@@ -1,0 +1,11 @@
+{
+	"data_reading":{
+        "er_mode":"clean",
+        "entity1_set":{"source":"/tmp/Real Clean-Clean ER data/cleanDBPedia1","configurations":{"file":{},"filename":"cleanDBPedia1","excluded_attr":[]},"filetype":"Serialized"},
+        "entity2_set":{"source":"/tmp/Real Clean-Clean ER data/cleanDBPedia2","configurations":{"file":{},"filename":"cleanDBPedia2","excluded_attr":[]},"filetype":"Serialized"},
+        "groundTruth_set":{"source":"/tmp/Real Clean-Clean ER data/newDBPediaMatches","configurations":{"file":{},"filename":"newDBPediaMatches","excluded_attr":[]},"filetype":"Serialized"},
+        "alertShow":false
+    },
+	"similarity_join":{"method":{"name":"PPJOIN","label":"PPJoin","parameters":[{"label":"Similarity Threshold","value":"0.8"}]},"attribute1":"name","attribute2":"name","headers1":["name"],"headers2":["name"],"alertShow":false},
+	"entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Default","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.5"}]}
+}

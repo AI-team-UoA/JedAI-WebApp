@@ -1,0 +1,11 @@
+{
+	"data_reading":{
+		"er_mode":"clean",
+		"entity1_set":{"source":"/tmp/Real Clean-Clean ER data/imdbProfiles","configurations":{"file":{},"filename":"imdbProfiles","excluded_attr":[]},"filetype":"Serialized"},
+		"entity2_set":{"source":"/tmp/Real Clean-Clean ER data/dbpediaProfiles","configurations":{"file":{},"filename":"dbpediaProfiles","excluded_attr":[]},"filetype":"Serialized"},
+		"groundTruth_set":{"source":"/tmp/Real Clean-Clean ER data/moviesIdDuplicates","configurations":{"file":{},"filename":"moviesIdDuplicates","excluded_attr":[]},"filetype":"Serialized"},
+		"alertShow":false
+	},
+	"similarity_join":{"method":{"name":"PPJOIN","label":"PPJoin","parameters":[{"label":"Similarity Threshold","value":"0.45"}]},"attribute1":"title","attribute2":"title","headers1":["editor","starring","writer","title"],"headers2":["director name","actor name","year","genre","title","url","imdb_ksearch_id"],"alertShow":false},
+	"entity_clustering":{"method_name":"UNIQUE_MAPPING_CLUSTERING","configuration_type":"Manual","label":"Unique Mapping Clustering","parameters":[{"label":"Similarity Threshold","value":"0.45"}]}
+}
