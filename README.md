@@ -33,7 +33,8 @@ After installing Docker on your machine, type the following commands:
 Then, open your browser and go to localhost:8080. JedAI should be running on your browser!
 
 ### How to build from source
-Building from source, requires Java 8, Maven 3. and npm.
+		
+		docker build . -t jedai
 
 1. ### Configuring H2-Database
 In the src/main/resources/applications.properties file, set the fields
