@@ -30,7 +30,6 @@ class Prioritization extends Component {
                 }]
             }
         ]
-
         this.state = {
             method_name: this.props.state.method_name,
             configuration_type: this.props.state.configuration_type,
@@ -38,46 +37,58 @@ class Prioritization extends Component {
             parameters: this.props.state.parameters,
             alertShow : false
         }
+        if (this.props.isBlockBuildingEmpty){
+            this.state.method_name = "GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD"
+            this.state.label = "Global Progressive Sorted Neighborhood"
+        }
+        
+        this.methods = 
+            [
+                {
+                    value: "GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD",
+                    label: "Global Progressive Sorted Neighborhood",
+                    disabled: !this.props.isBlockBuildingEmpty
+                },
+                {
+                    value: "LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD",
+                    label: "Local Progressive Sorted Neighborhood",
+                    disabled: !this.props.isBlockBuildingEmpty
+                },
+                {
+                    value: "PROGRESSIVE_BLOCK_SCHEDULING",
+                    label: "Progressive Block Scheduling",
+                    disabled: this.props.isBlockBuildingEmpty
+                },
+                {
+                    value: "PROGRESSIVE_ENTITY_SCHEDULING",
+                    label: "Progressive Entity Scheduling",
+                    disabled: this.props.isBlockBuildingEmpty
+                },
+                {
+                    value: "PROGRESSIVE_GLOBAL_TOP_COMPARISONS",
+                    label: "Progressive Global Top Comparisons",
+                    disabled: this.props.isBlockBuildingEmpty
+                },
+                {
+                    value: "PROGRESSIVE_LOCAL_TOP_COMPARISONS",
+                    label: "Progressive Local Top Comparisons",
+                    disabled: this.props.isBlockBuildingEmpty
+                },
+                {
+                    value: "PROGRESSIVE_GLOBAL_RANDOM_COMPARISONS",
+                    label: "Progressive Global Random Comparisons",
+                    disabled: this.props.isBlockBuildingEmpty
+                },
+                {
+                    value: "RANDOM",
+                    label: "Random Prioritization",
+                    disabled: this.props.isBlockBuildingEmpty
+                }
+            ]
     }
 
 
-    methods = 
-    [
-        {
-            value: "GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD",
-            label: "Global Progressive Sorted Neighborhood",
-            disabled: true
-        },
-        {
-            value: "LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD",
-            label: "Local Progressive Sorted Neighborhood",
-            disabled: true
-        },
-        {
-            value: "PROGRESSIVE_BLOCK_SCHEDULING",
-            label: "Progressive Block Scheduling"
-        },
-        {
-            value: "PROGRESSIVE_ENTITY_SCHEDULING",
-            label: "Progressive Entity Scheduling"
-        },
-        {
-            value: "PROGRESSIVE_GLOBAL_TOP_COMPARISONS",
-            label: "Progressive Global Top Comparisons"
-        },
-        {
-            value: "PROGRESSIVE_LOCAL_TOP_COMPARISONS",
-            label: "Progressive Local Top Comparisons"
-        },
-        {
-            value: "PROGRESSIVE_GLOBAL_RANDOM_COMPARISONS",
-            label: "Progressive Global Random Comparisons"
-        },
-        {
-            value: "RANDOM",
-            label: "Random Prioritization"
-        }
-    ]
+    
 
     onChange = (e) => {
         // set parameters to default values
@@ -242,7 +253,8 @@ class Prioritization extends Component {
 
 Prioritization.propTypes = {
     state: PropTypes.object.isRequired,
-    submitState: PropTypes.func.isRequired
+    submitState: PropTypes.func.isRequired,
+    isBlockBuildingEmpty: PropTypes.bool.isRequired
 }
 
 export default Prioritization

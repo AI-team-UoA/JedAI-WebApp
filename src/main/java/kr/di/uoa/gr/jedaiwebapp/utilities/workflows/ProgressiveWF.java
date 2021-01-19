@@ -92,8 +92,12 @@ public class ProgressiveWF {
 
 
     public static boolean configurationOk(){
-		return entity_matching != null && entity_clustering != null && block_building != null && !block_building.isEmpty()
-		&& (prioritizationModel != null || prioritization !=null) ;
+
+		// if prioritization is GLOBAL/LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD then blocking must be empty
+		boolean prioritizationBlocks = prioritizationModel.getLabel().equals(JedaiOptions.GLOBAL_PROGRESSIVE_SORTED_NEIGHBORHOOD) || prioritizationModel.getLabel().equals(JedaiOptions.LOCAL_PROGRESSIVE_SORTED_NEIGHBORHOOD);
+		boolean blocking = block_building != null && !block_building.isEmpty();
+		boolean correctBlocking = (prioritizationBlocks && !blocking) || (!prioritizationBlocks && blocking);
+		return entity_matching != null && entity_clustering != null && correctBlocking && (prioritizationModel != null || prioritization !=null) ;
     }
 
 	/**

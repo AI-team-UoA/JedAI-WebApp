@@ -207,7 +207,7 @@ public class DataReadController {
 	 **/
 	public String UploadFile(MultipartFile file) {
 
-        String realPathToUploads =  request.getServletContext().getRealPath("/uploads/"); // TODO change here
+        String realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
        
         if(! new File(realPathToUploads).exists())
             new File(realPathToUploads).mkdir();

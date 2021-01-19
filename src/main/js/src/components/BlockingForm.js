@@ -123,7 +123,7 @@ class BlockingForm extends Component {
         [
             {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading}/>},
             {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState} state={this.state.schema_clustering} GTIsSet={GTIsSet}/>},
-            {name: 'Block Building', component: <BlockBuilding submitState={this.submitState} state={this.state.block_building} GTIsSet={GTIsSet}/>},
+            {name: 'Block Building', component: <BlockBuilding submitState={this.submitState} state={this.state.block_building} GTIsSet={GTIsSet} isProgressive={false}/>},
             {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState} state={this.state.block_cleaning} GTIsSet={GTIsSet}/>},
             {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState} state={this.state.comparison_cleaning} GTIsSet={GTIsSet}/>},
             {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState} state={this.state.entity_matching} GTIsSet={GTIsSet}/>},

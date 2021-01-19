@@ -37,9 +37,6 @@ public class TestController {
                 @PathVariable(value = "dt_choice") String dt_choice){
 
         StaticReader.realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
-		
-                    
-        System.out.println(test_type + " " + er_mode + " " + wf_mode + " " + dt_choice);
         WorkflowManager.clean();
         if (er_mode.equals("dirty"))
             WorkflowManager.er_mode = JedaiOptions.DIRTY_ER;
@@ -56,7 +53,6 @@ public class TestController {
                 pathStr += "CleanClean_ER/";
             
             pathStr += dt_choice + "/";
-            System.out.println(wf_mode);
             if (test_type.equals(JedaiOptions.BUDGET_AWARENESS_TEST)){
                 if(wf_mode.equals(JedaiOptions.BUDGET_AWARE_WF)){
                     pathStr += "pbb_workflow_conf.json";

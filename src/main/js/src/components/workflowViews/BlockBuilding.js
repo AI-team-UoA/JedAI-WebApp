@@ -187,11 +187,9 @@ class BlockBuilding extends Component {
                         label: "LSH MinHash Blocking",
                         configuration_type: selected_methods.has("LSH_MINHASH_BLOCKING") ? selected_methods.get("LSH_MINHASH_BLOCKING").configuration_type : "Default",
                         parameters: selected_methods.has("LSH_MINHASH_BLOCKING") ? selected_methods.get("LSH_MINHASH_BLOCKING").parameters : this.default_parameters[8].parameters
-                    } 
-            ],
-            alertShow : false
-        }
-
+                    }],
+                alertShow : false
+            }
         }
         else{
             this.state = {
@@ -316,11 +314,13 @@ class BlockBuilding extends Component {
                 selected_methods.push(method)
             }
         })
-        if (selected_methods.length === 0) {
+       
+        if (selected_methods.length === 0 && !this.props.isProgressive) {
             this.handleAlertShow()
             return false
         }
         else{
+            
             return axios({
                 url: '/workflow/set_configurations/blockbuilding',
                 method: 'POST',
@@ -332,13 +332,10 @@ class BlockBuilding extends Component {
                     this.alertText = "Error while setting the Block Building methods.\nCheck the input parameters"
                     this.handleAlertShow()
                 }
-
                 return success
             })
         }
     }
-
-
 
 
     render() {
@@ -649,10 +646,6 @@ class BlockBuilding extends Component {
                 this.parameters_collapse[i] = false
         }
 
-
-
-
-
         
         return (
             <div>
@@ -773,7 +766,8 @@ class BlockBuilding extends Component {
 
 BlockBuilding.propTypes = {
     submitState: PropTypes.func.isRequired,
-    GTIsSet: PropTypes.bool.isRequired  
+    GTIsSet: PropTypes.bool.isRequired  ,
+    isProgressive: PropTypes.bool.isRequired
 }
 
 export default BlockBuilding

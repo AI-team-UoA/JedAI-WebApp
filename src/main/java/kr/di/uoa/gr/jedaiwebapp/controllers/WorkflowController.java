@@ -289,12 +289,11 @@ public class WorkflowController {
     */	
 	@PostMapping("/set_configurations/blockbuilding")	
 	public boolean setBlockBuilding(@RequestBody List<MethodModel> block_building) {
-		
-		if (block_building.size() == 0) return false;
+
 		try {
 			int[] blockBuildingIDs = new int[block_building.size()];
 			methodsConfig.put(JedaiOptions.BLOCK_BUILDING, block_building);
-			int inedx = 0;
+			int index = 0;
 	        for (MethodModel method : block_building) {
 	
 	        	WorkflowManager.addBlockBuildingMethod(method);
@@ -310,8 +309,8 @@ public class WorkflowController {
 				bb.setParameters(parameters);
 				bb.setConfigurationType(method.getConfiguration_type());
 				dbm.storeOrUpdateMC(bb);
-				blockBuildingIDs[inedx] = bb.getId();
-				inedx++;				
+				blockBuildingIDs[index] = bb.getId();
+				index++;				
 	        }
 	        workflowConfiguration.setBlockBuilding(blockBuildingIDs);
 		}
