@@ -28,7 +28,7 @@ You can either build from source or you can dowload the available  **Docker imag
 After installing Docker on your machine, type the following commands:
 		
 		docker pull gmandi/jedai-webapp
-		docker run -p 8080:8080 gmandi/jedai-webapp
+		docker run -e JAVAOPTIONS=‘-Xmx4g’ -p 8080:8080 -v/absolute/path gmandi/jedai-webapp
 
 Then, open your browser and go to localhost:8080. JedAI should be running on your browser!
 
