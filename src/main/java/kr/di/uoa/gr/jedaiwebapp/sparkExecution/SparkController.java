@@ -3,6 +3,7 @@ package kr.di.uoa.gr.jedaiwebapp.sparkExecution;
 import SparkER.LivyJob;
 import org.apache.livy.LivyClient;
 import org.apache.livy.LivyClientBuilder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,26 @@ import java.net.URI;
 @RestController
 @RequestMapping("/spark/**")
 public class SparkController {
+    URI livyUrl = null;
+    LivyClient client = null;
+
+    @GetMapping("/spark/cluster/{address}/{port}")
+    public boolean configureCluster(@PathVariable(value = "address") String address,
+                                    @PathVariable(value = "port") String port){
+        try {
+            System.out.println("Checking connection " +  address + " -> " + address.replace("--", "/"));
+            String url = address.replace("--", "/") + ":" + port;
+            System.out.println("URL server " +  url.toString()  );
+            livyUrl = new URI(url);
+            client = new LivyClientBuilder().setURI(livyUrl).build();
+            System.out.println("Connected");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     @GetMapping("/spark/run")
 	public void run() {
@@ -29,7 +50,6 @@ public class SparkController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 }

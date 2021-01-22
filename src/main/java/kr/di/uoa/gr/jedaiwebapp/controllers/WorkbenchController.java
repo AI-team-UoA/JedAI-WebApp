@@ -19,9 +19,9 @@ public class WorkbenchController {
 
 
 	@GetMapping("/workflow/workbench/delete/{id}")
-	public boolean deleteWotkflowResult(@PathVariable(value = "id") int wrofkfowResultID) {
+	public boolean deleteWorkflowResult(@PathVariable(value = "id") int workflowResultID) {
 		try {
-			WorkflowResults wr = dbm.findWRByID(wrofkfowResultID);
+			WorkflowResults wr = dbm.findWRByID(workflowResultID);
 			int wfID = wr.getWorkflowID();
 			dbm.deleteWR(wr);
 			dbm.deleteWCByID(wfID);

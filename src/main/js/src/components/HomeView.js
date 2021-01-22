@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import {Jumbotron, Modal} from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import {Link, withRouter } from 'react-router-dom';
-import Workbench from './Workbench';
+import Workbench from './mainViews/Workbench';
 import axios from 'axios';
-import ExecutionView from'./ExecutionView';
 
-class Modes extends Component {
+class HomeView extends Component {
 
     constructor(...args) {
         super(...args);
@@ -39,18 +38,40 @@ class Modes extends Component {
         
         return (
             <div>
-                <Modal show={this.state.show_exec_window} onHide={this.close_exec_window}>
+                <Modal show={this.state.show_exec_window} onHide={this.close_exec_window} size="lg">
                     <Modal.Header closeButton>
-                        <Modal.Title>Choose New Workflow mode</Modal.Title>
+                        <Modal.Title>Choose JedAI version </Modal.Title>
                     </Modal.Header>
                     <Modal.Body style={{textAlign:"center"}}>
-                        <Link to="/selectworkflow">
-                            <Button variant="primary" style={btnStyle}>Desktop Mode</Button>
-                        </Link>
-                        <br/>
-                        <Link to="/clustermode">
-                            <Button variant="primary" style={btnStyle}>Cluster Mode</Button>
-                        </Link>
+
+                        <div style={{textAlign: 'center'}}>
+                            <Jumbotron className='jumbotron_alg' style={{width: "40%", height: "280px"}}>
+                                <div style={{ textAlign: 'center'}}>
+                                    <span className="fa fa-desktop"/>
+                                    <h3>JedAI</h3>
+                                    The linear version of JedAI, that provides the whole functionality of JedAIToolKit. It will be executed server-side
+                                    and provides multiple algorithms for each Workflow step. 
+                                    <br/>
+                                    <Link to={{pathname:"/selectworkflow", isSpark: false }}>
+                                        <Button variant="primary" style={btnStyle}> <span className="fa fa-desktop"/> JedAI</Button>
+                                    </Link>
+                                </div>
+                            </Jumbotron>
+
+
+                            <Jumbotron className='jumbotron_alg' style={{width: "40%", height: "280px"}}>
+                                <div style={{ textAlign: 'center'}}>
+                                    <span className="fa fa-server"/> 
+                                    <h3>JedAI-Spark</h3>
+                                    JedAI-Spark is a parallelized version of JedAI that runs on top of Apache Spark. For the execution, it requires the
+                                    connection with an Apache Livy server. 
+                                   <br/>
+                                    <Link to={{pathname:"/selectworkflow", isSpark: true }}> 
+                                        <Button variant="primary" style={btnStyle}> <span className="fa fa-server"/> JedAI-Spark</Button>
+                                    </Link>
+                                </div>
+                            </Jumbotron>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="primary" onClick={this.close_exec_window}>
@@ -88,10 +109,10 @@ class Modes extends Component {
 const btnStyle = {
     cursor: 'pointer',
     width : '200px',
-    height: '45px',
-    margin: '5px'
+    height: '35px',
+    margin: '2.5px'
 
 }
 
-export default withRouter(Modes)
+export default withRouter(HomeView)
 

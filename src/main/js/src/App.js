@@ -2,14 +2,14 @@ import React, {Component} from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'; 
 
 import Header from './components/layout/Headers'
-import Modes from './components/Modes'
-import ClusterForm from './components/ClusterForm'
-import WorkflowSelection from './components/WorkflowSelection'
-import BlockingForm from './components/BlockingForm'
-import JoinForm from './components/JoinForm'
-import ExecutionView from './components/ExecutionView'
-import ErrorComponent from './components/ErrorComponent'
-import ProgressiveForm from './components/ProgressiveForm'
+import HomeView from './components/HomeView'
+import ClusterConnectionForm from './components/ClusterConnectionForm'
+import WorkflowSelection from './components/mainViews/WorkflowSelection'
+import BlockingForm from './components/mainViews/BlockingForm'
+import JoinForm from './components/mainViews/JoinForm'
+import ExecutionView from './components/mainViews/ExecutionView'
+import ErrorComponent from './components/ErrorView'
+import ProgressiveForm from './components/mainViews/ProgressiveForm'
 import TestSelection from './components/TestSelection'
 
 
@@ -30,9 +30,9 @@ class App extends Component {
             <Header />
             <div>
               <Switch>
-                <Route exact path="/"  render={props=>(<React.Fragment ><Modes /></React.Fragment>)}/>
-                <Route exact path="/clustermode" render={props=>(  <ClusterForm/> )}/>
-                <Route exact path="/selectworkflow" render={props=>(  <WorkflowSelection/> )}/>
+                <Route exact path="/"  render={props=>(<React.Fragment ><HomeView /></React.Fragment>)}/>
+                <Route exact path="/clustermode" render={props=>(  <ClusterConnectionForm/> )}/>
+                <Route exact path="/selectworkflow" render={props=>(  <WorkflowSelection {...props}/> )}/>
                 <Route exact path="/workflow" render={props=>(  <ExecutionView {...props}/> )}/>
                 <Route exact path="/blockingbased" render={props=>(  <BlockingForm {...props}/> )}/>
                 <Route exact path="/joinbased" render={props=> (<JoinForm {...props}/>) }/>

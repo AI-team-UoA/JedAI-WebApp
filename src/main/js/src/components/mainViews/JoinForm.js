@@ -2,12 +2,13 @@
 import React, { Component } from 'react'
 import StepZilla from "react-stepzilla"
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import DataReader from './workflowViews/dataRead/DataReader'
-import SimilarityJoin from './workflowViews/SimilarityJoin'
-import EntityClustering from './workflowViews/EntityClustering' 
-import ConfirmConfiguration from './workflowViews/ConfirmConfiguration'
-import '../../../resources/static/css/progressSteps.css'
-import '../../../resources/static/css/main.css'
+import DataReader from '../workflowViews/dataRead/DataReader'
+import SimilarityJoin from '../workflowViews/SimilarityJoin'
+import EntityClustering from '../workflowViews/EntityClustering' 
+import ConfirmConfiguration from '../workflowViews/ConfirmConfiguration'
+import '../../../../resources/static/css/progressSteps.css'
+import '../../../../resources/static/css/main.css'
+
 
 
 class JoinForm extends Component {
