@@ -3,8 +3,8 @@ package kr.di.uoa.gr.jedaiwebapp.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.di.uoa.gr.jedaiwebapp.utilities.StaticReader;
-import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.StaticReader;
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 import java.io.IOException;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/test/**")
 public class TestController {
-    
 
     @Autowired
     private HttpServletRequest request;
@@ -36,7 +35,6 @@ public class TestController {
                 @PathVariable(value = "wf_mode") String wf_mode,
                 @PathVariable(value = "dt_choice") String dt_choice){
 
-        StaticReader.realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
         WorkflowManager.clean();
         if (er_mode.equals("dirty"))
             WorkflowManager.er_mode = JedaiOptions.DIRTY_ER;
@@ -94,7 +92,7 @@ public class TestController {
                 filename = entityConf1.getString("filename");
 
                 entityConf1.put("entity_id", "1");
-                StaticReader.setDataset(entityConf1, source, filename);
+                StaticReader.setDataset(entityConf1, source);
                 
                 if(WorkflowManager.er_mode.equals(JedaiOptions.CLEAN_CLEAN_ER)){
                     JSONObject entityConf2 = getDatasetConf(dataReadingConf.getJSONObject("entity2_set"));
@@ -103,7 +101,7 @@ public class TestController {
                     filename = entityConf2.getString("filename");
 
                     entityConf2.put("entity_id", "2");
-                    StaticReader.setDataset(entityConf2, source, filename);
+                    StaticReader.setDataset(entityConf2, source);
                 }
 
                 JSONObject gtConf = getDatasetConf(dataReadingConf.getJSONObject("groundTruth_set"));
@@ -111,7 +109,7 @@ public class TestController {
                 filename = gtConf.getString("filename");
                 
                 gtConf.put("entity_id", "3");
-                StaticReader.setDataset(gtConf, source, filename);
+                StaticReader.setDataset(gtConf, source);
             }
             
             return json_conf; 

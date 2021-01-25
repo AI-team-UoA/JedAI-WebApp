@@ -1,5 +1,6 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,19 +12,17 @@ import org.scify.jedai.datamodel.Attribute;
 
 import org.springframework.web.multipart.MultipartFile;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
-import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
-import kr.di.uoa.gr.jedaiwebapp.utilities.StaticReader;
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.StaticReader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,58 +33,44 @@ import org.springframework.util.StringUtils;
 @RequestMapping("/desktopmode/dataread/**")
 public class DataReadController {
 	
-	private int entities_per_page = 5;
-	
+	private final int entities_per_page = 5;
+
 	@Autowired
     private HttpServletRequest request;
-	
-	
+
 	/**
 	 * Set the dataset of the workflow and initialize the list which will be displayed in explore.
 	 * The input file will be uploaded and stored in the server.
 	 * 
 	 * @param file the selected file
-	 * @param configurations informations regarding the input dataset
 	 * @return the path in the server of the uploaded file
 	 * */
 	@PostMapping(path = "/desktopmode/dataread/setConfigurationWithFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	
-	public String setDatasetWithFile(
-			@RequestPart(value="file") MultipartFile file,
-			@RequestPart(required=true) String json_conf){
+	public String setDatasetWithFile(@RequestPart(value="file") MultipartFile file,
+									 @RequestPart String json_conf){
 				
 		JSONObject configurations = new JSONObject(json_conf);
-		String filetype = configurations.getString("filetype");
-		String source = null;
-		if (filetype.equals("Database") )
-			source = configurations.getString("url");
-		else if (file != null)
-			source = UploadFile(file);
-		
-		String filename = StringUtils.cleanPath(file.getOriginalFilename());
-		
-		StaticReader.realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
-		return StaticReader.setDataset(configurations, source, filename);
+		String source = UploadFile(file);
+		return StaticReader.setDataset(configurations, source);
 	}
 
 
 	@PostMapping(path = "/desktopmode/dataread/setConfiguration")	
 	public String SetDataset(@RequestPart(required=true) String json_conf){
-		
+		try {
 		JSONObject configurations = new JSONObject(json_conf);
 		String filetype = configurations.getString("filetype");
-		String source = null;
-		if (filetype.equals("Database") )
-			source = configurations.getString("url");
-		else
-			source = configurations.getString("filename");
-
-		if (! isURL(source) && !filetype.equals("Database"))
+		String source = configurations.has("filename") ? configurations.getString("filename") : configurations.getString("url");
+		if (! filetype.equals("Database") && isURL(source))
+			source = storeRemoteFile(source, source);
+		else if (! filetype.equals("Database"))
 			return "";
-		
-		String filename = configurations.getString("filename");
-		
-		StaticReader.realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
-		return StaticReader.setDataset(configurations, source, filename);
+
+		return StaticReader.setDataset(configurations, source);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	
@@ -119,18 +104,6 @@ public class DataReadController {
 				return 0;
 		}
 	}
-
-	public static boolean isURL(String url) 
-    { 
-        /* checking if it is a URL */
-        try { 
-            new URL(url).toURI(); 
-            return true; 
-        } 
-        catch (Exception e) { 
-            return false; 
-        } 
-	} 
 	
 	
 	/**
@@ -141,7 +114,7 @@ public class DataReadController {
 	 * @return the entities which will be displayed
 	 **/
 	@GetMapping("/desktopmode/dataread/{entity_id}/explore/{page}")
-	public List<?> explored(@PathVariable(value = "page") String page,
+	public List<?> explore(@PathVariable(value = "page") String page,
 			@PathVariable(value = "entity_id") String entity_id) {
 		int int_page = Integer.parseInt(page);
 		
@@ -199,16 +172,13 @@ public class DataReadController {
 	}
 
 
-
 	/**
 	 * Upload the input file in the server
 	 * @param file the input file
 	 * @return the path
 	 **/
 	public String UploadFile(MultipartFile file) {
-
-        String realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
-       
+		String realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
         if(! new File(realPathToUploads).exists())
             new File(realPathToUploads).mkdir();
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -225,8 +195,42 @@ public class DataReadController {
         else {
         	System.out.println("File already exist in "+ filepath);
         }
-        
         return filepath;
 	}
-		
+
+
+	public String storeRemoteFile(String path, String filename) throws Exception {
+		String realPathToUploads = request.getServletContext().getRealPath("/uploads/");
+		URL remoteFile = new URL(path);
+
+		String host = remoteFile.getHost();
+		String domain = host.startsWith("www.") ? host.substring(4) : host;
+
+		if(! new File(realPathToUploads).exists())
+			new File(realPathToUploads).mkdir();
+
+		String localFilepath = realPathToUploads + domain + "."+ filename;
+		File targetFile = new File(localFilepath);
+
+		if(!targetFile.exists()){
+			System.out.println("Downloading File");
+			InputStream inStream = remoteFile.openStream();
+			FileUtils.copyInputStreamToFile(inStream, targetFile);
+			inStream.close();
+			System.out.println("Downloading Completed");
+		}
+		return localFilepath;
+	}
+
+
+	public static boolean isURL(String url) {
+		/* checking if it is a URL */
+		try {
+			new URL(url).toURI();
+			return true;
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
 }

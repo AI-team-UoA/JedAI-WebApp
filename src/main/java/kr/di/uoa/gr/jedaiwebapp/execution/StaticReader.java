@@ -1,18 +1,13 @@
-package kr.di.uoa.gr.jedaiwebapp.utilities;
+package kr.di.uoa.gr.jedaiwebapp.execution;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-import org.apache.commons.io.FileUtils;
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.scify.jedai.datamodel.EntityProfile;
@@ -28,21 +23,11 @@ public class StaticReader {
 	public static List<EntityProfileNode> entityProfiles2 = null;
 	public static List<List<EntityProfileNode>> duplicates = null;
 
-	public static String realPathToUploads;
 
+	public static String setDataset(JSONObject configurations, String source) {
 
-	public static String setDataset(JSONObject configurations, String source, String filename) {
-		
 		try {
-			if (isURL(source)) {
-				String newPath = storeRemoteFile(source, configurations.getString("filename"));
-				source = newPath;
-			}
-			if(! new File(source).exists())	
-				return "";				
-			filename = source;	
-
-				
+			if(! new File(source).exists())	return "";
 			String entity_id = configurations.getString("entity_id");
 			String filetype = configurations.getString("filetype");	
 			Reader entity_profile = new Reader(filetype, source, configurations);
@@ -82,54 +67,13 @@ public class StaticReader {
 					duplicates = entity_profile.getDuplicates_GroundTruth();
 					break;
 			}
-			saveDatasetConf(source, filetype, entity_id, filename, configurations);
+			saveDatasetConf(source, filetype, entity_id, source, configurations);
 			return source;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
 		}
 	}
-
-
-
-	public static String storeRemoteFile(String path, String filename) throws Exception {
-
-		URL remoteFile;
-		remoteFile = new URL(path);
-	
-		String host = remoteFile.getHost();
-		String domain = host.startsWith("www.") ? host.substring(4) : host;
-		
-		
-		if(! new File(realPathToUploads).exists())
-			new File(realPathToUploads).mkdir();
-	
-		String localFilepath = realPathToUploads + domain + "."+ filename;
-		File targetFile = new File(localFilepath);
-
-		if(!targetFile.exists()){
-			System.out.println("Downloading File");
-			InputStream inStream = remoteFile.openStream();
-			FileUtils.copyInputStreamToFile(inStream, targetFile);
-			inStream.close();
-			System.out.println("Downloading Completed");
-		}
-
-		return localFilepath;
-	}
-
-
-	public static boolean isURL(String url) 
-    { 
-        /* checking if it is a URL */
-        try { 
-            new URL(url).toURI(); 
-            return true; 
-        } 
-        catch (Exception e) { 
-            return false; 
-        } 
-	} 
 
 	
 

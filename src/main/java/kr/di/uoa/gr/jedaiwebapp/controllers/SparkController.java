@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.sparkExecution;
+package kr.di.uoa.gr.jedaiwebapp.controllers;
 
 import SparkER.LivyJob;
 import org.apache.livy.LivyClient;
@@ -21,6 +21,7 @@ public class SparkController {
     public boolean configureCluster(@PathVariable(value = "address") String address,
                                     @PathVariable(value = "port") String port){
         try {
+            if (client != null) return true;
             System.out.println("Checking connection " +  address + " -> " + address.replace("--", "/"));
             String url = address.replace("--", "/") + ":" + port;
             System.out.println("URL server " +  url.toString()  );
@@ -33,7 +34,6 @@ public class SparkController {
             return false;
         }
     }
-
 
     @GetMapping("/spark/run")
 	public void run() {

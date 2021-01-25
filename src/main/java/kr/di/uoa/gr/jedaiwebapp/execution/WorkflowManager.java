@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.utilities;
+package kr.di.uoa.gr.jedaiwebapp.execution;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
@@ -27,9 +28,9 @@ import org.springframework.context.annotation.Bean;
 
 import gnu.trove.list.TIntList;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
-import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.BlockingWF;
-import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.JoinWF;
-import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.ProgressiveWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.workflows.BlockingWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.workflows.JoinWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.workflows.ProgressiveWF;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
@@ -63,7 +64,7 @@ public class WorkflowManager {
     }
 	
 	@Bean
-	SSE_Manager SSE_ManagerBean () {
+    SSE_Manager SSE_ManagerBean () {
 		return new SSE_Manager();
 	}
 	

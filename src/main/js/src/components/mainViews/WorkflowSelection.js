@@ -200,7 +200,7 @@ class WorkflowSelection extends Component {
                             For each step, the user can choose and parameterize multiple algorithms.
                             <br/><br/>
                             
-                            <Link to="/blockingbased">
+                            <Link to={{pathname:"/blockingbased", isSpark: this.props.location.isSpark }}>
                                 <Button variant="primary" onClick={(e) => axios.get("workflow/set_mode/Blocking-based")} disabled={this.props.location.isSpark && !this.state.cluster_connected}>Blocking-based Workflow</Button>
                             </Link>
                         </div>
@@ -214,7 +214,7 @@ class WorkflowSelection extends Component {
                             Similarity Join conveys the state-of-the-art algorithms for accelerating the computation of a specific character- or token-based similarity
                              measure in combination with a user-determined similarity threshold.<br/><br/>
 
-                            <Link to="/joinbased">
+                            <Link to={{pathname:"/joinbased", isSpark: this.props.location.isSpark }}>
                                 <Button variant="primary" onClick={ (e) => axios.get("workflow/set_mode/Join-based")} disabled={this.props.location.isSpark && !this.state.cluster_connected}>Join-based Workflow</Button>
                             </Link>
                         </div>
@@ -228,7 +228,7 @@ class WorkflowSelection extends Component {
                             Comparison Prioritization associates all comparisons in a block collection with a weight that is proportional to the likelihood that they involve
                              duplicates and then, it emits them iteratively, in decreasing weight.<br/><br/>
                             
-                             <Link to="/progressive">
+                             <Link to={{pathname:"/progressive", isSpark: this.props.location.isSpark }}>
                                 <Button variant="primary" onClick={(e) => axios.get("workflow/set_mode/Progressive")} disabled={this.props.location.isSpark && !this.state.cluster_connected}>Progressive Workflow</Button>
                             </Link>
                         </div>

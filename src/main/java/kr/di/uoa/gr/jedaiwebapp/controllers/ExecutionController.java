@@ -28,11 +28,11 @@ import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
-import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
-import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.BlockingWF;
-import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.JoinWF;
-import kr.di.uoa.gr.jedaiwebapp.utilities.workflows.ProgressiveWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.workflows.BlockingWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.workflows.JoinWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.workflows.ProgressiveWF;
 
 
 @RestController

@@ -5,7 +5,7 @@ import org.scify.jedai.schemaclustering.HolisticAttributeClustering;
 import org.scify.jedai.schemaclustering.ISchemaClustering;
 import org.scify.jedai.utilities.enumerations.*;
 
-import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
 
 import java.util.Collections;
 import java.util.HashMap;

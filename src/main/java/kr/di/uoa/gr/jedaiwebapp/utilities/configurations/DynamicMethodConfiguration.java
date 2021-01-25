@@ -2,7 +2,6 @@ package kr.di.uoa.gr.jedaiwebapp.utilities.configurations;
 
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.scify.jedai.blockbuilding.ExtendedQGramsBlocking;
 import org.scify.jedai.blockbuilding.ExtendedSortedNeighborhoodBlocking;
 import org.scify.jedai.blockbuilding.ExtendedSuffixArraysBlocking;
@@ -64,7 +63,7 @@ import org.scify.jedai.utilities.enumerations.WeightingScheme;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
-import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
 
 public class DynamicMethodConfiguration {
 	
