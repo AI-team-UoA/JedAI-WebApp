@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.controllers;
+package kr.di.uoa.gr.jedaiwebapp.controllers.sparkControllers;
 
 import SparkER.LivyJob;
 import org.apache.livy.LivyClient;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/spark/**")
+@RequestMapping("/spark/cluster/**")
 public class SparkController {
     URI livyUrl = null;
     LivyClient client = null;
