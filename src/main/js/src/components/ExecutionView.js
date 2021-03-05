@@ -344,7 +344,7 @@ class ExecutionView extends Component {
             },
             yaxis: {
               title: {
-                text: 'Recall %',
+                text: 'Recall',
                 font: {
                   family: 'Courier New, monospace',
                   size: 18,
