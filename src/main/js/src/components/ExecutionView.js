@@ -18,7 +18,8 @@ class ExecutionView extends Component {
     constructor(...args) {
        
         super(...args);
-        
+        this.explorer_get_entities = false;
+        this.alertText = ""
         this.start_over_path = "/"
         this.state = {
             workflowID : -1,
@@ -48,11 +49,11 @@ class ExecutionView extends Component {
             
             alertShow: false,
             show_explore_window : false,
-            show_roc_modal: false,
+            show_plot_modal: false,
             show_configuration_modal: false,
             workflow_configurations: {},
             tabkey: "result",
-            roc: [],
+            plot: {x: [], y: []},
             wf_mode: null
         }
     
@@ -159,8 +160,8 @@ class ExecutionView extends Component {
     close_explore_window = () => this.setState({show_explore_window : false});
     open_explore_window = () => this.setState({show_explore_window : true});
     
-    close_roc_window = () => this.setState({show_roc_window : false});
-    open_roc_window = () => this.setState({show_roc_window : true});
+    close_plot_window = () => this.setState({show_plot_window : false});
+    open_plot_window = () => this.setState({show_plot_window : true});
     
     close_configuration_modal = () => this.setState({show_configuration_modal : false});
     open_configuration_modal = () => this.setState({show_configuration_modal : true});
@@ -295,10 +296,14 @@ class ExecutionView extends Component {
         axios.get("/workflow/stop/")
     }
 
-    plotROC = () =>{
-        axios.get("/workflow/roc/").then(res => { 
+    plotCurve = () =>{
+        axios.get("/workflow/plot/").then(res => { 
             let data = res.data
-            this.setState({roc: data}, () => {this.open_roc_window()})
+            let y_ = data.map(p => p[0])
+            let x_ = data.map(p => p[1])
+            let plotStats = {x: x_, y: y_}
+            console.log(plotStats)
+            this.setState({plot: plotStats}, () => {this.open_plot_window()})
         })
     }
 
@@ -309,17 +314,17 @@ class ExecutionView extends Component {
         var speedometer_col = 2.5
         var execution_stats = <div />
 
-        var roc_size = this.state.roc.length
-        var roc_curve = [{
-            x:[...Array(roc_size).keys()],
-            y: this.state.roc,
+        var plot_size = this.state.plot.length
+        var plot_curve = [{
+            x:this.state.plot.x,
+            y: this.state.plot.y,
             mode: 'markers',
             type: 'scatter'
         }]
 
         var layout = {
             title: {
-              text:'Progressive Workflow ROC Curve',
+              text:'Progressive Workflow plot Curve',
               font: {
                 family: 'Courier New, monospace',
                 size: 24
@@ -329,7 +334,7 @@ class ExecutionView extends Component {
             },
             xaxis: {
               title: {
-                text: 'Iterations',
+                text: 'comparisons/#matches',
                 font: {
                   family: 'Courier New, monospace',
                   size: 18,
@@ -458,16 +463,16 @@ class ExecutionView extends Component {
                         </Modal.Footer>
                     </Modal>
 
-                    <Modal show={this.state.show_roc_window} onHide={this.close_roc_window} size="xl">
+                    <Modal show={this.state.show_plot_window} onHide={this.close_plot_window} size="xl">
                         <Modal.Header closeButton>
-                            <Modal.Title>ROC Curve</Modal.Title>
+                            <Modal.Title>Recall Curve</Modal.Title>
                         </Modal.Header>
                         <Modal.Body >
-                            <h2>AUC: {(this.state.roc.reduce(function(a, b) { return a + b; }, 0) / this.state.roc.length).toFixed(3)}</h2>
-                            <Plot data={roc_curve} layout={layout} style={{textAlign: "center", margin:"auto"}} />
+                            <h2>AUC: {(this.state.plot.y.reduce(function(a, b) { return a + b; }, 0) / this.state.plot.y.length).toFixed(3)}</h2>
+                            <Plot data={plot_curve} layout={layout} style={{textAlign: "center", margin:"auto"}} />
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="primary" onClick={this.close_roc_window}>Close</Button>
+                            <Button variant="primary" onClick={this.close_plot_window}>Close</Button>
                         </Modal.Footer>
                     </Modal>
 
@@ -636,7 +641,7 @@ class ExecutionView extends Component {
                                         <Button variant="secondary" 
                                             style={{width: "100px", marginRight:"10px"}}
                                             disabled={this.state.execution_status !== "Completed"}
-                                            onClick={this.plotROC}
+                                            onClick={this.plotCurve}
                                             disabled={this.state.wf_mode != "Progressive"}
                                         >
                                             Show Plot
@@ -819,7 +824,7 @@ class ExecutionView extends Component {
                                         <Button variant="secondary" 
                                             style={{width: "100px", marginRight:"10px"}}
                                             disabled={this.state.execution_status !== "Completed"}
-                                            onClick={this.plotROC}
+                                            onClick={this.plotCurve}
                                             disabled={this.state.wf_mode != "Progressive"}
                                         >
                                             Show Plot

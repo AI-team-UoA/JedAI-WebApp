@@ -76,6 +76,12 @@ class JoinForm extends Component {
     }
 
     render() {
+
+        var GTIsSet = false
+        if (this.state.data_reading != null && typeof this.state.data_reading !== 'undefined')
+            if (this.state.data_reading.groundTruth_set != null && typeof this.state.data_reading.groundTruth_set !== 'undefined') 
+                GTIsSet = true
+
         var er_mode = null
         if (this.state.data_reading !== null)
             er_mode = this.state.data_reading.er_mode
@@ -98,9 +104,9 @@ class JoinForm extends Component {
         
         const steps =
         [
-            {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading}/>},
+            {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading} />},
             {name: 'Similarity Join', component: <SimilarityJoin submitState={this.submitState} state={this.state.similarity_join} clean_er= {er_mode == "clean"}/>},
-            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering}/>}, 
+            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering} GTIsSet={GTIsSet}/>}, 
             {name: 'Confirm Configuration', component: <ConfirmConfiguration state={this.state}/>}     
         ]
         

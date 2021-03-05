@@ -48,12 +48,10 @@ public class ProgressiveWF {
     public static List<IBlockProcessing> block_cleaning = null;
 	public static IPrioritization prioritization = null;
 	public static MethodModel prioritizationModel = null;
-    
-    private static WorkflowDetailsManager details_manager ;
+
 	private static EventPublisher eventPublisher;
 
-	public static List<Integer> recallIterations;
-	public static List<Double> recallCurve;
+	public static List<Double[]> progressiveRecall;
 	public static List<WorkflowResult> performancePerStep;
 
     @Bean
@@ -110,9 +108,15 @@ public class ProgressiveWF {
 	run(boolean final_run, AtomicBoolean interrupted)  {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BlockingWF.class);
 
-		performancePerStep = new ArrayList<>(); 
-		recallIterations = new ArrayList<>();
-		recallCurve = new ArrayList<>();
+		if (performancePerStep == null)
+			performancePerStep = new ArrayList<>();
+		else
+			performancePerStep.clear();
+
+		if (progressiveRecall == null)
+			progressiveRecall = new ArrayList<>();
+		else
+			progressiveRecall.clear();
 
 		try {	
 					
@@ -120,7 +124,7 @@ public class ProgressiveWF {
 			
 			String event_name="execution_step";
 			eventPublisher = context.getBean(EventPublisher.class);
-			details_manager = new WorkflowDetailsManager();
+			WorkflowDetailsManager details_manager = new WorkflowDetailsManager();
 			
 			if(!final_run)
 				eventPublisher.publish("Processing Automatic Configurations", event_name);
@@ -253,7 +257,7 @@ public class ProgressiveWF {
 			}
 
 			eventPublisher.publish("Prioritization", event_name);					
-
+			// run once the original workflow to find the maximum recall
 			double originalRecall = 0;
 			// If we have blocks, run an initial entity matching/clustering before similarity matching
 			if (!blocks.isEmpty()) {
@@ -364,6 +368,8 @@ public class ProgressiveWF {
 			}
 			ClustersPerformance clp = null;
 			EquivalenceCluster[] entityClusters = null;
+			double totalDuplicates = WorkflowManager.ground_truth.getDuplicates().size();
+			double verifications = 0d;
 			while (comparisonsIter.hasNext()) {
 				if (interrupt(interrupted)) {
                     context.close();
@@ -377,22 +383,23 @@ public class ProgressiveWF {
 				comparison.setUtilityMeasure(similarity);
 				sims.addComparison(comparison);
 	 
-				 // Run clustering
-				 entityClusters = entity_clustering.getDuplicates(sims);
+				// Run clustering
+				entityClusters = entity_clustering.getDuplicates(sims);
 	 
-				 // Calculate new clusters performance
-				 clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
-				 clp.setStatistics();
+				// Calculate new clusters performance
+				clp = new ClustersPerformance(entityClusters, WorkflowManager.ground_truth);
+				clp.setStatistics();
 	 
-				 double recall = clp.getRecall();
+				double recall = clp.getRecall();
 	 
-				 // Add current recall to the list
-				 recallCurve.add(recall);
+				// Add current recall and the normalized comparison to the list
+				verifications += 1;
+				progressiveRecall.add(new Double[]{recall, (verifications/totalDuplicates)});
 	 
 				 // If we reach the original recall, stop
-				 if (originalRecall <= recall) {
+				if (originalRecall <= recall) {
 					 break;
-				 }
+				}
 			}
 
 			overheadEnd = System.currentTimeMillis();
@@ -430,28 +437,16 @@ public class ProgressiveWF {
 	
 			// Create recallIterations
 			int maxPoints = 500;
-			List<Integer> recallIterations;
-			if (recallCurve.size() > maxPoints) {
-				// Needs undersampling
-				List<Double> newPoints = new ArrayList<>(maxPoints);
-				recallIterations = new ArrayList<>(maxPoints);
-	
-				int step = recallCurve.size() / maxPoints;
-				for (int i = 0; i < maxPoints; i++) {
-					newPoints.add(recallCurve.get(i * step));
-					recallIterations.add(i * step);
-				}
-	
-				recallCurve = newPoints;
-			} else {
-				// Add iterations from 1 to recallCurve.size()
-				recallIterations = new ArrayList<>(recallCurve.size());
-	
-				for (int i = 1; i <= recallCurve.size(); i++) {
-					recallIterations.add(i);
-				}
-			}
+			if (progressiveRecall.size() > maxPoints) {
+				// Needs under-sampling
+				List<Double[]> newRecallPoints = new ArrayList<>(maxPoints);
 
+				int step = progressiveRecall.size() / maxPoints;
+				for (int i = 0; i < maxPoints; i++) {
+					newRecallPoints.add(progressiveRecall.get(i * step));
+				}
+				progressiveRecall = newRecallPoints;
+			}
 			context.close();
 			return new Pair<>(clp, performances);
 	
@@ -465,6 +460,9 @@ public class ProgressiveWF {
 
 	}
 
+	public static List<Double[]> getRecalls(){
+		return progressiveRecall;
+	}
 
 
 	public static void addBlockBuilding(IBlockBuilding bb){
@@ -562,8 +560,4 @@ public class ProgressiveWF {
 		}
 	}
 
-	public static List<Double> getRecalls(){
-		return recallCurve;
-	}
-	
 }

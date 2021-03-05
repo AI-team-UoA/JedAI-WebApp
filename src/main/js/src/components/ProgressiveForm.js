@@ -119,7 +119,11 @@ class ProgressiveForm extends Component {
     }
 
     render() {
-        
+        var GTIsSet = false
+        if (this.state.data_reading != null && typeof this.state.data_reading !== 'undefined')
+            if (this.state.data_reading.groundTruth_set != null && typeof this.state.data_reading.groundTruth_set !== 'undefined') 
+                GTIsSet = true
+
         var er_mode = "dirty"
         if (this.state.data_reading !== null)
             er_mode = this.state.data_reading.er_mode
@@ -141,13 +145,13 @@ class ProgressiveForm extends Component {
         const steps =
         [
             {name: 'Data Reading', component: <DataReader submitState={this.submitState} state={this.state.data_reading}/>},
-            {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState} state={this.state.schema_clustering}/>},
-            {name: 'Block Building', component: <BlockBuilding submitState={this.submitState} state={this.state.block_building} isProgressive={true}/>},
-            {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState} state={this.state.block_cleaning}/>},
-            {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState} state={this.state.comparison_cleaning}/>},
+            {name: 'Schema Clustering', component: <SchemaClustering submitState={this.submitState} state={this.state.schema_clustering} GTIsSet={GTIsSet}/>},
+            {name: 'Block Building', component: <BlockBuilding submitState={this.submitState} state={this.state.block_building} isProgressive={true} GTIsSet={GTIsSet}/>},
+            {name: 'Block Cleaning', component: <BlockCleaning submitState={this.submitState} state={this.state.block_cleaning} GTIsSet={GTIsSet}/>},
+            {name: 'Comparison Cleaning', component: <ComparisonCleaning submitState={this.submitState} state={this.state.comparison_cleaning} GTIsSet={GTIsSet}/>},
             {name: 'Prioritization', component: <Prioritization submitState={this.submitState} state={this.state.prioritization} isBlockBuildingEmpty={this.state.block_building.length == 0}/>},
-            {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState} state={this.state.entity_matching}/>},
-            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering}/>}, 
+            {name: 'Entity Matching', component: <EntityMatching submitState={this.submitState} state={this.state.entity_matching} GTIsSet={GTIsSet}/>},
+            {name: 'Entity Clustering', component: <EntityClustering submitState={this.submitState} er_mode={er_mode} state={this.state.entity_clustering} GTIsSet={GTIsSet}/>}, 
             {name: 'Confirm Configuration', component: <ConfirmConfiguration state={this.state}/>} 
            
         ]

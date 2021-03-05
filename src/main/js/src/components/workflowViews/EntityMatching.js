@@ -128,7 +128,6 @@ class EntityMatching extends Component {
             method: 'POST',
             data: this.state
         }).then(res => {
-            console.log(res)
             var success = res.data
             this.props.submitState("entity_matching", this.state)
             return this.state.method_name !== "" && this.state.configuration_type !== "" && success

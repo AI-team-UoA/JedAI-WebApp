@@ -235,7 +235,7 @@ public class ExecutionController {
 			datasetOk = WorkflowManager.profilesD1 != null && WorkflowManager.profilesD2 != null;
 
 		switch(WorkflowManager.wf_mode){
-			case JedaiOptions.WORKFLOW_PROGRESSIVE: //TODO : some progressive algs dont need blocking 
+			case JedaiOptions.WORKFLOW_PROGRESSIVE:
 				return datasetOk && ProgressiveWF.configurationOk();
 
 			case JedaiOptions.WORKFLOW_BLOCKING_BASED:
@@ -268,8 +268,8 @@ public class ExecutionController {
 	 *  
 	 * @return true if any configurations has been set to automatic
 	 * */	
-	@GetMapping("/workflow/roc/")
-	public List<Double> returnRecall() { 
+	@GetMapping("/workflow/plot/")
+	public List<Double[]> returnPlotStats() {
 		return ProgressiveWF.getRecalls();
 	 }
 		

@@ -81,7 +81,6 @@ import axios from 'axios'
     handleAlertShow = () => this.setState({alertShow : true});
 
     openGT = (e) =>{
-        console.log("open/close GT", this.collapse_gt)
         this.collapse_gt = !this.collapse_gt
         this.setState({groundTruth_set: null})
     }

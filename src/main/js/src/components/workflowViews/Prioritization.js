@@ -11,6 +11,7 @@ class Prioritization extends Component {
     constructor(...args) {
         super(...args);
         window.scrollTo(0, 0)
+        this.alertText = "Error while setting the methods parameters."
 
         this.default_parameters = [
             {
@@ -136,7 +137,6 @@ class Prioritization extends Component {
             this.props.submitState("prioritization", this.state)
             var s = this.state.method_name !== "" && this.state.configuration_type !== "" && success
             if (!s){
-                this.alertText = "Error while setting the methods parameters."
                 this.handleAlertShow()
                 return false
             }
