@@ -25,7 +25,7 @@ import PropTypes from 'prop-types';
         datasetMap.set("D100K", "100K")
         datasetMap.set("D200K", "200K")
         datasetMap.set("D300K", "300K")
-        datasetMap.set("D1M", "300K")
+        datasetMap.set("D1M", "1M")
         datasetMap.set("D2M", "2M")
 
         var small = 5
