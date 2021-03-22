@@ -4,7 +4,29 @@ import PropTypes from 'prop-types';
 
 
  class TestSelection extends Component {
+
     render() {
+
+        var datasetMap = new Map()
+        datasetMap.set("Dc1", "Restaurants")
+        datasetMap.set("Dc2", "ABT-Buy")
+        datasetMap.set("Dc3", "Amazon-Gp")
+        datasetMap.set("Dc4", "DBLP-ACM")
+        datasetMap.set("Dc5", "Amazon-Walmart")
+        datasetMap.set("Dc6", "DBLP-Scholar")
+        datasetMap.set("Dc7", "IMDB-DBpedia")
+        datasetMap.set("Dc8", "DBpedia")
+
+        datasetMap.set("Dcora", "Cora")
+        datasetMap.set("Dcddb", "CDDB")
+
+        datasetMap.set("D10K", "10K")
+        datasetMap.set("D50K", "50K")
+        datasetMap.set("D100K", "100K")
+        datasetMap.set("D200K", "200K")
+        datasetMap.set("D300K", "300K")
+        datasetMap.set("D1M", "300K")
+        datasetMap.set("D2M", "2M")
 
         var small = 5
         var large = 6
@@ -19,15 +41,15 @@ import PropTypes from 'prop-types';
             wf_options = ["", "Default Schema-agnostic Workflow", "Schema-aware Workflow"]
 
         if(this.props.test_type == "Scalability Test")
-            dataset_options = ["", "10K", "50K", "100K", "200K", "300K", "1M", "2M"]
+            dataset_options = ["", "D10K", "D50K", "D100K", "D200K", "D300K", "D1M", "D2M"]
         else{
             if(this.props.er_mode == "clean"){
                if( this.props.test_type == "Budget-awareness Test") 
-			dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "DBLP-Scholar", "IMDB-DBpedia", "Restaurants"]
+			        dataset_options = ["", "Dc1", "Dc2", "Dc3", "Dc4", "Dc5", "Dc6", "Dc7"]
                else
-			dataset_options = ["", "ABT-Buy", "Amazon-Gp", "Amazon-Walmart", "DBLP-ACM", "DBLP-Scholar", "IMDB-DBpedia", "Restaurants", "DBpedia"]
+                    dataset_options = ["", "Dc1", "Dc2", "Dc3", "Dc4", "Dc5", "Dc6", "Dc7", "Dc8"]
 	    }else if (this.props.er_mode == "dirty")
-                dataset_options = ["", "Cora", "CDDB"]
+                dataset_options = ["", "Dcora", "Dcddb"]
         }
 
         return (
@@ -103,7 +125,7 @@ import PropTypes from 'prop-types';
                                 value={this.props.dt_choice}
                                 disabled={this.props.er_mode == "" }
                             >
-                                {dataset_options.map(o => <option key={o} value={o} >{o}</option>)}
+                                {dataset_options.map(o => <option key={o} value={datasetMap.get(o)} >{o}</option>)}
                             </Form.Control>
                         </Col>       
                     </Form.Group>
