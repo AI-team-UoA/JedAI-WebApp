@@ -8,14 +8,14 @@ import PropTypes from 'prop-types';
     render() {
 
         var datasetMap = new Map()
-        datasetMap.set("Dc1", "Restaurants")
-        datasetMap.set("Dc2", "ABT-Buy")
-        datasetMap.set("Dc3", "Amazon-Gp")
-        datasetMap.set("Dc4", "DBLP-ACM")
-        datasetMap.set("Dc5", "Amazon-Walmart")
-        datasetMap.set("Dc6", "DBLP-Scholar")
-        datasetMap.set("Dc7", "IMDB-DBpedia")
-        datasetMap.set("Dc8", "DBpedia")
+        datasetMap.set("Dc1: Restaurants", "Restaurants")
+        datasetMap.set("Dc2: ABT-Buy", "ABT-Buy")
+        datasetMap.set("Dc3: Amazon-Gp", "Amazon-Gp")
+        datasetMap.set("Dc4: DBLP-ACM", "DBLP-ACM")
+        datasetMap.set("Dc5: Amazon-Walmart", "Amazon-Walmart")
+        datasetMap.set("Dc6: DBLP-Scholar", "DBLP-Scholar")
+        datasetMap.set("Dc7: IMDB-DBpedia", "IMDB-DBpedia")
+        datasetMap.set("Dc8: DBpedia", "DBpedia")
 
         datasetMap.set("Dcora", "Cora")
         datasetMap.set("Dcddb", "CDDB")
@@ -45,9 +45,9 @@ import PropTypes from 'prop-types';
         else{
             if(this.props.er_mode == "clean"){
                if( this.props.test_type == "Budget-awareness Test") 
-			        dataset_options = ["", "Dc1", "Dc2", "Dc3", "Dc4", "Dc5", "Dc6", "Dc7"]
+			        dataset_options = ["", "Dc1: Restaurants", "Dc2: ABT-Buy", "Dc3: Amazon-Gp", "Dc4: DBLP-ACM", "Dc5: Amazon-Walmart", "Dc6: DBLP-Scholar", "Dc7: IMDB-DBpedia"]
                else
-                    dataset_options = ["", "Dc1", "Dc2", "Dc3", "Dc4", "Dc5", "Dc6", "Dc7", "Dc8"]
+                    dataset_options = ["", "Dc1: Restaurants", "Dc2: ABT-Buy", "Dc3: Amazon-Gp", "Dc4: DBLP-ACM", "Dc5: Amazon-Walmart", "Dc6: DBLP-Scholar", "Dc7: IMDB-DBpedia", "Dc8: DBpedia"]
 	    }else if (this.props.er_mode == "dirty")
                 dataset_options = ["", "Dcora", "Dcddb"]
         }
