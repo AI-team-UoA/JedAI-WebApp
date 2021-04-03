@@ -36,7 +36,6 @@ class Modes extends Component {
 
 
     render() {
-        
         return (
             <div>
                 <Modal show={this.state.show_exec_window} onHide={this.close_exec_window}>

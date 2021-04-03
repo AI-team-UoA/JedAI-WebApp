@@ -227,7 +227,7 @@ public class DatabaseManager {
 	 * @param clp total workflow performance
 	 * @param performances the performances of each method
 	 */
-	public void storeWorkflowResults(int wfID, int no_instances, double totalTime, ClustersPerformance clp, 
+	public void storeWorkflowResults(int wfID, int no_instances, double totalTime, ClustersPerformance clp, double auc,
 			List<Triplet<String, BlocksPerformance, Double>> performances) {
 		
 		double[] time = new double[performances.size()+1];
@@ -257,11 +257,11 @@ public class DatabaseManager {
 		if (existsWRByWCID(wfID)){
 			workflowResults = findWRByWCID(wfID);
 			workflowResults.update(wfID, no_instances, clp.getEntityClusters(), time, methodNames, recall,
-					precision, fmeasure, clp.getExistingDuplicates(), clp.getDetectedDuplicates(), clp.getTotalMatches());
+					precision, fmeasure, auc, clp.getExistingDuplicates(), clp.getDetectedDuplicates(), clp.getTotalMatches());
 		}
 		else
 			workflowResults = new WorkflowResults(wfID, no_instances, clp.getEntityClusters(), time, methodNames, recall,
-					precision, fmeasure, clp.getExistingDuplicates(), clp.getDetectedDuplicates(), clp.getTotalMatches());
+					precision, fmeasure, auc, clp.getExistingDuplicates(), clp.getDetectedDuplicates(), clp.getTotalMatches());
 		
 		
 		storeOrUpdateWR(workflowResults);	

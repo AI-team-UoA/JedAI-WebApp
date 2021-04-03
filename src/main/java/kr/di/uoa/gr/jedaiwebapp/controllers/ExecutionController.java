@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -387,9 +388,16 @@ public class ExecutionController {
 	                blocksMethodsPerformances = performances.getValue1();
 	    			
 	                if (clp == null || interrupt_execution.get()) return null;
-                    	   
+
+	                // if wf_mode is PROGRESSIVE, compute AUC
+					double auc = -1d;
+					if (WorkflowManager.wf_mode.equals(JedaiOptions.WORKFLOW_PROGRESSIVE)){
+						List<Double[]> recalls = ProgressiveWF.getRecalls();
+						auc = recalls.stream().map(r -> r[0]).reduce(0d, Double::sum)/recalls.size();
+					}
+
 	                // Store workflow results to H2 DB
-	                dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, blocksMethodsPerformances);
+	                dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, auc, blocksMethodsPerformances);
 	    			
 	                return new Triplet<ClustersPerformance , Double, Integer>(clp, totalTime, no_instances);
 	               
@@ -407,9 +415,15 @@ public class ExecutionController {
 					clp = performances.getValue0();
 					
 					if (clp == null || interrupt_execution.get()) return null;
-					
+
+					// if wf_mode is PROGRESSIVE, compute AUC
+					double auc = -1d;
+					if (WorkflowManager.wf_mode.equals(JedaiOptions.WORKFLOW_PROGRESSIVE)){
+						List<Double[]> recalls = ProgressiveWF.getRecalls();
+						auc = recalls.stream().map(r -> r[0]).reduce(0d, Double::sum)/recalls.size();
+					}
 					// Store workflow results to H2 DB
-					dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, blocksMethodsPerformances);
+					dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, auc, blocksMethodsPerformances);
 					
 					return new Triplet<ClustersPerformance , Double, Integer>(clp, totalTime, no_instances);
 				}
@@ -427,9 +441,16 @@ public class ExecutionController {
 			if (clp == null || interrupt_execution.get()) return null;
 			
 			// Store workflow results to H2 DB
-			if(WorkflowManager.ground_truth != null) 
-				dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, blocksMethodsPerformances);
-            
+			if(WorkflowManager.ground_truth != null) {
+				// if wf_mode is PROGRESSIVE, compute AUC
+				double auc = -1d;
+				if (WorkflowManager.wf_mode.equals(JedaiOptions.WORKFLOW_PROGRESSIVE)){
+					List<Double[]> recalls = ProgressiveWF.getRecalls();
+					auc = recalls.stream().map(r -> r[0]).reduce(0d, Double::sum)/recalls.size();
+				}
+
+				dbm.storeWorkflowResults(WorkflowManager.workflowConfigurationsID, no_instances, totalTime, clp, auc, blocksMethodsPerformances);
+			}
 			return new Triplet<ClustersPerformance , Double, Integer>(clp, totalTime, no_instances);
 		}
 		catch(InterruptedException|ExecutionException e ) {

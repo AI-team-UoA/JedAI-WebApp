@@ -44,6 +44,9 @@ public class WorkflowResults {
 	
 	@Column (name = "fmeasure")
 	private double[] fmeasure;
+
+	@Column (name = "auc")
+	private double auc;
 	
 	@Column (name = "existing_duplicates")
 	private double existingDuplicates;
@@ -60,7 +63,7 @@ public class WorkflowResults {
 	}
 	
 	public WorkflowResults(int workflowID, int inputInstances, int clustes, double[] times, List<String> methodNames,
-			double[] recall, double[] precision, double[] fmeasure, double existingDuplicates, double detectedDuplicates, double totalMatches){
+			double[] recall, double[] precision, double[] fmeasure, double auc, double existingDuplicates, double detectedDuplicates, double totalMatches){
 
 		this.setWorkflowID(workflowID);
 		this.setInputInstances(inputInstances);
@@ -73,11 +76,12 @@ public class WorkflowResults {
 		this.setExistingDuplicates(existingDuplicates);
 		this.setDetectedDuplicates(detectedDuplicates);
 		this.setTotalMatches(totalMatches);
+		this.setAuc(auc);
 	}
 	
 	public void update(int workflowID, int inputInstances, int clustes, double[] times, List<String> methodNames,
-			double[] recall, double[] precision, double[] fmeasure, double existingDuplicates, double detectedDuplicates, double totalMatches) {
-		
+			double[] recall, double[] precision, double[] fmeasure, double auc, double existingDuplicates, double detectedDuplicates, double totalMatches) {
+
 		this.setWorkflowID(workflowID);
 		this.setInputInstances(inputInstances);
 		this.setClusters(clustes);
@@ -88,7 +92,8 @@ public class WorkflowResults {
 		this.setFmeasure(fmeasure);
 		this.setExistingDuplicates(existingDuplicates);
 		this.setDetectedDuplicates(detectedDuplicates);
-		this.setTotalMatches(totalMatches);		
+		this.setTotalMatches(totalMatches);
+		this.setAuc(auc);
 	}
 	
 	public int getId() {
@@ -146,6 +151,12 @@ public class WorkflowResults {
 	}
 	public void setFmeasure(double[] fmeasure) {
 		this.fmeasure = fmeasure;
+	}
+	public void setAuc(double auc) {
+		this.auc = auc;
+	}
+	public double getAuc() {
+		return auc;
 	}
 
 	public double getExistingDuplicates() {

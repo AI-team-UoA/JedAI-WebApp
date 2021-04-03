@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/test/**")
 public class TestController {
     
-
     @Autowired
     private HttpServletRequest request;
 

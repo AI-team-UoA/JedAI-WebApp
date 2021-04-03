@@ -302,7 +302,6 @@ class ExecutionView extends Component {
             let y_ = data.map(p => p[0])
             let x_ = data.map(p => p[1])
             let plotStats = {x: x_, y: y_}
-            console.log(plotStats)
             this.setState({plot: plotStats}, () => {this.open_plot_window()})
         })
     }
@@ -551,7 +550,25 @@ class ExecutionView extends Component {
                                                     <br/>
                                                     {execution_status_view}
                                                 </Col>
+
                                                 <Col sm={empty_col} />
+                                                <Col sm={speedometer_col} style={{marginRight:"20px"}}>
+                                                    <div className="caption_item">
+                                                    <h4 className="caption"><b>Precision</b></h4>
+                                                        <ReactSpeedometer  
+                                                            value={this.state.execution_results.precision} 
+                                                            maxValue={1} 
+                                                            segments={5} 
+                                                            segmentColors={[
+                                                                "#ffad33",
+                                                                "#ffad33",
+                                                                "#a3be8c",
+                                                                "#a3be8c",
+                                                                "#61d161"
+                                                            ]}/>    
+                                                    </div>
+                                                </Col>
+
                                                 <Col sm={speedometer_col} style={{marginRight:"20px"}}>
                                                     <div className="caption_item">
                                                     <h4 className="caption"><b>Recall</b></h4>
@@ -569,25 +586,9 @@ class ExecutionView extends Component {
                                                     </div>
                                                 </Col>
                                                 
-                                                <Col sm={speedometer_col} style={{marginRight:"20px"}}>
-                                                    <div className="caption_item">
-                                                    <h4 className="caption"><b>Precision</b></h4>
-                                                        <ReactSpeedometer  
-                                                            value={this.state.execution_results.precision} 
-                                                            maxValue={1} 
-                                                            segments={5} 
-                                                            segmentColors={[
-                                                                "#ffad33",
-                                                                "#ffad33",
-                                                                "#a3be8c",
-                                                                "#a3be8c",
-                                                                "#61d161"
-                                                            ]}/>    
-                                                    </div>
-                                                </Col>
                                                 <Col sm={speedometer_col}style={{marginRight:"20px"}}>
                                                     <div className="caption_item">
-                                                    <h4 className="caption"><b>F1-measure</b></h4>
+                                                    <h4 className="caption"><b>F1-Measure</b></h4>
                                                         <ReactSpeedometer  
                                                             value={this.state.execution_results.f1_measure} 
                                                             maxValue={1} 

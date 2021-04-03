@@ -19,7 +19,7 @@ public class WorkbenchController {
 
 
 	@GetMapping("/workflow/workbench/delete/{id}")
-	public boolean deleteWotkflowResult(@PathVariable(value = "id") int wrofkfowResultID) {
+	public boolean deleteWorkflowResult(@PathVariable(value = "id") int wrofkfowResultID) {
 		try {
 			WorkflowResults wr = dbm.findWRByID(wrofkfowResultID);
 			int wfID = wr.getWorkflowID();
@@ -36,6 +36,6 @@ public class WorkbenchController {
 		
 	
 	@GetMapping("/workflow/workbench/")
-	public Iterable<WorkflowResults> getWotkflows() {return dbm.findAllWR();}
+	public Iterable<WorkflowResults> getWorkflows() {return dbm.findAllWR();}
 
 }

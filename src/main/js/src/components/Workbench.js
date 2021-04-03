@@ -76,6 +76,7 @@ class Workbench extends Component {
     }
 
     formInnerTable = (d, ar_length, index) => {
+        console.log(d)
         const rows = []
         var row = 
                 <tr key={0}>
@@ -84,10 +85,11 @@ class Workbench extends Component {
                             <span className="fa fa-bars"/>
                         </Button>
                     </td>
-                    <td>{d.methodNames[0]}</td>
-                    <td>{parseFloat(d.recall[0]).toFixed(2)}</td>
-                    <td>{parseFloat(d.fmeasure[0]).toFixed(2)}</td>
-                    <td>{parseFloat(d.precision[0]).toFixed(2)}</td>
+                    <td> {d.methodNames[0]}</td>
+                    <td> {parseFloat(d.precision[0]).toFixed(2)}</td>
+                    <td> {parseFloat(d.recall[0]).toFixed(2)}</td>
+                    <td> {parseFloat(d.fmeasure[0]).toFixed(2)}</td>
+                    <td> {d.auc != -1 ? parseFloat(d.auc).toFixed(3) : "-"}</td>
                     <td> {parseFloat(d.time[0]).toFixed(2)}</td>
                 </tr>
         rows.push(row)
@@ -104,6 +106,11 @@ class Workbench extends Component {
                     </td>
                     <td>
                         <Collapse in={this.state.collapse_rows[index]} >
+                            <div>{parseFloat(d.precision[i]).toFixed(2)}</div>
+                        </Collapse>
+                    </td>
+                    <td>
+                        <Collapse in={this.state.collapse_rows[index]} >
                             <div>{parseFloat(d.recall[i]).toFixed(2)}</div>
                         </Collapse>
                     </td>
@@ -114,7 +121,7 @@ class Workbench extends Component {
                     </td>
                     <td>
                         <Collapse in={this.state.collapse_rows[index]} >
-                            <div>{parseFloat(d.precision[i]).toFixed(2)}</div>
+                            <div>-</div>
                         </Collapse>
                     </td>
                     <td>
@@ -132,9 +139,10 @@ class Workbench extends Component {
                     <tr>
                         <th>&nbsp;</th>
                         <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}} >Method</th>
+                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Precision</th>
                         <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Recall</th>
                         <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>F1 Measure</th>
-                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Precision</th>
+                        <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>AUC</th>
                         <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Time (sec)</th>
                     </tr>                        
                 </thead>
