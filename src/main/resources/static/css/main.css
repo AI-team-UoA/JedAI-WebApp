@@ -1,6 +1,5 @@
 .jumbotron{
     border:groove;
-
     margin:auto;
     background:#e2e2e2;
 }
@@ -130,4 +129,13 @@
 
 .btn {
 	
+}
+
+.vertical {
+    border: 2px solid #565555;
+    color: #565555;
+    background-color: #565555;
+    height: 95%;
+    width: 2px;
+    margin: auto;
 }

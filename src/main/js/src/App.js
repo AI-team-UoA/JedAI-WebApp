@@ -11,6 +11,7 @@ import ExecutionView from './components/er/mainViews/ExecutionView'
 import ErrorComponent from './components/ErrorView'
 import ProgressiveForm from './components/er/mainViews/ProgressiveForm'
 import TestSelection from './components/TestSelection'
+import AlgorithmSelection from "./components/gi/AlgorithmSelection";
 
 
 
@@ -31,8 +32,8 @@ class App extends Component {
             <div>
               <Switch>
                 <Route exact path="/"  render={props=>(<React.Fragment ><HomeView /></React.Fragment>)}/>
-                <Route exact path="/clustermode" render={props=>(  <ClusterConnectionForm/> )}/>
                 <Route exact path="/selectworkflow" render={props=>(  <WorkflowSelection {...props}/> )}/>
+                  <Route exact path="/geospatialInterlinking" render={props=>(  <AlgorithmSelection {...props}/> )}/>
                 <Route exact path="/workflow" render={props=>(  <ExecutionView {...props}/> )}/>
                 <Route exact path="/blockingbased" render={props=>(  <BlockingForm {...props}/> )}/>
                 <Route exact path="/joinbased" render={props=> (<JoinForm {...props}/>) }/>
