@@ -1,14 +1,14 @@
 import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, InputGroup, FormControl, ListGroup} from 'react-bootstrap/'
-import '../../../../../../resources/static/css/main.css'
+import '../../../../../../../resources/static/css/main.css'
 
 
 /**
  * Configurations of CSV files
  */
  
-class ConfigureRDF extends Component {
+class ConfigureXML extends Component {
 
     constructor(...args) {
         super(...args);
@@ -18,7 +18,6 @@ class ConfigureRDF extends Component {
             filename : "",
             excluded_attr : []
         }
-
     }
 
     onChange = (e) => {
@@ -35,7 +34,7 @@ class ConfigureRDF extends Component {
                 this.props.onChange(this.state, isDisabled)
             })   
         }
-    }
+    }  
 
     // insert value to the exclude text area
     excludedAttr_change = (e) => {
@@ -56,11 +55,10 @@ class ConfigureRDF extends Component {
             })
             if (!exist && id !== "")
                 this.setState({ excluded_attr: [...this.state.excluded_attr, id] }, () =>{
-                    var isDisabled = this.state.filename === ""
+                    var isDisabled = this.state.filename === "" 
                     this.props.onChange(this.state, isDisabled)
                 })
         }
-        
         this.excluded_attr_value = ""
         this.forceUpdate()
     }
@@ -72,23 +70,23 @@ class ConfigureRDF extends Component {
             if (item_id === id)
                 excluded.splice(index, 1);
                 this.setState({excluded_attr: excluded}, () =>{
-                    var isDisabled = this.state.filename === ""
+                    var isDisabled = this.state.filename === "" 
                     this.props.onChange(this.state, isDisabled)
                 });
         })        
     }
-            
+
     render() {
 
         const empty_col = 1
-        const first_col = 3
+        const first_col = 4
         const second_col = 6
-        
+
         return (
 
             <div>
                 <div style ={{textAlign:'center'}}>
-                    <h3>RDF Reader</h3>
+                    <h3>XML Reader</h3>
                     <p>Please configure the method's parameter below</p>
                 </div>
                 
@@ -100,8 +98,8 @@ class ConfigureRDF extends Component {
                     <Col sm={second_col}>
                         <InputGroup >
                             <FormControl
-                                placeholder=".nt"
-                                aria-label=".nt"
+                                placeholder=".xml"
+                                aria-label=".xml"
                                 aria-describedby="basic-addon2"
                                 name="filename"
                                 value={this.state.filename}
@@ -149,14 +147,15 @@ class ConfigureRDF extends Component {
                     </Col>
                 </Form.Row>    
             </div>
+            
         )
     }
 }
 
-ConfigureRDF.propTypes = {
+ConfigureXML.propTypes = {
     onChange: PropTypes.func.isRequired,
     entity_id: PropTypes.string.isRequired,
     browsing: PropTypes.bool.isRequired
 }
 
-export default ConfigureRDF
+export default ConfigureXML

@@ -3,14 +3,14 @@ import { Blob } from 'react-blob'
 import {Jumbotron,Modal, Tabs, Tab, Form, Row, Col, Button, Spinner, OverlayTrigger, Tooltip, Table} from 'react-bootstrap';
 import ReactSpeedometer from "react-d3-speedometer"
 import {Link,withRouter } from 'react-router-dom';
-import "../../../resources/static/css/main.css"
-import AlertModal from './workflowViews/utilities/AlertModal'
-import Explorer from './workflowViews/utilities/explorer/Explorer'
+import "../../../../../resources/static/css/main.css"
+import AlertModal from '../workflowViews/utilities/AlertModal'
+import Explorer from '../workflowViews/utilities/explorer/Explorer'
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import Workbench from './Workbench'
-import ConfigurationsView from './workflowViews/utilities/ConfigurationsView'
-import Plot from 'react-plotly.js';
+import ConfigurationsView from '../workflowViews/utilities/ConfigurationsView'
+import Plot from '../../../../../../../node_modules/react-plotly.js/react-plotly';
 
 
 class ExecutionView extends Component {

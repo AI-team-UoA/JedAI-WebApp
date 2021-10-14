@@ -7,7 +7,7 @@ import ConfigureRDB from './ConfigureRDB'
 import ConfigureRDF from './ConfigureRDF'
 import ConfigureXML from './ConfigureXML'
 import ConfigureSerialized from './ConfigureSerialized'
-import '../../../../../../resources/static/css/main.css'
+import '../../../../../../../resources/static/css/main.css'
 
 
 /**

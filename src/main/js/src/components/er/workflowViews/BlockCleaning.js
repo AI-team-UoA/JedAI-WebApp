@@ -4,7 +4,7 @@ import {Form, Row, FormControl, Col, Jumbotron, Collapse } from 'react-bootstrap
 import CheckboxMethod from './utilities/CheckboxMethod'
 import update from 'immutability-helper'
 import axios from 'axios';
-import "../../../../resources/static/css/main.css"
+import "../../../../../resources/static/css/main.css"
 
 
 class BlockCleaning extends Component {

@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
 import StepZilla from "react-stepzilla"
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import DataReader from './workflowViews/dataRead/DataReader'
-import SchemaClustering from './workflowViews/SchemaClustering'
-import BlockBuilding from './workflowViews/BlockBuilding'
-import BlockCleaning from './workflowViews/BlockCleaning'
-import ComparisonCleaning from './workflowViews/ComparisonCleaning'
-import EntityMatching from './workflowViews/EntityMatching' 
-import EntityClustering from './workflowViews/EntityClustering' 
-import ConfirmConfiguration from './workflowViews/ConfirmConfiguration'
-import Prioritization from './workflowViews/Prioritization'
-import '../../../resources/static/css/progressSteps.css'
-import '../../../resources/static/css/main.css'
+import DataReader from '../workflowViews/dataRead/DataReader'
+import SchemaClustering from '../workflowViews/SchemaClustering'
+import BlockBuilding from '../workflowViews/BlockBuilding'
+import BlockCleaning from '../workflowViews/BlockCleaning'
+import ComparisonCleaning from '../workflowViews/ComparisonCleaning'
+import EntityMatching from '../workflowViews/EntityMatching'
+import EntityClustering from '../workflowViews/EntityClustering'
+import ConfirmConfiguration from '../workflowViews/ConfirmConfiguration'
+import Prioritization from '../workflowViews/Prioritization'
+import '../../../../../resources/static/css/progressSteps.css'
+import '../../../../../resources/static/css/main.css'
 
 
 class ProgressiveForm extends Component {

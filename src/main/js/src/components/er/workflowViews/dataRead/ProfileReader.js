@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, Collapse} from 'react-bootstrap/'
 import Configurations from './sourceConfiguration/Configurations'
-import Explorer from  '../utilities/explorer/Explorer'
+import Explorer from '../utilities/explorer/Explorer'
 
 /**
  * The Form that sets  entity profiles and the ground truth

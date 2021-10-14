@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Table, Button, Collapse, OverlayTrigger, Tooltip, Modal} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import ConfigurationView from './workflowViews/utilities/ConfigurationsView'
+import ConfigurationView from '../workflowViews/utilities/ConfigurationsView'
 
 class Workbench extends Component {
 

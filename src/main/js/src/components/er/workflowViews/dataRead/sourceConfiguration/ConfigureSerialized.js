@@ -1,7 +1,7 @@
 import React, {  Component } from 'react'
 import PropTypes from 'prop-types';
 import {Form, Col, Button, InputGroup, FormControl} from 'react-bootstrap/'
-import '../../../../../../resources/static/css/main.css'
+import '../../../../../../../resources/static/css/main.css'
 
 
 /**
