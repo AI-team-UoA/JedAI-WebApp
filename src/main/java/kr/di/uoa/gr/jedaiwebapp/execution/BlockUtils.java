@@ -1,7 +1,9 @@
-package kr.di.uoa.gr.jedaiwebapp.utilities;
+package kr.di.uoa.gr.jedaiwebapp.execution;
 
 import java.util.List;
 
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowDetailsManager;
 import org.javatuples.Triplet;
 import org.scify.jedai.blockbuilding.IBlockBuilding;
 import org.scify.jedai.blockprocessing.IBlockProcessing;

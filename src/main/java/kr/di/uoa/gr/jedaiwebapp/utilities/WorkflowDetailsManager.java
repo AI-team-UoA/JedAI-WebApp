@@ -3,6 +3,7 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
 import org.scify.jedai.utilities.BlocksPerformance;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -60,8 +61,7 @@ public class WorkflowDetailsManager {
 	
 	/**
 	 * Create a message 
-	 * @param text the message
-	 * @param value the corresponding value
+	 * @param message the message
 	 * */
 	public void print_Sentence(String message) { this.emit(message);}
 	

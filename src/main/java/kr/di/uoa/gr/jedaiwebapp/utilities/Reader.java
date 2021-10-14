@@ -3,8 +3,7 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.scify.jedai.datamodel.EntityProfile;
@@ -22,7 +21,6 @@ import org.scify.jedai.datareader.groundtruthreader.IGroundTruthReader;
 import org.scify.jedai.utilities.datastructures.AbstractDuplicatePropagation;
 import org.scify.jedai.utilities.datastructures.BilateralDuplicatePropagation;
 import org.scify.jedai.utilities.datastructures.UnilateralDuplicatePropagation;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import gnu.trove.list.TIntList;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
@@ -292,7 +290,7 @@ public class Reader {
     public List<List<EntityProfileNode>> getDuplicates_GroundTruth(){
 	    
 	    List<List<EntityProfileNode>> duplicates = new ArrayList<>();
-		if(WorkflowManager.er_mode.contentEquals(JedaiOptions.DIRTY_ER)){		
+		if(WorkflowManager.er_mode.contentEquals(JedaiOptions.DIRTY_ER)){
 			 for (EquivalenceCluster ec : WorkflowManager.ground_truth.getRealEquivalenceClusters()) {
 				 if (!ec.getEntityIdsD1().isEmpty()) { 
 					TIntList duplicate_list = ec.getEntityIdsD1();

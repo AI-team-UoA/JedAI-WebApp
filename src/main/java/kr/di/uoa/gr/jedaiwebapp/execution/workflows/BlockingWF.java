@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.utilities.workflows;
+package kr.di.uoa.gr.jedaiwebapp.execution.workflows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +22,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
-import kr.di.uoa.gr.jedaiwebapp.utilities.BlockUtils;
+import kr.di.uoa.gr.jedaiwebapp.execution.BlockUtils;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowDetailsManager;
-import kr.di.uoa.gr.jedaiwebapp.utilities.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
 
