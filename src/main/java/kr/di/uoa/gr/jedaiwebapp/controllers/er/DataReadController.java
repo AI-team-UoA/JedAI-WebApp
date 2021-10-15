@@ -1,5 +1,6 @@
-package kr.di.uoa.gr.jedaiwebapp.controllers;
+package kr.di.uoa.gr.jedaiwebapp.controllers.er;
 
+import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.HttpPaths;
 import org.apache.commons.io.FileUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +13,8 @@ import org.scify.jedai.datamodel.Attribute;
 
 import org.springframework.web.multipart.MultipartFile;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
-import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
-import kr.di.uoa.gr.jedaiwebapp.execution.StaticReader;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.StaticReader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ import org.springframework.util.StringUtils;
 
 
 @RestController
-@RequestMapping("/desktopmode/dataread/**")
+@RequestMapping(HttpPaths.erDataReadPath + "**")
 public class DataReadController {
 	
 	private final int entities_per_page = 5;
@@ -45,7 +46,7 @@ public class DataReadController {
 	 * @param file the selected file
 	 * @return the path in the server of the uploaded file
 	 * */
-	@PostMapping(path = "/desktopmode/dataread/setConfigurationWithFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)	
+	@PostMapping(path = HttpPaths.erDataReadPath + "setConfigurationWithFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public String setDatasetWithFile(@RequestPart(value="file") MultipartFile file,
 									 @RequestPart String json_conf){
 				
@@ -55,7 +56,7 @@ public class DataReadController {
 	}
 
 
-	@PostMapping(path = "/desktopmode/dataread/setConfiguration")	
+	@PostMapping(path = HttpPaths.erDataReadPath + "setConfiguration")
 	public String SetDataset(@RequestPart(required=true) String json_conf){
 		try {
 		JSONObject configurations = new JSONObject(json_conf);
@@ -81,7 +82,7 @@ public class DataReadController {
 	 *  @param entity_id the id of the examined entityProfile
 	 *  @return the maximum number of pages
 	 */
-	@GetMapping("/desktopmode/dataread/{entity_id}/explore")
+	@GetMapping(HttpPaths.erDataReadPath + "{entity_id}/explore")
 	public int getMaxPages(@PathVariable(value = "entity_id") String entity_id) {
 		
 		switch(entity_id) {
@@ -113,7 +114,7 @@ public class DataReadController {
 	 * @param page the examined page
 	 * @return the entities which will be displayed
 	 **/
-	@GetMapping("/desktopmode/dataread/{entity_id}/explore/{page}")
+	@GetMapping(HttpPaths.erDataReadPath + "{entity_id}/explore/{page}")
 	public List<?> explore(@PathVariable(value = "page") String page,
 			@PathVariable(value = "entity_id") String entity_id) {
 		int int_page = Integer.parseInt(page);
@@ -152,7 +153,7 @@ public class DataReadController {
 	}
 			
 	
-	@GetMapping("/desktopmode/dataread/headers")
+	@GetMapping(HttpPaths.erDataReadPath + "headers")
 	public List<Set<String>> getHeaders() {
 		List<Set<String>> headers = new ArrayList<>();
 		Set<String> headers1 = new HashSet<String>();

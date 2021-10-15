@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.controllers;
+package kr.di.uoa.gr.jedaiwebapp.controllers.er;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,8 +30,8 @@ import kr.di.uoa.gr.jedaiwebapp.models.MethodConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.models.SimilarityMethod;
 import kr.di.uoa.gr.jedaiwebapp.models.WorkflowConfiguration;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
-import kr.di.uoa.gr.jedaiwebapp.execution.StaticReader;
-import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.StaticReader;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 

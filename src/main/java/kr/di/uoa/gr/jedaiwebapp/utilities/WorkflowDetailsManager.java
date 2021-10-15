@@ -3,7 +3,7 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.WorkflowManager;
 import org.scify.jedai.utilities.BlocksPerformance;
 import org.scify.jedai.utilities.ClustersPerformance;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.controllers;
+package kr.di.uoa.gr.jedaiwebapp.controllers.er;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,11 +28,11 @@ import kr.di.uoa.gr.jedaiwebapp.models.WorkflowResults;
 import kr.di.uoa.gr.jedaiwebapp.utilities.DatabaseManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.SSE_Manager;
-import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
-import kr.di.uoa.gr.jedaiwebapp.execution.workflows.BlockingWF;
-import kr.di.uoa.gr.jedaiwebapp.execution.workflows.JoinWF;
-import kr.di.uoa.gr.jedaiwebapp.execution.workflows.ProgressiveWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.workflows.BlockingWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.workflows.JoinWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.workflows.ProgressiveWF;
 
 
 @RestController

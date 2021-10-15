@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.controllers;
+package kr.di.uoa.gr.jedaiwebapp.controllers.er;
 
 import SparkER.LivyJobs.ExecutionJob;
 import org.apache.livy.LivyClient;

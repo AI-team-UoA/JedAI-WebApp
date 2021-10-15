@@ -1,10 +1,10 @@
-package kr.di.uoa.gr.jedaiwebapp.controllers;
+package kr.di.uoa.gr.jedaiwebapp.controllers.er;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.di.uoa.gr.jedaiwebapp.execution.StaticReader;
-import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.StaticReader;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 
 import java.io.IOException;

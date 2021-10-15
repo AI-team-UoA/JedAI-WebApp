@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.execution;
+package kr.di.uoa.gr.jedaiwebapp.execution.er;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.Reader;
 import org.json.JSONArray;
 import org.json.JSONObject;

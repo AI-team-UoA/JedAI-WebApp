@@ -1,4 +1,4 @@
-package kr.di.uoa.gr.jedaiwebapp.execution;
+package kr.di.uoa.gr.jedaiwebapp.execution.er;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,9 +28,9 @@ import org.springframework.context.annotation.Bean;
 
 import gnu.trove.list.TIntList;
 import kr.di.uoa.gr.jedaiwebapp.utilities.events.EventPublisher;
-import kr.di.uoa.gr.jedaiwebapp.execution.workflows.BlockingWF;
-import kr.di.uoa.gr.jedaiwebapp.execution.workflows.JoinWF;
-import kr.di.uoa.gr.jedaiwebapp.execution.workflows.ProgressiveWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.workflows.BlockingWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.workflows.JoinWF;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.workflows.ProgressiveWF;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.EntityProfileNode;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.MethodModel;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;

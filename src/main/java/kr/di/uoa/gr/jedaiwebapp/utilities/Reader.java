@@ -3,7 +3,7 @@ package kr.di.uoa.gr.jedaiwebapp.utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.WorkflowManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.scify.jedai.datamodel.EntityProfile;

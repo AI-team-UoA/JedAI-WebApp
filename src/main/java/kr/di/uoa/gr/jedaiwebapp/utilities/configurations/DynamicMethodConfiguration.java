@@ -63,7 +63,7 @@ import org.scify.jedai.utilities.enumerations.WeightingScheme;
 
 import kr.di.uoa.gr.jedaiwebapp.datatypes.Parameter;
 import kr.di.uoa.gr.jedaiwebapp.datatypes.SimilarityMethodModel;
-import kr.di.uoa.gr.jedaiwebapp.execution.WorkflowManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.er.WorkflowManager;
 
 public class DynamicMethodConfiguration {
 	

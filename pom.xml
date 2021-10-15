@@ -129,8 +129,18 @@
 			<artifactId>spark_er</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>/home/gmandi/Documents/Extreme_Earth/Entity_Resolution/JedAI-Spark/target/scala-2.11/spark_er-assembly-1.0.jar</systemPath>
+			<systemPath>/home/gmandi/Documents/Extreme-Earth/Entity-Resolution/JedAI-Spark/target/scala-2.11/spark_er-assembly-1.0.jar</systemPath>
 		</dependency>
+
+
+
+		<!-- https://mvnrepository.com/artifact/org.locationtech.jts/jts-core -->
+		<dependency>
+			<groupId>org.locationtech.jts</groupId>
+			<artifactId>jts-core</artifactId>
+			<version>1.18.1</version>
+		</dependency>
+
 
 	</dependencies>
 	

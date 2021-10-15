@@ -25,7 +25,7 @@ class SimilarityJoin extends Component {
 
         if (this.state.headers1.length == 0){
             axios
-            .get("/desktopmode/dataread/headers")
+            .get(HttpPaths.erDataReadPath + "headers")
             .then(res => { 
                 var h1 = res.data[0]
                 h1.push("all")
