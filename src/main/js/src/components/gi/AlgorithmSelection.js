@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Form, Col, Row} from 'react-bootstrap/'
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Collapse from 'react-bootstrap/Collapse'
-import ProfileReader from "../er/workflowViews/dataRead/ProfileReader";
+import GeometryLoader from "./loaders/GeometryLoader";
 
 class AlgorithmSelection extends Component {
 
@@ -11,8 +11,8 @@ class AlgorithmSelection extends Component {
         algorithm: "",
         budget: "",
 
-        sourcePath: "",
-        targetPath: "",
+        source: null,
+        target: null
     }
 
     change = (e) => this.setState({[e.target.name]: e.target.value})
@@ -23,6 +23,13 @@ class AlgorithmSelection extends Component {
             this.setState({budget: e.target.value})
         }
     }
+
+
+    setEntities = (e) => {
+        console.log(e)
+    }
+
+
     render() {
         const BUDGET_AGNOSTIC = "BUDGET_AGNOSTIC"
         const BUDGET_AWARE = "BUDGET_AWARE"
@@ -69,12 +76,12 @@ class AlgorithmSelection extends Component {
                     <br/>
 
                     <Row>
-                        <Col>
+                        <Col lg={4}>
                             <Form.Group as={Row} className="form-row">
-                                <Form.Label as="legend" column sm={small}>
+                                <Form.Label as="legend" column>
                                     <h5>Select Algorithm Type:</h5>
                                 </Form.Label>
-                                <Col sm={large}>
+                                <Col>
                                     <Form.Control
                                         as="select"
                                         placeholder="Select Algorithm type"
@@ -89,10 +96,10 @@ class AlgorithmSelection extends Component {
                             </Form.Group>
 
                             <Form.Group as={Row} className="form-row">
-                                <Form.Label as="legend" column sm={small}>
-                                    <h5>Select ER Mode:</h5>
+                                <Form.Label as="legend" column >
+                                    <h5>Select Algorithm:</h5>
                                 </Form.Label>
-                                <Col sm={large}>
+                                <Col >
                                     <Form.Control
                                         as="select"
                                         placeholder="Select Algorithm"
@@ -112,26 +119,23 @@ class AlgorithmSelection extends Component {
                             <Collapse in={this.state.algorithm_type === BUDGET_AWARE} >
 
                                     <Form.Group as={Row}>
-                                        <Form.Label as="legend" column sm={small}>
+                                        <Form.Label as="legend" column >
                                             <h5>Budget :</h5>
                                         </Form.Label>
-                                        <Col sm={large}>
+                                        <Col >
                                             <Form.Control type="text" name="budget" value={this.state.budget} onChange={this.setBudget}/>
                                         </Col>
                                     </Form.Group>
                             </Collapse>
                         </Col>
 
-                        <Col md="auto">
+                        <Col lg={1}>
                             <div className="vertical" />
                         </Col>
 
-                        <Col>
-
-                            <ProfileReader entity_id="1" title="Entity profiles D1:" disabled={this.state.er_mode === ""} type="entity" setEntity={this.setEntity} state={this.state.entity1_set}/>
-                            <ProfileReader entity_id="2" title="Entity profiles D2:" disabled={this.state.er_mode !== "clean"} type="entity" setEntity={this.setEntity} state={this.state.entity2_set}/>
-
-
+                        <Col >
+                            <GeometryLoader entity_id="source" title="Source: " setEntity={this.setEntities} state={this.state.source}/>
+                            <GeometryLoader entity_id="target" title="Target: " type="geometries" setEntity={this.setEntities} state={this.state.target}/>
                         </Col>
                     </Row>
                 </div>

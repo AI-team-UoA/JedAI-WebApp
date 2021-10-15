@@ -97,7 +97,7 @@ class HomeView extends Component {
                                     </p>
                                     <br/>
                                     <div>
-                                        <Link to={{pathname:"/selectworkflow", isSpark: false }}>
+                                        <Link to={{pathname:"/geospatialInterlinking", isSpark: false }}>
                                             <Button variant="primary" style={btnStyle}> <span className="fa fa-desktop"/> Sequential GI</Button>
                                         </Link>
                                     </div>
@@ -117,7 +117,7 @@ class HomeView extends Component {
                                     <br/>
                                     <div>
                                         <Link to={{pathname:"/selectworkflow", isSpark: true }}>
-                                            <Button variant="primary" style={btnStyle}> <span className="fa fa-server"/> Distributed GI</Button>
+                                            <Button variant="primary" disabled={true} style={btnStyle}> <span className="fa fa-server"/> Distributed GI</Button>
                                         </Link>
                                     </div>
                                 </div>

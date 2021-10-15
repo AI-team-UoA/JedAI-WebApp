@@ -1,0 +1,183 @@
+import React, {Component} from 'react';
+import axios from "axios";
+import {Alert, Button,Col, Collapse, Form, FormCheck, Jumbotron, Spinner} from "react-bootstrap/";
+import PropTypes from "prop-types";
+import CsvConfiguration from "./CsvConfiguration";
+import RdfConfiguration from "./RdfConfiguration";
+
+class Configuration extends Component {
+    constructor(...args) {
+        super(...args);
+        this.disabled = true
+        this.onChange = this.onChange.bind(this)
+        this.collapse_flag = false
+        this.state = {
+            configuration: null,
+            source: "",
+            browsing: true,
+            showSpinner: false
+        }
+    }
+
+    flipURLSwitch = (e) => {
+        var flipped =  !this.state.browsing
+        this.setState({browsing: flipped})
+    }
+
+    onChange(conf_state, isDisable) {
+        this.disabled = isDisable
+        this.setState({configuration: conf_state});
+        this.collapse_conf_flag = false;
+    }
+
+    onSubmit = (e) => {
+
+        this.setState({showSpinner: true})
+
+        //calculate and return msg to profileReader
+        e.preventDefault()
+        var text_area_msg, conf, file = null
+        this.collapse_flag =false
+        switch(this.props.filetype) {
+            case "CSV":
+                text_area_msg = this.state.configuration === null? "" :
+                    "\nFile: " +  this.state.configuration.filename  +
+                    "\nAttributes in first row: " + this.state.configuration.first_row +
+                    "\nSeparator: " + this.state.configuration.separator +
+                    "\nID index: " + this.state.configuration.id_index +
+                    "\nGeometry index: " + this.state.configuration.geometry_index
+                conf = {
+                    entity_id: this.props.entity_id,
+                    filetype: this.props.filetype,
+                    filename : this.state.configuration.filename,
+                    first_row: this.state.configuration.first_row,
+                    separator: this.state.configuration.separator,
+                    id_index: this.state.configuration.id_index,
+                    geometry_index: this.state.configuration.geometry_index
+                }
+                file = this.state.configuration.file
+                break;
+            case "RDF":
+                text_area_msg = this.state.configuration === null? "" :
+                    "\nFile: " +  this.state.configuration.filename +
+                    "\nGeometry Predicate: "+ this.state.configuration.geometry_predicate
+                conf = {
+                    entity_id: this.props.entity_id,
+                    filetype: this.props.filetype,
+                    filename: this.state.configuration.filename,
+                    geometry_predicate: this.state.configuration.geometry_predicate
+                }
+                file = this.state.configuration.file
+                break;
+            default:
+                text_area_msg = ""
+                conf = null
+        }
+        const formData = new FormData();
+        formData.append("file", file)
+        var postPath = "/geospatialInterlinking/dataread/setConfigurationWithFile"
+        console.log("AXIOS SENt")
+        formData.append("json_conf", JSON.stringify(conf))
+        axios({
+            url: postPath,
+            method: 'POST',
+            data: formData
+        }).then(res => {
+            var result = res.data
+            if (result !== ""){
+                // this.setState({source: result})
+                this.props.submitted(this.state, text_area_msg)
+                this.setState({showSpinner: false})
+            }
+            else{
+                this.collapse_flag = true
+                this.setState({showSpinner: false})
+                this.forceUpdate()
+            }
+        });
+    }
+
+    render() {
+
+        var spinner = <div/>
+        if (this.state.showSpinner)
+            spinner=
+                <div>
+                    <br/>
+                    <br/>
+                    <div style={{display: 'flex', justifyContent:'center', alignItems:'center'}}>
+                        <Spinner style={{color:"#0073e6"}} animation="grow" />
+                        <div style={{marginLeft:"10px", display:"inline"}}>
+                            <h3 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>
+                                Loading Data
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
+        var configureSource
+        switch(this.props.filetype) {
+            case "CSV":
+                configureSource =  <CsvConfiguration  onChange={this.onChange} entity_id={this.props.entity_id}  browsing={this.state.browsing}/>
+                break;
+            case "RDF":
+                configureSource = <RdfConfiguration  onChange={this.onChange}  entity_id={this.props.entity_id} browsing={this.state.browsing}/>
+                break;
+            default:
+                configureSource = <div />
+        }
+
+        const empty_col = 1
+        const first_col = 4
+        const second_col = 6
+
+        var browsingSwitch = <FormCheck
+                name="browsingSwitch"
+                id={this.props.entity_id+"Switch"}
+                type="switch"
+                checked={!this.state.browsing}
+                onChange={this.flipURLSwitch}
+                label="Enable/Disable URL"
+            />
+
+        return (
+            <Jumbotron style={{backgroundColor:"white", border:"groove", width:"95%" }}>
+                <div style={{margin:"auto"}}>
+                    <Form>
+                        {configureSource}
+
+                        <Form.Row className="form-row">
+
+                            <Col sm={empty_col} />
+                            <Col sm={first_col} />
+                            <Col sm={second_col}>
+                                {browsingSwitch}
+                            </Col>
+                        </Form.Row>
+                        <Collapse in={this.collapse_flag } >
+                            <div style={{width:'75%', margin:'auto'}}>
+                                <Alert variant="danger" >
+                                    Failed to read the input file!
+                                </Alert>
+                            </div>
+                        </Collapse>
+
+                        <div style={{textAlign: 'center',  marginTop: '30px'}}>
+                            <Button type="submit" onClick={this.onSubmit} disabled={this.disabled}>Save Configuration</Button>
+                        </div>
+                    </Form>
+                </div>
+                {spinner}
+            </Jumbotron>
+        )
+    }
+}
+
+
+Configuration.propTypes = {
+    filetype: PropTypes.string.isRequired,
+    submitted: PropTypes.func.isRequired,
+    entity_id:  PropTypes.string.isRequired
+}
+
+export default Configuration;
