@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Col, Row} from 'react-bootstrap/'
+import {Form, Col, Row, Button} from 'react-bootstrap/'
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Collapse from 'react-bootstrap/Collapse'
 import GeometryLoader from "./loaders/GeometryLoader";
@@ -10,7 +10,6 @@ class AlgorithmSelection extends Component {
         algorithm_type: "",
         algorithm: "",
         budget: "",
-
         source: null,
         target: null
     }
@@ -25,8 +24,22 @@ class AlgorithmSelection extends Component {
     }
 
 
-    setEntities = (e) => {
-        console.log(e)
+    setEntities = (entity_id, conf_state) => {
+        switch(entity_id) {
+            case "source":
+                this.setState({source: conf_state})
+                break;
+            case "target":
+                this.setState({target: conf_state})
+                break;
+            default:
+                this.alertText = "Entity profiles were not set properly!"
+                console.log("ERROR")
+        }
+    }
+
+    storeWorkflow = (e) => {
+        console.log(this.state)
     }
 
 
@@ -122,7 +135,7 @@ class AlgorithmSelection extends Component {
                                         <Form.Label as="legend" column >
                                             <h5>Budget :</h5>
                                         </Form.Label>
-                                        <Col >
+                                        <Col>
                                             <Form.Control type="text" name="budget" value={this.state.budget} onChange={this.setBudget}/>
                                         </Col>
                                     </Form.Group>
@@ -138,6 +151,15 @@ class AlgorithmSelection extends Component {
                             <GeometryLoader entity_id="target" title="Target: " type="geometries" setEntity={this.setEntities} state={this.state.target}/>
                         </Col>
                     </Row>
+
+                    <br />
+                    <Button style={{float: 'right'}}
+                            disabled={this.state.source == null
+                                || this.state.target == null
+                                || this.state.algorithm_type === ""
+                                || this.state.algorithm === ""
+                            }
+                    onClick={this.storeWorkflow} >Submit</Button>
                 </div>
             </Jumbotron>
         );

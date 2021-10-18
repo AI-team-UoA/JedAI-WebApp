@@ -1,5 +1,6 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers.gi;
 
+import kr.di.uoa.gr.jedaiwebapp.execution.gi.StaticGeospatialReader;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.HttpPaths;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,14 @@ public class GeometriesLoaderController {
 
     @Autowired
     private HttpServletRequest request;
-    //TODO read input
+
     @PostMapping(path = HttpPaths.giDataReadPath + "setConfigurationWithFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void setDatasetWithFile(@RequestPart(value="file") MultipartFile file, @RequestPart String json_conf){
+    public String setDatasetWithFile(@RequestPart(value="file") MultipartFile file, @RequestPart String json_conf){
         System.out.println("Geospatial Interlinker Loader");
         JSONObject configurations = new JSONObject(json_conf);
         String source = UploadFile(file);
-        StaticGeospatialReader.setDataset(configurations, source);
+        return StaticGeospatialReader.setDataset(configurations, source);
     }
-
 
     /**
      * Upload the input file in the server

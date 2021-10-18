@@ -10,7 +10,9 @@ class Configuration extends Component {
         super(...args);
         this.disabled = true
         this.onChange = this.onChange.bind(this)
-        this.collapse_flag = false
+        this.collapse_error_message = false
+        this.error_message = "Failed to read the input file!"
+
         this.state = {
             configuration: null,
             source: "",
@@ -37,7 +39,8 @@ class Configuration extends Component {
         //calculate and return msg to profileReader
         e.preventDefault()
         var text_area_msg, conf, file = null
-        this.collapse_flag =false
+        this.collapse_error_message = false
+        this.error_message = "Failed to read the input file!"
         switch(this.props.filetype) {
             case "CSV":
                 text_area_msg = this.state.configuration === null? "" :
@@ -76,7 +79,6 @@ class Configuration extends Component {
         const formData = new FormData();
         formData.append("file", file)
         var postPath = "/geospatialInterlinking/dataread/setConfigurationWithFile"
-        console.log("AXIOS SENt")
         formData.append("json_conf", JSON.stringify(conf))
         axios({
             url: postPath,
@@ -84,13 +86,14 @@ class Configuration extends Component {
             data: formData
         }).then(res => {
             var result = res.data
-            if (result !== ""){
-                // this.setState({source: result})
+            if (result === "SUCCESS"){
+                this.setState({source: result})
                 this.props.submitted(this.state, text_area_msg)
                 this.setState({showSpinner: false})
             }
             else{
-                this.collapse_flag = true
+                this.collapse_error_message = true
+                this.error_message = "Failed to read the input file!\n"+result
                 this.setState({showSpinner: false})
                 this.forceUpdate()
             }
@@ -154,10 +157,10 @@ class Configuration extends Component {
                                 {browsingSwitch}
                             </Col>
                         </Form.Row>
-                        <Collapse in={this.collapse_flag } >
+                        <Collapse in={this.collapse_error_message } >
                             <div style={{width:'75%', margin:'auto'}}>
                                 <Alert variant="danger" >
-                                    Failed to read the input file!
+                                    {this.error_message}
                                 </Alert>
                             </div>
                         </Collapse>

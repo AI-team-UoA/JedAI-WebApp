@@ -9,9 +9,9 @@ class CsvConfiguration extends Component {
         this.state={
             file: null,
             filename : "",
-            first_row : true,
-            separator : ",",
-            id_index : 0,
+            first_row : false,
+            separator : "\\t",
+            id_index : 1,
             geometry_index : 0,
             browsing : false
         }
@@ -77,7 +77,7 @@ class CsvConfiguration extends Component {
 
                     <Form.Row className="form-row">
                         <Col lg={first_col}>
-                            <Form.Label>Attributes names in first row</Form.Label>
+                            <Form.Label>Headers in the first line</Form.Label>
                         </Col>
                         <Col>
                             <Checkbox

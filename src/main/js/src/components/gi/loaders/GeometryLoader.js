@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Configuration from "./Configuration";
 
 class GeometryLoader extends Component {
+    // todo explorer show geometries in map
     constructor(...args) {
         super(...args);
         this.onClick = this.onClick.bind(this);
@@ -49,7 +50,6 @@ class GeometryLoader extends Component {
                 configurations: null
             }
         }
-
     }
 
     // in case the dataread component change the state back to null
@@ -78,13 +78,14 @@ class GeometryLoader extends Component {
         else if(btn === "explore_btn"){
             this.collapse_explore_flag = !this.collapse_explore_flag;
             this.collapse_conf_flag = false;
-
         }
         this.forceUpdate()
     }
 
+
     // Set configuration (received by the child) and update the DataReader
     submitted = (conf_state, msg) => {
+        console.log("Set submission", msg)
         this.text_area_msg = "Source: " + this.state.filetype + msg
         this.collapse_conf_flag = false;
         //tell explorer to empty your data
@@ -94,8 +95,8 @@ class GeometryLoader extends Component {
         this.setState({source: conf_state.source, configurations: conf_state.configuration} )
         //tell explorer to fetch (probably new) data
         this.explorer_get_geometries = true
-
     }
+
 
     // Empty configurations and hide collapses
     emptyConfiguration(){
@@ -143,7 +144,7 @@ class GeometryLoader extends Component {
                     <Col lg={3}>
                         <Form.Group>
                             <Button style={{display:'inline-block', marginRight:"5px"}} name="conf_btn" disabled={this.state.filetype === ""} onClick={this.onClick}>Configure</Button>
-                            <Button  name="explore_btn" disabled={this.state.configurations === null} onClick={this.onClick}>Explore</Button>
+                            <Button disabled={true} name="explore_btn" disabled={this.state.configurations === null} onClick={this.onClick}>Explore</Button>
                         </Form.Group>
                     </Col>
                      <Col>
