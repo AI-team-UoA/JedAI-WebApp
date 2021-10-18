@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Col, Form, FormControl, InputGroup, Collapse} from "react-bootstrap/";
 import PropTypes from "prop-types";
-import Configuration from "./Configuration";
+import Configuration from "./configurations/Configuration";
 
 class GeometryLoader extends Component {
     // todo explorer show geometries in map
@@ -33,12 +33,13 @@ class GeometryLoader extends Component {
                         "\nID index: "+ this.state.configurations.id_index +
                         "\nGeometry index: "+ this.state.configurations.geometry_index
                     break;
-                case "RDF":
+                case "RDF/JSON":
                     msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename +
-                        "\nGeometry index: "+ this.state.configurations.geometry_predicate
+                        "\nPrefix: "+ this.state.configurations.geometry_predicate
                     break;
                 default:
-                    msg = ""
+                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename
+                    break;
             }
             this.text_area_msg = "Source: " + this.state.filetype + msg
         }
@@ -85,7 +86,6 @@ class GeometryLoader extends Component {
 
     // Set configuration (received by the child) and update the DataReader
     submitted = (conf_state, msg) => {
-        console.log("Set submission", msg)
         this.text_area_msg = "Source: " + this.state.filetype + msg
         this.collapse_conf_flag = false;
         //tell explorer to empty your data
@@ -127,8 +127,11 @@ class GeometryLoader extends Component {
             >
                 <option value="" />
                 <option value="CSV" >CSV</option>
+                <option value="GeoJSON" >GeoJSON</option>
                 <option value="RDF" >RDF</option>
-            </Form.Control>;
+                <option value="RDF/JSON" >RDF/JSON</option>
+                <option value="Serialized" >Serialized</option>
+        </Form.Control>;
 
         return (
             <div>

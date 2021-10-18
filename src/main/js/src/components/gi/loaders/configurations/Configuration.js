@@ -3,7 +3,8 @@ import axios from "axios";
 import {Alert, Button,Col, Collapse, Form, FormCheck, Jumbotron, Spinner} from "react-bootstrap/";
 import PropTypes from "prop-types";
 import CsvConfiguration from "./CsvConfiguration";
-import RdfConfiguration from "./RdfConfiguration";
+import RdfJsonConfiguration from "./RdfJsonConfiguration";
+import SerializedConfiguration from "./SerializedConfiguration";
 
 class Configuration extends Component {
     constructor(...args) {
@@ -22,7 +23,7 @@ class Configuration extends Component {
     }
 
     flipURLSwitch = (e) => {
-        var flipped =  !this.state.browsing
+        let flipped =  !this.state.browsing
         this.setState({browsing: flipped})
     }
 
@@ -38,7 +39,7 @@ class Configuration extends Component {
 
         //calculate and return msg to profileReader
         e.preventDefault()
-        var text_area_msg, conf, file = null
+        let text_area_msg, conf, file = null
         this.collapse_error_message = false
         this.error_message = "Failed to read the input file!"
         switch(this.props.filetype) {
@@ -60,32 +61,38 @@ class Configuration extends Component {
                 }
                 file = this.state.configuration.file
                 break;
-            case "RDF":
+            case "RDF/JSON":
                 text_area_msg = this.state.configuration === null? "" :
-                    "\nFile: " +  this.state.configuration.filename +
-                    "\nGeometry Predicate: "+ this.state.configuration.geometry_predicate
+                    "\nFile: " +  this.state.configuration.filename+"\nPrefix: " + this.state.configuration.prefix
                 conf = {
                     entity_id: this.props.entity_id,
                     filetype: this.props.filetype,
                     filename: this.state.configuration.filename,
-                    geometry_predicate: this.state.configuration.geometry_predicate
+                    prefix: this.state.configuration.prefix
                 }
                 file = this.state.configuration.file
                 break;
             default:
-                text_area_msg = ""
-                conf = null
+                text_area_msg = this.state.configuration === null? "" :
+                    "\nFile: " +  this.state.configuration.filename
+                conf = {
+                    entity_id: this.props.entity_id,
+                    filetype: this.props.filetype,
+                    filename: this.state.configuration.filename,
+                }
+                file = this.state.configuration.file
+                break;
         }
         const formData = new FormData();
         formData.append("file", file)
-        var postPath = "/geospatialInterlinking/dataread/setConfigurationWithFile"
+        let postPath = "/sequential/geospatialInterlinking/read/setConfigurationWithFile"
         formData.append("json_conf", JSON.stringify(conf))
         axios({
             url: postPath,
             method: 'POST',
             data: formData
         }).then(res => {
-            var result = res.data
+            let result = res.data
             if (result === "SUCCESS"){
                 this.setState({source: result})
                 this.props.submitted(this.state, text_area_msg)
@@ -100,9 +107,9 @@ class Configuration extends Component {
         });
     }
 
-    render() {
 
-        var spinner = <div/>
+    render() {
+        let spinner = <div/>
         if (this.state.showSpinner)
             spinner=
                 <div>
@@ -118,23 +125,24 @@ class Configuration extends Component {
                     </div>
                 </div>
 
-        var configureSource
+        let configureSource
         switch(this.props.filetype) {
             case "CSV":
                 configureSource =  <CsvConfiguration  onChange={this.onChange} entity_id={this.props.entity_id}  browsing={this.state.browsing}/>
                 break;
-            case "RDF":
-                configureSource = <RdfConfiguration  onChange={this.onChange}  entity_id={this.props.entity_id} browsing={this.state.browsing}/>
+            case "RDF/JSON":
+                configureSource = <RdfJsonConfiguration onChange={this.onChange} entity_id={this.props.entity_id} browsing={this.state.browsing}/>
                 break;
             default:
-                configureSource = <div />
+                configureSource = <SerializedConfiguration filetype={this.props.filetype} onChange={this.onChange} entity_id={this.props.entity_id} browsing={this.state.browsing}/>
+                break;
         }
 
         const empty_col = 1
         const first_col = 4
         const second_col = 6
 
-        var browsingSwitch = <FormCheck
+        let browsingSwitch = <FormCheck
                 name="browsingSwitch"
                 id={this.props.entity_id+"Switch"}
                 type="switch"
@@ -175,7 +183,6 @@ class Configuration extends Component {
         )
     }
 }
-
 
 Configuration.propTypes = {
     filetype: PropTypes.string.isRequired,

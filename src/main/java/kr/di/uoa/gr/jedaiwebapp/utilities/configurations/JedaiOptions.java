@@ -151,4 +151,22 @@ public class JedaiOptions {
     public static final String PROGRESSIVE_LOCAL_TOP_COMPARISONS = "Progressive Local Top Comparisons";
     public static final String PROGRESSIVE_GLOBAL_RANDOM_COMPARISONS = "Progressive Global Random Comparisons";
 
+
+
+    public static final String BUDGET_AGNOSTIC = "BUDGET_AGNOSTIC";
+    public static final String BUDGET_AWARE = "BUDGET_AWARE";
+    public static final String RADON = "RADON";
+    public static final String GIANT = "GIANT";
+    public static final String STATIC_RADON = "STATIC_RADON";
+    public static final String STATIC_GIANT = "STATIC_GIANT";
+    public static final String PLANE_SWEEP = "PLANE_SWEEP";
+    public static final String STRIPE_SWEEP = "STRIPE_SWEEP";
+    public static final String PBSM = "PBSM";
+    public static final String RTREE = "RTREE";
+    public static final String QUADTREE = "QUADTREE";
+    public static final String CRTREE = "CRTREE";
+    public static final String PROGRESSIVE_GIANT = "PROGRESSIVE_GIANT";
+    public static final String PROGRESSIVE_RADON = "PROGRESSIVE_RADON";
+    public static final String GEOMETRY_ORDERED = "GEOMETRY_ORDERED";
+    public static final String ITERATIVE_ALGORITHMS = "ITERATIVE_ALGORITHMS";
 }

@@ -12,7 +12,6 @@
 	<artifactId>JedAI-WebApp</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
 	<name>JedAI-WebApp</name>
-	<description></description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -109,6 +108,12 @@
 		    <groupId>org.scify</groupId>
 		    <artifactId>jedai-core</artifactId>
 		    <version>3.01-SNAPSHOT </version>
+			 <exclusions>
+				 <exclusion>
+					 <groupId>com.opencsv</groupId>
+					 <artifactId>opencsv</artifactId>
+				 </exclusion>
+			 </exclusions>
 		</dependency>
 
 		<dependency>
@@ -132,8 +137,6 @@
 			<systemPath>/home/gmandi/Documents/Extreme-Earth/Entity-Resolution/JedAI-Spark/target/scala-2.11/spark_er-assembly-1.0.jar</systemPath>
 		</dependency>
 
-
-
 		<!-- https://mvnrepository.com/artifact/org.locationtech.jts/jts-core -->
 		<dependency>
 			<groupId>org.locationtech.jts</groupId>
@@ -141,6 +144,13 @@
 			<version>1.18.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>dit</groupId>
+			<artifactId>geospatialinterlinking</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>/home/gmandi/Documents/Extreme-Earth/Geospatial-Interlinking/geospatialinterlinking/root/target/geospatialinterlinking-1.0-SNAPSHOT-jar-with-dependencies.jar</systemPath>
+		</dependency>
 
 	</dependencies>
 	

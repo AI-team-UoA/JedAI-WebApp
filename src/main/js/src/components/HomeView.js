@@ -97,7 +97,7 @@ class HomeView extends Component {
                                     </p>
                                     <br/>
                                     <div>
-                                        <Link to={{pathname:"/geospatialInterlinking", isSpark: false }}>
+                                        <Link to={{pathname:"/sequential/geospatialInterlinking/read", isSpark: false }}>
                                             <Button variant="primary" style={btnStyle}> <span className="fa fa-desktop"/> Sequential GI</Button>
                                         </Link>
                                     </div>

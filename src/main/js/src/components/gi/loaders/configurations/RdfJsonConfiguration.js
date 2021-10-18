@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import {Button, Col, Form, FormControl, InputGroup, ListGroup} from "react-bootstrap/";
-import Checkbox from "react-simple-checkbox";
 import PropTypes from "prop-types";
 
-class RdfConfiguration extends Component {
+class RdfJsonConfiguration extends Component {
     constructor(...args) {
         super(...args);
         this.state={
             file: null,
             filename : "",
-            geometry_predicate : "http://strdf.di.uoa.gr/ontology#hasGeometry",
+            prefix : "http://example.com",
             browsing : false
         }
     }
@@ -18,13 +17,13 @@ class RdfConfiguration extends Component {
         if(e.target.name === "file"){
             const file = e.target.files[0];
             this.setState({file:file, filename: file.name}, () =>{
-                let isDisabled = this.state.filename === "" ||  this.state.geometry_predicate == null || this.state.file == null;
+                let isDisabled = this.state.filename === "" ||  this.state.prefix == null || this.state.file == null;
                 this.props.onChange(this.state, isDisabled)
             })
         }
         else{
             this.setState({[e.target.name]: e.target.value}, () =>{
-                let isDisabled = this.state.filename === "" ||  this.state.geometry_predicate == null || this.state.file == null;
+                let isDisabled = this.state.filename === "" ||  this.state.prefix == null || this.state.file == null;
                 this.props.onChange(this.state, isDisabled)
             })
         }
@@ -35,7 +34,7 @@ class RdfConfiguration extends Component {
         return (
             <div>
                 <div style ={{textAlign:'center'}}>
-                    <h3>RDF Reader</h3>
+                    <h3>RDF/JSON Reader</h3>
                     <p>Please configure the method's parameter below</p>
                 </div>
                 <br/>
@@ -47,8 +46,8 @@ class RdfConfiguration extends Component {
                         <Col>
                             <InputGroup >
                                 <FormControl
-                                    placeholder=".nt"
-                                    aria-label=".nt"
+                                    placeholder=".json"
+                                    aria-label=".json"
                                     aria-describedby="basic-addon2"
                                     name="filename"
                                     value={this.state.filename}
@@ -66,15 +65,15 @@ class RdfConfiguration extends Component {
 
                     <Form.Row className="form-row">
                         <Col lg={first_col} >
-                            <Form.Label >Geometry index</Form.Label>
+                            <Form.Label>Prefix </Form.Label>
                         </Col>
                         <Col>
                             <FormControl
                                 type="text"
-                                name="geometry_predicate"
-                                value={this.state.geometry_predicate}
+                                name="prefix"
+                                value={this.state.prefix}
                                 onChange={this.onChange}
-                                isInvalid={this.state.geometry_predicate === "" }
+                                isInvalid={this.state.prefix === "" }
                             />
                         </Col>
                     </Form.Row>
@@ -85,8 +84,8 @@ class RdfConfiguration extends Component {
 }
 
 
-RdfConfiguration.propTypes = {
+RdfJsonConfiguration.propTypes = {
     onChange: PropTypes.func.isRequired
 }
 
-export default RdfConfiguration;
+export default RdfJsonConfiguration;

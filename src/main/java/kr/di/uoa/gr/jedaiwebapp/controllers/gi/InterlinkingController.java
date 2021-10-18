@@ -1,15 +1,12 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers.gi;
 
-import kr.di.uoa.gr.jedaiwebapp.execution.gi.StaticGeospatialReader;
+import kr.di.uoa.gr.jedaiwebapp.execution.gi.InterlinkingManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.HttpPaths;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,18 +14,17 @@ import java.io.File;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(HttpPaths.giDataReadPath + "**")
-public class GeometriesLoaderController {
+@RequestMapping(HttpPaths.interlinking + "**")
+public class InterlinkingController {
 
     @Autowired
     private HttpServletRequest request;
 
-    @PostMapping(path = HttpPaths.giDataReadPath + "setConfigurationWithFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = HttpPaths.giReadData + "setConfigurationWithFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String setDatasetWithFile(@RequestPart(value="file") MultipartFile file, @RequestPart String json_conf){
-        System.out.println("Geospatial Interlinker Loader");
         JSONObject configurations = new JSONObject(json_conf);
         String source = UploadFile(file);
-        return StaticGeospatialReader.setDataset(configurations, source);
+        return InterlinkingManager.setDataset(configurations, source);
     }
 
     /**
@@ -37,7 +33,7 @@ public class GeometriesLoaderController {
      * @return the path
      **/
     public String UploadFile(MultipartFile file) {
-        String realPathToUploads =  request.getServletContext().getRealPath("/uploads/");
+        String realPathToUploads = request.getServletContext().getRealPath("/uploads/");
         if(! new File(realPathToUploads).exists())
             new File(realPathToUploads).mkdir();
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -57,4 +53,20 @@ public class GeometriesLoaderController {
         return filepath;
     }
 
+
+    @GetMapping(HttpPaths.setInterlinking + "{algType}/{algorithm}/{budget}")
+    public void setInterlinking(@PathVariable(value = "algType") String algType,
+                                @PathVariable(value = "algorithm") String algorithm,
+                                @PathVariable(value = "budget") int budget) {
+            InterlinkingManager.setAlgorithm(algorithm);
+            InterlinkingManager.setBudget(budget);
+            InterlinkingManager.setAlgorithmType(algType);
+    }
+
+
+    @GetMapping(HttpPaths.interlinking + "run")
+    public void run() {
+        System.out.println("Interlinker Run");
+        InterlinkingManager.run();
+    }
 }

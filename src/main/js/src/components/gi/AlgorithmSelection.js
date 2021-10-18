@@ -3,13 +3,15 @@ import {Form, Col, Row, Button} from 'react-bootstrap/'
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Collapse from 'react-bootstrap/Collapse'
 import GeometryLoader from "./loaders/GeometryLoader";
+import axios from "axios";
+import {Link} from "react-router-dom";
 
 class AlgorithmSelection extends Component {
 
     state={
         algorithm_type: "",
         algorithm: "",
-        budget: "",
+        budget: 0,
         source: null,
         target: null
     }
@@ -38,8 +40,9 @@ class AlgorithmSelection extends Component {
         }
     }
 
-    storeWorkflow = (e) => {
+    setInterlinking = (e) => {
         console.log(this.state)
+        axios.get("/sequential/geospatialInterlinking/set/"+this.state.algorithm_type+"/"+this.state.algorithm+"/"+this.state.budget)
     }
 
 
@@ -54,7 +57,6 @@ class AlgorithmSelection extends Component {
 
         const budgetAgnostic_algorithms = new Map()
         budgetAgnostic_algorithms.set("", EMPTY)
-        budgetAgnostic_algorithms.set("RADON", "RADON")
         budgetAgnostic_algorithms.set("RADON", "RADON")
         budgetAgnostic_algorithms.set("GIA.nt ", "GIANT")
         budgetAgnostic_algorithms.set("Static RADON", "STATIC_RADON")
@@ -153,13 +155,15 @@ class AlgorithmSelection extends Component {
                     </Row>
 
                     <br />
-                    <Button style={{float: 'right'}}
-                            disabled={this.state.source == null
-                                || this.state.target == null
-                                || this.state.algorithm_type === ""
-                                || this.state.algorithm === ""
-                            }
-                    onClick={this.storeWorkflow} >Submit</Button>
+                    <Link to={{pathname:"/sequential/geospatialInterlinking/execute" }}>
+                        <Button style={{float: 'right'}}
+                                disabled={this.state.source == null
+                                    || this.state.target == null
+                                    || this.state.algorithm_type === ""
+                                    || this.state.algorithm === ""
+                                }
+                                onClick={this.setInterlinking} >Submit</Button>
+                    </Link>
                 </div>
             </Jumbotron>
         );
