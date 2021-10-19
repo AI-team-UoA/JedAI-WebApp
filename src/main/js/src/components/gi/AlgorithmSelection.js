@@ -59,8 +59,8 @@ class AlgorithmSelection extends Component {
         budgetAgnostic_algorithms.set("", EMPTY)
         budgetAgnostic_algorithms.set("RADON", "RADON")
         budgetAgnostic_algorithms.set("GIA.nt ", "GIANT")
-        budgetAgnostic_algorithms.set("Static RADON", "STATIC_RADON")
-        budgetAgnostic_algorithms.set("Static GIA.nt", "STATIC_GIANT")
+        // budgetAgnostic_algorithms.set("Static RADON", "STATIC_RADON")
+        // budgetAgnostic_algorithms.set("Static GIA.nt", "STATIC_GIANT")
         budgetAgnostic_algorithms.set("Plane Sweep", "PLANE_SWEEP")
         budgetAgnostic_algorithms.set("Stripe Sweep", "STRIPE_SWEEP")
         budgetAgnostic_algorithms.set("PBSM", "PBSM")
@@ -83,7 +83,7 @@ class AlgorithmSelection extends Component {
                 <div className="container-fluid">
                     <div style={{marginBottom:"5px"}}>
                         <h1 style={{display:'inline', marginRight:"20px"}}>Geospatial Interlinking</h1>
-                        <span className="workflow-desc">Discover the topological relations within the geometries of two datasets.</span>
+                        <span className="workflow-desc">Discover the topological relations between the geometries of two datasets.</span>
                     </div>
 
                     <br/>

@@ -43,44 +43,45 @@ class HomeView extends Component {
                     </Modal.Header>
                     <Modal.Body style={{textAlign:"center"}}>
 
-                        <div style={{textAlign: 'center'}}>
-                            <div> <h2><span className="fa fa-file"/> Entity Resolution</h2></div>
+                        {/*<div style={{textAlign: 'center'}}>*/}
+                        {/*    <div> <h2><span className="fa fa-file"/> Entity Resolution</h2></div>*/}
 
-                            <Jumbotron className='jumbotron_alg' style={{width: "40%", height: "250px", position: "relative"}}>
-                                <div style={{ textAlign: 'center'}}>
-                                    <span className="fa fa-desktop"/>
-                                    <h3>Sequential</h3>
-                                    <p  style={{ height: "100px"}}>
-                                        Run the Sequential version of JedAI, which provides the whole functionality of JedAIToolKit
-                                        with multiple algorithms for each Workflow step. The execution will be performed server-side.
-                                    </p>
-                                    <br/>
-                                    <div >
-                                        <Link to={{pathname:"/selectworkflow", isSpark: false }}>
-                                            <Button variant="primary" style={btnStyle}> <span className="fa fa-desktop"/> Sequential ER</Button>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </Jumbotron>
+                        {/*    <Jumbotron className='jumbotron_alg' style={{width: "40%", height: "250px", position: "relative"}}>*/}
+                        {/*        TODO FIX*/}
+                        {/*        <div style={{ textAlign: 'center'}}>*/}
+                        {/*            <span className="fa fa-desktop"/>*/}
+                        {/*            <h3>Sequential</h3>*/}
+                        {/*            <p  style={{ height: "100px"}}>*/}
+                        {/*                Run the Sequential version of JedAI, which provides the whole functionality of JedAIToolKit*/}
+                        {/*                with multiple algorithms for each Workflow step. The execution will be performed server-side.*/}
+                        {/*            </p>*/}
+                        {/*            <br/>*/}
+                        {/*            <div >*/}
+                        {/*                <Link to={{pathname:"/selectworkflow", isSpark: false }}>*/}
+                        {/*                    <Button variant="primary" style={btnStyle}> <span className="fa fa-desktop"/> Sequential ER</Button>*/}
+                        {/*                </Link>*/}
+                        {/*            </div>*/}
+                        {/*        </div>*/}
+                        {/*    </Jumbotron>*/}
 
-                            <Jumbotron className='jumbotron_alg' style={{width: "40%", height: "250px", position: "relative"}}>
-                                <div style={{ textAlign: 'center'}}>
-                                    <span className="fa fa-server"/>
-                                    <h3>Distributed</h3>
-                                    <p  style={{ height: "100px"}}>
-                                        Run the distributed version of JedAI known as JedAI-Spark.
-                                        The execution will be performed in a cluster configured by the user.
-                                        The cluster must run an Apache Livy server so to establish connection.
-                                    </p>
-                                    <br/>
-                                    <div>
-                                        <Link to={{pathname:"/selectworkflow", isSpark: true }}>
-                                            <Button disabled={true} variant="primary" style={btnStyle}> <span className="fa fa-server"/> Distributed ER</Button>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </Jumbotron>
-                        </div>
+                        {/*    <Jumbotron className='jumbotron_alg' style={{width: "40%", height: "250px", position: "relative"}}>*/}
+                        {/*        <div style={{ textAlign: 'center'}}>*/}
+                        {/*            <span className="fa fa-server"/>*/}
+                        {/*            <h3>Distributed</h3>*/}
+                        {/*            <p  style={{ height: "100px"}}>*/}
+                        {/*                Run the distributed version of JedAI known as JedAI-Spark.*/}
+                        {/*                The execution will be performed in a cluster configured by the user.*/}
+                        {/*                The cluster must run an Apache Livy server so to establish connection.*/}
+                        {/*            </p>*/}
+                        {/*            <br/>*/}
+                        {/*            <div>*/}
+                        {/*                <Link to={{pathname:"/selectworkflow", isSpark: true }}>*/}
+                        {/*                    <Button disabled={true} variant="primary" style={btnStyle}> <span className="fa fa-server"/> Distributed ER</Button>*/}
+                        {/*                </Link>*/}
+                        {/*            </div>*/}
+                        {/*        </div>*/}
+                        {/*    </Jumbotron>*/}
+                        {/*</div>*/}
 
                         <div style={{textAlign: 'center', marginTop: "25px"}}>
                             <div><h2><span className="fa fa-globe"/> Geospatial Interlinking</h2></div>
@@ -92,6 +93,7 @@ class HomeView extends Component {
                                     <p style={{ height: "100px"}}>
                                         Run the Sequential version of GeoLinker (++).
                                         The execution will be performed server-side.
+                                        {/*TODO FIX */}
                                         {/*Run the Sequential version of JedAI, which provides the whole functionality of JedAIToolKit*/}
                                         {/*with multiple algorithms for each Workflow step. The execution will be performed server-side.*/}
                                     </p>
@@ -135,8 +137,11 @@ class HomeView extends Component {
                <Jumbotron className="jumbotron" style={{width:'90%', margin: "auto"}}>
                     <br/>
                     <div style={{marginBottom:"5px"}}> 
-                        <h1 style={{fontSize: "400%", display:'inline', marginRight:"20px"}}>JedAI</h1> 
-                        <span className="workflow-desc" >The Java gEneric DAta Integration ToolKit is an open source, high scalability toolkit that offers out-of-the-box solutions for any data integration task.</span>
+                        {/*<h1 style={{fontSize: "400%", display:'inline', marginRight:"20px"}}>JedAI</h1> */}
+                        {/*<span className="workflow-desc" >The Java gEneric DAta Integration ToolKit is an open source, high scalability toolkit that offers out-of-the-box solutions for any data integration task.</span>*/}
+                        <h1 style={{fontSize: "400%", display:'inline', marginRight:"20px"}}>GeoLinker</h1>
+                        <span className="workflow-desc" >GeoLinker is an open source, high scalability toolkit that offers out-of-the-box
+                            solutions for holistic geospatial interlinking task.</span>
                     </div>
                     <br/>
                     <br/>

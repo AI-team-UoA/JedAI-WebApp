@@ -33,7 +33,7 @@ class SerializedConfiguration extends Component {
         return (
             <div>
                 <div style ={{textAlign:'center'}}>
-                    <h3>{this.props.filetype + "Reader"}</h3>
+                    <h3>{this.props.filetype + " Reader"}</h3>
                     <p>Please configure the method's parameter below</p>
                 </div>
                 <br/>
