@@ -67,6 +67,7 @@ public class InterlinkingManager {
         }
     }
 
+    // TODO add static algorithms
     public static void run(){
         switch (algorithm) {
             case JedaiOptions.GIANT:

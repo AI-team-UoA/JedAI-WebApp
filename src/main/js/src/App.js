@@ -9,8 +9,9 @@ import JoinForm from './components/er/mainViews/JoinForm'
 import ExecutionView from './components/er/mainViews/ExecutionView'
 import ErrorComponent from './components/ErrorView'
 import ProgressiveForm from './components/er/mainViews/ProgressiveForm'
-import AlgorithmSelection from "./components/gi/AlgorithmSelection";
 import InterlinkingExecution from "./components/gi/InterlinkingExecution";
+import InterlinkingConfiguration from "./components/gi/InterlinkingConfiguration";
+import InterlinkingMainView from "./components/gi/loaders/InterlinkingMainView";
 
 
 
@@ -20,9 +21,7 @@ class App extends Component {
     componentDidMount() {
         setInterval(this.hello, 250);
     }
- 
 
- 
     render() {
         return (
           <Router>
@@ -32,8 +31,9 @@ class App extends Component {
               <Switch>
                 <Route exact path="/"  render={props=>(<React.Fragment ><HomeView /></React.Fragment>)}/>
                 <Route exact path="/selectworkflow" render={props=>(  <WorkflowSelection {...props}/> )}/>
-                <Route exact path="/sequential/geospatialInterlinking/read" render={props=>(  <AlgorithmSelection {...props}/> )}/>
+                <Route exact path="/sequential/geospatialInterlinking/main" render={props=>(  <InterlinkingMainView {...props}/> )}/>
                 <Route exact path="/sequential/geospatialInterlinking/execute" render={props=>(  <InterlinkingExecution {...props}/> )}/>
+                  <Route exact path="/sequential/geospatialInterlinking/configuration" render={props=>(  <InterlinkingConfiguration {...props}/> )}/>
                 <Route exact path="/workflow" render={props=>(  <ExecutionView {...props}/> )}/>
                 <Route exact path="/blockingbased" render={props=>(  <BlockingForm {...props}/> )}/>
                 <Route exact path="/joinbased" render={props=> (<JoinForm {...props}/>) }/>
