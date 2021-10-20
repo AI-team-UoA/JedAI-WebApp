@@ -7,13 +7,13 @@ class Headers extends Component {
         return (
             <div style={{textAlign:'center'}}>
                 <br/>
-                <p>
+                <h1>
                     <Link to="/">
                         {/*TODO FIX*/}
                         {/*<img src={jedai_logo}  /> */}
-                        <h1>GeoLinker</h1>
+                        GeoLinker
                     </Link>
-                </p>
+                </h1>
                 <br/>
             </div>
         );

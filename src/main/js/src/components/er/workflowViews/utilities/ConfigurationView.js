@@ -5,13 +5,13 @@ import {Form, Col, Table, Row } from 'react-bootstrap/'
 class ConfigurationView extends Component {
 
     render() {
-        var title_col = 2
-        var empty_col = 1
-        var value_col_1 = 1
-        var value_col_2 = 2
-        var big_col = 8
+        let title_col = 2
+        let empty_col = 1
+        let value_col_1 = 1
+        let value_col_2 = 2
+        let big_col = 8
         const {data, title, type} = this.props
-        var return_stmnt = null
+        let return_stmnt = null
 
         if(type === "inline"){
             if (data.configuration_type !== ""){
@@ -21,7 +21,7 @@ class ConfigurationView extends Component {
                                 <Col sm={title_col}>
                                     <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
                                 </Col>
-                                <Col sm={empty_col}></Col>
+                                <Col sm={empty_col}/>
                                 <Col sm={big_col}>
                                     <Table  striped bordered hover size="sm">
                                         <thead>
@@ -46,7 +46,7 @@ class ConfigurationView extends Component {
                                 <Col sm={title_col}>
                                     <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
                                 </Col>
-                                <Col sm={empty_col}></Col>
+                                <Col sm={empty_col}/>
                                 <Col sm={value_col_2}>
                                     {data.label}
                                 </Col>
@@ -65,7 +65,7 @@ class ConfigurationView extends Component {
                             <Col sm={title_col}>
                                 <Form.Label style={{color:"#4663b9"}}><h5>{title+ ": "}</h5></Form.Label> 
                             </Col>
-                            <Col sm={empty_col}></Col>
+                            <Col sm={empty_col}/>
                             <Col sm={2}>
                                 {data.label}
                             </Col>
@@ -80,7 +80,7 @@ class ConfigurationView extends Component {
                         <Col sm={title_col}>
                             <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
                         </Col>
-                        <Col sm={empty_col}></Col>
+                        <Col sm={empty_col}/>
                         <Col sm={big_col}>
                             <Table  striped bordered hover size="sm">
                                 <thead>
@@ -117,15 +117,15 @@ class ConfigurationView extends Component {
                     </Form.Row>                
         }
 
-        else if (type === "file"){ 
-            
-            var keys = Object.keys(data.conf);
+        else if (type === "file"){
+
+            let keys = Object.keys(data.conf);
             return_stmnt = 
                     <Form.Row>
                         <Col sm={title_col}>
                             <Form.Label style={{color:"#4663b9"}}><h5>{this.props.title + ": "}</h5></Form.Label> 
                         </Col>
-                        <Col sm={empty_col}></Col>
+                        <Col sm={empty_col}/>
                         <Col sm={big_col}>  
                             <Form.Control as="select" multiple>
                                 <option key="filetype">Source: {data.source}</option>
@@ -170,8 +170,8 @@ class ConfigurationView extends Component {
 
 ConfigurationView.propTypes = {
     title: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired
-
+    type: PropTypes.string.isRequired,
+    data: PropTypes.object.isRequired
   }
 
 export default ConfigurationView

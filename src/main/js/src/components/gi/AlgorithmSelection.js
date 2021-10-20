@@ -25,7 +25,7 @@ class AlgorithmSelection extends Component {
         this.setState({showAlert: false})
         this.props.updateState(name, value)
         if (name === "algorithm_type"){
-            this.props.updateState("budget", "")
+            this.props.updateState("budget", 0)
             this.props.updateState("algorithm", "")
         }
     }
@@ -33,7 +33,7 @@ class AlgorithmSelection extends Component {
     isValidated(){
         let isValid = this.props.algorithm_type !== "" && this.props.algorithm !== ""
         if (isValid && this.props.algorithm_type === this.BUDGET_AWARE)
-            isValid = this.props.budget !== ""
+            isValid = this.props.budget > 0
         this.setState({showAlert: !isValid})
         if (isValid)
             this.props.setInterlinking()
@@ -82,7 +82,7 @@ class AlgorithmSelection extends Component {
                 </div>
                 <br/>
                 <br/>
-                <Jumbotron style={{backgroundColor:"white", border:"groove", width:"60%" }}>
+                <Jumbotron style={{backgroundColor:"white", border:"groove", width: this.props.width, margin: "auto"}}>
                     <Row className="form-row">
                         <Col lg={small}>
                             <Form.Label as="legend" column>
@@ -168,6 +168,8 @@ AlgorithmSelection.propTypes = {
     algorithm: PropTypes.string.isRequired,
     budget: PropTypes.number.isRequired,
     updateState: PropTypes.func.isRequired,
-    setInterlinking: PropTypes.func.isRequired
+    setInterlinking: PropTypes.func.isRequired,
+    width: PropTypes.string.isRequired
+
 }
 export default AlgorithmSelection;

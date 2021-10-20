@@ -20,11 +20,11 @@ class GeometryReaderView extends Component {
     render() {
         let alert = <div />
         if (this.state.showAlert)
-            alert = <Alert key={1} variant="danger" style={{width:"30%", margin:"auto", textAlign: "center"}}>Datasets were not set correctly</Alert>
+            alert = <Alert key={1} variant="danger" style={{width:"60%", margin:"auto", textAlign: "center"}}>Datasets were not set correctly</Alert>
 
         return (
             <div>
-                <div >
+                <div>
                     <div className="workflow-container">
                         <br/>
                         <div style={{marginBottom:"5px"}}>
@@ -35,10 +35,13 @@ class GeometryReaderView extends Component {
                         </div>
                         <br/>
                         <br/>
-                        <GeometryLoader title="Source: " setDataset={this.props.setDataset} state={this.props.source}/>
-                        <GeometryLoader title="Target: " setDataset={this.props.setDataset} state={this.props.target}/>
-                        <br/>
-                        {alert}
+                        <div style={{width: this.props.width, margin: "auto"}}>
+                            <GeometryLoader title="Source: " setDataset={this.props.setDataset} state={this.props.source}/>
+                            <GeometryLoader title="Target: " setDataset={this.props.setDataset} state={this.props.target}/>
+                            <br/>
+                            {alert}
+                        </div>
+
                         <br/>
                     </div>
                 </div>
@@ -47,11 +50,11 @@ class GeometryReaderView extends Component {
     }
 }
 
-
 GeometryReaderView.propTypes = {
     source: PropTypes.object.isRequired,
     target: PropTypes.object.isRequired,
-    setDataset: PropTypes.func.isRequired
+    setDataset: PropTypes.func.isRequired,
+    width: PropTypes.string.isRequired
 }
 
 export default GeometryReaderView;

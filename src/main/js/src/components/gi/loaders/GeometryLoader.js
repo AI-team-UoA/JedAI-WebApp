@@ -113,7 +113,7 @@ class GeometryLoader extends Component {
         </Form.Control>;
 
         return (
-            <div style={{width: "68%", margin: "auto"}}>
+            <div style={{margin: "auto"}}>
                 <Form.Row>
                     <Col lg={1}>
                         <Form.Label ><h5>{this.props.title}</h5></Form.Label>
@@ -137,7 +137,7 @@ class GeometryLoader extends Component {
                 </Form.Row>
                 <Form.Row>
                     <Collapse in={this.collapse_conf_flag} >
-                        <div style={{width:'60%', margin:'auto'}}>
+                        <div style={{width:'75%', margin:'auto'}}>
                             <Configuration entity_id={this.state.entity_id} filetype={this.state.filetype} submitted={this.submitted} />
                         </div>
                     </Collapse>

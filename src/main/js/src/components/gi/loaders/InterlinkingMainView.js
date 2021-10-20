@@ -5,6 +5,7 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 import StepZilla from "react-stepzilla";
 import GeometryReaderView from "./GeometryReaderView";
 import axios from "axios";
+import InterlinkingConfiguration from "../InterlinkingConfiguration";
 
 class InterlinkingMainView extends Component {
     state ={
@@ -22,7 +23,7 @@ class InterlinkingMainView extends Component {
         },
         algorithm_type: "",
         algorithm: "",
-        budget: ""
+        budget: 0
     }
 
     updateState = (name, value) => {this.setState({[name]: value})}
@@ -47,15 +48,22 @@ class InterlinkingMainView extends Component {
     }
 
     render() {
+        let widthSize = "60%"
         const steps =
             [
-                {name: 'Data Reading', component: <GeometryReaderView setDataset={this.setDataset} source={this.state.source} target={this.state.target}/>},
-                {name: 'Algorithm Selection', component: <AlgorithmSelection algorithm={this.state.algorithm}
+                {name: 'Data Reading', component: <GeometryReaderView width={widthSize} setDataset={this.setDataset} source={this.state.source} target={this.state.target}/>},
+                {name: 'Algorithm Selection', component: <AlgorithmSelection width={widthSize}
+                                                                             algorithm={this.state.algorithm}
                                                                              algorithm_type={this.state.algorithm_type}
                                                                              budget={this.state.budget}
                                                                              setInterlinking={this.setInterlinking}
                                                                              updateState={this.updateState}/>},
-                {name: 'Confirm Configuration', component: <div/>}
+                {name: 'Confirm Configuration', component: <InterlinkingConfiguration width={widthSize}
+                                                                                      algorithm={this.state.algorithm}
+                                                                                      algorithm_type={this.state.algorithm_type}
+                                                                                      budget={this.state.budget}
+                                                                                      source={this.state.source}
+                                                                                      target={this.state.target}/>}
             ]
 
         return (
