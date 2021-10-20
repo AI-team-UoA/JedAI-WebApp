@@ -30,6 +30,7 @@ class SerializedConfiguration extends Component {
 
     render() {
         const first_col = 4
+        const second_col = 7
         return (
             <div>
                 <div style ={{textAlign:'center'}}>
@@ -42,7 +43,7 @@ class SerializedConfiguration extends Component {
                         <Col lg={first_col}>
                             <Form.Label>File Path </Form.Label>
                         </Col>
-                        <Col>
+                        <Col lg={second_col}>
                             <InputGroup >
                                 <FormControl
                                     placeholder=""

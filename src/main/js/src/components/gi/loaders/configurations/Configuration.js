@@ -152,7 +152,7 @@ class Configuration extends Component {
             />
 
         return (
-            <Jumbotron style={{backgroundColor:"white", border:"groove", width:"95%" }}>
+            <Jumbotron style={{backgroundColor:"white", border:"groove", width:"85%" }}>
                 <div style={{margin:"auto"}}>
                     <Form>
                         {configureSource}

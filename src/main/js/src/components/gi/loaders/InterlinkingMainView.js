@@ -4,38 +4,58 @@ import AlgorithmSelection from "../AlgorithmSelection";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import StepZilla from "react-stepzilla";
 import GeometryReaderView from "./GeometryReaderView";
+import axios from "axios";
 
 class InterlinkingMainView extends Component {
     state ={
-        source: null,
-        target: null,
+        source: {
+            entity_id: "source",
+            filetype : "",
+            source : "",
+            configurations: null
+        },
+        target: {
+            entity_id: "target",
+            filetype : "",
+            source : "",
+            configurations: null
+        },
         algorithm_type: "",
         algorithm: "",
-        budget: 0
+        budget: ""
     }
 
+    updateState = (name, value) => {this.setState({[name]: value})}
 
-    setDataset = (entity_id, conf_state) => {
+    setDataset = (entity_id, dataset_state) => {
         switch(entity_id) {
             case "source":
-                this.setState({source: conf_state})
+                this.setState({source: dataset_state})
                 break;
             case "target":
-                this.setState({target: conf_state})
+                this.setState({target: dataset_state})
                 break;
             default:
-                this.alertText = "Entity profiles were not set properly!"
+                this.alertText = "Datasets were not configured properly"
                 console.log("ERROR")
         }
+    }
+
+    setInterlinking = () => {
+        let budget = this.state.budget !== "" ? this.state.budget : 0
+        axios.get("/sequential/geospatialInterlinking/set/"+this.state.algorithm_type+"/"+this.state.algorithm+"/"+budget)
     }
 
     render() {
         const steps =
             [
                 {name: 'Data Reading', component: <GeometryReaderView setDataset={this.setDataset} source={this.state.source} target={this.state.target}/>},
-                {name: 'Algorithm Selection', component: <AlgorithmSelection />},
+                {name: 'Algorithm Selection', component: <AlgorithmSelection algorithm={this.state.algorithm}
+                                                                             algorithm_type={this.state.algorithm_type}
+                                                                             budget={this.state.budget}
+                                                                             setInterlinking={this.setInterlinking}
+                                                                             updateState={this.updateState}/>},
                 {name: 'Confirm Configuration', component: <div/>}
-
             ]
 
         return (

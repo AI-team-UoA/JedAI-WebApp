@@ -8,11 +8,11 @@ class Headers extends Component {
             <div style={{textAlign:'center'}}>
                 <br/>
                 <p>
-                    {/*<Link to="/">*/}
-                    {/*    TODO FIX*/}
-                    {/*    <img src={jedai_logo}  /> */}
-                    {/*    <h1>GeoLinker</h1>*/}
-                    {/*</Link>*/}
+                    <Link to="/">
+                        {/*TODO FIX*/}
+                        {/*<img src={jedai_logo}  /> */}
+                        <h1>GeoLinker</h1>
+                    </Link>
                 </p>
                 <br/>
             </div>

@@ -5,6 +5,8 @@ import batch.planesweep.PlaneSweep;
 import batch.stripebased.StripeSTRSweep;
 import batch.tilebased.GIAnt;
 import batch.tilebased.RADON;
+import batch.tilebased.StaticGIAnt;
+import batch.tilebased.StaticRADON;
 import batch.treebased.CRTree;
 import batch.treebased.QuadTree;
 import batch.treebased.RTree;
@@ -75,6 +77,21 @@ public class InterlinkingManager {
                 giant.applyProcessing();
                 giant.printResults();
                 break;
+            case JedaiOptions.STATIC_GIANT:
+                StaticGIAnt stGiant = new StaticGIAnt(0, source, target);
+                stGiant.applyProcessing();
+                stGiant.printResults();
+                break;
+            case JedaiOptions.RADON:
+                RADON radon = new RADON(0, source, target);
+                radon.applyProcessing();
+                radon.printResults();
+                break;
+            case JedaiOptions.STATIC_RADON:
+                StaticRADON stRadon = new StaticRADON(0, source, target);
+                stRadon.applyProcessing();
+                stRadon.printResults();
+                break;
             case JedaiOptions.CRTREE:
                 CRTree crTree = new CRTree(0, source, target);
                 crTree.applyProcessing();
@@ -104,11 +121,6 @@ public class InterlinkingManager {
                 RTree rTree = new RTree(0, source, target);
                 rTree.applyProcessing();
                 rTree.printResults();
-                break;
-            case JedaiOptions.RADON:
-                RADON radon = new RADON(0, source, target);
-                radon.applyProcessing();
-                radon.printResults();
                 break;
         }
     }

@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Button, Col, Form, FormControl, InputGroup, Collapse} from "react-bootstrap/";
+import {Button, Col, Form, Collapse} from "react-bootstrap/";
 import PropTypes from "prop-types";
 import Configuration from "./configurations/Configuration";
+import axios from "axios";
 
 class GeometryLoader extends Component {
     // todo explorer show geometries in map
@@ -11,55 +12,34 @@ class GeometryLoader extends Component {
         this.submitted = this.submitted.bind(this)
         this.emptyConfiguration = this.emptyConfiguration.bind(this)
 
+        this.state = this.props.state
         this.collapse_conf_flag = false;
         this.collapse_explore_flag = false;
         this.text_area_msg = ""
         this.explorer_get_geometries = false
 
-        if (this.props.state !== null){
-            this.state = {
-                entity_id: this.props.entity_id,
-                filetype : this.props.state.filetype,
-                source : this.props.state.source,
-                configurations: this.props.state.configurations
-            }
-            this.explorer_get_geometries = true
-            var msg
+        if (this.state.configurations !== null){
+            let msg
             switch(this.state.filetype) {
                 case "CSV":
-                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename  +
-                        "\nAtributes in firts row: " + this.state.configurations.first_row + "\nSeperator: " +
+                    msg = "\nFile: " +  this.state.configurations.filename  +
+                        "\nAttributes in first row: " + this.state.configurations.first_row + "\nSeparator: " +
                         this.state.configurations.separator +
                         "\nID index: "+ this.state.configurations.id_index +
                         "\nGeometry index: "+ this.state.configurations.geometry_index
                     break;
                 case "RDF/JSON":
-                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename +
-                        "\nPrefix: "+ this.state.configurations.geometry_predicate
+                    msg = "\nFile: " +  this.state.configurations.filename +
+                        "\nPrefix: "+ this.state.configurations.geometry_prefix
                     break;
                 default:
-                    msg = this.state.configurations === null? "" : "\nFile: " +  this.state.configurations.filename
+                    msg = "\nFile: " +  this.state.configurations.filename
                     break;
             }
             this.text_area_msg = "Source: " + this.state.filetype + msg
         }
-        else{
-            this.state = {
-                entity_id: this.props.entity_id,
-                filetype : "",
-                source : "",
-                configurations: null
-            }
-        }
-    }
-
-    // in case the dataread component change the state back to null
-    // in case the profileReader is the ground truth and the user changed
-    // an entity profile after had set the ground truth
-    componentDidUpdate(){
-        if (this.props.state === null && this.state.configurations !== null){
-            this.emptyConfiguration()
-        }
+        else
+            this.text_area_msg = ""
     }
 
     // activated only by the filetype handler.
@@ -90,8 +70,12 @@ class GeometryLoader extends Component {
         this.collapse_conf_flag = false;
         //tell explorer to empty your data
         this.explorer_get_geometries = false
-        var temp_state = {source: conf_state.source, configurations: conf_state.configuration, filetype: this.state.filetype}
-        this.props.setEntity(this.state.entity_id, temp_state)
+        let dataset_state = {
+            source: conf_state.source,
+            configurations: conf_state.configuration,
+            filetype: this.state.filetype
+        };
+        this.props.setDataset(this.state.entity_id, dataset_state)
         this.setState({source: conf_state.source, configurations: conf_state.configuration} )
         //tell explorer to fetch (probably new) data
         this.explorer_get_geometries = true
@@ -102,8 +86,9 @@ class GeometryLoader extends Component {
     emptyConfiguration(){
         this.text_area_msg = "";
         if (this.state.filetype !== ""){
-            this.setState({filetype : "", source : "", configurations: null});
-            this.props.setEntity(this.state.entity_id, null)
+            let dataset_state = {entity_id: this.state.entity_id, filetype : "", source : "", configurations: null}
+            this.setState(dataset_state);
+            this.props.setDataset(this.state.entity_id, dataset_state)
         }
         this.collapse_conf_flag = false;
         this.collapse_explore_flag = false;
@@ -112,18 +97,12 @@ class GeometryLoader extends Component {
 
 
     render() {
-
-        if(this.props.disabled)
-            this.emptyConfiguration()
-
         let control_options = <Form.Control
                 as="select"
                 placeholder="Select Filetype"
                 name="filetype"
                 value={this.state.filetype}
                 onChange={this.changeFiletype}
-                disabled={this.props.disabled}
-
             >
                 <option value="" />
                 <option value="CSV" >CSV</option>
@@ -134,12 +113,12 @@ class GeometryLoader extends Component {
         </Form.Control>;
 
         return (
-            <div>
+            <div style={{width: "68%", margin: "auto"}}>
                 <Form.Row>
                     <Col lg={1}>
                         <Form.Label ><h5>{this.props.title}</h5></Form.Label>
                     </Col>
-                    <Col lg={3}>
+                    <Col lg={2}>
                         <Form.Group>
                             {control_options}
                         </Form.Group>
@@ -147,19 +126,19 @@ class GeometryLoader extends Component {
                     <Col lg={3}>
                         <Form.Group>
                             <Button style={{display:'inline-block', marginRight:"5px"}} name="conf_btn" disabled={this.state.filetype === ""} onClick={this.onClick}>Configure</Button>
-                            <Button disabled={true} name="explore_btn" disabled={this.state.configurations === null} onClick={this.onClick}>Explore</Button>
+                            <Button disabled={true} name="explore_btn" /*disabled={this.state.configurations === null}*/ onClick={this.onClick}>Explore</Button>
                         </Form.Group>
                     </Col>
                      <Col>
-                        <Form.Group>
+                        <Form.Group lg="auto">
                             <Form.Control as="textarea" rows="3" readOnly={true} value={this.text_area_msg}/>
                         </Form.Group>
                     </Col>
                 </Form.Row>
                 <Form.Row>
                     <Collapse in={this.collapse_conf_flag} >
-                        <div style={{width:'75%', margin:'auto'}}>
-                            <Configuration entity_id={this.props.entity_id} filetype={this.state.filetype} submitted={this.submitted} />
+                        <div style={{width:'60%', margin:'auto'}}>
+                            <Configuration entity_id={this.state.entity_id} filetype={this.state.filetype} submitted={this.submitted} />
                         </div>
                     </Collapse>
                     <Collapse in={this.collapse_explore_flag} >
@@ -175,8 +154,8 @@ class GeometryLoader extends Component {
 
 GeometryLoader.propTypes = {
     title: PropTypes.string.isRequired,
-    entity_id: PropTypes.string.isRequired,
-    setEntity: PropTypes.func.isRequired
+    state: PropTypes.object.isRequired,
+    setDataset: PropTypes.func.isRequired
 }
 
 export default GeometryLoader;

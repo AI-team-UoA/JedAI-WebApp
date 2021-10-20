@@ -1,11 +1,27 @@
 import React, {Component} from 'react';
 import PropTypes from "prop-types";
-import {Button, Col, Collapse, Form, Row} from "../../er/workflowViews/dataRead/DataReader";
+import {Alert} from "react-bootstrap/";
 import GeometryLoader from "./GeometryLoader";
 
 class GeometryReaderView extends Component {
 
+    state ={showAlert: false}
+
+    isEmpty(dataset_state){
+        return dataset_state.filetype === ""  || dataset_state.source === "" || dataset_state.configurations == null
+    }
+
+    isValidated(){
+        let isValid = !this.isEmpty(this.props.source) && !this.isEmpty(this.props.target)
+        this.setState({showAlert: !isValid})
+        return isValid
+    }
+
     render() {
+        let alert = <div />
+        if (this.state.showAlert)
+            alert = <Alert key={1} variant="danger" style={{width:"30%", margin:"auto", textAlign: "center"}}>Datasets were not set correctly</Alert>
+
         return (
             <div>
                 <div >
@@ -13,15 +29,16 @@ class GeometryReaderView extends Component {
                         <br/>
                         <div style={{marginBottom:"5px"}}>
                             <h1 style={{display:'inline', marginRight:"20px"}}>Geometry Loader</h1>
-                            <span style={{display:'inline'}} className="workflow-desc">  Load datasets into Geometries. </span>
+                            <span className="workflow-desc" >Load datasets into Geometries.
+                            Only the source dataset will be stored in the memory while the target dataset
+                            will be streamed from the Disk.</span>
                         </div>
                         <br/>
-                        <Form.Row className="form-row">
-                            <h5 >Select data files</h5>
-                        </Form.Row>
-                        <GeometryLoader entity_id="source" title="Source: " setEntity={this.props.setDataset} state={this.state.source}/>
-                        <GeometryLoader entity_id="target" title="Target: " type="geometries" setEntity={this.props.setDataset} state={this.state.target}/>
                         <br/>
+                        <GeometryLoader title="Source: " setDataset={this.props.setDataset} state={this.props.source}/>
+                        <GeometryLoader title="Target: " setDataset={this.props.setDataset} state={this.props.target}/>
+                        <br/>
+                        {alert}
                         <br/>
                     </div>
                 </div>
