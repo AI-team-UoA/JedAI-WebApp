@@ -45,8 +45,10 @@ class InterlinkingExecution extends Component {
             details_msg: "",
             execution_status: "Running"
         })
+        // TODO TEST
         axios.get("/sequential/geospatialInterlinking/run").then(res => {
             let results = res.data
+            console.log(results)
             if (results != null) {
                 this.setState({
                     contains: results['contains'],

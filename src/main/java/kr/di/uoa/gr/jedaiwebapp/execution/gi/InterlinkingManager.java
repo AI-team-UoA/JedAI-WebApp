@@ -1,5 +1,6 @@
 package kr.di.uoa.gr.jedaiwebapp.execution.gi;
 
+import batch.AbstractBatchAlgorithm;
 import batch.partitionbased.PBSM;
 import batch.planesweep.PlaneSweep;
 import batch.stripebased.StripeSTRSweep;
@@ -11,12 +12,15 @@ import batch.treebased.CRTree;
 import batch.treebased.QuadTree;
 import batch.treebased.RTree;
 import datamodel.PlaneSweepStructure;
+import datamodel.RelatedGeometries;
 import datareader.*;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.HttpPaths;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -70,59 +74,61 @@ public class InterlinkingManager {
     }
 
     // TODO add static algorithms
-    public static void run(){
+    public static JSONObject run(){
+        long time = Calendar.getInstance().getTimeInMillis();
+        AbstractBatchAlgorithm processor;
         switch (algorithm) {
             case JedaiOptions.GIANT:
-                GIAnt giant = new GIAnt(0, source, target);
-                giant.applyProcessing();
-                giant.printResults();
+                processor = new GIAnt(0, source, target);
                 break;
             case JedaiOptions.STATIC_GIANT:
-                StaticGIAnt stGiant = new StaticGIAnt(0, source, target);
-                stGiant.applyProcessing();
-                stGiant.printResults();
+                processor = new StaticGIAnt(0, source, target);
                 break;
             case JedaiOptions.RADON:
-                RADON radon = new RADON(0, source, target);
-                radon.applyProcessing();
-                radon.printResults();
+                processor = new RADON(0, source, target);
                 break;
             case JedaiOptions.STATIC_RADON:
-                StaticRADON stRadon = new StaticRADON(0, source, target);
-                stRadon.applyProcessing();
-                stRadon.printResults();
+                processor = new StaticRADON(0, source, target);
                 break;
             case JedaiOptions.CRTREE:
-                CRTree crTree = new CRTree(0, source, target);
-                crTree.applyProcessing();
-                crTree.printResults();
+                processor = new CRTree(0, source, target);
                 break;
             case JedaiOptions.PLANE_SWEEP:
-                PlaneSweep planeSweep = new PlaneSweep(0, source, target, PlaneSweepStructure.LIST_SWEEP);
-                planeSweep.applyProcessing();
-                planeSweep.printResults();
+                processor = new PlaneSweep(0, source, target, PlaneSweepStructure.LIST_SWEEP);
                 break;
             case JedaiOptions.STRIPE_SWEEP:
-                StripeSTRSweep sss = new StripeSTRSweep(0, source, target);
-                sss.applyProcessing();
-                sss.printResults();
+                processor = new StripeSTRSweep(0, source, target);
                 break;
             case JedaiOptions.PBSM:
-                PBSM join = new PBSM(0, source, target, PlaneSweepStructure.STRIPED_SWEEP);
-                join.applyProcessing();
-                join.printResults();
+                processor = new PBSM(0, source, target, PlaneSweepStructure.STRIPED_SWEEP);
                 break;
             case JedaiOptions.QUADTREE:
-                QuadTree quadTree = new QuadTree(0, source, target);
-                quadTree.applyProcessing();
-                quadTree.printResults();
+                processor = new QuadTree(0, source, target);
                 break;
             case JedaiOptions.RTREE:
-                RTree rTree = new RTree(0, source, target);
-                rTree.applyProcessing();
-                rTree.printResults();
+                processor = new RTree(0, source, target);
                 break;
+            default:
+                processor = new GIAnt(0, source, target);
         }
+        processor.applyProcessing();
+        RelatedGeometries relatedGeometries = processor.getResults();
+        JSONObject results = new JSONObject();
+        results.append("source_instances", source.getGeometryProfiles().length);
+        results.append("target_instances", target.getGeometryProfiles().length);
+        results.append("contains", relatedGeometries.getNoOfContains());
+        results.append("covers", relatedGeometries.getNoOfCovers());
+        results.append("coveredBy", relatedGeometries.getNoOfCoveredBy());
+        results.append("crosses", relatedGeometries.getNoOfCrosses());
+        results.append("equals", relatedGeometries.getNoOfEquals());
+        results.append("intersects", relatedGeometries.getNoOfIntersects());
+        results.append("overlaps", relatedGeometries.getNoOfOverlaps());
+        results.append("touches", relatedGeometries.getNoOfTouches());
+        results.append("within", relatedGeometries.getNoOfWithin());
+        results.append("verifications", relatedGeometries.getVerifiedPairs());
+        results.append("qualifying_pairs", relatedGeometries.getQualifyingPairs());
+        results.append("execution_time", time - Calendar.getInstance().getTimeInMillis());
+        return results;
     }
 
 

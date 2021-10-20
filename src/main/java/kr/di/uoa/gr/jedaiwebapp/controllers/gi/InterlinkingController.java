@@ -3,6 +3,7 @@ package kr.di.uoa.gr.jedaiwebapp.controllers.gi;
 import kr.di.uoa.gr.jedaiwebapp.execution.gi.InterlinkingManager;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.HttpPaths;
 import org.json.JSONObject;
+import org.mortbay.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -64,9 +65,10 @@ public class InterlinkingController {
     }
 
 
+    // TODO TEST
     @GetMapping(HttpPaths.interlinking + "run")
-    public void run() {
+    public JSONObject run() {
         System.out.println("Interlinker Run");
-        InterlinkingManager.run();
+        return InterlinkingManager.run();
     }
 }
