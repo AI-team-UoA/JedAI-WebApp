@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 
-import AlgorithmSelection from "../AlgorithmSelection";
+import AlgorithmSelection from "./AlgorithmSelection";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import StepZilla from "react-stepzilla";
-import GeometryReaderView from "./GeometryReaderView";
+import GeometryReaderView from "./loaders/GeometryReaderView";
 import axios from "axios";
-import InterlinkingConfiguration from "../InterlinkingConfiguration";
+import InterlinkingConfiguration from "./InterlinkingConfiguration";
 
 class InterlinkingMainView extends Component {
     state ={
@@ -23,7 +23,7 @@ class InterlinkingMainView extends Component {
         },
         algorithm_type: "",
         algorithm: "",
-        budget: 0
+        budget: 2000
     }
 
     updateState = (name, value) => {this.setState({[name]: value})}

@@ -25,7 +25,7 @@ class AlgorithmSelection extends Component {
         this.setState({showAlert: false})
         this.props.updateState(name, value)
         if (name === "algorithm_type"){
-            this.props.updateState("budget", 0)
+            this.props.updateState("budget", 2000)
             this.props.updateState("algorithm", "")
         }
     }
@@ -33,7 +33,7 @@ class AlgorithmSelection extends Component {
     isValidated(){
         let isValid = this.props.algorithm_type !== "" && this.props.algorithm !== ""
         if (isValid && this.props.algorithm_type === this.BUDGET_AWARE)
-            isValid = this.props.budget > 0
+            isValid = this.props.budget !== ""
         this.setState({showAlert: !isValid})
         if (isValid)
             this.props.setInterlinking()
@@ -135,24 +135,6 @@ class AlgorithmSelection extends Component {
                             </Col>
                         </Row>
                     </Collapse>
-                        {/*<Link to={{*/}
-                        {/*    pathname:"/sequential/geospatialInterlinking/configuration",*/}
-                        {/*    state: {*/}
-                        {/*        source: this.state.source,*/}
-                        {/*        target: this.state.target,*/}
-                        {/*        algorithm_type: this.state.algorithm_type,*/}
-                        {/*        algorithm: this.state.algorithm,*/}
-                        {/*        budget: this.state.budget*/}
-                        {/*    }*/}
-                        {/*}}>*/}
-                        {/*    <Button style={{float: 'right'}}*/}
-                        {/*            disabled={this.props.source == null*/}
-                        {/*                || this.state.target == null*/}
-                        {/*                || this.state.algorithm_type === ""*/}
-                        {/*                || this.state.algorithm === ""*/}
-                        {/*            }*/}
-                        {/*            onClick={this.setInterlinking} >Submit</Button>*/}
-                        {/*</Link>*/}
                     <br />
                 </Jumbotron>
                 <br/>

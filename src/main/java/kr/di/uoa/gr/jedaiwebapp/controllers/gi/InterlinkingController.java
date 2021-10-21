@@ -1,9 +1,9 @@
 package kr.di.uoa.gr.jedaiwebapp.controllers.gi;
 
 import kr.di.uoa.gr.jedaiwebapp.execution.gi.InterlinkingManager;
+import kr.di.uoa.gr.jedaiwebapp.execution.gi.InterlinkingResults;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.HttpPaths;
 import org.json.JSONObject;
-import org.mortbay.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -65,10 +65,15 @@ public class InterlinkingController {
     }
 
 
-    // TODO TEST
     @GetMapping(HttpPaths.interlinking + "run")
-    public JSONObject run() {
+    public InterlinkingResults run() {
         System.out.println("Interlinker Run");
         return InterlinkingManager.run();
+    }
+
+    @GetMapping(HttpPaths.interlinking + "getAlgorithmConf/{algorithm}")
+    public String getConfiguration(@PathVariable(value = "algorithm") String algorithm) {
+        System.out.println("get configurations of " + algorithm);
+        return InterlinkingManager.getConfiguration(algorithm);
     }
 }

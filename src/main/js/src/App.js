@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'; 
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import Header from './components/layout/Headers'
 import HomeView from './components/HomeView'
@@ -10,9 +10,7 @@ import ExecutionView from './components/er/mainViews/ExecutionView'
 import ErrorComponent from './components/ErrorView'
 import ProgressiveForm from './components/er/mainViews/ProgressiveForm'
 import InterlinkingExecution from "./components/gi/InterlinkingExecution";
-import InterlinkingConfiguration from "./components/gi/InterlinkingConfiguration";
-import InterlinkingMainView from "./components/gi/loaders/InterlinkingMainView";
-
+import InterlinkingMainView from "./components/gi/InterlinkingMainView";
 
 
 class App extends Component {
@@ -33,7 +31,6 @@ class App extends Component {
                 <Route exact path="/selectworkflow" render={props=>(  <WorkflowSelection {...props}/> )}/>
                 <Route exact path="/sequential/geospatialInterlinking/main" render={props=>(  <InterlinkingMainView {...props}/> )}/>
                 <Route exact path="/sequential/geospatialInterlinking/execute" render={props=>(  <InterlinkingExecution {...props}/> )}/>
-                  <Route exact path="/sequential/geospatialInterlinking/configuration" render={props=>(  <InterlinkingConfiguration {...props}/> )}/>
                 <Route exact path="/workflow" render={props=>(  <ExecutionView {...props}/> )}/>
                 <Route exact path="/blockingbased" render={props=>(  <BlockingForm {...props}/> )}/>
                 <Route exact path="/joinbased" render={props=> (<JoinForm {...props}/>) }/>

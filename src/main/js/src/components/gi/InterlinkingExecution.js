@@ -14,14 +14,11 @@ class InterlinkingExecution extends Component {
         this.state = {
             export_filetype: "",
             automatic_conf: false,
-
-            details_msg: "",
             execution_status : "Not Run",
-
             execution_results:{
                 source_instances: 0,
                 target_instances: 0,
-
+                details: "",
                 contains: 0,
                 covers: 0,
                 coveredBy: 0,
@@ -41,30 +38,14 @@ class InterlinkingExecution extends Component {
     }
 
     execute = (e) => {
-        this.setState({
-            details_msg: "",
-            execution_status: "Running"
-        })
-        // TODO TEST
+        this.setState({execution_status: "Running"})
         axios.get("/sequential/geospatialInterlinking/run").then(res => {
             let results = res.data
             console.log(results)
             if (results != null) {
                 this.setState({
-                    contains: results['contains'],
-                    covers: results['covers'],
-                    coveredBy: results['coveredBy'],
-                    crosses: results['crosses'],
-                    equals: results['equals'],
-                    intersects: results['intersects'],
-                    overlaps: results['overlaps'],
-                    touches: results['touches'],
-                    within: results['within'],
-                    source_instances: results['source_instances'],
-                    target_instances: results['target_instances'],
-                    execution_time: results['execution_time'],
-                    verifications: results['verifications'],
-                    qualifying_pairs: results['qualifying_pairs']
+                    execution_results: results,
+                    execution_status: "Completed"
                 })
             } else {
                 this.setState({execution_status: "Failed"})
@@ -72,13 +53,28 @@ class InterlinkingExecution extends Component {
         })
     }
 
-    render() {
-        let execution_msg = ""
+    render(){
+        let execution_msg = <div/>
         if (this.state.execution_status === "Running"){
             execution_msg =
                 <div  style={{marginTop:"20px"}}>
                     <Spinner  style={{color:"#0073e6"}} animation="grow" />
+                    <div style={{marginLeft:"10px", display:"inline"}}>
+                        <h4 style={{marginRight:'20px', color:"#0073e6", display:'inline'}}>{this.state.execution_status}</h4>
+                    </div>
                 </div>
+        }
+        else if (this.state.execution_status === "Have Not Run"){
+            execution_msg =
+                <div><h3>{this.state.execution_status}</h3></div>
+        }
+        else if(this.state.execution_status === "Completed"){
+            execution_msg =
+                <div style={{color:"#00810a"}}><h3>{this.state.execution_status}</h3></div>
+        }
+        else if(this.state.execution_status === "Failed"){
+            execution_msg =
+                <div style={{color:"#a40101"}}><h3>{this.state.execution_status}</h3></div>
         }
 
         let totalRelations = this.state.execution_results.contains + this.state.execution_results.covers + this.state.execution_results.coveredBy +
@@ -126,7 +122,7 @@ class InterlinkingExecution extends Component {
                                                         <td><h4 style={{color:"#4663b9"}} className="form-row" >Verifications:</h4></td>
                                                         <td style={{fontSize:"150%"}}>{this.state.execution_results.verifications}</td>
 
-                                                        <td><h4 style={{color:"#4663b9"}} className="form-row" >Total execution time (sec):</h4></td>
+                                                        <td><h4 style={{color:"#4663b9"}} className="form-row" >Total execution time (ms):</h4></td>
                                                         <td style={{fontSize:"150%"}}>{this.state.execution_results.execution_time}</td>
                                                     </tr>
                                                 </tbody>
@@ -181,7 +177,7 @@ class InterlinkingExecution extends Component {
                                 <br/>
                                 <h1>Details</h1>
                                 <Form.Group>
-                                    <Form.Control as="textarea" rows="20" readOnly={true} value={this.state.details_msg}/>
+                                    <Form.Control as="textarea" rows="20" readOnly={true} value={this.state.execution_results.details}/>
                                 </Form.Group>
                             </Tab>
                             <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
@@ -189,6 +185,8 @@ class InterlinkingExecution extends Component {
 
                             </Tab>
                         </Tabs>
+                        <br />
+                        <br />
                         {execution_msg}
                         <br/>
                         <div style={{marginBottom: '20px', paddingBottom:'20px'}}>
@@ -241,14 +239,14 @@ class InterlinkingExecution extends Component {
 
                             <div style={{float: 'right'}}>
                                 <Form.Group as={Row} className="form-row">
-                                    <Button variant="secondary"
-                                            style={{width:"100px", marginRight:"10px"}}
-                                            disabled={this.state.execution_status !== "Running"}
-                                            onClick={this.stop_execution}
-                                    >
-                                        <span className="fa fa-stop" style={{marginRight: "10px"}}/>
-                                        Stop
-                                    </Button>
+                                    {/*<Button variant="secondary"*/}
+                                    {/*        style={{width:"100px", marginRight:"10px"}}*/}
+                                    {/*        disabled={this.state.execution_status !== "Running"}*/}
+                                    {/*        onClick={this.stop_execution}*/}
+                                    {/*>*/}
+                                    {/*    <span className="fa fa-stop" style={{marginRight: "10px"}}/>*/}
+                                    {/*    Stop*/}
+                                    {/*</Button>*/}
                                     <Link to={{pathname: this.start_over_path, state:{conf: this.state.wf_state}}}>
                                         <Button variant="secondary"
                                                 style={{width: "100px", marginRight:"10px"}}
