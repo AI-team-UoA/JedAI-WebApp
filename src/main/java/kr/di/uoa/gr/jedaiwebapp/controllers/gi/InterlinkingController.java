@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(HttpPaths.interlinking + "**")
@@ -75,5 +76,10 @@ public class InterlinkingController {
     public String getConfiguration(@PathVariable(value = "algorithm") String algorithm) {
         System.out.println("get configurations of " + algorithm);
         return InterlinkingManager.getConfiguration(algorithm);
+    }
+
+    @GetMapping(HttpPaths.interlinking + "getExecutions")
+    public List<InterlinkingResults> getExecutions() {
+        return InterlinkingManager.results;
     }
 }

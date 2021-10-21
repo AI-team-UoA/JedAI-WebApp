@@ -6,9 +6,11 @@ import datamodel.RelatedGeometries;
  * @author George Mandilaras (NKUA)
  */
 public class InterlinkingResults {
-
-    public int source_instances;
-    public int target_instances;
+    public String algorithm;
+    public String sourceFilename;
+    public String targetFilename;
+    public int sourceInstances;
+    public int targetInstances;
     public int contains;
     public int covers;
     public int coveredBy;
@@ -19,13 +21,15 @@ public class InterlinkingResults {
     public int touches;
     public int within;
     public int verifications;
-    public int qualifying_pairs;
-    public long execution_time;
+    public int qualifyingPairs;
+    public long totalRelations;
+    public long executionTime;
     public String details;
 
-    public InterlinkingResults(RelatedGeometries relatedGeometries, int sourceLength, int targetLength, long time, String textResults){
-        source_instances = sourceLength;
-        target_instances = targetLength;
+    public InterlinkingResults(String alg, RelatedGeometries relatedGeometries, int sourceLength, String sFilename, int targetLength, String tFilename, long time, String textResults){
+        algorithm = alg;
+        sourceInstances = sourceLength;
+        targetInstances = targetLength;
         contains = relatedGeometries.getNoOfContains();
         covers = relatedGeometries.getNoOfCovers();
         coveredBy = relatedGeometries.getNoOfCoveredBy();
@@ -36,17 +40,21 @@ public class InterlinkingResults {
         touches = relatedGeometries.getNoOfTouches();
         within = relatedGeometries.getNoOfWithin();
         verifications = relatedGeometries.getVerifiedPairs();
-        qualifying_pairs = relatedGeometries.getQualifyingPairs();
-        execution_time = time;
+        qualifyingPairs = relatedGeometries.getInterlinkedPairs();
+        executionTime = time;
         details = textResults;
+
+        totalRelations = contains+covers+coveredBy+crosses+equals+intersects+overlaps+touches+within;
+        sourceFilename = sFilename;
+        targetFilename = tFilename;
     }
 
-    public void setSource_instances(int source_instances) {
-        this.source_instances = source_instances;
+    public void setSourceInstances(int sourceInstances) {
+        this.sourceInstances = sourceInstances;
     }
 
-    public void setTarget_instances(int target_instances) {
-        this.target_instances = target_instances;
+    public void setTargetInstances(int targetInstances) {
+        this.targetInstances = targetInstances;
     }
 
     public void setContains(int contains) {
@@ -89,20 +97,20 @@ public class InterlinkingResults {
         this.verifications = verifications;
     }
 
-    public void setQualifying_pairs(int qualifying_pairs) {
-        this.qualifying_pairs = qualifying_pairs;
+    public void setQualifyingPairs(int qualifyingPairs) {
+        this.qualifyingPairs = qualifyingPairs;
     }
 
-    public void setExecution_time(long execution_time) {
-        this.execution_time = execution_time;
+    public void setExecutionTime(long executionTime) {
+        this.executionTime = executionTime;
     }
 
-    public int getSource_instances() {
-        return source_instances;
+    public int getSourceInstances() {
+        return sourceInstances;
     }
 
-    public int getTarget_instances() {
-        return target_instances;
+    public int getTargetInstances() {
+        return targetInstances;
     }
 
     public int getContains() {
@@ -145,11 +153,51 @@ public class InterlinkingResults {
         return verifications;
     }
 
-    public int getQualifying_pairs() {
-        return qualifying_pairs;
+    public int getQualifyingPairs() {
+        return qualifyingPairs;
     }
 
-    public long getExecution_time() {
-        return execution_time;
+    public long getExecutionTime() {
+        return executionTime;
+    }
+
+    public String getSourceFilename() {
+        return sourceFilename;
+    }
+
+    public String getTargetFilename() {
+        return targetFilename;
+    }
+
+    public long getTotalRelations() {
+        return totalRelations;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public void setSourceFilename(String sourceFilename) {
+        this.sourceFilename = sourceFilename;
+    }
+
+    public void setTargetFilename(String targetFilename) {
+        this.targetFilename = targetFilename;
+    }
+
+    public void setTotalRelations(long totalRelations) {
+        this.totalRelations = totalRelations;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 }

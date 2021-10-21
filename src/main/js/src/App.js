@@ -11,6 +11,7 @@ import ErrorComponent from './components/ErrorView'
 import ProgressiveForm from './components/er/mainViews/ProgressiveForm'
 import InterlinkingExecution from "./components/gi/InterlinkingExecution";
 import InterlinkingMainView from "./components/gi/InterlinkingMainView";
+import InterlinkingWorkbench from "./components/gi/InterlinkingWorkbench";
 
 
 class App extends Component {
@@ -35,6 +36,7 @@ class App extends Component {
                 <Route exact path="/blockingbased" render={props=>(  <BlockingForm {...props}/> )}/>
                 <Route exact path="/joinbased" render={props=> (<JoinForm {...props}/>) }/>
                 <Route exact path="/progressive" render={props=>(  <ProgressiveForm {...props}/> )}/>
+                  <Route exact path="/test" render={props=>(  <InterlinkingWorkbench {...props}/> )}/>
                 <Route exact path="/*" render={props=>(  <ErrorComponent/> )}/>
               </Switch>
             </div>

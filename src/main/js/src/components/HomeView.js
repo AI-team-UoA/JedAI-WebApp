@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import {Link, withRouter } from 'react-router-dom';
 import Workbench from './er/mainViews/Workbench';
 import axios from 'axios';
+import InterlinkingWorkbench from "./gi/InterlinkingWorkbench";
 
 class HomeView extends Component {
 
@@ -153,7 +154,8 @@ class HomeView extends Component {
                         </Button>
                     </div>
                     <Jumbotron style={{margin:"auto", border:"groove", backgroundColor:"white"}}>
-                        <Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} setNewWorkflow={this.setNewWorkflow} />
+                        {/*<Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} setNewWorkflow={this.setNewWorkflow} />*/}
+                        <InterlinkingWorkbench />
                     </Jumbotron>  
                 </Jumbotron> 
             </div>

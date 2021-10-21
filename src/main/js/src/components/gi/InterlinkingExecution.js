@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {Button, Jumbotron, Form, Row, Spinner, Tab, Table, Tabs} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import axios from "axios";
+import InterlinkingWorkbench from "./InterlinkingWorkbench";
 
 class InterlinkingExecution extends Component {
 
+    // TODO update workbench after execution
     constructor(...args) {
 
         super(...args);
@@ -16,8 +18,8 @@ class InterlinkingExecution extends Component {
             automatic_conf: false,
             execution_status : "Not Run",
             execution_results:{
-                source_instances: 0,
-                target_instances: 0,
+                sourceInstances: 0,
+                targetInstances: 0,
                 details: "",
                 contains: 0,
                 covers: 0,
@@ -29,9 +31,10 @@ class InterlinkingExecution extends Component {
                 touches: 0,
                 within: 0,
 
-                execution_time : 0,
+                executionTime : 0,
                 verifications : 0,
-                qualifying_pairs: 0
+                qualifyingPairs: 0,
+                totalRelations: 0
             },
             alertShow: false,
         }
@@ -77,9 +80,6 @@ class InterlinkingExecution extends Component {
                 <div style={{color:"#a40101"}}><h3>{this.state.execution_status}</h3></div>
         }
 
-        let totalRelations = this.state.execution_results.contains + this.state.execution_results.covers + this.state.execution_results.coveredBy +
-            this.state.execution_results.crosses + this.state.execution_results.equals + this.state.execution_results.intersects +
-            this.state.execution_results.overlaps + this.state.execution_results.touches + this.state.execution_results.within
         return (
             <div>
                 <Jumbotron  className='jumbotron_2'>
@@ -105,17 +105,17 @@ class InterlinkingExecution extends Component {
                                                 <tbody>
                                                     <tr>
                                                         <td><h4 style={{color:"#4663b9"}} className="form-row" >Source Geometries:</h4></td>
-                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.source_instances}</td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.sourceInstances}</td>
 
                                                         <td><h4 style={{color:"#4663b9"}} className="form-row" >Target Geometries:</h4></td>
-                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.target_instances}</td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.targetInstances}</td>
                                                     </tr>
                                                     <tr>
                                                         <td><h4 style={{color:"#4663b9"}} className="form-row" >Total Relations:</h4></td>
-                                                        <td style={{fontSize:"150%"}}>{totalRelations}</td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.totalRelations}</td>
 
                                                         <td><h4 style={{color:"#4663b9"}} className="form-row" >Qualifying Pairs:</h4></td>
-                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.qualifying_pairs}</td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.qualifyingPairs}</td>
                                                     </tr>
 
                                                     <tr>
@@ -123,7 +123,7 @@ class InterlinkingExecution extends Component {
                                                         <td style={{fontSize:"150%"}}>{this.state.execution_results.verifications}</td>
 
                                                         <td><h4 style={{color:"#4663b9"}} className="form-row" >Total execution time (ms):</h4></td>
-                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.execution_time}</td>
+                                                        <td style={{fontSize:"150%"}}>{this.state.execution_results.executionTime}</td>
                                                     </tr>
                                                 </tbody>
                                             </Table>
@@ -181,8 +181,7 @@ class InterlinkingExecution extends Component {
                                 </Form.Group>
                             </Tab>
                             <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
-                                <br/>
-
+                               <InterlinkingWorkbench />
                             </Tab>
                         </Tabs>
                         <br />

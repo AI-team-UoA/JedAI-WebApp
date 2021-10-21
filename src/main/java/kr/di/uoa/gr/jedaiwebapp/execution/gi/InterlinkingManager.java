@@ -17,20 +17,12 @@ import datareader.*;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.HttpPaths;
 import kr.di.uoa.gr.jedaiwebapp.utilities.configurations.JedaiOptions;
 import org.json.JSONObject;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 
-// TODO
-//  1) return results to front-end
-//  2) Learn why we need QP in constructors
-//  3) how the benchmark and map should look like
-//  4) export
 @RestController
 @RequestMapping(HttpPaths.giReadData + "**")
 public class InterlinkingManager {
@@ -39,17 +31,24 @@ public class InterlinkingManager {
     static public String algorithm;
     static public int budget;
     public static AbstractReader source;
+    public static String sourceFilename;
     public static AbstractReader target;
+    public static String targetFilename;
 
+    public static List<InterlinkingResults> results = new LinkedList<>();
 
     public static String setDataset(JSONObject configurations, String inputPath) {
         try{
             String entity_id = configurations.getString("entity_id");
             String filetype = configurations.getString("filetype");
-            if (Objects.equals(entity_id, "source"))
+            if (Objects.equals(entity_id, "source")){
+                sourceFilename = configurations.getString("filename");
                 source = getReader(filetype, inputPath, configurations);
-            else
+            }
+            else{
+                targetFilename = configurations.getString("filename");
                 target = getReader(filetype, inputPath, configurations);
+            }
             return "SUCCESS";
         } catch (Exception e){
             return "ERROR: " + e.getClass().getSimpleName();
@@ -74,9 +73,7 @@ public class InterlinkingManager {
         }
     }
 
-    // TODO add static algorithms
-    public static InterlinkingResults run(){
-        long time = Calendar.getInstance().getTimeInMillis();
+    public static AbstractBatchAlgorithm getProcessor(String algorithm){
         AbstractBatchAlgorithm processor;
         switch (algorithm) {
             case JedaiOptions.STATIC_GIANT:
@@ -109,48 +106,26 @@ public class InterlinkingManager {
             default:
                 processor = new GIAnt(0, source, target);
         }
+        return processor;
+    }
+
+    public static InterlinkingResults run(){
+        long time = Calendar.getInstance().getTimeInMillis();
+        AbstractBatchAlgorithm processor = getProcessor(algorithm);
         processor.applyProcessing();
         RelatedGeometries relatedGeometries = processor.getResults();
         time = Calendar.getInstance().getTimeInMillis() - time;
         System.out.println("Interlinker completed in " + time+"ms");
-        return new InterlinkingResults(relatedGeometries, source.getSize(), target.getSize(), time, processor.getResultsText());
+        InterlinkingResults newResults = new InterlinkingResults(algorithm, relatedGeometries, source.getSize(), sourceFilename,
+                target.getSize(), targetFilename, time, processor.getResultsText());
+        results.add(newResults);
+        return newResults;
     }
 
 
     public static String getConfiguration(String algorithm) {
         try{
-            AbstractBatchAlgorithm processor;
-            switch (algorithm) {
-                case JedaiOptions.STATIC_GIANT:
-                    processor = new StaticGIAnt(0, source, target);
-                    break;
-                case JedaiOptions.RADON:
-                    processor = new RADON(0, source, target);
-                    break;
-                case JedaiOptions.STATIC_RADON:
-                    processor = new StaticRADON(0, source, target);
-                    break;
-                case JedaiOptions.CRTREE:
-                    processor = new CRTree(0, source, target);
-                    break;
-                case JedaiOptions.PLANE_SWEEP:
-                    processor = new PlaneSweep(0, source, target, PlaneSweepStructure.LIST_SWEEP);
-                    break;
-                case JedaiOptions.STRIPE_SWEEP:
-                    processor = new StripeSTRSweep(0, source, target);
-                    break;
-                case JedaiOptions.PBSM:
-                    processor = new PBSM(0, source, target, PlaneSweepStructure.STRIPED_SWEEP);
-                    break;
-                case JedaiOptions.QUADTREE:
-                    processor = new QuadTree(0, source, target);
-                    break;
-                case JedaiOptions.RTREE:
-                    processor = new RTree(0, source, target);
-                    break;
-                default:
-                    processor = new GIAnt(0, source, target);
-            }
+            AbstractBatchAlgorithm processor = getProcessor(algorithm);
             return  processor.getMethodInfo();
         }
         catch (UnsupportedOperationException e){

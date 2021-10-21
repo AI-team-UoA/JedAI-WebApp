@@ -72,7 +72,7 @@ class Workbench extends Component {
             elements.forEach(x => x.style.display = "none")
 
         this.setState({collapse_rows: collapse_rows})
-        
+
     }
 
     formInnerTable = (d, ar_length, index) => {
@@ -216,7 +216,7 @@ class Workbench extends Component {
                         <tr>
                             <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>ID</th>
                             <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Performance</th>
-                            <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Input Instancies</th>
+                            <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Input Instances</th>
                             <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Clusters</th>   
                             <th style={{textAlign:"center", verticalAlign:"middle", margin:"auto"}}>Actions</th>                           
                         </tr>
