@@ -155,7 +155,7 @@ class HomeView extends Component {
                     </div>
                     <Jumbotron style={{margin:"auto", border:"groove", backgroundColor:"white"}}>
                         {/*<Workbench data={this.state.workbench_data} getDataFunc={this.getWorkbenchData} setNewWorkflow={this.setNewWorkflow} />*/}
-                        <InterlinkingWorkbench />
+                        <InterlinkingWorkbench updateWorkbenchNumber={0}/>
                     </Jumbotron>  
                 </Jumbotron> 
             </div>

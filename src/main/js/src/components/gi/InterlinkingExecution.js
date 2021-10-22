@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
-import {Button, Jumbotron, Form, Row, Spinner, Tab, Table, Tabs} from "react-bootstrap";
+import {Button, Form, Jumbotron, Row, Spinner, Tab, Table, Tabs} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import axios from "axios";
 import InterlinkingWorkbench from "./InterlinkingWorkbench";
 
 class InterlinkingExecution extends Component {
 
-    // TODO update workbench after execution
     constructor(...args) {
 
         super(...args);
@@ -37,10 +36,11 @@ class InterlinkingExecution extends Component {
                 totalRelations: 0
             },
             alertShow: false,
+            updateWorkbenchNumber: 0
         }
     }
 
-    execute = (e) => {
+    execute = (_) => {
         this.setState({execution_status: "Running"})
         axios.get("/sequential/geospatialInterlinking/run").then(res => {
             let results = res.data
@@ -48,7 +48,8 @@ class InterlinkingExecution extends Component {
             if (results != null) {
                 this.setState({
                     execution_results: results,
-                    execution_status: "Completed"
+                    execution_status: "Completed",
+                    updateWorkbenchNumber: this.state.updateWorkbenchNumber + 1
                 })
             } else {
                 this.setState({execution_status: "Failed"})
@@ -181,7 +182,7 @@ class InterlinkingExecution extends Component {
                                 </Form.Group>
                             </Tab>
                             <Tab eventKey="workbench" title="Workbench" className="Jumbotron_Tab">
-                               <InterlinkingWorkbench />
+                               <InterlinkingWorkbench updateWorkbenchNumber={this.state.updateWorkbenchNumber} />
                             </Tab>
                         </Tabs>
                         <br />
@@ -207,7 +208,8 @@ class InterlinkingExecution extends Component {
                                     </Button>
                                     <Button variant="secondary"
                                             style={{width: "100px", marginRight:"10px"}}
-                                            disabled={this.state.execution_status !== "Completed"}
+                                            // disabled={this.state.execution_status !== "Completed"}
+                                            disabled={true}
                                             onClick={this.plotCurve}
                                     >
                                         Show Plot
@@ -220,7 +222,8 @@ class InterlinkingExecution extends Component {
                                         placeholder="Select Filetype"
                                         name="export_filetype"
                                         onChange={this.onChange}
-                                        disabled={this.state.execution_status !== "Completed"}
+                                        // disabled={this.state.execution_status !== "Completed"}
+                                        disabled={true}
                                         value={this.state.export_filetype}
                                     >
                                         <option value="" />
