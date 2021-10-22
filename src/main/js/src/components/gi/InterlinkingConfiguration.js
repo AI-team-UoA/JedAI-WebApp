@@ -133,7 +133,7 @@ class InterlinkingConfiguration extends Component {
                         <br/>
                     </div>
                     <Link to={{ pathname:"/sequential/geospatialInterlinking/execute"}}>
-                        <Button style={{float: 'right'}} >Confirm</Button>
+                        <Button style={{float: 'right'}} onClick={this.props.submit}>Confirm</Button>
                     </Link>
                 </div>
             </div>
@@ -147,7 +147,8 @@ InterlinkingConfiguration.propTypes = {
     budget: PropTypes.number.isRequired,
     source: PropTypes.object.isRequired,
     target: PropTypes.object.isRequired,
-    width: PropTypes.string.isRequired
+    width: PropTypes.string.isRequired,
+    submit: PropTypes.func.isRequired
 }
 
 export default InterlinkingConfiguration;

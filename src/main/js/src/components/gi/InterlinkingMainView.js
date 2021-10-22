@@ -8,22 +8,36 @@ import axios from "axios";
 import InterlinkingConfiguration from "./InterlinkingConfiguration";
 
 class InterlinkingMainView extends Component {
-    state ={
-        source: {
-            entity_id: "source",
-            filetype : "",
-            source : "",
-            configurations: null
-        },
-        target: {
-            entity_id: "target",
-            filetype : "",
-            source : "",
-            configurations: null
-        },
-        algorithm_type: "",
-        algorithm: "",
-        budget: 2000
+
+    static staticState = null
+
+    constructor(...args) {
+        super(...args);
+
+        this.state ={
+            source: {
+                entity_id: "source",
+                filetype : "",
+                source : "",
+                configurations: null
+            },
+            target: {
+                entity_id: "target",
+                filetype : "",
+                source : "",
+                configurations: null
+            },
+            algorithm_type: "",
+            algorithm: "",
+            budget: 2000
+        }
+
+        if (InterlinkingMainView.staticState != null){
+            this.state = InterlinkingMainView.staticState
+        }
+        else{
+            InterlinkingMainView.staticState = this.state
+        }
     }
 
     updateState = (name, value) => {this.setState({[name]: value})}
@@ -40,6 +54,10 @@ class InterlinkingMainView extends Component {
                 this.alertText = "Datasets were not configured properly"
                 console.log("ERROR")
         }
+    }
+
+    submit = (_) => {
+        InterlinkingMainView.staticState = this.state
     }
 
     setInterlinking = () => {
@@ -63,7 +81,8 @@ class InterlinkingMainView extends Component {
                                                                                       algorithm_type={this.state.algorithm_type}
                                                                                       budget={this.state.budget}
                                                                                       source={this.state.source}
-                                                                                      target={this.state.target}/>}
+                                                                                      target={this.state.target}
+                                                                                      submit={this.submit}/>}
             ]
 
         return (

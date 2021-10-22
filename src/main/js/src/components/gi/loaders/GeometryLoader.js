@@ -73,7 +73,8 @@ class GeometryLoader extends Component {
         let dataset_state = {
             source: conf_state.source,
             configurations: conf_state.configuration,
-            filetype: this.state.filetype
+            filetype: this.state.filetype,
+            entity_id: this.state.entity_id
         };
         this.props.setDataset(this.state.entity_id, dataset_state)
         this.setState({source: conf_state.source, configurations: conf_state.configuration} )

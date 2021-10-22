@@ -51,6 +51,7 @@ public class InterlinkingManager {
             }
             return "SUCCESS";
         } catch (Exception e){
+            System.out.println(e);
             return "ERROR: " + e.getClass().getSimpleName();
         }
     }
