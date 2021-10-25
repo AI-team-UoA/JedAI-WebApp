@@ -92,7 +92,7 @@ class HomeView extends Component {
                                     <span className="fa fa-desktop"/>
                                     <h3>Sequential</h3>
                                     <p style={{ height: "100px"}}>
-                                        Run the Sequential version of GeoLinker (++).
+                                        Run the Sequential version of GeoLinker.
                                         The execution will be performed server-side.
                                         {/*TODO FIX */}
                                         {/*Run the Sequential version of JedAI, which provides the whole functionality of JedAIToolKit*/}
@@ -113,7 +113,7 @@ class HomeView extends Component {
                                     <h3>Distributed</h3>
 
                                     <p style={{ height: "100px"}}>
-                                        Run the distributed version of GeoLinker (...).
+                                        Run the distributed version of GeoLinker.
                                         The execution will be performed in a cluster configured by the user.
                                         The cluster must run an Apache Livy server so to establish connection.
                                     </p>

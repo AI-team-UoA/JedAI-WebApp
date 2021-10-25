@@ -61,8 +61,13 @@ class InterlinkingWorkbench extends Component {
         let tableValues = this.state.executions.map((exec, index) =>
             <tr key={index}>
                 <td>{index}</td>
-                <th>{exec.sourceFilename}</th>
-                <th>{exec.targetFilename}</th>
+                <th>
+                    {exec.sourceFilename}
+                    <span style={{float:"right", margin: "5px"}}>{exec.sourceInstances}</span>
+                </th>
+                <th>{exec.targetFilename}
+                    <span style={{float:"right", margin: "5px"}}>{exec.targetInstances}</span>
+                </th>
                 <th>{algorithmsMap.get(exec.algorithm)}</th>
                 <th>
                     {exec.qualifyingPairs}
